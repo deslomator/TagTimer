@@ -22,8 +22,20 @@ class EventViewModel(private val dao: EventDao): ViewModel() {
             is EventAction.DeleteEvent -> {
                 viewModelScope.launch { dao.deleteEvent(action.event) }
             }
-            is EventAction.EditNote -> {
-                _state.update { it.copy(isEditingNote = true) }
+            is EventAction.NoteEdited -> {
+                val event = Event(
+                    id = action.event.id,
+                    sessionId = action.event.sessionId,
+                    timestampMillis = action.event.timestampMillis,
+                    category = action.event.category,
+                    label = action.event.label,
+                    color = action.event.color,
+                    note = _state.value.note
+                )
+                viewModelScope.launch { dao.upsertEvent(event) }
+                _state.update { it.copy(
+                    note = "",
+                    isEditingNote = false) }
             }
             is EventAction.AppendEvent -> {
                 val event = Event(
@@ -35,18 +47,15 @@ class EventViewModel(private val dao: EventDao): ViewModel() {
                 )
                 viewModelScope.launch { dao.upsertEvent(event) }
             }
-            is EventAction.NoteEdited -> {
-                val event = Event(
-                    id = action.event.id,
-                    sessionId = action.event.sessionId,
-                    timestampMillis = action.event.timestampMillis,
-                    category = action.event.category,
-                    label = action.event.label,
-                    color = action.event.color,
-                    note = action.event.note
-                )
-                _state.update { it.copy(note = "", isEditingNote = false) }
-                viewModelScope.launch { dao.upsertEvent(event) }
+            is EventAction.UpdateNote -> {
+                _state.update { it.copy(note = action.noteText) }
+            }
+            is EventAction.EditNote -> {
+                _state.update { it.copy(
+                    editingIndex = action.editingIndex,
+                    note = action.event.note,
+                    isEditingNote = true
+                ) }
             }
         }
     }
