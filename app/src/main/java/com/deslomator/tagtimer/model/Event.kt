@@ -8,8 +8,8 @@ data class Event(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val sessionId: Long,
     val timestamp: Long,
-    val group: String = "",
-    val label: String = "",
+    val group: String,
+    val label: String,
     val color: Long,
-    var notes: String = ""
+    val notes: String
 )

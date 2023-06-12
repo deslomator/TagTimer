@@ -6,9 +6,9 @@ import androidx.room.PrimaryKey
 @Entity
 data class Session(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    var lastAccess: Long,
-    var name: String,
-    var color: Long,
-    var startTimeMillis: Long,
-    var endTimeMillis: Long
+    val lastAccess: Long,
+    val name: String,
+    val color: Long,
+    val startTimeMillis: Long,
+    val endTimeMillis: Long
 )

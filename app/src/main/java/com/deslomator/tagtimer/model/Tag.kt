@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class Tag(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    var group: String,
-    var label: String,
-    var color: Long
+    val group: String,
+    val label: String,
+    val color: Long
     )
