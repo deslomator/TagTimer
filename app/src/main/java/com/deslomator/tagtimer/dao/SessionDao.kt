@@ -11,18 +11,15 @@ import kotlinx.coroutines.flow.Flow
 interface SessionDao {
 
     @Upsert
-    suspend fun upsertSession(sessionId: Int)
+    suspend fun upsertSession(session: Session)
 
     @Delete
-    suspend fun deleteSession(sessionId: Int) {
-
-    }
+    suspend fun deleteSession(session: Session)
 
     @Query("SELECT * FROM session WHERE id = :sessionId")
     fun getSession(sessionId: Int): Flow<Session>
 
-    @Query("SELECT * FROM session ORDER BY lastAccess DESC")
+    @Query("SELECT * FROM session ORDER BY lastAccessMillis DESC")
     fun getSessions(): Flow<List<Session>>
-
 
 }

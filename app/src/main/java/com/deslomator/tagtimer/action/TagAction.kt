@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.actions
+package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Tag
 

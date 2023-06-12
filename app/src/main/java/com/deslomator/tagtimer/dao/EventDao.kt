@@ -19,6 +19,9 @@ interface EventDao {
     @Query("DELETE FROM event WHERE sessionId = :sessionId")
     suspend fun deleteEventsForSession(sessionId: Int)
 
-    @Query("SELECT * FROM event WHERE sessionId = :sessionId ORDER BY timestamp ASC")
+    @Query("SELECT * FROM event WHERE sessionId = :sessionId ORDER BY timestampMillis ASC")
     fun getEventsForSession(sessionId: Int): Flow<List<Event>>
+
+    @Query("SELECT DISTINCT category FROM event ORDER BY category ASC")
+    fun getCategories(): Flow<List<String>>
 }

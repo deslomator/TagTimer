@@ -5,11 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class Event(
-    @PrimaryKey(autoGenerate = true) val id: Int,
-    val sessionId: Long,
-    val timestamp: Long,
-    val group: String,
-    val label: String,
-    val color: Long,
-    val notes: String
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val sessionId: Int = 0,
+    val timestampMillis: Long = 0,
+    val category: String = "",
+    val label: String = "",
+    val color: Long = 0,
+    val note: String = ""
 )
