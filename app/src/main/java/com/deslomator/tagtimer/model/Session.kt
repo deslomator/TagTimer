@@ -4,9 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class Tag(
+data class Session(
     @PrimaryKey(autoGenerate = true) val id: Int,
-    var group: String,
-    var label: String,
-    var color: Long
-    )
+    var lastAccess: Long,
+    var name: String,
+    var color: Long,
+    var startTimeMillis: Long,
+    var endTimeMillis: Long
+)
