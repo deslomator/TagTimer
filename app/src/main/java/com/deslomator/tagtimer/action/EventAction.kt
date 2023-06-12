@@ -9,4 +9,6 @@ sealed interface EventAction {
     data class UpdateNote(val noteText: String): EventAction
     data class EditNote(val event: Event, val editingIndex: Int): EventAction
     data class NoteEdited(val event: Event): EventAction
+    object ShowDeleteDialog: EventAction
+    object HideDeleteDialog: EventAction
 }

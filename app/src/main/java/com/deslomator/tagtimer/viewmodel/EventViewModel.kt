@@ -57,6 +57,12 @@ class EventViewModel(private val dao: EventDao): ViewModel() {
                     isEditingNote = true
                 ) }
             }
+            is EventAction.HideDeleteDialog -> {
+                _state.update { it.copy(showDeleteDialog = false) }
+            }
+            is EventAction.ShowDeleteDialog -> {
+                _state.update { it.copy(showDeleteDialog = true) }
+            }
         }
     }
 }

@@ -24,10 +24,13 @@ class SessionViewModel(
     fun onAction(action: SessionAction) {
         when(action) {
             SessionAction.AddSession -> {
-                _state.update { it.copy(isAddingSession = true) }
+                _state.update { it.copy(isEditingSession = true) }
             }
             is SessionAction.DeleteSession -> {
-                viewModelScope.launch { sessionDao.deleteSession(action.session) }
+                viewModelScope.launch {
+                    sessionDao.deleteSession(action.session)
+                    eventDao.deleteEventsForSession(action.session.id)
+                }
             }
             is SessionAction.EditSession -> {
                 _state.update { it.copy(
@@ -49,6 +52,9 @@ class SessionViewModel(
             }
             is SessionAction.SessionEdited -> {
                 val session = Session(
+                    id = action.session.id,
+                    startTimeMillis = action.session.startTimeMillis,
+                    endTimeMillis = action.session.endTimeMillis,
                     name = _state.value.name,
                     color = _state.value.color,
                     lastAccessMillis = System.currentTimeMillis()
@@ -67,7 +73,7 @@ class SessionViewModel(
                     lastAccessMillis = System.currentTimeMillis()
                 )
                 _state.update { it.copy(
-                    isAddingSession = false,
+                    isEditingSession = false,
                     color = 0,
                     name = ""
                 ) }
