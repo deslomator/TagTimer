@@ -5,14 +5,13 @@ import androidx.room.RoomDatabase
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.UsedTag
 
 @Database(
-    entities = [Event::class, Session::class, Tag::class],
+    entities = [Event::class, Session::class, Tag::class, UsedTag::class],
     version = 1
 )
-abstract class SessionDatabase: RoomDatabase() {
+abstract class Database: RoomDatabase() {
 
-    abstract val eventDao: EventDao
-    abstract val sessionDao: SessionDao
-    abstract val tagDao: TagDao
+    abstract val dao: Dao
 }
