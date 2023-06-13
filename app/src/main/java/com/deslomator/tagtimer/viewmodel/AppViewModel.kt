@@ -1,5 +1,7 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.AppAction
@@ -8,6 +10,7 @@ import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.AppState
+import com.deslomator.tagtimer.ui.theme.Purple40
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -18,25 +21,34 @@ import kotlinx.coroutines.launch
 class AppViewModel(private val appDao: AppDao): ViewModel() {
 
     private val _state = MutableStateFlow(AppState())
+    private val _events = appDao.getEventsForSession(_state.value.currentSession.id)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _sessions = appDao.getSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_state, _sessions) { state, sessions ->
+    private val _tags = appDao.getTags()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _usedTags = appDao.getUsedTagsForSession(_state.value.currentSession.id)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    val state = combine(_state, _events, _sessions, _tags, _usedTags) { state, events, sessions, tags, usedTags ->
         state.copy(
-            sessions = sessions
+            events = events,
+            sessions = sessions,
+            tags = tags,
+            usedTags = usedTags
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), AppState())
 
-    fun onAction(appAction: AppAction) {
-        when(appAction) {
+    fun onAction(action: AppAction) {
+        when(action) {
             is AppAction.DeleteEvent -> {
-                viewModelScope.launch { appDao.deleteEvent(appAction.event) }
+                viewModelScope.launch { appDao.deleteEvent(action.event) }
             }
             is AppAction.EventNoteEdited -> {
                 val event = Event(
-                    id = appAction.event.id,
-                    sessionId = appAction.event.sessionId,
-                    timestampMillis = appAction.event.timestampMillis,
-                    tagId = appAction.event.tagId,
+                    id = action.event.id,
+                    sessionId = action.event.sessionId,
+                    timestampMillis = action.event.timestampMillis,
+                    tagId = action.event.tagId,
                     note = state.value.eventNote
                 )
                 viewModelScope.launch { appDao.upsertEvent(event) }
@@ -46,19 +58,18 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             }
             is AppAction.AppendEvent -> {
                 val event = Event(
-                    sessionId = appAction.sessionId,
-                    timestampMillis = appAction.timestamp,
-                    tagId = appAction.tagId
+                    sessionId = action.sessionId,
+                    timestampMillis = action.timestamp,
+                    tagId = action.tagId
                 )
                 viewModelScope.launch { appDao.upsertEvent(event) }
             }
             is AppAction.UpdateEventNote -> {
-                _state.update { it.copy(eventNote = appAction.noteText) }
+                _state.update { it.copy(eventNote = action.noteText) }
             }
             is AppAction.EditEventNote -> {
                 _state.update { it.copy(
-                    eventEditingIndex = appAction.editingIndex,
-                    eventNote = appAction.event.note,
+                    eventNote = action.event.note,
                     isEditingEventNote = true
                 ) }
             }
@@ -68,61 +79,80 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             is AppAction.ShowDeleteEventDialog -> {
                 _state.update { it.copy(showEventDeleteDialog = true) }
             }
-            AppAction.AddSession -> {
-                _state.update { it.copy(isEditingSession = true) }
-            }
-            is AppAction.DeleteSession -> {
-                viewModelScope.launch {
-                    appDao.deleteSession(appAction.session)
-                    appDao.deleteEventsForSession(appAction.session.id)
-                }
-            }
-            is AppAction.EditSession -> {
-                _state.update { it.copy(
-                    sessionEditingIndex = appAction.editingIndex,
-                    isEditingSession = true,
-                    lastAccessMillis = System.currentTimeMillis(),
-                    sessionColor = appAction.session.color,
-                    sessionName = appAction.session.name
-                ) }
-            }
+            // Session
             is AppAction.UpsertSession -> {
                 TODO()
             }
+            is AppAction.DeleteSession -> {
+                viewModelScope.launch {
+                    appDao.deleteSession(action.session)
+                    appDao.deleteEventsForSession(action.session.id)
+                }
+            }
+            AppAction.AddNewSessionClicked -> {
+                _state.update { it.copy(
+                    sessionColor = it.currentSession.color,
+                    showSessionDialog = true,
+                    isAddingNewSession = true
+                ) }
+            }
+            is AppAction.AcceptAddingNewSessionClicked -> {
+                val session = Session(
+                    name = state.value.sessionName,
+                    color = state.value.sessionColor,
+                    lastAccessMillis = System.currentTimeMillis()
+                )
+                _state.update { it.copy(
+                    showSessionDialog = false,
+                    isAddingNewSession = false,
+                    sessionColor = 0,
+                    sessionName = ""
+                ) }
+                viewModelScope.launch { appDao.upsertSession(session) }
+            }
+            is AppAction.EditSessionClicked -> {
+                _state.update { it.copy(
+                    showSessionDialog = true,
+                    isEditingSession = true,
+                    lastAccessMillis = System.currentTimeMillis(),
+                    currentSession = action.session,
+                    sessionColor = action.session.color,
+                    sessionName = action.session.name
+                ) }
+            }
+            is AppAction.AcceptSessionEditionClicked -> {
+                val session = Session(
+                    id = state.value.currentSession.id,
+                    startTimeMillis = action.session.startTimeMillis,
+                    endTimeMillis = action.session.endTimeMillis,
+                    name = state.value.sessionName,
+                    color = state.value.sessionColor,
+                    lastAccessMillis = System.currentTimeMillis()
+                )
+//                Log.d(TAG, "editing session, original id: ${state.value.currentSession.id}")
+//                Log.d(TAG, "editing session, new id: ${session.id}")
+                _state.update { it.copy(
+                    showSessionDialog = false,
+                    isEditingSession = false,
+                    sessionColor = 0,
+                    sessionName = ""
+                ) }
+                viewModelScope.launch { appDao.upsertSession(session) }
+            }
+            is AppAction.DismissSessionDialog -> {
+                _state.update { it.copy(
+                    showSessionDialog = false,
+                    isEditingSession = false,
+                    isAddingNewSession = false,
+                    sessionColor = 0,
+                    sessionName = ""
+                ) }
+            }
             is AppAction.UpdateSessionColor -> {
-                _state.update { it.copy(sessionColor = appAction.color) }
+                _state.update { it.copy(sessionColor = action.color) }
             }
             is AppAction.UpdateSessionName -> {
-                _state.update { it.copy(sessionName = appAction.name) }
-            }
-            is AppAction.SessionEdited -> {
-                val session = Session(
-                    id = appAction.session.id,
-                    startTimeMillis = appAction.session.startTimeMillis,
-                    endTimeMillis = appAction.session.endTimeMillis,
-                    name = state.value.sessionName,
-                    color = state.value.sessionColor,
-                    lastAccessMillis = System.currentTimeMillis()
-                )
-                _state.update { it.copy(
-                    isEditingSession = false,
-                    sessionColor = 0,
-                    sessionName = ""
-                ) }
-                viewModelScope.launch { appDao.upsertSession(session) }
-            }
-            is AppAction.SessionAdded -> {
-                val session = Session(
-                    name = state.value.sessionName,
-                    color = state.value.sessionColor,
-                    lastAccessMillis = System.currentTimeMillis()
-                )
-                _state.update { it.copy(
-                    isEditingSession = false,
-                    sessionColor = 0,
-                    sessionName = ""
-                ) }
-                viewModelScope.launch { appDao.upsertSession(session) }
+                _state.update { it.copy(sessionName = action.name) }
             }
             AppAction.HideDeleteSessionDialog -> {
                 _state.update { it.copy(showSessionDeleteDialog = false) }
@@ -130,12 +160,13 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             AppAction.ShowDeleteSessionDialog -> {
                 _state.update { it.copy(showSessionDeleteDialog = true) }
             }
+            // Tag
             is AppAction.DeleteTag -> {
-                viewModelScope.launch { appDao.deleteTag(appAction.tag) }
+                viewModelScope.launch { appDao.deleteTag(action.tag) }
             }
             is AppAction.TagEdited -> {
                 val tag = Tag(
-                    id = appAction.tag.id,
+                    id = action.tag.id,
                     category = state.value.tagCategory,
                     label = state.value.tagLabel,
                     color = state.value.tagColor
@@ -165,14 +196,13 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                 viewModelScope.launch { appDao.upsertTag(tag) }
             }
             is AppAction.UpdateTagLabel -> {
-                _state.update { it.copy(tagLabel = appAction.label) }
+                _state.update { it.copy(tagLabel = action.label) }
             }
             is AppAction.EditTag -> {
                 _state.update { it.copy(
-                    tagEditingIndex = appAction.editingIndex,
-                    tagLabel = appAction.tag.label,
-                    tagColor = appAction.tag.color,
-                    tagCategory = appAction.tag.category,
+                    tagLabel = action.tag.label,
+                    tagColor = action.tag.color,
+                    tagCategory = action.tag.category,
                     isEditingTag = true
                 ) }
             }
@@ -184,19 +214,20 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             }
 
             is AppAction.UpdateTagCategory -> {
-                _state.update { it.copy(tagCategory = appAction.category) }
+                _state.update { it.copy(tagCategory = action.category) }
             }
             is AppAction.UpdateTagColor -> {
-                _state.update { it.copy(tagColor = appAction.color) }
+                _state.update { it.copy(tagColor = action.color) }
             }
             is AppAction.UpsertTag -> {
-                viewModelScope.launch { appDao.upsertTag(appAction.tag) }
+                viewModelScope.launch { appDao.upsertTag(action.tag) }
             }
+            // UsedTag
             is AppAction.UpsertUsedTag -> {
-                viewModelScope.launch { appDao.upsertUsedTag(appAction.usedTag) }
+                viewModelScope.launch { appDao.upsertUsedTag(action.usedTag) }
             }
             is AppAction.DeleteUsedTag -> {
-                viewModelScope.launch { appDao.deleteUsedTag(appAction.usedTag) }
+                viewModelScope.launch { appDao.deleteUsedTag(action.usedTag) }
             }
             is AppAction.ShowUsedTagDeleteDialog -> {
                 _state.update { it.copy(showDeleteUsedTagDialog = true) }
@@ -204,8 +235,12 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             is AppAction.HideUsedTagDeleteDialog -> {
                 _state.update { it.copy(showDeleteUsedTagDialog = false) }
             }
-            
-            
+
+
         }
+    }
+
+    companion object {
+        private const val TAG = "AppViewModel"
     }
 }

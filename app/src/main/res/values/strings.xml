@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">TagTimer</string>
+    <string name="app_name" translatable="false">TagTimer</string>
+    <string name="edit_session">Edit Session</string>
+    <string name="delete_session">Delete Session</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
+    <string name="new_session">New Session</string>
+    <string name="name">Name</string>
+    <string name="color">Color</string>
 </resources>
