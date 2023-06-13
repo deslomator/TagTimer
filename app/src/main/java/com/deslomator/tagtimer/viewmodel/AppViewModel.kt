@@ -1,7 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.AppAction
@@ -10,7 +8,6 @@ import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.AppState
-import com.deslomator.tagtimer.ui.theme.Purple40
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -148,17 +145,34 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                     sessionName = ""
                 ) }
             }
-            is AppAction.UpdateSessionColor -> {
-                _state.update { it.copy(sessionColor = action.color) }
-            }
             is AppAction.UpdateSessionName -> {
                 _state.update { it.copy(sessionName = action.name) }
             }
-            AppAction.HideDeleteSessionDialog -> {
+            is AppAction.UpdateSessionColor -> {
+                _state.update { it.copy(sessionColor = action.color) }
+            }
+            is AppAction.DeleteSessionClicked -> {
+                _state.update {
+                    it.copy(
+                        showSessionDeleteDialog = true,
+                        currentSession = action.session
+                    )
+                }
+            }
+            AppAction.AcceptDeleteSessionClicked -> {
+                viewModelScope.launch { appDao.deleteSession(state.value.currentSession) }
+                _state.update {
+                    it.copy(
+                        showSessionDeleteDialog = false,
+                        currentSession = Session()
+                    )
+                }
+            }
+            is AppAction.DismissDeleteSessionDialog -> {
                 _state.update { it.copy(showSessionDeleteDialog = false) }
             }
-            AppAction.ShowDeleteSessionDialog -> {
-                _state.update { it.copy(showSessionDeleteDialog = true) }
+            is AppAction.SessionItemClicked -> {
+                //TODO
             }
             // Tag
             is AppAction.DeleteTag -> {
