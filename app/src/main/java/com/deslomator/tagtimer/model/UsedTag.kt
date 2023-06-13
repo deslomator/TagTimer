@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class UsedTag(
-    val sessionId: Int,
-    val tagId: Int,
+    val sessionId: Int = 0,
+    val tagId: Int = 0,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 )

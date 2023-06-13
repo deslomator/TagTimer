@@ -11,7 +11,7 @@ import com.deslomator.tagtimer.model.UsedTag
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface Dao {
+interface AppDao {
     @Upsert
     suspend fun upsertEvent(event: Event)
 

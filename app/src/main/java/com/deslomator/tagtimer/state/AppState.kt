@@ -3,26 +3,37 @@ package com.deslomator.tagtimer.state
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.UsedTag
 
-data class UiState(
+data class AppState(
     val events: List<Event> = emptyList(),
+    val currentEvent: Event = Event(),
     val eventEditingIndex: Int = 0,
     val eventNote: String = "",
     val isEditingEventNote: Boolean = false,
     val showEventDeleteDialog: Boolean = false,
+
     val sessions: List<Session> = emptyList(),
+    val currentSession: Session = Session(),
     val sessionEditingIndex: Int = 0,
     val lastAccessMillis: Long = 0,
     val sessionName: String = "",
     val sessionColor: Long = 0,
     val isEditingSession: Boolean = false,
     val showSessionDeleteDialog: Boolean = false,
+
     val tags: List<Tag> = emptyList(),
+    val currentTag: Tag = Tag(),
     val tagEditingIndex: Int = 0,
     val tagCategory: String = "",
     val tagLabel: String = "",
     val tagColor: Long = 0,
     val isEditingTag: Boolean = false,
     val showDeleteTagDialog: Boolean = false,
+
+    val usedTags: List<UsedTag> = emptyList(),
+    val currentUsedTag: UsedTag = UsedTag(),
+    val usedTagEditingIndex: Int = 0,
+    val isEditingUsedTag: Boolean = false,
     val showDeleteUsedTagDialog: Boolean = false
 )

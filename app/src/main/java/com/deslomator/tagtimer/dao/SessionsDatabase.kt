@@ -11,7 +11,7 @@ import com.deslomator.tagtimer.model.UsedTag
     entities = [Event::class, Session::class, Tag::class, UsedTag::class],
     version = 1
 )
-abstract class Database: RoomDatabase() {
+abstract class SessionsDatabase: RoomDatabase() {
 
-    abstract val dao: Dao
+    abstract val appDao: AppDao
 }
