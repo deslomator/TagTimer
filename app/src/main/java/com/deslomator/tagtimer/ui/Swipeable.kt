@@ -165,10 +165,12 @@ fun SwipeToDismiss(
 
 @ExperimentalMaterial3Api
 object SwipeToDismissDefaults {
-    val FixedPositionalThreshold: Density.(totalDistance: Float) -> Float = { _ -> 56.dp.toPx() }
+//    val FixedPositionalThreshold: Density.(totalDistance: Float) -> Float = { _ -> 56.dp.toPx() }
+    val FixedPositionalThreshold: Density.(totalDistance: Float) -> Float = { _ -> 250.dp.toPx() }
 }
 
-private val DismissThreshold = 125.dp
+//private val DismissThreshold = 125.dp
+private val DismissThreshold = 5000.dp
 
 @ExperimentalMaterial3Api
 internal fun <T> Modifier.swipeableV2(
@@ -446,13 +448,16 @@ internal object SwipeableV2Defaults {
 
 
     @ExperimentalMaterial3Api
-    val VelocityThreshold: Dp = 125.dp
+//    val VelocityThreshold: Dp = 125.dp
+//    val VelocityThreshold: Dp = 125.dp
+    val VelocityThreshold: Dp = 5000.dp
 
 
 
     @ExperimentalMaterial3Api
     val PositionalThreshold: Density.(totalDistance: Float) -> Float =
-        fixedPositionalThreshold(56.dp)
+//        fixedPositionalThreshold(56.dp)
+        fixedPositionalThreshold(250.dp)
 }
 
 
