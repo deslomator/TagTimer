@@ -15,8 +15,6 @@ sealed interface AppAction {
     object ShowDeleteEventDialog: AppAction
     object HideDeleteEventDialog: AppAction
     // Session
-    data class UpsertSession(val session: Session): AppAction
-    data class DeleteSession(val session: Session): AppAction
     data class EditSessionClicked(val session: Session): AppAction
     data class AcceptSessionEditionClicked(val session: Session): AppAction
     object AddNewSessionClicked: AppAction

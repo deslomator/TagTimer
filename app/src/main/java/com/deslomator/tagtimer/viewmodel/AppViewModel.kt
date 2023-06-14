@@ -77,15 +77,6 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                 _state.update { it.copy(showEventDeleteDialog = true) }
             }
             // Session
-            is AppAction.UpsertSession -> {
-                TODO()
-            }
-            is AppAction.DeleteSession -> {
-                viewModelScope.launch {
-                    appDao.deleteSession(action.session)
-                    appDao.deleteEventsForSession(action.session.id)
-                }
-            }
             AppAction.AddNewSessionClicked -> {
                 _state.update { it.copy(
                     sessionColor = it.currentSession.color,
@@ -160,7 +151,10 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                 }
             }
             AppAction.AcceptDeleteSessionClicked -> {
-                viewModelScope.launch { appDao.deleteSession(state.value.currentSession) }
+                viewModelScope.launch {
+                    appDao.deleteSession(state.value.currentSession)
+                    appDao.deleteEventsForSession(state.value.currentSession.id)
+                }
                 _state.update {
                     it.copy(
                         showSessionDeleteDialog = false,
