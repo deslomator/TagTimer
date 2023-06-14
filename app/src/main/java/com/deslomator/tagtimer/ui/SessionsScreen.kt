@@ -66,7 +66,10 @@ fun SessionsScreen(
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.sessions, { session: Session -> session.id }) { session ->
+                items(
+                    items = state.sessions,
+                    key = { it.id }
+                ) { session ->
                     SwipeableListItem(
                         dismissDirection = StartToEnd,
                         onDismiss = { onAction(AppAction.DeleteSessionSwiped(session)) },
