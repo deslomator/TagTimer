@@ -63,13 +63,13 @@ fun SessionsScreen(
                 session = state.currentSession
             )
         }
-        if (state.showSessionDeleteDialog) {
+        /*if (state.showSessionDeleteDialog) {
             ConfirmationDialog(
                 title = stringResource(id = R.string.delete_session),
                 onAccept = { onAction(AppAction.AcceptDeleteSessionClicked) },
                 onCancel = { onAction(AppAction.DismissDeleteSessionDialog) }
             )
-        }
+        }*/
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -84,7 +84,7 @@ fun SessionsScreen(
 
                     val dismissState = rememberDismissState(initialValue = Default)
                     if (dismissState.isDismissed(EndToStart)) {
-                        onAction(AppAction.DeleteSessionClicked(session))
+                        onAction(AppAction.DeleteSessionSwiped(session))
                     }
 
                     SwipeToDismiss(
@@ -130,7 +130,7 @@ fun SessionsScreen(
                                 session = session,
                                 onItemClick = { onAction(AppAction.SessionItemClicked(session)) },
                                 onEditClick = { onAction(AppAction.EditSessionClicked(session)) },
-                                onDeleteClick = { onAction(AppAction.DeleteSessionClicked(session)) },
+//                                onDeleteClick = { onAction(AppAction.DeleteSessionSwiped(session)) },
                                 shadowElevation = animateDpAsState(
                                     if (dismissState.dismissDirection != null) 22.dp else 16.dp
                                 ).value

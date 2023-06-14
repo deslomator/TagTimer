@@ -20,7 +20,7 @@ data class AppState(
     val showSessionDialog: Boolean = false,
     val isEditingSession: Boolean = false,
     val isAddingNewSession: Boolean = false,
-    val showSessionDeleteDialog: Boolean = false,
+//    val showSessionDeleteDialog: Boolean = false,
 
     val tags: List<Tag> = emptyList(),
     val currentTag: Tag = Tag(),

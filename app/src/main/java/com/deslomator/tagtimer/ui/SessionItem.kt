@@ -3,13 +3,10 @@ package com.deslomator.tagtimer.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -30,7 +27,7 @@ fun SessionItem(
     session: Session,
     onItemClick: (Session) -> Unit,
     onEditClick: (Session) -> Unit,
-    onDeleteClick: (Session) -> Unit,
+//    onDeleteClick: (Session) -> Unit,
     shadowElevation: Dp = 16.dp
 ) {
     ListItem(
@@ -40,24 +37,24 @@ fun SessionItem(
         headlineContent = { Text(session.name) },
         supportingContent = { Text(session.lastAccessMillis.toDateTime()) },
         trailingContent = {
-            Row {
-                IconButton(
-                    onClick = { onEditClick(session) },
-                ) {
-                    Icon(
-                        Icons.Filled.Edit,
-                        contentDescription = "Edit",
-                    )
-                }
-                IconButton(
-                    onClick = { onDeleteClick(session) },
-                ) {
-                    Icon(
-                        Icons.Filled.Delete,
-                        contentDescription = "Delete",
-                    )
-                }
+//            Row {
+            IconButton(
+                onClick = { onEditClick(session) },
+            ) {
+                Icon(
+                    Icons.Filled.Edit,
+                    contentDescription = "Edit",
+                )
             }
+            /*IconButton(
+                onClick = { onDeleteClick(session) },
+            ) {
+                Icon(
+                    Icons.Filled.Delete,
+                    contentDescription = "Delete",
+                )
+            }
+        }*/
         },
         leadingContent = {
             Image(
@@ -83,6 +80,6 @@ fun SessionItemPreview() {
         ),
         onItemClick = {},
         onEditClick = {},
-        onDeleteClick = {},
+//        onDeleteClick = {},
     )
 }

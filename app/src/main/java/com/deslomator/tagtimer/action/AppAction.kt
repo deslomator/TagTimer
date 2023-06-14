@@ -22,9 +22,9 @@ sealed interface AppAction {
     object DismissSessionDialog: AppAction
     data class UpdateSessionName(val name: String): AppAction
     data class UpdateSessionColor(val color: Int): AppAction
-    data class DeleteSessionClicked(val session: Session): AppAction
-    object AcceptDeleteSessionClicked: AppAction
-    object DismissDeleteSessionDialog: AppAction
+    data class DeleteSessionSwiped(val session: Session): AppAction
+//    object AcceptDeleteSessionClicked: AppAction
+//    object DismissDeleteSessionDialog: AppAction
     data class SessionItemClicked(val session: Session): AppAction
     // Tag
     data class UpsertTag(val tag: Tag): AppAction

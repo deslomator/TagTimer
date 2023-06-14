@@ -150,7 +150,7 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                     )
                 }
             }
-            AppAction.AcceptDeleteSessionClicked -> {
+            /*is AppAction.AcceptDeleteSessionClicked -> {
                 viewModelScope.launch {
                     appDao.deleteSession(state.value.currentSession)
                     appDao.deleteEventsForSession(state.value.currentSession.id)
@@ -164,7 +164,7 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             }
             is AppAction.DismissDeleteSessionDialog -> {
                 _state.update { it.copy(showSessionDeleteDialog = false) }
-            }
+            }*/
             is AppAction.SessionItemClicked -> {
                 //TODO
             }
