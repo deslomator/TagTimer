@@ -1,9 +1,12 @@
 package com.deslomator.tagtimer.ui
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
@@ -12,10 +15,13 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.toDateTime
 
 @Composable
 fun SessionItem(
@@ -29,7 +35,7 @@ fun SessionItem(
             .clickable { onItemClick(session) },
         shadowElevation = 10.dp,
         headlineContent = { Text(session.name) },
-        supportingContent = { Text(session.lastAccessMillis.toString()) },
+        supportingContent = { Text(session.lastAccessMillis.toDateTime()) },
         trailingContent = {
             Row {
                 IconButton(
@@ -51,10 +57,13 @@ fun SessionItem(
             }
         },
         leadingContent = {
-            Icon(
-                Icons.Filled.CheckCircle,
-                contentDescription = "Color",
-                tint = Color(session.color)
+            Image(
+                painter = ColorPainter(Color(session.color)),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .border(1.dp, Color.Gray, CircleShape)
             )
         }
     )
@@ -66,7 +75,7 @@ fun SessionItemPreview() {
     SessionItem(
         session = Session(
             name = "Session in Gym",
-            color = 0xc83929,
+            color = -33929,
             lastAccessMillis = 287539475785793
         ),
         onItemClick = {},
