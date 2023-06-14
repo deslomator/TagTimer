@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.AppAction
 import com.deslomator.tagtimer.state.AppState
+import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.SoftGreen
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 
@@ -101,7 +102,7 @@ fun MainScreenContent(
                 SwipeableListItem(
                     dismissDirection = StartToEnd,
                     onDismiss = { onAction(AppAction.DeleteSessionSwiped(session)) },
-                    dismissColor = SoftGreen
+                    dismissColor = Pink80
                 ) { dismissState ->
                     SessionItem(
                         session = session,
