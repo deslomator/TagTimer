@@ -12,6 +12,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -21,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.toDateTime
+import androidx.compose.runtime.getValue
 
 @Composable
 fun SessionItem(
@@ -30,12 +33,15 @@ fun SessionItem(
 //    onDeleteClick: (Session) -> Unit,
     shadowElevation: Dp = 10.dp
 ) {
+    val lastAccess by remember {
+        derivedStateOf { session.lastAccessMillis.toDateTime() }
+    }
     ListItem(
         modifier = Modifier
             .clickable { onItemClick(session) },
         shadowElevation = shadowElevation,
         headlineContent = { Text(session.name) },
-        supportingContent = { Text(session.lastAccessMillis.toDateTime()) },
+        supportingContent = { Text(lastAccess) },
         trailingContent = {
 //            Row {
             IconButton(
