@@ -81,23 +81,28 @@ fun SessionsScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(state.sessions, { session: Session -> session.id }) { session ->
-
+                    // this val selects the preferred dismiss direction
+                    val selectedDismissDirection = StartToEnd
                     val dismissState = rememberDismissState(initialValue = Default)
-                    if (dismissState.isDismissed(EndToStart)) {
+                    if (dismissState.isDismissed(selectedDismissDirection)) {
                         onAction(AppAction.DeleteSessionSwiped(session))
                     }
 
                     SwipeToDismiss(
                         state = dismissState,
                         modifier = Modifier.padding(vertical = 4.dp),
-                        directions = setOf(EndToStart),
+                        directions = setOf(selectedDismissDirection),
                         background = {
                             val direction = dismissState.dismissDirection ?: return@SwipeToDismiss
                             val color by animateColorAsState(
                                 when (dismissState.targetValue) {
                                     Default -> Color.LightGray
-                                    DismissedToEnd -> Color.Green
-                                    DismissedToStart -> Pink80
+                                    DismissedToStart ->
+                                        if (selectedDismissDirection == StartToEnd) Color.Green
+                                        else Pink80
+                                    DismissedToEnd ->
+                                        if (selectedDismissDirection == StartToEnd) Pink80
+                                        else Color.Green
                                 }
                             )
                             val alignment = when (direction) {
@@ -105,8 +110,12 @@ fun SessionsScreen(
                                 EndToStart -> Alignment.CenterEnd
                             }
                             val icon = when (direction) {
-                                StartToEnd -> Icons.Default.Done
-                                EndToStart -> Icons.Default.Delete
+                                StartToEnd ->
+                                    if (selectedDismissDirection == StartToEnd) Icons.Default.Delete
+                                    else Icons.Default.Done
+                                EndToStart ->
+                                    if (selectedDismissDirection == StartToEnd) Icons.Default.Done
+                                    else Icons.Default.Delete
                             }
                             val scale by animateFloatAsState(
                                 if (dismissState.targetValue == Default) 0.75f else 1f

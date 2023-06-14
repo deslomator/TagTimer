@@ -56,6 +56,11 @@ import kotlinx.coroutines.sync.withLock
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
+/**
+ * These objects are copied from material3 source code where they
+ * are tagged with internal until they sort some bugs;
+ * this way it's possible to use them in this project.
+ */
 
 @ExperimentalMaterial3Api
 class DismissState(
