@@ -7,4 +7,5 @@
     <string name="new_session">Nueva Sesión</string>
     <string name="name">Nombre</string>
     <string name="color">Color</string>
+    <string name="manage_tags">Gestionar Etiquetas</string>
 </resources>

@@ -168,6 +168,13 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                 //TODO
             }
             // Tag
+            is AppAction.ManageTagsClicked -> {
+                _state.update { it.copy(
+                    isManagingTags = true) }
+            }
+            is AppAction.UpsertTag -> {
+                viewModelScope.launch { appDao.upsertTag(action.tag) }
+            }
             is AppAction.DeleteTag -> {
                 viewModelScope.launch { appDao.deleteTag(action.tag) }
             }
@@ -225,9 +232,6 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
             }
             is AppAction.UpdateTagColor -> {
                 _state.update { it.copy(tagColor = action.color) }
-            }
-            is AppAction.UpsertTag -> {
-                viewModelScope.launch { appDao.upsertTag(action.tag) }
             }
             // UsedTag
             is AppAction.UpsertUsedTag -> {

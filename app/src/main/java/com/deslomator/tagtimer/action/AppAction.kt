@@ -27,6 +27,7 @@ sealed interface AppAction {
 //    object DismissDeleteSessionDialog: AppAction
     data class SessionItemClicked(val session: Session): AppAction
     // Tag
+    object ManageTagsClicked: AppAction
     data class UpsertTag(val tag: Tag): AppAction
     data class DeleteTag(val tag: Tag): AppAction
     data class EditTag(val tag: Tag): AppAction
