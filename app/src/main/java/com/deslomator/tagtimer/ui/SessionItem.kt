@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -19,6 +20,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.toDateTime
@@ -29,11 +31,12 @@ fun SessionItem(
     onItemClick: (Session) -> Unit,
     onEditClick: (Session) -> Unit,
     onDeleteClick: (Session) -> Unit,
+    shadowElevation: Dp = 16.dp
 ) {
     ListItem(
         modifier = Modifier
             .clickable { onItemClick(session) },
-        shadowElevation = 10.dp,
+        shadowElevation = shadowElevation,
         headlineContent = { Text(session.name) },
         supportingContent = { Text(session.lastAccessMillis.toDateTime()) },
         trailingContent = {
