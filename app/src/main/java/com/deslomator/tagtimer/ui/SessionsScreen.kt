@@ -21,18 +21,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.AppAction
-import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.AppState
 import com.deslomator.tagtimer.ui.theme.SoftGreen
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionsScreen(
     state: AppState,
     onAction: (AppAction) -> Unit
 ) {
     Scaffold(
+        topBar = { TopBar() },
         floatingActionButton = {
             FloatingActionButton(onClick = { onAction(AppAction.AddNewSessionClicked) }) {
                 Icon(
@@ -40,51 +38,71 @@ fun SessionsScreen(
                     contentDescription = stringResource(id = R.string.new_session)
                 )
             }
-        }
-    ) { paddingValues ->
-        if (state.showSessionDialog) {
-            SessionDialog(
+        },
+        content = { paddingValues ->
+            MainScreenContent(
+                paddingValues = paddingValues,
                 state = state,
-                onAction = onAction,
-                session = state.currentSession
+                onAction = onAction
             )
         }
-        /*if (state.showSessionDeleteDialog) {
-            ConfirmationDialog(
-                title = stringResource(id = R.string.delete_session),
-                onAccept = { onAction(AppAction.AcceptDeleteSessionClicked) },
-                onCancel = { onAction(AppAction.DismissDeleteSessionDialog) }
-            )
-        }*/
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+    )
+}
+
+@Composable
+fun TopBar() {
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainScreenContent(
+    paddingValues: PaddingValues,
+    state: AppState,
+    onAction: (AppAction) -> Unit
+) {
+    if (state.showSessionDialog) {
+        SessionDialog(
+            state = state,
+            onAction = onAction,
+            session = state.currentSession
+        )
+    }
+    /*if (state.showSessionDeleteDialog) {
+        ConfirmationDialog(
+            title = stringResource(id = R.string.delete_session),
+            onAccept = { onAction(AppAction.AcceptDeleteSessionClicked) },
+            onCancel = { onAction(AppAction.DismissDeleteSessionDialog) }
+        )
+    }*/
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues),
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    items = state.sessions,
-                    key = { it.id }
-                ) { session ->
-                    SwipeableListItem(
-                        dismissDirection = StartToEnd,
-                        onDismiss = { onAction(AppAction.DeleteSessionSwiped(session)) },
-                        dismissColor = SoftGreen
-                    ) { dismissState ->
-                        SessionItem(
-                            session = session,
-                            onItemClick = { onAction(AppAction.SessionItemClicked(session)) },
-                            onEditClick = { onAction(AppAction.EditSessionClicked(session)) },
+            items(
+                items = state.sessions,
+                key = { it.id }
+            ) { session ->
+                SwipeableListItem(
+                    dismissDirection = StartToEnd,
+                    onDismiss = { onAction(AppAction.DeleteSessionSwiped(session)) },
+                    dismissColor = SoftGreen
+                ) { dismissState ->
+                    SessionItem(
+                        session = session,
+                        onItemClick = { onAction(AppAction.SessionItemClicked(session)) },
+                        onEditClick = { onAction(AppAction.EditSessionClicked(session)) },
 //                                onDeleteClick = { onAction(AppAction.DeleteSessionSwiped(session)) },
-                            shadowElevation = animateDpAsState(
-                                if (dismissState.dismissDirection != null) 20.dp else 10.dp
-                            ).value
-                        )
-                    }
+                        shadowElevation = animateDpAsState(
+                            if (dismissState.dismissDirection != null) 20.dp else 10.dp
+                        ).value
+                    )
                 }
             }
         }
