@@ -28,7 +28,7 @@ fun SessionItem(
     onItemClick: (Session) -> Unit,
     onEditClick: (Session) -> Unit,
 //    onDeleteClick: (Session) -> Unit,
-    shadowElevation: Dp = 16.dp
+    shadowElevation: Dp = 10.dp
 ) {
     ListItem(
         modifier = Modifier
