@@ -33,8 +33,8 @@ interface AppDao {
     @Delete
     suspend fun deleteSession(session: Session)
 
-    @Query("SELECT * FROM session WHERE id = :sessionId")
-    fun getSession(sessionId: Int): Flow<Session>
+//    @Query("SELECT * FROM session WHERE id = :sessionId")
+//    fun getSession(sessionId: Int): Flow<Session>
 
     @Query("SELECT * FROM session ORDER BY lastAccessMillis DESC")
     fun getSessions(): Flow<List<Session>>
