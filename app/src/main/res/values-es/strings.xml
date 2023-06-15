@@ -8,4 +8,6 @@
     <string name="name">Nombre</string>
     <string name="color">Color</string>
     <string name="manage_tags">Gestionar Etiquetas</string>
+    <string name="session_deleted">Sesión eliminada</string>
+    <string name="undo">Deshacer</string>
 </resources>

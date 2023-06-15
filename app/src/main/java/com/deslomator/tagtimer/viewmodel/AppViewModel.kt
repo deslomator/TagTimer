@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.AppAction
@@ -84,7 +85,7 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                     isAddingNewSession = true
                 ) }
             }
-            is AppAction.AcceptAddingNewSessionClicked -> {
+            is AppAction.AcceptAddNewSessionClicked -> {
                 val session = Session(
                     name = state.value.sessionName,
                     color = state.value.sessionColor,
@@ -144,26 +145,33 @@ class AppViewModel(private val appDao: AppDao): ViewModel() {
                 _state.update { it.copy(sessionColor = action.color) }
             }
             is AppAction.DeleteSessionSwiped -> {
+                Log.d(TAG, "AppAction.DeleteSessionSwiped snackbar")
                 viewModelScope.launch {
-                    appDao.deleteSession(action.session)
-                    appDao.deleteEventsForSession(action.session.id)
+                    _state.update { it.copy(
+                        currentSession = action.session,
+                        showSessionDeleteSnackbar = true
+                    ) }// delete here to visually remove listItem
+//                    appDao.deleteSession(state.value.currentSession)
                 }
             }
-            /*is AppAction.AcceptDeleteSessionClicked -> {
-                viewModelScope.launch {
+            is AppAction.HideSessionDeleteSnackbar -> {
+                Log.d(TAG, "AppAction.HideSessionDeleteSnackbar")
+                _state.update {it.copy(showSessionDeleteSnackbar = false)
+                }
+            }
+            is AppAction.SnackbarUndoDeleteSessionIgnored -> {
+                Log.d(TAG, "AppAction.SnackbarUndoDeleteSessionIgnored")
+                viewModelScope.launch {// now we can delete related events
                     appDao.deleteSession(state.value.currentSession)
                     appDao.deleteEventsForSession(state.value.currentSession.id)
                 }
-                _state.update {
-                    it.copy(
-                        showSessionDeleteDialog = false,
-                        currentSession = Session()
-                    )
-                }
             }
-            is AppAction.DismissDeleteSessionDialog -> {
-                _state.update { it.copy(showSessionDeleteDialog = false) }
-            }*/
+            is AppAction.SnackbarUndoDeleteSessionClicked -> {
+                Log.d(TAG, "AppAction.SnackbarUndoDeleteSessionClicked")
+//                viewModelScope.launch {// restore session, events weren't deleted
+//                    appDao.upsertSession(state.value.currentSession)
+//                }
+            }
             is AppAction.SessionItemClicked -> {
                 //TODO
             }

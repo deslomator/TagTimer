@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,10 +14,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -30,11 +38,31 @@ fun SessionsScreen(
     state: AppState,
     onAction: (AppAction) -> Unit
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+    if (state.showSessionDeleteSnackbar) {
+        LaunchedEffect(key1 = snackbarHostState) {
+            Log.d(TAG, "before snackbar result")
+            val result = (snackbarHostState.showSnackbar(
+                message = context.getString(R.string.session_deleted),
+                actionLabel = context.getString(R.string.undo),
+                duration = SnackbarDuration.Short
+            ))
+            Log.d(TAG, "waiting snackbar result")
+            when (result){
+                SnackbarResult.ActionPerformed -> onAction(AppAction.SnackbarUndoDeleteSessionClicked)
+                SnackbarResult.Dismissed -> onAction(AppAction.SnackbarUndoDeleteSessionIgnored)
+            }
+            onAction(AppAction.HideSessionDeleteSnackbar)
+            Log.d(TAG, "after snackbar result")
+        }
+    }
     Scaffold(
         topBar = { TopBar(
             onNewSessionClick = { onAction(AppAction.AddNewSessionClicked) },
             onManageTagsClick = { onAction(AppAction.ManageTagsClicked) },
         ) },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
             MainScreenContent(
                 paddingValues = paddingValues,
@@ -66,7 +94,7 @@ fun TopBar(
                 onClick = onManageTagsClick
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.baseline_label_24,),
+                    painter = painterResource(R.drawable.baseline_label_24),
                     contentDescription = stringResource(id = R.string.manage_tags)
                 )
             }
@@ -79,7 +107,7 @@ fun TopBar(
 fun MainScreenContent(
     paddingValues: PaddingValues,
     state: AppState,
-    onAction: (AppAction) -> Unit
+    onAction: (AppAction) -> Unit,
 ) {
     if (state.showSessionDialog) {
         SessionDialog(
@@ -128,3 +156,5 @@ fun MainScreenContent(
         }
     }
 }
+
+private const val TAG = "SessionsScreen"

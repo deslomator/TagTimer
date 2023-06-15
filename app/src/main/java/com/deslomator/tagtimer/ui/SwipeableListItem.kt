@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import android.util.Log
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.viewmodel.AppViewModel
 
 /**
  * @param dismissDirection defines delete and done swipes.
@@ -41,10 +43,20 @@ fun SwipeableListItem(
     doneColor: Color = Color(0xff04a48f),
     content: @Composable (DismissState) -> Unit
 ) {
-    val dismissState = rememberDismissState(initialValue = DismissValue.Default)
-    if (dismissState.isDismissed(dismissDirection)) {
+//    val dismissState = rememberDismissState(initialValue = DismissValue.Default)
+    val dismissState = rememberDismissState(
+        confirmValueChange = {
+            if (it == DismissValue.DismissedToEnd) {
+                Log.d(TAG, "dismissState.isDismissed snackbar")
+                onDismiss()
+                true
+            } else false
+        }
+    )
+    /*if (dismissState.isDismissed(dismissDirection)) {
+        Log.d(TAG, "dismissState.isDismissed snackbar")
         onDismiss()
-    }
+    }*/
 
     SwipeToDismiss(
         state = dismissState,
@@ -115,3 +127,5 @@ fun SwipeableListItemPreview() {
         )
     }
 }
+
+private const val TAG = "SwipeableListItem"

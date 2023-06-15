@@ -18,13 +18,14 @@ sealed interface AppAction {
     data class EditSessionClicked(val session: Session): AppAction
     data class AcceptSessionEditionClicked(val session: Session): AppAction
     object AddNewSessionClicked: AppAction
-    data class AcceptAddingNewSessionClicked(val session: Session): AppAction
+    data class AcceptAddNewSessionClicked(val session: Session): AppAction
     object DismissSessionDialog: AppAction
     data class UpdateSessionName(val name: String): AppAction
     data class UpdateSessionColor(val color: Int): AppAction
     data class DeleteSessionSwiped(val session: Session): AppAction
-//    object AcceptDeleteSessionClicked: AppAction
-//    object DismissDeleteSessionDialog: AppAction
+    object HideSessionDeleteSnackbar: AppAction
+    object SnackbarUndoDeleteSessionIgnored: AppAction
+    object SnackbarUndoDeleteSessionClicked: AppAction
     data class SessionItemClicked(val session: Session): AppAction
     // Tag
     object ManageTagsClicked: AppAction

@@ -8,4 +8,6 @@
     <string name="name">Name</string>
     <string name="color">Color</string>
     <string name="manage_tags">Manage Tags</string>
+    <string name="session_deleted">Session deleted</string>
+    <string name="undo">Undo</string>
 </resources>
