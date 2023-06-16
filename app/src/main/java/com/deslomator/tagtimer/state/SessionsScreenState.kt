@@ -13,5 +13,5 @@ data class SessionsScreenState(
     val showSessionDialog: Boolean = false,
     val isEditingSession: Boolean = false,
     val isAddingNewSession: Boolean = false,
-    val showSessionTrashSnackbar: Boolean = false,
+    val showSnackbar: Boolean = false,
 )

@@ -11,7 +11,7 @@ sealed interface SessionsScreenAction {
     data class UpdateSessionName(val name: String): SessionsScreenAction
     data class UpdateSessionColor(val color: Int): SessionsScreenAction
     data class TrashSessionSwiped(val session: Session): SessionsScreenAction
-    object HideSessionTrashSnackbar: SessionsScreenAction
+    object HideSnackbar: SessionsScreenAction
     data class SessionItemClicked(val session: Session): SessionsScreenAction
     object ManageTagsClicked: SessionsScreenAction
 }

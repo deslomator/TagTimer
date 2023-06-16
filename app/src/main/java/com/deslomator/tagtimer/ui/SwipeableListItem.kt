@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.ui.sessions.SessionItem
 
 /**
  * @param dismissDirection defines delete and done swipes.
@@ -105,14 +104,13 @@ fun SwipeableListItemPreview() {
     SwipeableListItem(
         onDismiss = {},
     ) {
-        SessionItem(
+        MyListItem(
             session = Session(
                 name = "Session in Gym",
                 color = -33929,
                 lastAccessMillis = 287539475785793
             ),
             onItemClick = {},
-            onEditClick = {},
         )
     }
 }

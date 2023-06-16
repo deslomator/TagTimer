@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsScreenAction
@@ -108,15 +107,17 @@ class SessionsScreenViewModel(
                     appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
-                _state.update { it.copy(showSessionTrashSnackbar = true) }
+                _state.update { it.copy(showSnackbar = true) }
             }
-            is SessionsScreenAction.HideSessionTrashSnackbar -> {
-                _state.update { it.copy(showSessionTrashSnackbar = false) }
+            is SessionsScreenAction.HideSnackbar -> {
+                _state.update { it.copy(showSnackbar = false) }
             }
             is SessionsScreenAction.SessionItemClicked -> {
                 //TODO
             }
-            is SessionsScreenAction.ManageTagsClicked -> TODO()
+            is SessionsScreenAction.ManageTagsClicked -> {
+                //TODO
+            }
         }
     }
 

@@ -11,4 +11,6 @@
     <string name="session_sent_to_trash">Session sent to trash</string>
     <string name="sessions_trash">Sessions Trash</string>
     <string name="go_back">go back</string>
+    <string name="session_deleted">Session permanently deleted</string>
+    <string name="session_restored">Session restored</string>
 </resources>

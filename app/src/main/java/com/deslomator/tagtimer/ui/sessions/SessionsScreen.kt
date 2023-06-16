@@ -24,9 +24,9 @@ fun SessionsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    if (state.showSessionTrashSnackbar) {
+    if (state.showSnackbar) {
         LaunchedEffect(key1 = snackbarHostState) {
-            Log.d(TAG, "launching snackbar")
+//            Log.d(TAG, "launching snackbar")
             val result = snackbarHostState.showSnackbar(
                 message = context.getString(R.string.session_sent_to_trash),
                 duration = SnackbarDuration.Short
@@ -35,8 +35,8 @@ fun SessionsScreen(
                 SnackbarResult.Dismissed -> {}
                 SnackbarResult.ActionPerformed -> {}
             }
-            Log.d(TAG, "hiding snackbar")
-            onAction(SessionsScreenAction.HideSessionTrashSnackbar)
+//            Log.d(TAG, "hiding snackbar")
+            onAction(SessionsScreenAction.HideSnackbar)
         }
     }
     Scaffold(
@@ -45,7 +45,7 @@ fun SessionsScreen(
             onManageTagsClick = { onAction(SessionsScreenAction.ManageTagsClicked) },
             onGoToTrashClick = {
                 onAppAction(AppAction.activateScreen(Screen.SESSIONS_TRASH))
-                onAction(SessionsScreenAction.HideSessionTrashSnackbar)
+                onAction(SessionsScreenAction.HideSnackbar)
             },
         ) },
         content = { paddingValues ->

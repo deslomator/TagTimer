@@ -7,13 +7,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.ThumbUp
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.SessionsTrashAction
 import com.deslomator.tagtimer.state.SessionsTrashState
-import com.deslomator.tagtimer.ui.sessions.SessionItem
+import com.deslomator.tagtimer.ui.MyListItem
 
 @Composable
 fun SessionsTrashContent(
@@ -35,11 +37,12 @@ fun SessionsTrashContent(
                 items = state.sessions,
                 key = { it.id }
             ) { session ->
-                SessionItem(
+                MyListItem(
                     session = session,
-                    onItemClick = {  },
-                    onEditClick = {  },
-                    shadowElevation = 10.dp
+                    leadingIcon = Icons.Filled.ThumbUp,
+                    onLeadingClick = { onAction(SessionsTrashAction.RestoreSessionClicked(session)) },
+                    trailingIcon = Icons.Filled.Delete,
+                    onTrailingClick = { onAction(SessionsTrashAction.DeleteSessionClicked(session)) },
                 )
             }
         }

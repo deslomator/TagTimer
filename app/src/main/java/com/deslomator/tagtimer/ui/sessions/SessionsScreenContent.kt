@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -15,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
 
@@ -51,10 +54,11 @@ fun SessionsScreenContent(
                     onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
                     dismissColor = Pink80
                 ) { dismissState ->
-                    SessionItem(
+                    MyListItem(
                         session = session,
                         onItemClick = { onAction(SessionsScreenAction.SessionItemClicked(session)) },
-                        onEditClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
+                        trailingIcon = Icons.Filled.Edit,
+                        onTrailingClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
                         shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 20.dp else 10.dp
                         ).value
