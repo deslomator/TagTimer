@@ -43,7 +43,10 @@ fun SessionsScreen(
         topBar = { SessionsTopBar(
             onNewSessionClick = { onAction(SessionsScreenAction.AddNewSessionClicked) },
             onManageTagsClick = { onAction(SessionsScreenAction.ManageTagsClicked) },
-            onGoToTrashClick = { onAppAction(AppAction.activateScreen(Screen.SESSIONS_TRASH)) },
+            onGoToTrashClick = {
+                onAppAction(AppAction.activateScreen(Screen.SESSIONS_TRASH))
+                onAction(SessionsScreenAction.HideSessionTrashSnackbar)
+            },
         ) },
         content = { paddingValues ->
             SessionsScreenContent(
