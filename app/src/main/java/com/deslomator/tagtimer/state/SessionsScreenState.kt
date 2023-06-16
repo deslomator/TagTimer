@@ -4,7 +4,7 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.ui.Screen
 
 data class SessionsScreenState(
-    val activeScreen: Screen = Screen.SESSIONS,
+    val activeScreen: String = Screen.SESSIONS.name,
     val sessions: List<Session> = emptyList(),
     val currentSession: Session = Session(),
     val lastAccessMillis: Long = 0,

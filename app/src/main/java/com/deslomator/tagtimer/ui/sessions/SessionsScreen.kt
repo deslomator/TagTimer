@@ -11,11 +11,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.action.AppAction
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.ui.Screen
 
 @Composable
 fun SessionsScreen(
+    onAppAction: (AppAction) -> Unit,
     state: SessionsScreenState,
     onAction: (SessionsScreenAction) -> Unit,
 ) {
@@ -40,6 +43,7 @@ fun SessionsScreen(
         topBar = { SessionsTopBar(
             onNewSessionClick = { onAction(SessionsScreenAction.AddNewSessionClicked) },
             onManageTagsClick = { onAction(SessionsScreenAction.ManageTagsClicked) },
+            onGoToTrashClick = { onAppAction(AppAction.activateScreen(Screen.SESSIONS_TRASH)) },
         ) },
         content = { paddingValues ->
             SessionsScreenContent(

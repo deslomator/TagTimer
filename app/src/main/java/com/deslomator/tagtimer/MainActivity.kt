@@ -11,17 +11,22 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.createSavedStateHandle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.deslomator.tagtimer.dao.SessionsDatabase
 import com.deslomator.tagtimer.state.AppState
 import com.deslomator.tagtimer.ui.Screen
 import com.deslomator.tagtimer.ui.sessions.SessionsScreen
+import com.deslomator.tagtimer.ui.sessionsTrash.SessionsTrashScreen
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
+import com.deslomator.tagtimer.viewmodel.AppViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
+import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class MainActivity : ComponentActivity() {
@@ -30,10 +35,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TagTimerTheme {
-                val appState by remember {
-                    mutableStateOf(AppState())
-                }
-                val appStateFlow = MutableStateFlow(AppState()).collectAsState()
                 val db by lazy {
                     Room.databaseBuilder(
                         applicationContext,
@@ -41,8 +42,11 @@ class MainActivity : ComponentActivity() {
                         "sessions.db"
                     ).build()
                 }
+                val appViewModel = viewModel<AppViewModel>()
                 val sessionsScreenViewModel = getSessionsScreenViewModel(
-                    appState = appState,
+                    db = db
+                )
+                val sessionsTrashViewModel = getSessionsTrashViewModel(
                     db = db
                 )
 
@@ -51,15 +55,25 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val appState by appViewModel.state.collectAsState()
                     val sessionsScreenState by sessionsScreenViewModel.state.collectAsState()
-                    when (appStateFlow.value.currentScreen) {
+                    val sessionsTrashState by sessionsTrashViewModel.state.collectAsState()
+
+                    when (appState.currentScreen) {
                         Screen.SESSIONS -> {
                             SessionsScreen(
+                                appViewModel::onAction,
                                 sessionsScreenState,
                                 sessionsScreenViewModel::onAction
                             )
                         }
-                        Screen.SESSIONS_TRASH -> TODO()
+                        Screen.SESSIONS_TRASH -> {
+                            SessionsTrashScreen(
+                                appViewModel::onAction,
+                                sessionsTrashState,
+                                sessionsTrashViewModel::onAction
+                            )
+                        }
                         Screen.CURRENTSESSION -> TODO()
                         Screen.TAGS -> TODO()
                     }
@@ -74,14 +88,21 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun getSessionsScreenViewModel(
-    appState: AppState,
-    db: SessionsDatabase
-): SessionsScreenViewModel {
+private fun getSessionsScreenViewModel(db: SessionsDatabase): SessionsScreenViewModel {
     return viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return SessionsScreenViewModel(db.appDao, appState) as T
+                return SessionsScreenViewModel(db.appDao) as T
+            }
+        }
+    )
+}
+@Composable
+private fun getSessionsTrashViewModel(db: SessionsDatabase): SessionsTrashViewModel {
+    return viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                return SessionsTrashViewModel(db.appDao) as T
             }
         }
     )

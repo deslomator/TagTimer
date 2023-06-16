@@ -1,5 +1,7 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsScreenAction
@@ -17,20 +19,14 @@ import kotlinx.coroutines.launch
 
 class SessionsScreenViewModel(
     private val appDao: AppDao,
-    appState: AppState
-    ): ViewModel() {
+): ViewModel() {
 
-    private val _appState = MutableStateFlow(appState)
-    /**
-     * SessionsScreen
-     */
     private val _state = MutableStateFlow(SessionsScreenState())
     private val _sessions = appDao.getActiveSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_state, _sessions, _appState) { state, sessions, appState ->
+    val state = combine(_state, _sessions) { state, sessions ->
         state.copy(
             sessions = sessions,
-            activeScreen = appState.currentScreen
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsScreenState())
 
@@ -76,7 +72,6 @@ class SessionsScreenViewModel(
                     color = state.value.sessionColor,
                     lastAccessMillis = System.currentTimeMillis()
                 )
-//                Log.d(TAG, "editing session, original id: ${state.value.currentSession.id}")
 //                Log.d(TAG, "editing session, new id: ${session.id}")
                 _state.update { it.copy(
                     showSessionDialog = false,
@@ -116,9 +111,6 @@ class SessionsScreenViewModel(
                 //TODO
             }
             is SessionsScreenAction.ManageTagsClicked -> TODO()
-            SessionsScreenAction.SessionsTrashClicked -> {
-                _state.update { it.copy(activeScreen = Screen.SESSIONS_TRASH) }
-            }
         }
     }
 

@@ -14,5 +14,4 @@ sealed interface SessionsScreenAction {
     object HideSessionDeletedSnackbar: SessionsScreenAction
     data class SessionItemClicked(val session: Session): SessionsScreenAction
     object ManageTagsClicked: SessionsScreenAction
-    object SessionsTrashClicked: SessionsScreenAction
 }
