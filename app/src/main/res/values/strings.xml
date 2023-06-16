@@ -8,4 +8,7 @@
     <string name="name">Name</string>
     <string name="color">Color</string>
     <string name="manage_tags">Manage Tags</string>
+    <string name="session_sent_to_trash">Session sent to trash</string>
+    <string name="sessions_trash">Sessions Trash</string>
+    <string name="go_back">go back</string>
 </resources>

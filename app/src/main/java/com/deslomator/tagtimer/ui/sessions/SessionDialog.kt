@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui
+package com.deslomator.tagtimer.ui.sessions
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,14 +15,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.AppAction
+import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.state.AppState
+import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.ui.ColorPicker
 
 @Composable
 fun SessionDialog(
-    state: AppState,
-    onAction: (AppAction) -> Unit,
+    state: SessionsScreenState,
+    onAction: (SessionsScreenAction) -> Unit,
     session: Session
 ) {
 
@@ -30,7 +31,7 @@ fun SessionDialog(
         modifier = Modifier.fillMaxWidth(.8f),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = {
-            onAction(AppAction.DismissSessionDialog)
+            onAction(SessionsScreenAction.DismissSessionDialog)
         },
         title = {
             Text(
@@ -44,19 +45,19 @@ fun SessionDialog(
             ) {
                 TextField(
                     value = state.sessionName,
-                    onValueChange = { onAction(AppAction.UpdateSessionName(it)) },
+                    onValueChange = { onAction(SessionsScreenAction.UpdateSessionName(it)) },
                     placeholder = { Text(text = stringResource(id = R.string.name)) }
                 )
                 ColorPicker(
                     selectedColor = Color(state.sessionColor),
-                    onItemClick = { onAction(AppAction.UpdateSessionColor(it)) }
+                    onItemClick = { onAction(SessionsScreenAction.UpdateSessionColor(it)) }
                 )
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    onAction(AppAction.AcceptSessionEditionClicked(session))
+                    onAction(SessionsScreenAction.AcceptSessionEditionClicked(session))
                 }
             ) {
                 Text(stringResource(id = R.string.accept))
@@ -65,7 +66,7 @@ fun SessionDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    onAction(AppAction.DismissSessionDialog)
+                    onAction(SessionsScreenAction.DismissSessionDialog)
                 }
             ) {
                 Text(stringResource(id = R.string.cancel))
@@ -78,7 +79,7 @@ fun SessionDialog(
 @Preview
 fun SessionDialogPreview() {
     SessionDialog(
-        state = AppState(sessionColor = 0xff4477),
+        state = SessionsScreenState(sessionColor = 0xff4477),
         onAction = {},
         session = Session()
     )

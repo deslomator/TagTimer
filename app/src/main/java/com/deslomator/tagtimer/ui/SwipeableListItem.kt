@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.ui.sessions.SessionItem
 
 /**
  * @param dismissDirection defines delete and done swipes.

@@ -9,5 +9,6 @@ data class Event(
     val tagId: Int = 0,
     val timestampMillis: Long = 0,
     val note: String = "",
+    val inTrash: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0
 )

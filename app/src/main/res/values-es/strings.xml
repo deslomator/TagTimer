@@ -8,4 +8,7 @@
     <string name="name">Nombre</string>
     <string name="color">Color</string>
     <string name="manage_tags">Gestionar Etiquetas</string>
+    <string name="session_sent_to_trash">Sesión enviada a la papelera</string>
+    <string name="sessions_trash">Sesiones Eliminadas</string>
+    <string name="go_back">volver</string>
 </resources>

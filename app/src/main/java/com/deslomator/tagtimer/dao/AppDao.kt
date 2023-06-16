@@ -39,6 +39,12 @@ interface AppDao {
     @Query("SELECT * FROM session ORDER BY lastAccessMillis DESC")
     fun getSessions(): Flow<List<Session>>
 
+    @Query("SELECT * FROM session WHERE inTrash = 0 ORDER BY lastAccessMillis DESC")
+    fun getActiveSessions(): Flow<List<Session>>
+
+    @Query("SELECT * FROM session WHERE inTrash = 1 ORDER BY lastAccessMillis DESC")
+    fun getTrashedSessions(): Flow<List<Session>>
+
     @Upsert
     suspend fun upsertTag(tag: Tag)
 

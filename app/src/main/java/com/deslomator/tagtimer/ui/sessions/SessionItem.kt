@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui
+package com.deslomator.tagtimer.ui.sessions
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
