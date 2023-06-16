@@ -32,13 +32,6 @@ fun SessionsScreenContent(
             session = state.currentSession
         )
     }
-    /*if (state.showSessionDeleteDialog) {
-        ConfirmationDialog(
-            title = stringResource(id = R.string.delete_session),
-            onAccept = { onAction(AppAction.AcceptDeleteSessionClicked) },
-            onCancel = { onAction(AppAction.DismissDeleteSessionDialog) }
-        )
-    }*/
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -55,14 +48,13 @@ fun SessionsScreenContent(
             ) { session ->
                 SwipeableListItem(
                     dismissDirection = DismissDirection.StartToEnd,
-                    onDismiss = { onAction(SessionsScreenAction.DeleteSessionSwiped(session)) },
+                    onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
                     dismissColor = Pink80
                 ) { dismissState ->
                     SessionItem(
                         session = session,
                         onItemClick = { onAction(SessionsScreenAction.SessionItemClicked(session)) },
                         onEditClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
-//                                onDeleteClick = { onAction(AppAction.DeleteSessionSwiped(session)) },
                         shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 20.dp else 10.dp
                         ).value

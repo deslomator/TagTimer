@@ -24,7 +24,7 @@ fun SessionsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    if (state.showSessionDeleteSnackbar) {
+    if (state.showSessionTrashSnackbar) {
         LaunchedEffect(key1 = snackbarHostState) {
             Log.d(TAG, "launching snackbar")
             val result = snackbarHostState.showSnackbar(
@@ -36,7 +36,7 @@ fun SessionsScreen(
                 SnackbarResult.ActionPerformed -> {}
             }
             Log.d(TAG, "hiding snackbar")
-            onAction(SessionsScreenAction.HideSessionDeletedSnackbar)
+            onAction(SessionsScreenAction.HideSessionTrashSnackbar)
         }
     }
     Scaffold(
@@ -56,7 +56,7 @@ fun SessionsScreen(
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-        )
+    )
 }
 
 private const val TAG = "SessionsScreen"

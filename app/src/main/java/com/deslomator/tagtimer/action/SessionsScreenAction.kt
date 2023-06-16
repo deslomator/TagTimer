@@ -10,8 +10,8 @@ sealed interface SessionsScreenAction {
     object DismissSessionDialog: SessionsScreenAction
     data class UpdateSessionName(val name: String): SessionsScreenAction
     data class UpdateSessionColor(val color: Int): SessionsScreenAction
-    data class DeleteSessionSwiped(val session: Session): SessionsScreenAction
-    object HideSessionDeletedSnackbar: SessionsScreenAction
+    data class TrashSessionSwiped(val session: Session): SessionsScreenAction
+    object HideSessionTrashSnackbar: SessionsScreenAction
     data class SessionItemClicked(val session: Session): SessionsScreenAction
     object ManageTagsClicked: SessionsScreenAction
 }

@@ -1,15 +1,12 @@
 package com.deslomator.tagtimer.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.state.AppState
 import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.ui.Screen
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -97,15 +94,14 @@ class SessionsScreenViewModel(
             is SessionsScreenAction.UpdateSessionColor -> {
                 _state.update { it.copy(sessionColor = action.color) }
             }
-            is SessionsScreenAction.DeleteSessionSwiped -> {
-                _state.update { it.copy(showSessionDeleteSnackbar = true) }
+            is SessionsScreenAction.TrashSessionSwiped -> {
                 viewModelScope.launch {
                     appDao.deleteSession(action.session)
                     appDao.deleteEventsForSession(action.session.id)
                 }
             }
-            is SessionsScreenAction.HideSessionDeletedSnackbar -> {
-                _state.update { it.copy(showSessionDeleteSnackbar = false) }
+            is SessionsScreenAction.HideSessionTrashSnackbar -> {
+                _state.update { it.copy(showSessionTrashSnackbar = false) }
             }
             is SessionsScreenAction.SessionItemClicked -> {
                 //TODO
