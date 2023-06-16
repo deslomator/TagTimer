@@ -96,9 +96,19 @@ class SessionsScreenViewModel(
             }
             is SessionsScreenAction.TrashSessionSwiped -> {
                 viewModelScope.launch {
-                    appDao.deleteSession(action.session)
-                    appDao.deleteEventsForSession(action.session.id)
+                    val trashed = Session(
+                        lastAccessMillis = action.session.lastAccessMillis,
+                        name = action.session.name,
+                        color = action.session.color,
+                        startTimeMillis = action.session.startTimeMillis,
+                        endTimeMillis = action.session.endTimeMillis,
+                        inTrash = true,
+                        id = action.session.id,
+                    )
+                    appDao.upsertSession(trashed)
+//                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
+                _state.update { it.copy(showSessionTrashSnackbar = true) }
             }
             is SessionsScreenAction.HideSessionTrashSnackbar -> {
                 _state.update { it.copy(showSessionTrashSnackbar = false) }
