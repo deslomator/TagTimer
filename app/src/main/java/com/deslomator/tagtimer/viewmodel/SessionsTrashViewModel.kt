@@ -30,7 +30,10 @@ class SessionsTrashViewModel(
     fun onAction(action: SessionsTrashAction) {
         when(action) {
             is SessionsTrashAction.DeleteSessionClicked -> {
-                viewModelScope.launch { appDao.deleteSession(action.session) }
+                viewModelScope.launch {
+                    appDao.deleteSession(action.session)
+                    appDao.deleteEventsForSession(action.session.id)
+                }
             }
         }
     }
