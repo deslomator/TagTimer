@@ -15,7 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.dao.SessionsDatabase
-import com.deslomator.tagtimer.navigation.AppNavHost
+import com.deslomator.tagtimer.ui.main.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel

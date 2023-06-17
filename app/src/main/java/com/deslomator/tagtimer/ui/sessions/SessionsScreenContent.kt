@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
@@ -26,6 +25,7 @@ import com.deslomator.tagtimer.ui.theme.Pink80
 @Composable
 fun SessionsScreenContent(
     paddingValues: PaddingValues,
+    outerNavHostController: NavHostController,
     state: SessionsScreenState,
     onAction: (SessionsScreenAction) -> Unit
 ) {
@@ -57,7 +57,7 @@ fun SessionsScreenContent(
                 ) { dismissState ->
                     MyListItem(
                         session = session,
-                        onItemClick = { onAction(SessionsScreenAction.SessionItemClicked(session)) },
+                        onItemClick = { outerNavHostController.navigate("hello") },
                         trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
                         shadowElevation = animateDpAsState(

@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsScreenAction
@@ -71,7 +72,6 @@ class SessionsScreenViewModel @Inject constructor(
                     color = state.value.sessionColor,
                     lastAccessMillis = System.currentTimeMillis()
                 )
-//                Log.d(TAG, "editing session, new id: ${session.id}")
                 _state.update { it.copy(
                     showSessionDialog = false,
                     isEditingSession = false,
@@ -114,12 +114,6 @@ class SessionsScreenViewModel @Inject constructor(
             }
             is SessionsScreenAction.HideSnackbar -> {
                 _state.update { it.copy(showSnackbar = false) }
-            }
-            is SessionsScreenAction.SessionItemClicked -> {
-                //TODO
-            }
-            is SessionsScreenAction.ManageTagsClicked -> {
-                //TODO
             }
         }
     }
