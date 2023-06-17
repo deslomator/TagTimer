@@ -14,7 +14,7 @@ import com.deslomator.tagtimer.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SessionsTopBar(
+fun MainTopBar(
     backStackEntry: State<NavBackStackEntry?>,
     onNewSessionClick: () -> Unit,
     onNewTagClick: () -> Unit,

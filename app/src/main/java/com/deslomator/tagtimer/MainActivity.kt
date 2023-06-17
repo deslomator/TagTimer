@@ -19,6 +19,7 @@ import com.deslomator.tagtimer.ui.main.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel
+import com.deslomator.tagtimer.viewmodel.TagsScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
@@ -45,20 +46,22 @@ class MainActivity : ComponentActivity() {
                 LaunchedEffect(Unit) {
                     withContext(Dispatchers.IO) { cleanOrphans(db.appDao) }
                 }
-//                val appViewModel = viewModel<AppViewModel>()
                 val sessionsScreenViewModel = viewModel<SessionsScreenViewModel>()
+                val tagsScreenViewModel = viewModel<TagsScreenViewModel>()
                 val sessionsTrashViewModel = viewModel<SessionsTrashViewModel>()
-                // A surface container using the 'background' color from the theme
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    val appState by appViewModel.state.collectAsState()
                     val sessionsScreenState by sessionsScreenViewModel.state.collectAsState()
+                    val tagsScreenState by tagsScreenViewModel.state.collectAsState()
                     val sessionsTrashState by sessionsTrashViewModel.state.collectAsState()
                     AppNavHost(
                         sessionsScreenState = sessionsScreenState,
                         onSessionsAction = sessionsScreenViewModel::onAction,
+                        tagsScreenState = tagsScreenState,
+                        onTagsAction = tagsScreenViewModel::onAction,
                         sessionsTrashState = sessionsTrashState,
                         onSessionsTrashAction = sessionsTrashViewModel::onAction
                     )

@@ -15,28 +15,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.state.TagsScreenState
 import com.deslomator.tagtimer.ui.ColorPicker
 
 @Composable
 fun TagDialog(
-    state: SessionsScreenState,
-    onAction: (SessionsScreenAction) -> Unit,
-    session: Session
+    state: TagsScreenState,
+    onAction: (TagsScreenAction) -> Unit,
+    tag: Tag
 ) {
 
     AlertDialog(
         modifier = Modifier.fillMaxWidth(.8f),
         properties = DialogProperties(usePlatformDefaultWidth = false),
         onDismissRequest = {
-            onAction(SessionsScreenAction.DismissSessionDialog)
+            onAction(TagsScreenAction.DismissTagDialog)
         },
         title = {
             Text(
-                text = stringResource(id = if(state.isEditingSession) R.string.edit_session
-                else R.string.new_session)
+                text = stringResource(id = if(state.isEditingTag) R.string.edit_tag
+                else R.string.new_tag)
             )
         },
         text = {
@@ -44,20 +44,25 @@ fun TagDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TextField(
-                    value = state.sessionName,
-                    onValueChange = { onAction(SessionsScreenAction.UpdateSessionName(it)) },
-                    placeholder = { Text(text = stringResource(id = R.string.name)) }
+                    value = state.tagCategory,
+                    onValueChange = { onAction(TagsScreenAction.UpdateTagCategory(it)) },
+                    placeholder = { Text(text = stringResource(id = R.string.category)) }
+                )
+                TextField(
+                    value = state.tagLabel,
+                    onValueChange = { onAction(TagsScreenAction.UpdateTagLabel(it)) },
+                    placeholder = { Text(text = stringResource(id = R.string.label)) }
                 )
                 ColorPicker(
-                    selectedColor = Color(state.sessionColor),
-                    onItemClick = { onAction(SessionsScreenAction.UpdateSessionColor(it)) }
+                    selectedColor = Color(state.tagColor),
+                    onItemClick = { onAction(TagsScreenAction.UpdateTagColor(it)) }
                 )
             }
         },
         confirmButton = {
             TextButton(
                 onClick = {
-                    onAction(SessionsScreenAction.AcceptSessionEditionClicked(session))
+                    onAction(TagsScreenAction.AcceptTagEditionClicked(tag))
                 }
             ) {
                 Text(stringResource(id = R.string.accept))
@@ -66,7 +71,7 @@ fun TagDialog(
         dismissButton = {
             TextButton(
                 onClick = {
-                    onAction(SessionsScreenAction.DismissSessionDialog)
+                    onAction(TagsScreenAction.DismissTagDialog)
                 }
             ) {
                 Text(stringResource(id = R.string.cancel))
@@ -79,8 +84,8 @@ fun TagDialog(
 @Preview
 fun TagDialogPreview() {
     TagDialog(
-        state = SessionsScreenState(sessionColor = 0xff4477),
+        state = TagsScreenState(tagColor = 0xff4477),
         onAction = {},
-        session = Session()
+        tag = Tag()
     )
 }

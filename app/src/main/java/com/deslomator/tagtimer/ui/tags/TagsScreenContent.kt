@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.state.TagsScreenState
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
 
@@ -25,14 +25,14 @@ import com.deslomator.tagtimer.ui.theme.Pink80
 fun TagsScreenContent(
     paddingValues: PaddingValues,
     outerNavHostController: NavHostController,
-    state: SessionsScreenState,
-    onAction: (SessionsScreenAction) -> Unit
+    state: TagsScreenState,
+    onAction: (TagsScreenAction) -> Unit
 ) {
-    if (state.showSessionDialog) {
+    if (state.showTagDialog) {
         TagDialog(
             state = state,
             onAction = onAction,
-            session = state.currentSession
+            tag = state.currentTag
         )
     }
     Box(
@@ -46,19 +46,19 @@ fun TagsScreenContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                items = state.sessions,
+                items = state.tags,
                 key = { it.id }
-            ) { session ->
+            ) { tag ->
                 SwipeableListItem(
                     dismissDirection = DismissDirection.StartToEnd,
-                    onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
+                    onDismiss = { onAction(TagsScreenAction.TrashTagSwiped(tag)) },
                     dismissColor = Pink80
                 ) { dismissState ->
                     TagListItem(
-                        session = session,
+                        tag = tag,
                         onItemClick = { outerNavHostController.navigate("hello") },
                         trailingIcon = R.drawable.baseline_edit_24,
-                        onTrailingClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
+                        onTrailingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
                         shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 20.dp else 10.dp
                         ).value

@@ -10,8 +10,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.SessionsTrashAction
+import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TagsScreenState
 
 @Composable
 fun AppNavHost(
@@ -19,6 +21,8 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     sessionsScreenState: SessionsScreenState,
     onSessionsAction: (SessionsScreenAction) -> Unit,
+    tagsScreenState: TagsScreenState,
+    onTagsAction: (TagsScreenAction) -> Unit,
     sessionsTrashState: SessionsTrashState,
     onSessionsTrashAction: (SessionsTrashAction) -> Unit,
 ) {
@@ -34,6 +38,8 @@ fun AppNavHost(
                 outerNavHostController = navController,
                 sessionsScreenState = sessionsScreenState,
                 onSessionsAction = onSessionsAction,
+                tagsScreenState = tagsScreenState,
+                onTagsAction = onTagsAction,
                 sessionsTrashState = sessionsTrashState,
                 onSessionsTrashAction = onSessionsTrashAction
             )

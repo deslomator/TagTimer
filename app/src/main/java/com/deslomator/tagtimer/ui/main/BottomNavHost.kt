@@ -8,10 +8,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.SessionsTrashAction
+import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TagsScreenState
 import com.deslomator.tagtimer.ui.sessions.SessionsScreenContent
 import com.deslomator.tagtimer.ui.sessionsTrash.SessionsTrashContent
+import com.deslomator.tagtimer.ui.tags.TagsScreenContent
 
 @Composable
 fun BottomNavHost(
@@ -21,6 +24,8 @@ fun BottomNavHost(
     innerNavHostController: NavHostController,
     sessionsScreenState: SessionsScreenState,
     onSessionsAction: (SessionsScreenAction) -> Unit,
+    tagsScreenState: TagsScreenState,
+    onTagsAction: (TagsScreenAction) -> Unit,
     sessionsTrashState: SessionsTrashState,
     onSessionsTrashAction: (SessionsTrashAction) -> Unit,
 ) {
@@ -38,11 +43,11 @@ fun BottomNavHost(
             )
         }
         composable(BottomNavigationScreen.Tags.route) {
-            SessionsScreenContent(
+            TagsScreenContent(
                 paddingValues = paddingValues,
                 outerNavHostController = outerNavHostController,
-                state = sessionsScreenState,
-                onAction = onSessionsAction
+                state = tagsScreenState,
+                onAction = onTagsAction
             )
         }
         composable(BottomNavigationScreen.Trash.route) {

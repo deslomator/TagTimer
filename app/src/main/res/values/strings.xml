@@ -17,4 +17,7 @@
     <string name="tags">Tags</string>
     <string name="trash">Trash</string>
     <string name="new_tag">New Tag</string>
+    <string name="edit_tag">Edit Tag</string>
+    <string name="label">Label</string>
+    <string name="category">Category</string>
 </resources>

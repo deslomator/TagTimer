@@ -14,14 +14,18 @@ import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.SessionsTrashAction
+import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TagsScreenState
 
 @Composable
 fun MainScreen(
     outerNavHostController: NavHostController,
     sessionsScreenState: SessionsScreenState,
     onSessionsAction: (SessionsScreenAction) -> Unit,
+    tagsScreenState: TagsScreenState,
+    onTagsAction: (TagsScreenAction) -> Unit,
     sessionsTrashState: SessionsTrashState,
     onSessionsTrashAction: (SessionsTrashAction) -> Unit
 ) {
@@ -52,10 +56,10 @@ fun MainScreen(
     }
     Scaffold(
         topBar = {
-            SessionsTopBar(
+            MainTopBar(
                 backStackEntry = backStackEntry,
                 onNewSessionClick = { onSessionsAction(SessionsScreenAction.AddNewSessionClicked) },
-                onNewTagClick = { /*TODO*/ },
+                onNewTagClick = { onTagsAction(TagsScreenAction.AddNewTagClicked) },
             )
         },
         bottomBar = {
@@ -71,6 +75,8 @@ fun MainScreen(
                 innerNavHostController = innerNavHostController,
                 sessionsScreenState = sessionsScreenState,
                 onSessionsAction = onSessionsAction,
+                tagsScreenState = tagsScreenState,
+                onTagsAction = onTagsAction,
                 sessionsTrashState = sessionsTrashState,
                 onSessionsTrashAction = onSessionsTrashAction
             )

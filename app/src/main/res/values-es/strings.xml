@@ -17,4 +17,7 @@
     <string name="tags">Etiquetas</string>
     <string name="trash">Papelera</string>
     <string name="new_tag">Nueva Etiqueta</string>
+    <string name="edit_tag">Editar Etiqueta</string>
+    <string name="label">Nombre</string>
+    <string name="category">Categoría</string>
 </resources>

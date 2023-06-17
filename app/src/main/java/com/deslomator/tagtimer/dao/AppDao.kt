@@ -50,6 +50,10 @@ interface AppDao {
 
     @Query("SELECT * FROM tag ORDER BY category, label ASC")
     fun getTags(): Flow<List<Tag>>
+    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY label ASC")
+    fun getActiveTags(): Flow<List<Tag>>
+    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label ASC")
+    fun getTrashedTags(): Flow<List<Tag>>
 
     @Upsert
     suspend fun upsertUsedTag(usedTag: UsedTag)

@@ -19,29 +19,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.model.Tag
 
 @Composable
 fun TagListItem(
-    session: Session,
+    tag: Tag,
     leadingIcon: Int? = null,
-    onLeadingClick: ((Session) -> Unit)? = null,
-    onItemClick: ((Session) -> Unit)? = null,
+    onLeadingClick: ((Tag) -> Unit)? = null,
+    onItemClick: ((Tag) -> Unit)? = null,
     trailingIcon: Int? = null,
-    onTrailingClick: ((Session) -> Unit)? = null,
+    onTrailingClick: ((Tag) -> Unit)? = null,
     shadowElevation: Dp = 10.dp
 ) {
     ListItem(
         modifier = Modifier
-            .clickable { onItemClick?.invoke(session) },
+            .clickable { onItemClick?.invoke(tag) },
         shadowElevation = shadowElevation,
-        headlineContent = { Text(session.name) },
+        headlineContent = { Text(tag.label) },
         leadingContent = {
             Row {
                 leadingIcon?.let {
                     IconButton(
-                        onClick = { onLeadingClick?.invoke(session) },
+                        onClick = { onLeadingClick?.invoke(tag) },
                     ) {
                         Icon(
                             painter = painterResource(id = it),
@@ -50,7 +49,7 @@ fun TagListItem(
                     }
                 }
                 Image(
-                    painter = ColorPainter(Color(session.color)),
+                    painter = ColorPainter(Color(tag.color)),
                     contentDescription = "",
                     modifier = Modifier
                         .size(42.dp)
@@ -59,11 +58,11 @@ fun TagListItem(
                 )
             }
         },
-        supportingContent = { Text(session.lastAccessMillis.toDateTime()) },
+        supportingContent = { Text(tag.category) },
         trailingContent = {
             trailingIcon?.let {
                 IconButton(
-                    onClick = { onTrailingClick?.invoke(session) },
+                    onClick = { onTrailingClick?.invoke(tag) },
                 ) {
                     Icon(
                         painter = painterResource(id = it),
@@ -79,10 +78,10 @@ fun TagListItem(
 @Preview
 fun TagListItemPreview() {
     TagListItem(
-        session = Session(
-            name = "Session in Gym",
+        tag = Tag(
+            label = "Session in Gym",
             color = -33929,
-            lastAccessMillis = 287539475785793
+            category = " category287539475785793"
         ),
         onItemClick = {},
         onLeadingClick = {},
