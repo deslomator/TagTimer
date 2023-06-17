@@ -33,9 +33,6 @@ interface AppDao {
     @Delete
     suspend fun deleteSession(session: Session)
 
-//    @Query("SELECT * FROM session WHERE id = :sessionId")
-//    fun getSession(sessionId: Int): Flow<Session>
-
     @Query("SELECT * FROM session ORDER BY lastAccessMillis DESC")
     fun getSessions(): Flow<List<Session>>
 
@@ -65,5 +62,13 @@ interface AppDao {
             "WHERE usedtag.sessionId = :sessionId " +
             "ORDER BY tag.category, tag.label ASC")
     fun getUsedTagsForSession(sessionId: Int): Flow<List<UsedTag>>
+
+    @Query("DELETE FROM event " +
+            "WHERE NOT EXISTS (SELECT NULL FROM session WHERE event.sessionId = session.id)")
+    suspend fun clearOrphanEvents()
+
+    @Query("DELETE FROM usedtag " +
+            "WHERE NOT EXISTS (SELECT NULL FROM session WHERE usedtag.sessionId = session.id)")
+    suspend fun clearOrphanUsedTags()
 
 }
