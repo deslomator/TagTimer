@@ -37,6 +37,14 @@ fun BottomNavHost(
                 onAction = onSessionsAction
             )
         }
+        composable(BottomNavigationScreen.Tags.route) {
+            SessionsScreenContent(
+                paddingValues = paddingValues,
+                outerNavHostController = outerNavHostController,
+                state = sessionsScreenState,
+                onAction = onSessionsAction
+            )
+        }
         composable(BottomNavigationScreen.Trash.route) {
             SessionsTrashContent(
                 paddingValues = paddingValues,

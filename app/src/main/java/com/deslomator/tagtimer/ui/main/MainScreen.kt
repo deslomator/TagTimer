@@ -16,7 +16,6 @@ import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.SessionsTrashAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
-import com.deslomator.tagtimer.ui.sessions.SessionsTopBar
 
 @Composable
 fun MainScreen(

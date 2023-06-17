@@ -20,7 +20,7 @@ fun MainNavigationBar(
     NavigationBar {
         val tabItems = listOf(
             BottomNavigationScreen.Sessions,
-//        BottomNavigationScreens.Tags,
+            BottomNavigationScreen.Tags,
             BottomNavigationScreen.Trash,
         )
         tabItems.forEach { tab ->
