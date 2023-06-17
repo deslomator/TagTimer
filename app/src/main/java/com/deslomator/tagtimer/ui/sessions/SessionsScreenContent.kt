@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.ui.MyListItem
@@ -57,7 +58,7 @@ fun SessionsScreenContent(
                     MyListItem(
                         session = session,
                         onItemClick = { onAction(SessionsScreenAction.SessionItemClicked(session)) },
-                        trailingIcon = Icons.Filled.Edit,
+                        trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
                         shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 20.dp else 10.dp

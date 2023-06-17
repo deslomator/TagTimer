@@ -12,17 +12,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.dao.SessionsDatabase
-import com.deslomator.tagtimer.ui.Screen
-import com.deslomator.tagtimer.ui.sessions.SessionsScreen
-import com.deslomator.tagtimer.ui.sessionsTrash.SessionsTrashScreen
+import com.deslomator.tagtimer.navigation.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
-import com.deslomator.tagtimer.viewmodel.AppViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -62,25 +56,12 @@ class MainActivity : ComponentActivity() {
 //                    val appState by appViewModel.state.collectAsState()
                     val sessionsScreenState by sessionsScreenViewModel.state.collectAsState()
                     val sessionsTrashState by sessionsTrashViewModel.state.collectAsState()
-
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = "sessions") {
-                        composable("sessions") {
-                            SessionsScreen(
-//                                appViewModel::onAction,
-                                navController,
-                                sessionsScreenState,
-                                sessionsScreenViewModel::onAction
-                            )
-                        }
-                        composable("sessionsTrash") {
-                            SessionsTrashScreen(
-//                                appViewModel::onAction,
-                                navController,
-                                sessionsTrashState,
-                                sessionsTrashViewModel::onAction
-                            ) }
-                    }
+                    AppNavHost(
+                        sessionsScreenState = sessionsScreenState,
+                        onSessionsAction = sessionsScreenViewModel::onAction,
+                        sessionsTrashState = sessionsTrashState,
+                        onSessionsTrashAction = sessionsTrashViewModel::onAction
+                    )
                 }
             }
         }

@@ -13,4 +13,7 @@
     <string name="go_back">volver</string>
     <string name="session_deleted">Sesión eliminada permanentemente</string>
     <string name="session_restored">Sesión restaurada</string>
+    <string name="sessions">Sesiones</string>
+    <string name="tags">Etiquetas</string>
+    <string name="trash">Papelera</string>
 </resources>

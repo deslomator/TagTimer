@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -25,10 +25,10 @@ import com.deslomator.tagtimer.toDateTime
 @Composable
 fun MyListItem(
     session: Session,
-    leadingIcon: ImageVector? = null,
+    leadingIcon: Int? = null,
     onLeadingClick: ((Session) -> Unit)? = null,
     onItemClick: ((Session) -> Unit)? = null,
-    trailingIcon: ImageVector? = null,
+    trailingIcon: Int? = null,
     onTrailingClick: ((Session) -> Unit)? = null,
     shadowElevation: Dp = 10.dp
 ) {
@@ -44,7 +44,7 @@ fun MyListItem(
                         onClick = { onLeadingClick?.invoke(session) },
                     ) {
                         Icon(
-                            imageVector = it,
+                            painter = painterResource(id = it),
                             contentDescription = "Edit",
                         )
                     }
@@ -66,7 +66,7 @@ fun MyListItem(
                     onClick = { onTrailingClick?.invoke(session) },
                 ) {
                     Icon(
-                        imageVector = it,
+                        painter = painterResource(id = it),
                         contentDescription = "Edit",
                     )
                 }
@@ -89,3 +89,4 @@ fun MyListItemPreview() {
         onTrailingClick = {},
     )
 }
+
