@@ -1,28 +1,31 @@
 package com.deslomator.tagtimer.ui.tags
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
 
 @Composable
 fun TagListItem(
+    modifier: Modifier = Modifier,
+    colors: ListItemColors = ListItemDefaults.colors(),
     tag: Tag,
     leadingIcon: Int? = null,
     onLeadingClick: ((Tag) -> Unit)? = null,
@@ -32,9 +35,10 @@ fun TagListItem(
     shadowElevation: Dp = 10.dp
 ) {
     ListItem(
-        modifier = Modifier
+        modifier = modifier
             .clickable { onItemClick?.invoke(tag) },
         shadowElevation = shadowElevation,
+        colors = colors,
         headlineContent = { Text(tag.label) },
         leadingContent = {
             Row {
@@ -43,19 +47,12 @@ fun TagListItem(
                         onClick = { onLeadingClick?.invoke(tag) },
                     ) {
                         Icon(
+                            modifier = Modifier.size(36.dp),
                             painter = painterResource(id = it),
                             contentDescription = "Edit",
                         )
                     }
                 }
-                Image(
-                    painter = ColorPainter(Color(tag.color)),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(42.dp)
-                        .clip(CircleShape)
-                        .border(1.dp, Color.Gray, CircleShape)
-                )
             }
         },
         supportingContent = { Text(tag.category) },
@@ -65,6 +62,7 @@ fun TagListItem(
                     onClick = { onTrailingClick?.invoke(tag) },
                 ) {
                     Icon(
+                        modifier = Modifier.size(36.dp),
                         painter = painterResource(id = it),
                         contentDescription = "Edit",
                     )
@@ -79,10 +77,11 @@ fun TagListItem(
 fun TagListItemPreview() {
     TagListItem(
         tag = Tag(
-            label = "Session in Gym",
+            label = "Some Tag",
             color = -33929,
-            category = " category287539475785793"
+            category = " category 287539475785793"
         ),
+        trailingIcon = R.drawable.baseline_edit_24,
         onItemClick = {},
         onLeadingClick = {},
         onTrailingClick = {},

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,6 +15,8 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTrashAction
 import com.deslomator.tagtimer.state.SessionsTrashState
 import com.deslomator.tagtimer.ui.MyListItem
+import com.deslomator.tagtimer.ui.theme.Pink80
+import com.deslomator.tagtimer.ui.theme.SoftGreen
 
 @Composable
 fun SessionsTrashContent(
@@ -36,6 +39,10 @@ fun SessionsTrashContent(
                 key = { it.id }
             ) { session ->
                 MyListItem(
+                    colors = ListItemDefaults.colors(
+                        leadingIconColor = SoftGreen,
+                        trailingIconColor = Pink80,
+                    ),
                     session = session,
                     leadingIcon = R.drawable.baseline_restore_from_trash_24,
                     onLeadingClick = { onAction(SessionsTrashAction.RestoreSessionClicked(session)) },

@@ -9,12 +9,16 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -24,6 +28,8 @@ import com.deslomator.tagtimer.toDateTime
 
 @Composable
 fun MyListItem(
+    modifier: Modifier = Modifier,
+    colors: ListItemColors = ListItemDefaults.colors(),
     session: Session,
     leadingIcon: Int? = null,
     onLeadingClick: ((Session) -> Unit)? = null,
@@ -33,8 +39,9 @@ fun MyListItem(
     shadowElevation: Dp = 10.dp
 ) {
     ListItem(
-        modifier = Modifier
+        modifier = modifier
             .clickable { onItemClick?.invoke(session) },
+        colors = colors,
         shadowElevation = shadowElevation,
         headlineContent = { Text(session.name) },
         leadingContent = {
@@ -44,6 +51,7 @@ fun MyListItem(
                         onClick = { onLeadingClick?.invoke(session) },
                     ) {
                         Icon(
+                            modifier = Modifier.size(36.dp),
                             painter = painterResource(id = it),
                             contentDescription = "Edit",
                         )
@@ -66,6 +74,7 @@ fun MyListItem(
                     onClick = { onTrailingClick?.invoke(session) },
                 ) {
                     Icon(
+                        modifier = Modifier.size(36.dp),
                         painter = painterResource(id = it),
                         contentDescription = "Edit",
                     )

@@ -44,14 +44,14 @@ fun TagDialog(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 TextField(
-                    value = state.tagCategory,
-                    onValueChange = { onAction(TagsScreenAction.UpdateTagCategory(it)) },
-                    placeholder = { Text(text = stringResource(id = R.string.category)) }
-                )
-                TextField(
                     value = state.tagLabel,
                     onValueChange = { onAction(TagsScreenAction.UpdateTagLabel(it)) },
                     placeholder = { Text(text = stringResource(id = R.string.label)) }
+                )
+                TextField(
+                    value = state.tagCategory,
+                    onValueChange = { onAction(TagsScreenAction.UpdateTagCategory(it)) },
+                    placeholder = { Text(text = stringResource(id = R.string.category)) }
                 )
                 ColorPicker(
                     selectedColor = Color(state.tagColor),
