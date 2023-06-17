@@ -16,4 +16,5 @@
     <string name="sessions">Sesiones</string>
     <string name="tags">Etiquetas</string>
     <string name="trash">Papelera</string>
+    <string name="new_tag">Nueva Etiqueta</string>
 </resources>

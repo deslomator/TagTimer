@@ -56,6 +56,7 @@ fun MainScreen(
             SessionsTopBar(
                 backStackEntry = backStackEntry,
                 onNewSessionClick = { onSessionsAction(SessionsScreenAction.AddNewSessionClicked) },
+                onNewTagClick = { /*TODO*/ },
             )
         },
         bottomBar = {

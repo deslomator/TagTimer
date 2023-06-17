@@ -11,23 +11,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.ui.main.BottomNavigationScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionsTopBar(
     backStackEntry: State<NavBackStackEntry?>,
     onNewSessionClick: () -> Unit,
+    onNewTagClick: () -> Unit,
 ) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
         actions = {
-            IconButton(
-                onClick = onNewSessionClick
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_playlist_add_24),
-                    contentDescription = stringResource(id = R.string.new_session)
-                )
+            if (backStackEntry.value?.destination?.route == BottomNavigationScreen.Sessions.route) {
+                IconButton(
+                    onClick = onNewSessionClick
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_playlist_add_24),
+                        contentDescription = stringResource(id = R.string.new_session)
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = onNewTagClick
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_label_24),
+                        contentDescription = stringResource(id = R.string.new_tag)
+                    )
+                }
             }
         }
     )
