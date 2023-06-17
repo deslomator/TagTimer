@@ -8,14 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.deslomator.tagtimer.action.AppAction
+import androidx.navigation.NavController
 import com.deslomator.tagtimer.action.SessionsTrashAction
 import com.deslomator.tagtimer.state.SessionsTrashState
-import com.deslomator.tagtimer.ui.Screen
 
 @Composable
 fun SessionsTrashScreen(
-    onAppAction: (AppAction) -> Unit,
+    navController: NavController,
     state: SessionsTrashState,
     onAction: (SessionsTrashAction) -> Unit
 ) {
@@ -36,7 +35,9 @@ fun SessionsTrashScreen(
             SessionsTrashTopBar(
                 onBackClick = {
                     onAction(SessionsTrashAction.HideSnackbar)
-                    onAppAction(AppAction.activateScreen(Screen.SESSIONS))
+                    navController.navigate("sessions") {
+                        popUpTo("sessions")
+                    }
                 },
             )
         },

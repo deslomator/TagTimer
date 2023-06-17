@@ -4,20 +4,18 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.AppAction
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.ui.Screen
 
 @Composable
 fun SessionsScreen(
-    onAppAction: (AppAction) -> Unit,
+    navController: NavController,
     state: SessionsScreenState,
     onAction: (SessionsScreenAction) -> Unit,
 ) {
@@ -38,8 +36,8 @@ fun SessionsScreen(
             onNewSessionClick = { onAction(SessionsScreenAction.AddNewSessionClicked) },
             onManageTagsClick = { onAction(SessionsScreenAction.ManageTagsClicked) },
             onGoToTrashClick = {
-                onAppAction(AppAction.activateScreen(Screen.SESSIONS_TRASH))
                 onAction(SessionsScreenAction.HideSnackbar)
+                navController.navigate("sessionsTrash")
             },
         ) },
         content = { paddingValues ->

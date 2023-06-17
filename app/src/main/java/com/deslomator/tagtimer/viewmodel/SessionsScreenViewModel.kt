@@ -6,14 +6,17 @@ import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.SessionsScreenState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SessionsScreenViewModel(
+@HiltViewModel
+class SessionsScreenViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
