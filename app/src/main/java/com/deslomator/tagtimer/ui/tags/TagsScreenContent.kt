@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.tags
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
@@ -62,9 +64,13 @@ fun TagsScreenContent(
                 ) { dismissState ->
                     TagListItem(
                         modifier = Modifier
+                            .border(1.dp, Color.LightGray, RoundedCornerShape(20.dp))
                             .clip(RoundedCornerShape(20.dp)),
                         colors = ListItemDefaults.colors(
-                            containerColor = Color(tag.color)
+                            containerColor = Color(tag.color),
+                            trailingIconColor = Color.LightGray,
+                            headlineColor = Color.LightGray,
+                            supportingColor = Color.LightGray,
                         ),
                         tag = tag,
                         onItemClick = { outerNavHostController.navigate("hello") },

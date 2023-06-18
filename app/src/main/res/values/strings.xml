@@ -20,4 +20,5 @@
     <string name="edit_tag">Edit Tag</string>
     <string name="label">Label</string>
     <string name="category">Category</string>
+    <string name="tag_sent_to_trash">Tag sent to Trash</string>
 </resources>

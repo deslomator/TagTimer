@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTrashAction
@@ -42,12 +43,14 @@ fun SessionsTrashContent(
                     colors = ListItemDefaults.colors(
                         leadingIconColor = SoftGreen,
                         trailingIconColor = Pink80,
+                        containerColor = Color(session.color).copy(alpha = .16f)
                     ),
                     session = session,
                     leadingIcon = R.drawable.baseline_restore_from_trash_24,
                     onLeadingClick = { onAction(SessionsTrashAction.RestoreSessionClicked(session)) },
                     trailingIcon = R.drawable.baseline_delete_forever_24,
                     onTrailingClick = { onAction(SessionsTrashAction.DeleteSessionClicked(session)) },
+                    shadowElevation = 0.dp
                 )
             }
         }

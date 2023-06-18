@@ -20,4 +20,5 @@
     <string name="edit_tag">Editar Etiqueta</string>
     <string name="label">Nombre</string>
     <string name="category">Categoría</string>
+    <string name="tag_sent_to_trash">Etiqueta enviada a la Papelera</string>
 </resources>

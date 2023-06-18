@@ -21,6 +21,8 @@ object AppModule {
         Room.databaseBuilder(
             appContext,
             SessionsDatabase::class.java,
-            "sessions.db"
+            DATABASE_NAME
         ).build().appDao
 }
+
+private const val DATABASE_NAME = "sessions.db"

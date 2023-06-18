@@ -44,6 +44,16 @@ fun MainScreen(
             onSessionsAction(SessionsScreenAction.HideSnackbar)
         }
     }
+    if (tagsScreenState.showSnackbar) {
+        LaunchedEffect(key1 = snackbarHostState) {
+//            Log.d(TAG, "launching snackbar")
+            snackbarHostState.showSnackbar(
+                message = context.getString(R.string.tag_sent_to_trash),
+                duration = SnackbarDuration.Short
+            )
+            onTagsAction(TagsScreenAction.HideSnackbar)
+        }
+    }
     if (sessionsTrashState.showSnackBar) {
         LaunchedEffect(key1 = snackbarHostState) {
 //            Log.d(TAG, "launching snackbar")

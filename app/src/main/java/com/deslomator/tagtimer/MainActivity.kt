@@ -2,6 +2,7 @@ package com.deslomator.tagtimer
 
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import com.deslomator.tagtimer.viewmodel.TagsScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 @HiltAndroidApp
@@ -76,7 +78,9 @@ class MainActivity : ComponentActivity() {
 }
 
 private suspend fun cleanOrphans(dao: AppDao) {
-    dao.clearOrphanEvents()
-    dao.clearOrphanUsedTags()
-//    Log.d("MainActivity", "after clean orphans")
+    delay(4000)
+    val oe = dao.clearOrphanEvents()
+    val out = dao.clearOrphanUsedTags()
+    Log.d("MainActivity", "dao.clearOrphanEvents(): $oe")
+    Log.d("MainActivity", "dao.clearOrphanUsedTags(): $out")
 }

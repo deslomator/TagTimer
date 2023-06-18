@@ -1,6 +1,8 @@
 package com.deslomator.tagtimer.ui.sessions
 
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,8 +12,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
@@ -55,15 +60,31 @@ fun SessionsScreenContent(
                     onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
                     dismissColor = Pink80
                 ) { dismissState ->
-                    MyListItem(
-                        session = session,
-                        onItemClick = { outerNavHostController.navigate("hello") },
-                        trailingIcon = R.drawable.baseline_edit_24,
-                        onTrailingClick = { onAction(SessionsScreenAction.EditSessionClicked(session)) },
-                        shadowElevation = animateDpAsState(
-                            if (dismissState.dismissDirection != null) 20.dp else 10.dp
-                        ).value
-                    )
+                    Box(
+                        modifier = Modifier.background(Color.White)
+                    ) {
+                        MyListItem(
+                            colors = ListItemDefaults.colors(
+                                leadingIconColor = Color(session.color),
+                                trailingIconColor = Color(session.color),
+                                containerColor = Color(session.color).copy(alpha = .15f),
+                            ),
+                            session = session,
+                            leadingIcon = R.drawable.tagtimer_icon_big,
+                            onItemClick = { outerNavHostController.navigate("hello") },
+                            trailingIcon = R.drawable.baseline_edit_24,
+                            onTrailingClick = {
+                                onAction(
+                                    SessionsScreenAction.EditSessionClicked(
+                                        session
+                                    )
+                                )
+                            },
+                            shadowElevation = animateDpAsState(
+                                if (dismissState.dismissDirection != null) 6.dp else 0.dp
+                            ).value
+                        )
+                    }
                 }
             }
         }

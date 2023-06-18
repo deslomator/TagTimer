@@ -50,9 +50,9 @@ interface AppDao {
 
     @Query("SELECT * FROM tag ORDER BY category, label ASC")
     fun getTags(): Flow<List<Tag>>
-    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY label ASC")
+    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY label,category ASC")
     fun getActiveTags(): Flow<List<Tag>>
-    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label ASC")
+    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label,category ASC")
     fun getTrashedTags(): Flow<List<Tag>>
 
     @Upsert
@@ -69,10 +69,10 @@ interface AppDao {
 
     @Query("DELETE FROM event " +
             "WHERE NOT EXISTS (SELECT NULL FROM session WHERE event.sessionId = session.id)")
-    suspend fun clearOrphanEvents()
+    suspend fun clearOrphanEvents(): Int
 
     @Query("DELETE FROM usedtag " +
             "WHERE NOT EXISTS (SELECT NULL FROM session WHERE usedtag.sessionId = session.id)")
-    suspend fun clearOrphanUsedTags()
+    suspend fun clearOrphanUsedTags(): Int
 
 }
