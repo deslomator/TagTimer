@@ -12,9 +12,9 @@ import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
 import com.deslomator.tagtimer.state.TagsScreenState
-import com.deslomator.tagtimer.ui.sessions.SessionsScreenContent
-import com.deslomator.tagtimer.ui.trash.TrashContent
-import com.deslomator.tagtimer.ui.tags.TagsScreenContent
+import com.deslomator.tagtimer.ui.main.sessions.SessionsScreenContent
+import com.deslomator.tagtimer.ui.main.trash.TrashContent
+import com.deslomator.tagtimer.ui.main.tags.TagsScreenContent
 
 @Composable
 fun BottomNavHost(

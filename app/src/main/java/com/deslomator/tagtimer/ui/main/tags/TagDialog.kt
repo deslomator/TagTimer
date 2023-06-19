@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.tags
+package com.deslomator.tagtimer.ui.main.tags
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

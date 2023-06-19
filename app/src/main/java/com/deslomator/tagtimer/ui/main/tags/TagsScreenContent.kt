@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.tags
+package com.deslomator.tagtimer.ui.main.tags
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border

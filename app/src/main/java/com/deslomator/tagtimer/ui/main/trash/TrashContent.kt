@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.trash
+package com.deslomator.tagtimer.ui.main.trash
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
