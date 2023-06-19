@@ -29,6 +29,7 @@ import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
+import com.deslomator.tagtimer.ui.main.RootScreen
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
@@ -80,8 +81,12 @@ fun SessionsScreenContent(
                         ),
                         item = session,
                         leadingIcon = R.drawable.document_and_ray,
-                        onLeadingClick = { outerNavHostController.navigate("hello") },
-                        onItemClick = { outerNavHostController.navigate("hello") },
+                        onLeadingClick = {
+                            outerNavHostController.navigate(RootScreen.Active.route)
+                        },
+                        onItemClick = {
+                            outerNavHostController.navigate(RootScreen.Active.route)
+                        },
                         /*trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = {
                             onAction(SessionsScreenAction.EditSessionClicked(session))

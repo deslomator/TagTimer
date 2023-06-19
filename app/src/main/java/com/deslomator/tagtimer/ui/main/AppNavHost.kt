@@ -14,6 +14,7 @@ import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
 import com.deslomator.tagtimer.state.TagsScreenState
+import com.deslomator.tagtimer.ui.active.ActiveSession
 
 @Composable
 fun AppNavHost(
@@ -29,10 +30,10 @@ fun AppNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = BottomNavigationScreen.Main.route,
+        startDestination = RootScreen.Main.route,
     ) {
         composable(
-            route = BottomNavigationScreen.Main.route,
+            route = RootScreen.Main.route,
         ) {
             MainScreen(
                 outerNavHostController = navController,
@@ -44,10 +45,15 @@ fun AppNavHost(
                 onSessionsTrashAction = onSessionsTrashAction
             )
         }
-        composable("hello") {
-            Column {
-                Text(text = "hello hello")
-            }
+        composable(
+            route = RootScreen.Active.route,
+        ) {
+            ActiveSession(
+                navHostController = navController,
+                sessionsScreenState = sessionsScreenState,
+                onSessionsAction = onSessionsAction,
+                onTagsAction = onTagsAction,
+            )
         }
     }
 }
