@@ -6,21 +6,21 @@
   <path
       android:pathData="m16.86,12.402a4.341,4.298 90,0 1,-4.298 4.341,4.341 4.298,90 0,1 -4.298,-4.341 4.341,4.298 90,0 1,4.298 -4.341,4.341 4.298,90 0,1 4.298,4.341zM17.74,12.402a5.227,5.179 90,0 1,-5.179 5.227,5.227 5.179,90 0,1 -5.179,-5.227 5.227,5.179 90,0 1,5.179 -5.227,5.227 5.179,90 0,1 5.179,5.227z"
       android:strokeWidth="0.065"
-      android:fillColor="#BF02BF"
+      android:fillColor="#FFFFFF"
       android:fillType="evenOdd"/>
   <path
       android:pathData="m7.407,8.723l6.776,0c0.494,0 0.891,0.398 0.891,0.891s-0.398,0.891 -0.891,0.891l-6.776,0c-0.494,0 -0.891,-0.398 -0.891,-0.891s0.398,-0.891 0.891,-0.891z"
       android:strokeWidth="0.065"
-      android:fillColor="#A101A1"
+      android:fillColor="#FFFFFF"
       android:fillType="evenOdd"/>
   <path
       android:pathData="m7.407,11.085l6.776,0c0.494,0 0.891,0.398 0.891,0.891 0,0.494 -0.398,0.891 -0.891,0.891l-6.776,0c-0.494,0 -0.891,-0.398 -0.891,-0.891 0,-0.494 0.398,-0.891 0.891,-0.891z"
       android:strokeWidth="0.065"
-      android:fillColor="#A101A1"
+      android:fillColor="#FFFFFF"
       android:fillType="evenOdd"/>
   <path
       android:pathData="m7.407,13.466l6.776,0c0.494,0 0.891,0.398 0.891,0.891 0,0.494 -0.398,0.891 -0.891,0.891l-6.776,0c-0.494,0 -0.891,-0.398 -0.891,-0.891 0,-0.494 0.398,-0.891 0.891,-0.891z"
       android:strokeWidth="0.065"
-      android:fillColor="#A101A1"
+      android:fillColor="#FFFFFF"
       android:fillType="evenOdd"/>
 </vector>
