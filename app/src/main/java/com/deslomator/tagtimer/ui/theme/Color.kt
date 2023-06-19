@@ -11,8 +11,8 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 val SoftGreen = Color(0xff04a48f)
 
-val OnDarkBackground = PurpleGrey80
-val OnLightBackground = PurpleGrey40
+val OnDarkBackground = Color(0xFFE7DAFC)
+val OnLightBackground = Color(0xFF3F3C47)
 
 val colorPickerColors: List<Color> = listOf(
     Color(0xffd21212),
@@ -49,4 +49,7 @@ fun Color.brightness(): Float {
     return (0.21f * this.red) + (0.72f * this.green) + (0.07f * this.blue)
 }
 
-fun Color.contrasted() = if (this.brightness() > 0.5) OnLightBackground else OnDarkBackground
+fun Color.contrasted() = if (this.brightness() > LIGTH_COLOR_THRESHOLD) OnLightBackground
+else OnDarkBackground
+
+private const val LIGTH_COLOR_THRESHOLD = 0.6f

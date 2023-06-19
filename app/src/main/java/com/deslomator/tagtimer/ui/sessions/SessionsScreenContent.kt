@@ -1,8 +1,6 @@
 package com.deslomator.tagtimer.ui.sessions
 
-import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,16 +17,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
+import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
+import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,38 +67,83 @@ fun SessionsScreenContent(
                     onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
                     dismissColor = Pink80
                 ) { dismissState ->
-                    Box(
-                        modifier = Modifier.background(Color.White)
-                    ) {
-                        MyListItem(
-                            modifier = Modifier
-                                .border(1.dp, Color.LightGray),
-                            colors = ListItemDefaults.colors(
-                                leadingIconColor = Color(session.color).contrasted(),
-                                headlineColor = Color(session.color).contrasted(),
-                                trailingIconColor = Color(session.color).contrasted(),
-                                containerColor = Color(session.color),
-                            ),
-                            item = session,
-                            leadingIcon = R.drawable.tagtimer_icon_big,
-                            onItemClick = { outerNavHostController.navigate("hello") },
-                            trailingIcon = R.drawable.baseline_edit_24,
-                            onTrailingClick = {
-                                onAction(
-                                    SessionsScreenAction.EditSessionClicked(
-                                        session
-                                    )
+                    MyListItem(
+                        modifier = Modifier
+                            .border(1.dp, Color.LightGray),
+                        colors = ListItemDefaults.colors(
+                            leadingIconColor = Color(session.color).contrasted(),
+                            headlineColor = Color(session.color).contrasted(),
+                            trailingIconColor = Color(session.color).contrasted(),
+                            containerColor = Color(session.color),
+                        ),
+                        item = session,
+                        leadingIcon = R.drawable.tagtimer_icon_big,
+                        onItemClick = { outerNavHostController.navigate("hello") },
+                        trailingIcon = R.drawable.baseline_edit_24,
+                        onTrailingClick = {
+                            onAction(
+                                SessionsScreenAction.EditSessionClicked(
+                                    session
                                 )
-                            },
-                            shadowElevation = animateDpAsState(
-                                if (dismissState.dismissDirection != null) 6.dp else 0.dp
-                            ).value
-                        ) { item ->
-                            Column {
-                                Text(item.name)
-                                Text(item.lastAccessMillis.toDateTime())
-                            }
+                            )
+                        },
+                        shadowElevation = animateDpAsState(
+                            if (dismissState.dismissDirection != null) 6.dp else 0.dp
+                        ).value
+                    ) { item ->
+                        Column {
+                            Text(item.name)
+                            Text(item.lastAccessMillis.toDateTime())
                         }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@Preview
+fun TagsScreenContentPreview() {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(colorPickerColors) { background ->
+            val session = Session(
+                name = "background: ${background.brightness()}",
+                lastAccessMillis = 333445666,
+                color = background.toArgb()
+            )
+            SwipeableListItem(
+                dismissDirection = DismissDirection.StartToEnd,
+                onDismiss = { },
+                dismissColor = Pink80
+            ) { dismissState ->
+                MyListItem(
+                    modifier = Modifier
+                        .border(1.dp, Color.LightGray),
+                    colors = ListItemDefaults.colors(
+                        leadingIconColor = Color(session.color).contrasted(),
+                        headlineColor = Color(session.color).contrasted(),
+                        trailingIconColor = Color(session.color).contrasted(),
+                        containerColor = Color(session.color),
+                    ),
+                    item = session,
+                    leadingIcon = R.drawable.tagtimer_icon_big,
+                    onItemClick = { },
+                    trailingIcon = R.drawable.baseline_edit_24,
+                    onTrailingClick = {},
+                    shadowElevation = animateDpAsState(
+                        if (dismissState.dismissDirection != null) 6.dp else 0.dp
+                    ).value
+                ) { item ->
+                    Column {
+                        Text(item.name)
+                        Text(item.lastAccessMillis.toDateTime())
                     }
                 }
             }
