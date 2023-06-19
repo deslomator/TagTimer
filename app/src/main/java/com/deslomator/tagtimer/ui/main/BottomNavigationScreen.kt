@@ -12,9 +12,9 @@ sealed class BottomNavigationScreen(
     object Main : BottomNavigationScreen(
         "main",
         R.string.app_name,
-        R.drawable.baseline_edit_24,
+        R.drawable.edit,
     )
     object Sessions : BottomNavigationScreen("sessions", R.string.sessions, R.drawable.document_and_ray)
-    object Tags : BottomNavigationScreen("tags", R.string.tags, R.drawable.baseline_label_24)
-    object Trash : BottomNavigationScreen("trash", R.string.trash, R.drawable.baseline_delete_24)
+    object Tags : BottomNavigationScreen("tags", R.string.tags, R.drawable.tag)
+    object Trash : BottomNavigationScreen("trash", R.string.trash, R.drawable.delete)
 }

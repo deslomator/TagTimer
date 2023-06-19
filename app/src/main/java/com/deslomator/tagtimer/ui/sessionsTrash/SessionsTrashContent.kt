@@ -60,9 +60,9 @@ fun SessionsTrashContent(
                         containerColor = Color(session.color),
                     ),
                     item = session,
-                    leadingIcon = R.drawable.baseline_restore_from_trash_24,
+                    leadingIcon = R.drawable.restore_from_trash,
                     onLeadingClick = { onAction(SessionsTrashAction.RestoreSessionClicked(session)) },
-                    trailingIcon = R.drawable.baseline_delete_forever_24,
+                    trailingIcon = R.drawable.delete_forever,
                     onTrailingClick = { onAction(SessionsTrashAction.DeleteSessionClicked(session)) },
                 ) { item ->
                     Column {
@@ -100,9 +100,9 @@ fun SessionsTrashContentPreview() {
                     containerColor = Color(session.color),
                 ),
                 item = session,
-                leadingIcon = R.drawable.baseline_restore_from_trash_24,
+                leadingIcon = R.drawable.restore_from_trash,
                 onLeadingClick = {  },
-                trailingIcon = R.drawable.baseline_delete_forever_24,
+                trailingIcon = R.drawable.delete_forever,
                 onTrailingClick = {  },
                 shadowElevation = 0.dp
             ) { item ->

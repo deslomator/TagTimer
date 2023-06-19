@@ -70,7 +70,7 @@ fun TagsScreenContent(
                         modifier = Modifier
                             .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
                             .clip(CutCornerShape(topStart = 20.dp)),
-                        leadingIcon = R.drawable.baseline_label_24,
+                        leadingIcon = R.drawable.tag,
                         onLeadingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
                         colors = ListItemDefaults.colors(
                             leadingIconColor = Color(tag.color).contrasted(),
@@ -130,7 +130,7 @@ fun TagsScreenContentPreview() {
                     ),
                     item = tag,
                     onItemClick = {  },
-                    trailingIcon = R.drawable.baseline_edit_24,
+                    trailingIcon = R.drawable.edit,
                     onTrailingClick = {  },
                     shadowElevation = animateDpAsState(
                         if (dismissState.dismissDirection != null) 20.dp else 10.dp

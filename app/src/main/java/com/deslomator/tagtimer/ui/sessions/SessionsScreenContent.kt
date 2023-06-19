@@ -135,7 +135,7 @@ fun TagsScreenContentPreview() {
                     item = session,
                     leadingIcon = R.drawable.document_and_ray,
                     onItemClick = { },
-                    trailingIcon = R.drawable.baseline_edit_24,
+                    trailingIcon = R.drawable.edit,
                     onTrailingClick = {},
                     /*shadowElevation = animateDpAsState(
                         if (dismissState.dismissDirection != null) 6.dp else 0.dp
