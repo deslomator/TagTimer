@@ -77,7 +77,7 @@ fun SessionsScreenContent(
                             containerColor = Color(session.color),
                         ),
                         item = session,
-                        leadingIcon = R.drawable.tagtimer_icon_big,
+                        leadingIcon = R.drawable.document_and_ray,
                         onItemClick = { outerNavHostController.navigate("hello") },
                         trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = {
@@ -133,7 +133,7 @@ fun TagsScreenContentPreview() {
                         containerColor = Color(session.color),
                     ),
                     item = session,
-                    leadingIcon = R.drawable.tagtimer_icon_big,
+                    leadingIcon = R.drawable.document_and_ray,
                     onItemClick = { },
                     trailingIcon = R.drawable.baseline_edit_24,
                     onTrailingClick = {},

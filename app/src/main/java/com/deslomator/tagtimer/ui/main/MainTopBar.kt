@@ -32,7 +32,7 @@ fun MainTopBar(
                     ) {
                         Icon(
                             modifier = Modifier.size(36.dp),
-                            painter = painterResource(R.drawable.add_session),
+                            painter = painterResource(R.drawable.document_and_ray_add),
                             contentDescription = stringResource(id = R.string.new_session)
                         )
                     }
