@@ -1,10 +1,11 @@
 package com.deslomator.tagtimer.ui.sessions
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,15 +14,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
@@ -64,12 +66,14 @@ fun SessionsScreenContent(
                         modifier = Modifier.background(Color.White)
                     ) {
                         MyListItem(
+                            modifier = Modifier
+                                .border(1.dp, Color.LightGray),
                             colors = ListItemDefaults.colors(
                                 leadingIconColor = Color(session.color),
                                 trailingIconColor = Color(session.color),
                                 containerColor = Color(session.color).copy(alpha = .15f),
                             ),
-                            session = session,
+                            item = session,
                             leadingIcon = R.drawable.tagtimer_icon_big,
                             onItemClick = { outerNavHostController.navigate("hello") },
                             trailingIcon = R.drawable.baseline_edit_24,
@@ -83,7 +87,12 @@ fun SessionsScreenContent(
                             shadowElevation = animateDpAsState(
                                 if (dismissState.dismissDirection != null) 6.dp else 0.dp
                             ).value
-                        )
+                        ) { item ->
+                            Column {
+                                Text(item.name)
+                                Text(item.lastAccessMillis.toDateTime())
+                            }
+                        }
                     }
                 }
             }

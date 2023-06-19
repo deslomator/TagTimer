@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -19,28 +20,29 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.toDateTime
 
 @Composable
-fun MyListItem(
+fun <T> MyListItem(
     modifier: Modifier = Modifier,
     colors: ListItemColors = ListItemDefaults.colors(),
-    session: Session,
+    item: T,
     leadingIcon: Int? = null,
-    onLeadingClick: ((Session) -> Unit)? = null,
-    onItemClick: ((Session) -> Unit)? = null,
+    onLeadingClick: ((T) -> Unit)? = null,
+    onItemClick: ((T) -> Unit)? = null,
     trailingIcon: Int? = null,
-    onTrailingClick: ((Session) -> Unit)? = null,
-    shadowElevation: Dp = 10.dp
+    onTrailingClick: ((T) -> Unit)? = null,
+    shadowElevation: Dp = 0.dp,
+    headlineContent: @Composable (T) -> Unit
 ) {
     ListItem(
         modifier = modifier
-            .clickable { onItemClick?.invoke(session) },
+            .clickable { onItemClick?.invoke(item) },
         colors = colors,
         shadowElevation = shadowElevation,
-        headlineContent = { Text(session.name) },
+        headlineContent = { headlineContent(item) },
         leadingContent = {
             Row {
                 leadingIcon?.let {
                     IconButton(
-                        onClick = { onLeadingClick?.invoke(session) },
+                        onClick = { onLeadingClick?.invoke(item) },
                     ) {
                         Icon(
                             modifier = Modifier.size(36.dp),
@@ -51,11 +53,10 @@ fun MyListItem(
                 }
             }
         },
-        supportingContent = { Text(session.lastAccessMillis.toDateTime()) },
         trailingContent = {
             trailingIcon?.let {
                 IconButton(
-                    onClick = { onTrailingClick?.invoke(session) },
+                    onClick = { onTrailingClick?.invoke(item) },
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
@@ -72,7 +73,7 @@ fun MyListItem(
 @Preview
 fun MyListItemPreview() {
     MyListItem(
-        session = Session(
+        item = Session(
             name = "Session in Gym",
             color = -33929,
             lastAccessMillis = 287539475785793
@@ -80,6 +81,11 @@ fun MyListItemPreview() {
         onItemClick = {},
         onLeadingClick = {},
         onTrailingClick = {},
-    )
+    ) { item ->
+        Column {
+            Text(item.name)
+            Text(item.lastAccessMillis.toDateTime())
+        }
+    }
 }
 
