@@ -9,10 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,7 +51,8 @@ fun SessionsTrashContent(
             ) { session ->
                 MyListItem(
                     modifier = Modifier
-                        .border(1.dp, Color.LightGray),
+                        .clip(RoundedCornerShape(25.dp))
+                        .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
                     colors = ListItemDefaults.colors(
                         leadingIconColor = Color(session.color).contrasted(),
                         headlineColor = Color(session.color).contrasted(),
@@ -89,7 +92,8 @@ fun SessionsTrashContentPreview() {
             )
             MyListItem(
                 modifier = Modifier
-                    .border(1.dp, Color.LightGray),
+                    .clip(RoundedCornerShape(25.dp))
+                    .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
                 colors = ListItemDefaults.colors(
                     leadingIconColor = Color(session.color).contrasted(),
                     headlineColor = Color(session.color).contrasted(),

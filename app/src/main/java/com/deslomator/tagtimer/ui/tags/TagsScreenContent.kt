@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -67,11 +68,12 @@ fun TagsScreenContent(
                     dismissDirection = DismissDirection.StartToEnd,
                     onDismiss = { onAction(TagsScreenAction.TrashTagSwiped(tag)) },
                     dismissColor = Pink80
-                ) { dismissState ->
+                ) {
                     MyListItem(
                         modifier = Modifier
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(20.dp))
-                            .clip(RoundedCornerShape(20.dp)),
+                            .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
+                            .clip(CutCornerShape(topStart = 20.dp)),
+                        leadingIcon = R.drawable.baseline_label_24,
                         colors = ListItemDefaults.colors(
                             leadingIconColor = Color(tag.color).contrasted(),
                             headlineColor = Color(tag.color).contrasted(),
@@ -120,8 +122,8 @@ fun TagsScreenContentPreview() {
             ) { dismissState ->
                 MyListItem(
                     modifier = Modifier
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(20.dp))
-                        .clip(RoundedCornerShape(20.dp)),
+                        .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
+                        .clip(CutCornerShape(topStart = 20.dp)),
                     colors = ListItemDefaults.colors(
                         leadingIconColor = Color(tag.color).contrasted(),
                         headlineColor = Color(tag.color).contrasted(),
