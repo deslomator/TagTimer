@@ -12,12 +12,18 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.room.Room
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.dao.SessionsDatabase
+import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.ui.main.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
+import com.deslomator.tagtimer.ui.theme.brightness
+import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel
 import com.deslomator.tagtimer.viewmodel.TagsScreenViewModel
@@ -26,6 +32,7 @@ import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @HiltAndroidApp
 class TagTimerApp: Application()
@@ -33,20 +40,15 @@ class TagTimerApp: Application()
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    @Inject lateinit var appDao: AppDao
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             TagTimerTheme {
-                val db by lazy {
-                    Room.databaseBuilder(
-                        applicationContext,
-                        SessionsDatabase::class.java,
-                        "sessions.db"
-                    ).build()
-                }
-//                Log.d(TAG, "before launched effect")
                 LaunchedEffect(Unit) {
-                    withContext(Dispatchers.IO) { cleanOrphans(db.appDao) }
+                    withContext(Dispatchers.IO) { cleanOrphans(appDao) }
+//                    populateDb(appDao)
                 }
                 val sessionsScreenViewModel = viewModel<SessionsScreenViewModel>()
                 val tagsScreenViewModel = viewModel<TagsScreenViewModel>()
@@ -83,4 +85,39 @@ private suspend fun cleanOrphans(dao: AppDao) {
     val out = dao.clearOrphanUsedTags()
     Log.d("MainActivity", "dao.clearOrphanEvents(): $oe")
     Log.d("MainActivity", "dao.clearOrphanUsedTags(): $out")
+}
+
+private suspend fun populateDb (dao: AppDao) {
+    colorPickerColors.forEachIndexed { index, it ->
+        val i = index +100
+        val iT = index +200
+        val session = Session(
+            id = i,
+            color = it.toArgb(),
+            name = "Session ${it.toArgb()}"
+        )
+        dao.upsertSession(session)
+        val sessionT = Session(
+            id = iT,
+            color = it.toArgb(),
+            name = "Session ${it.toArgb()}",
+            inTrash = true
+        )
+        dao.upsertSession(sessionT)
+        val tag = Tag(
+            id = i,
+            color = it.toArgb(),
+            label = "Label ${it.toArgb()}",
+            category = "Category ${it.brightness()}",
+        )
+        dao.upsertTag(tag)
+        val tagT = Tag(
+            id = iT,
+            color = it.toArgb(),
+            label = "Label ${it.toArgb()}",
+            category = "Category ${it.brightness()}",
+            inTrash = true
+        )
+        dao.upsertTag(tagT)
+    }
 }
