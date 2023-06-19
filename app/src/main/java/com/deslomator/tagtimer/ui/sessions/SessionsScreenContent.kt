@@ -137,9 +137,9 @@ fun TagsScreenContentPreview() {
                     onItemClick = { },
                     trailingIcon = R.drawable.baseline_edit_24,
                     onTrailingClick = {},
-                    shadowElevation = animateDpAsState(
+                    /*shadowElevation = animateDpAsState(
                         if (dismissState.dismissDirection != null) 6.dp else 0.dp
-                    ).value
+                    ).value*/
                 ) { item ->
                     Column {
                         Text(item.name)

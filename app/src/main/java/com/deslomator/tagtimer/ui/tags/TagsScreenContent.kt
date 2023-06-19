@@ -82,9 +82,9 @@ fun TagsScreenContent(
                         onItemClick = { outerNavHostController.navigate("hello") },
                         trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
-                        shadowElevation = animateDpAsState(
+                        /*shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 20.dp else 10.dp
-                        ).value
+                        ).value*/
                     ) { item ->
                         Column {
                             Text(item.label)
