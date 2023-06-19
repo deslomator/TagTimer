@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.sessions
 
+import android.util.Log
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -27,6 +28,8 @@ import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
+import com.deslomator.tagtimer.ui.theme.brightness
+import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,9 +72,10 @@ fun SessionsScreenContent(
                             modifier = Modifier
                                 .border(1.dp, Color.LightGray),
                             colors = ListItemDefaults.colors(
-                                leadingIconColor = Color(session.color),
-                                trailingIconColor = Color(session.color),
-                                containerColor = Color(session.color).copy(alpha = .15f),
+                                leadingIconColor = Color(session.color).contrasted(),
+                                headlineColor = Color(session.color).contrasted(),
+                                trailingIconColor = Color(session.color).contrasted(),
+                                containerColor = Color(session.color),
                             ),
                             item = session,
                             leadingIcon = R.drawable.tagtimer_icon_big,
@@ -99,3 +103,5 @@ fun SessionsScreenContent(
         }
     }
 }
+
+private const val TAG = "SessionsScreenContent"

@@ -22,6 +22,7 @@ import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.SoftGreen
+import com.deslomator.tagtimer.ui.theme.contrasted
 
 @Composable
 fun SessionsTrashContent(
@@ -47,9 +48,10 @@ fun SessionsTrashContent(
                     modifier = Modifier
                         .border(1.dp, Color.LightGray),
                     colors = ListItemDefaults.colors(
-                        leadingIconColor = SoftGreen,
-                        trailingIconColor = Pink80,
-                        containerColor = Color(session.color).copy(alpha = .16f)
+                        leadingIconColor = Color(session.color).contrasted(),
+                        headlineColor = Color(session.color).contrasted(),
+                        trailingIconColor = Color(session.color).contrasted(),
+                        containerColor = Color(session.color),
                     ),
                     item = session,
                     leadingIcon = R.drawable.baseline_restore_from_trash_24,

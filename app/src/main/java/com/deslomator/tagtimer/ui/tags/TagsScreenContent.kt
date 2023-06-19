@@ -27,6 +27,7 @@ import com.deslomator.tagtimer.state.TagsScreenState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
+import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,9 +68,10 @@ fun TagsScreenContent(
                             .border(1.dp, Color.LightGray, RoundedCornerShape(20.dp))
                             .clip(RoundedCornerShape(20.dp)),
                         colors = ListItemDefaults.colors(
+                            leadingIconColor = Color(tag.color).contrasted(),
+                            headlineColor = Color(tag.color).contrasted(),
+                            trailingIconColor = Color(tag.color).contrasted(),
                             containerColor = Color(tag.color),
-                            trailingIconColor = Color.LightGray,
-                            headlineColor = Color.LightGray,
                         ),
                         item = tag,
                         onItemClick = { outerNavHostController.navigate("hello") },

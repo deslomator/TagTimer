@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,6 +15,7 @@ import androidx.compose.material3.DismissDirection.StartToEnd
 import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.toDateTime
 
 /**
  * @param dismissDirection defines delete and done swipes.
@@ -105,12 +108,17 @@ fun SwipeableListItemPreview() {
         onDismiss = {},
     ) {
         MyListItem(
-            session = Session(
+            item = Session(
                 name = "Session in Gym",
                 color = -33929,
                 lastAccessMillis = 287539475785793
             ),
             onItemClick = {},
-        )
+        ){ item ->
+            Column {
+                Text(item.name)
+                Text(item.lastAccessMillis.toDateTime())
+            }
+        }
     }
 }
