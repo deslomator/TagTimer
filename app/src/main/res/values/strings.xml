@@ -22,4 +22,6 @@
     <string name="category">Category</string>
     <string name="tag_sent_to_trash">Tag sent to Trash</string>
     <string name="active_session">Active Session</string>
+    <string name="tag_deleted">Tag permanently deleted</string>
+    <string name="tag_restored">Tag restored</string>
 </resources>

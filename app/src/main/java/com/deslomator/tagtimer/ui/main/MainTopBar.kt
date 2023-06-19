@@ -1,19 +1,25 @@
 package com.deslomator.tagtimer.ui.main
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.Trash
+import com.deslomator.tagtimer.state.SessionsTrashState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,6 +27,9 @@ fun MainTopBar(
     backStackEntry: State<NavBackStackEntry?>,
     onNewSessionClick: () -> Unit,
     onNewTagClick: () -> Unit,
+    trashState: SessionsTrashState,
+    onShowSessionsClick: () -> Unit,
+    onShowTagsClick: () -> Unit,
 ) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
@@ -48,7 +57,24 @@ fun MainTopBar(
                         )
                     }
                 }
-                else -> {}
+                BottomNavigationScreen.Trash.route -> {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = trashState.currentTrash == Trash.SESSION,
+                            onClick = onShowSessionsClick
+                        )
+                        Text("Sessions")
+                        Spacer(modifier = Modifier.size(20.dp))
+                        RadioButton(
+                            selected = trashState.currentTrash == Trash.TAG,
+                            onClick = onShowTagsClick
+                        )
+                        Text("Tags")
+                        Spacer(modifier = Modifier.size(20.dp))
+                    }
+                }
             }
         }
     )

@@ -68,8 +68,8 @@ fun TagsScreenContent(
                 ) {
                     MyListItem(
                         modifier = Modifier
-                            .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
-                            .clip(CutCornerShape(topStart = 20.dp)),
+                            .clip(CutCornerShape(topStart = 20.dp))
+                            .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
                         leadingIcon = R.drawable.tag,
                         onLeadingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
                         colors = ListItemDefaults.colors(

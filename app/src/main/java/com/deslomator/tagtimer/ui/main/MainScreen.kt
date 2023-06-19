@@ -70,6 +70,9 @@ fun MainScreen(
                 backStackEntry = backStackEntry,
                 onNewSessionClick = { onSessionsAction(SessionsScreenAction.AddNewSessionClicked) },
                 onNewTagClick = { onTagsAction(TagsScreenAction.AddNewTagClicked) },
+                trashState = sessionsTrashState,
+                onShowSessionsClick = { onSessionsTrashAction(SessionsTrashAction.ShowSessionsClicked) },
+                onShowTagsClick = { onSessionsTrashAction(SessionsTrashAction.ShowTagsClicked) }
             )
         },
         bottomBar = {

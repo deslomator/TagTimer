@@ -32,4 +32,4 @@ fun ActiveSessionContent(
         }
 }
 
-private const val TAG = "ActiveScreenContent"
+private const val TAG = "ActiveSessionContent"
