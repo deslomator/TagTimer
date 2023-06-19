@@ -45,7 +45,6 @@ fun BottomNavHost(
         composable(BottomNavigationScreen.Tags.route) {
             TagsScreenContent(
                 paddingValues = paddingValues,
-                outerNavHostController = outerNavHostController,
                 state = tagsScreenState,
                 onAction = onTagsAction
             )

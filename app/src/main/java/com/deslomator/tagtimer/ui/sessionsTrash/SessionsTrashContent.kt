@@ -64,7 +64,6 @@ fun SessionsTrashContent(
                     onLeadingClick = { onAction(SessionsTrashAction.RestoreSessionClicked(session)) },
                     trailingIcon = R.drawable.baseline_delete_forever_24,
                     onTrailingClick = { onAction(SessionsTrashAction.DeleteSessionClicked(session)) },
-                    shadowElevation = 0.dp
                 ) { item ->
                     Column {
                         Text(item.name)

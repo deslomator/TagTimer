@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
@@ -23,7 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.model.Tag
@@ -39,7 +37,6 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 @Composable
 fun TagsScreenContent(
     paddingValues: PaddingValues,
-    outerNavHostController: NavHostController,
     state: TagsScreenState,
     onAction: (TagsScreenAction) -> Unit
 ) {
@@ -74,6 +71,7 @@ fun TagsScreenContent(
                             .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
                             .clip(CutCornerShape(topStart = 20.dp)),
                         leadingIcon = R.drawable.baseline_label_24,
+                        onLeadingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
                         colors = ListItemDefaults.colors(
                             leadingIconColor = Color(tag.color).contrasted(),
                             headlineColor = Color(tag.color).contrasted(),
@@ -81,10 +79,10 @@ fun TagsScreenContent(
                             containerColor = Color(tag.color),
                         ),
                         item = tag,
-                        onItemClick = { outerNavHostController.navigate("hello") },
-                        trailingIcon = R.drawable.baseline_edit_24,
+                        onItemClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
+                        /*trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
-                        /*shadowElevation = animateDpAsState(
+                        shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 20.dp else 10.dp
                         ).value*/
                     ) { item ->

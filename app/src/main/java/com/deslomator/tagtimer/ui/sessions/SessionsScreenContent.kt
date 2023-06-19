@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.sessions
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -68,7 +67,7 @@ fun SessionsScreenContent(
                     dismissDirection = DismissDirection.StartToEnd,
                     onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
                     dismissColor = Pink80
-                ) { dismissState ->
+                ) {
                     MyListItem(
                         modifier = Modifier
                             .clip(RoundedCornerShape(25.dp))
@@ -81,18 +80,15 @@ fun SessionsScreenContent(
                         ),
                         item = session,
                         leadingIcon = R.drawable.document_and_ray,
+                        onLeadingClick = { outerNavHostController.navigate("hello") },
                         onItemClick = { outerNavHostController.navigate("hello") },
-                        trailingIcon = R.drawable.baseline_edit_24,
+                        /*trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = {
-                            onAction(
-                                SessionsScreenAction.EditSessionClicked(
-                                    session
-                                )
-                            )
-                        },
-                        shadowElevation = animateDpAsState(
+                            onAction(SessionsScreenAction.EditSessionClicked(session))
+                        },*/
+                        /*shadowElevation = animateDpAsState(
                             if (dismissState.dismissDirection != null) 6.dp else 0.dp
-                        ).value
+                        ).value*/
                     ) { item ->
                         Column {
                             Text(item.name)
@@ -125,7 +121,7 @@ fun TagsScreenContentPreview() {
                 dismissDirection = DismissDirection.StartToEnd,
                 onDismiss = { },
                 dismissColor = Pink80
-            ) { dismissState ->
+            ) {
                 MyListItem(
                     modifier = Modifier
                         .clip(RoundedCornerShape(25.dp))
