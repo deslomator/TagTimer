@@ -43,7 +43,7 @@ fun ActiveSession(
                 state = state,
                 onBackClicked = { navHostController.navigateUp() },
                 onPlayPauseClick = { onAction(ActiveSessionAction.PlayPauseClicked) },
-                onAddTagClick = { onAction(ActiveSessionAction.AddTagClicked) },
+                onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
             )
         },
         bottomBar = { },

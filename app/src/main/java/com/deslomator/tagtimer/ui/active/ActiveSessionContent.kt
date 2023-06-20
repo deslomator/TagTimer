@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.ui.main.tags.TagDialog
 
 @Composable
 fun ActiveSessionContent(
@@ -25,6 +26,12 @@ fun ActiveSessionContent(
             session = state.currentSession
         )
     }*/
+    if (state.showTagsDialog) {
+        TagSelectionDialog(
+            state = state,
+            onAction = onAction,
+        )
+    }
     LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(16.dp),
@@ -32,7 +39,7 @@ fun ActiveSessionContent(
         ) {
             items(
                 items = state.preSelectedTags,
-                key = { it }
+                key = { it.id }
             ) { item ->
                 ListItem(
                     headlineContent = {

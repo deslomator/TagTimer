@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.ActiveSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,8 +63,17 @@ class ActiveSessionViewModel @Inject constructor(
             is ActiveSessionAction.PlayPauseClicked -> {
 
             }
-            is ActiveSessionAction.AddTagClicked -> {
+            is ActiveSessionAction.SelectTagsClicked -> {
+                _state.update { it.copy( showTagsDialog = true) }
+            }
+            is ActiveSessionAction.DismissTagDialog -> {
+                _state.update { it.copy( showTagsDialog = false) }
+            }
+            is ActiveSessionAction.SelectTagClicked -> {
 
+            }
+            ActiveSessionAction.AcceptTagSelectionClicked -> {
+                _state.update { it.copy( showTagsDialog = false) }
             }
         }
     }

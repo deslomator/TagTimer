@@ -25,4 +25,5 @@
     <string name="tag_deleted">Etiqueta eliminada definitivamente</string>
     <string name="tag_restored">Etiqueta restaurada</string>
     <string name="add_tag">Añadir Etiqueta</string>
+    <string name="select_tags">Seleccionar Etiquetas</string>
 </resources>
