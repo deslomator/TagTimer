@@ -94,8 +94,8 @@ private suspend fun cleanOrphans(dao: AppDao) {
 
 private suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
-        val i = index +100
-        val iT = index +200
+        val i = index + 100
+        val iT = index + 200
         val session = Session(
             id = i,
             color = it.toArgb(),
@@ -124,5 +124,24 @@ private suspend fun populateDb (dao: AppDao) {
             inTrash = true
         )
         dao.upsertTag(tagT)
+        colorPickerColors.forEach { item ->
+            val event = Event(
+                sessionId = i,
+                timestampMillis = System.currentTimeMillis(),
+                note = "lskflsflslsjlsfl",
+                category = "cat cata cat acat",
+                label = "event label: $i",
+            )
+            dao.upsertEvent(event)
+            val eventT = Event(
+                sessionId = i,
+                timestampMillis = System.currentTimeMillis(),
+                note = "lskflsflslsjlsfl",
+                category = "cat cata cat acat",
+                label = "event label: $i",
+                inTrash = true
+            )
+            dao.upsertEvent(eventT)
+        }
     }
 }
