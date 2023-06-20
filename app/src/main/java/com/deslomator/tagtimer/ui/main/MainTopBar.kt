@@ -65,13 +65,13 @@ fun MainTopBar(
                             selected = trashState.currentTrash == Trash.SESSION,
                             onClick = onShowSessionsClick
                         )
-                        Text("Sessions")
+                        Text(stringResource(id = R.string.sessions))
                         Spacer(modifier = Modifier.size(20.dp))
                         RadioButton(
                             selected = trashState.currentTrash == Trash.TAG,
                             onClick = onShowTagsClick
                         )
-                        Text("Tags")
+                        Text(stringResource(id = R.string.tags))
                         Spacer(modifier = Modifier.size(20.dp))
                     }
                 }
