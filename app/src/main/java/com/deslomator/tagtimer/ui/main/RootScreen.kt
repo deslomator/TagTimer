@@ -10,4 +10,6 @@ sealed class RootScreen(
 ) {
     object Main : RootScreen("main", R.string.app_name)
     object Active : RootScreen("active", R.string.active_session)
+
+    fun routeWithArg(sessionId: Int) = "$route/$sessionId"
 }

@@ -8,13 +8,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.action.SessionsScreenAction
+import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsScreenState
 
 @Composable
 fun ActiveSessionContent(
-    state: SessionsScreenState,
-    onAction: (SessionsScreenAction) -> Unit
+    state: ActiveSessionState,
+    onAction: (ActiveSessionAction) -> Unit
 ) {
     /*if (state.showSessionDialog) {
         SessionDialog(

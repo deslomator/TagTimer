@@ -1,16 +1,18 @@
 package com.deslomator.tagtimer.ui.main
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.SessionsTrashAction
 import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
 import com.deslomator.tagtimer.state.TagsScreenState
@@ -26,6 +28,8 @@ fun AppNavHost(
     onTagsAction: (TagsScreenAction) -> Unit,
     sessionsTrashState: SessionsTrashState,
     onSessionsTrashAction: (SessionsTrashAction) -> Unit,
+    activeSessionState: ActiveSessionState,
+    onActiveSessionAction: (ActiveSessionAction) -> Unit,
 ) {
     NavHost(
         modifier = modifier,
@@ -46,13 +50,14 @@ fun AppNavHost(
             )
         }
         composable(
-            route = RootScreen.Active.route,
-        ) {
+            route = "${RootScreen.Active.route}/{sessionId}",
+            arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+        ) { backStackEntry ->
             ActiveSession(
+                sessionId = backStackEntry.arguments?.getInt("sessionId") ?: 0,
                 navHostController = navController,
-                sessionsScreenState = sessionsScreenState,
-                onSessionsAction = onSessionsAction,
-                onTagsAction = onTagsAction,
+                state = activeSessionState,
+                onAction = onActiveSessionAction,
             )
         }
     }

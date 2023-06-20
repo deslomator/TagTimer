@@ -21,8 +21,11 @@ interface AppDao {
     @Query("DELETE FROM event WHERE sessionId = :sessionId")
     suspend fun deleteEventsForSession(sessionId: Int)
 
-    @Query("SELECT * FROM event WHERE sessionId = :sessionId ORDER BY timestampMillis ASC")
-    fun getEventsForSession(sessionId: Int): Flow<List<Event>>
+    @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 0 ORDER BY timestampMillis ASC")
+    fun getActiveEventsForSession(sessionId: Int): Flow<List<Event>>
+
+    @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY timestampMillis ASC")
+    fun getTrashedEventsForSession(sessionId: Int): Flow<List<Event>>
 
     @Query("SELECT DISTINCT category FROM tag ORDER BY category ASC")
     fun getCategories(): Flow<List<String>>

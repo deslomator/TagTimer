@@ -12,13 +12,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.state.ActiveSessionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveSessionTopBar(
+    state: ActiveSessionState,
     onBackClicked: () -> Unit,
-    onNewSessionClick: () -> Unit,
-    onNewTagClick: () -> Unit,
+    onPlayPauseClick: () -> Unit,
+    onAddTagClick: () -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -34,21 +36,21 @@ fun ActiveSessionTopBar(
         title = { Text(stringResource(id = R.string.active_session)) },
         actions = {
             IconButton(
-                onClick = onNewSessionClick
+                onClick = onPlayPauseClick
             ) {
                 Icon(
                     modifier = Modifier.size(36.dp),
-                    painter = painterResource(R.drawable.document_and_ray_add),
-                    contentDescription = stringResource(id = R.string.new_session)
+                    painter = painterResource(R.drawable.play_circle_outline),
+                    contentDescription = "play pause"
                 )
             }
             IconButton(
-                onClick = onNewTagClick
+                onClick = onAddTagClick
             ) {
                 Icon(
                     modifier = Modifier.size(36.dp),
                     painter = painterResource(R.drawable.add_tag),
-                    contentDescription = stringResource(id = R.string.new_tag)
+                    contentDescription = stringResource(id = R.string.add_tag)
                 )
             }
         }

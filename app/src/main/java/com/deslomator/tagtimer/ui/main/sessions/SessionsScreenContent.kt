@@ -82,10 +82,14 @@ fun SessionsScreenContent(
                         item = session,
                         leadingIcon = R.drawable.document_and_ray,
                         onLeadingClick = {
-                            outerNavHostController.navigate(RootScreen.Active.route)
+                            outerNavHostController.navigate(
+                                RootScreen.Active.routeWithArg(session.id)
+                            )
                         },
                         onItemClick = {
-                            outerNavHostController.navigate(RootScreen.Active.route)
+                            outerNavHostController.navigate(
+                                RootScreen.Active.routeWithArg(session.id)
+                            )
                         },
                         /*trailingIcon = R.drawable.baseline_edit_24,
                         onTrailingClick = {

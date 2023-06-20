@@ -7,20 +7,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.action.TagsScreenAction
-import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.state.ActiveSessionState
 
 @Composable
 fun ActiveSession(
+    sessionId: Int,
     navHostController: NavHostController,
-    sessionsScreenState: SessionsScreenState,
-    onSessionsAction: (SessionsScreenAction) -> Unit,
-    onTagsAction: (TagsScreenAction) -> Unit,
+    state: ActiveSessionState,
+    onAction: (ActiveSessionAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -34,12 +34,16 @@ fun ActiveSession(
             onSessionsAction(SessionsScreenAction.HideSnackbar)
         }
     }*/
+    LaunchedEffect(Unit) {
+        onAction(ActiveSessionAction.UpdateSessionId(sessionId))
+    }
     Scaffold(
         topBar = {
             ActiveSessionTopBar(
+                state = state,
                 onBackClicked = { navHostController.navigateUp() },
-                onNewSessionClick = { onSessionsAction(SessionsScreenAction.AddNewSessionClicked) },
-                onNewTagClick = { onTagsAction(TagsScreenAction.AddNewTagClicked) },
+                onPlayPauseClick = { onAction(ActiveSessionAction.PlayPauseClicked) },
+                onAddTagClick = { onAction(ActiveSessionAction.AddTagClicked) },
             )
         },
         bottomBar = { },
@@ -51,8 +55,8 @@ fun ActiveSession(
                 .padding(paddingValues),
         ) {
             ActiveSessionContent(
-                state = sessionsScreenState,
-                onAction = onSessionsAction,
+                state = state,
+                onAction = onAction,
             )
         }
     }

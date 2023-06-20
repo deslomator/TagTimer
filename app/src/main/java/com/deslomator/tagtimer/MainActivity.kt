@@ -24,6 +24,7 @@ import com.deslomator.tagtimer.ui.main.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
+import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel
 import com.deslomator.tagtimer.viewmodel.TagsScreenViewModel
@@ -53,6 +54,7 @@ class MainActivity : ComponentActivity() {
                 val sessionsScreenViewModel = viewModel<SessionsScreenViewModel>()
                 val tagsScreenViewModel = viewModel<TagsScreenViewModel>()
                 val sessionsTrashViewModel = viewModel<SessionsTrashViewModel>()
+                val activeSessionViewModel = viewModel<ActiveSessionViewModel>()
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -61,13 +63,16 @@ class MainActivity : ComponentActivity() {
                     val sessionsScreenState by sessionsScreenViewModel.state.collectAsState()
                     val tagsScreenState by tagsScreenViewModel.state.collectAsState()
                     val sessionsTrashState by sessionsTrashViewModel.state.collectAsState()
+                    val activeSessionState by activeSessionViewModel.state.collectAsState()
                     AppNavHost(
                         sessionsScreenState = sessionsScreenState,
                         onSessionsAction = sessionsScreenViewModel::onAction,
                         tagsScreenState = tagsScreenState,
                         onTagsAction = tagsScreenViewModel::onAction,
                         sessionsTrashState = sessionsTrashState,
-                        onSessionsTrashAction = sessionsTrashViewModel::onAction
+                        onSessionsTrashAction = sessionsTrashViewModel::onAction,
+                        activeSessionState = activeSessionState,
+                        onActiveSessionAction = activeSessionViewModel::onAction,
                     )
                 }
             }

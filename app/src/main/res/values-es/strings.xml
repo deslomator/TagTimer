@@ -24,4 +24,5 @@
     <string name="active_session">Sesión Activa</string>
     <string name="tag_deleted">Etiqueta eliminada definitivamente</string>
     <string name="tag_restored">Etiqueta restaurada</string>
+    <string name="add_tag">Añadir Etiqueta</string>
 </resources>
