@@ -14,9 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.dao.SessionsDatabase
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
@@ -87,7 +85,7 @@ class MainActivity : ComponentActivity() {
 private suspend fun cleanOrphans(dao: AppDao) {
     delay(4000)
     val oe = dao.clearOrphanEvents()
-    val out = dao.clearOrphanUsedTags()
+    val out = dao.clearOrphanPreSelectedTags()
     Log.d("MainActivity", "dao.clearOrphanEvents(): $oe")
     Log.d("MainActivity", "dao.clearOrphanUsedTags(): $out")
 }
