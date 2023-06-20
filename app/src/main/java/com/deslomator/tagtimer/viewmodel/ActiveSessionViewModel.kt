@@ -29,19 +29,15 @@ class ActiveSessionViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _preSelectedTags = appDao.getPreSelectedTagsForSession(_sessionId.value)
         .map {
-            val list = mutableSetOf<Tag>()
-            it.forEach { item ->
-                list.add(appDao.getTag(item.tagId))
-            }
-            list
+            it.map { r -> appDao.getTag(r.tagId) }
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptySet())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val state = combine(_state, _events, _preSelectedTags, _tags) { state, events, preSelectedTags, tags ->
         state.copy(
             events = events,
-            preSelectedTags = preSelectedTags as Set,
+            preSelectedTags = preSelectedTags,
             tags = tags,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ActiveSessionState())

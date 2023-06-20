@@ -31,15 +31,15 @@ fun ActiveSessionContent(
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(
-                items = state.tags,
-                key = { it.id }
+                items = state.preSelectedTags,
+                key = { it }
             ) { item ->
                 ListItem(
                     headlineContent = {
-                        Text("Session ID: ${item.id}")
+                        Text("Session ID: $item")
                     },
                     supportingContent = {
-                        Text("Tag ID: ${item.id}")
+                        Text("Tag ID: $item")
                     },
                 )
             }
