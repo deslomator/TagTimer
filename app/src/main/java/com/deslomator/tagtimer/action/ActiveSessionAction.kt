@@ -5,6 +5,6 @@ sealed interface ActiveSessionAction {
     object PlayPauseClicked: ActiveSessionAction
     object DismissTagDialog: ActiveSessionAction
     object SelectTagsClicked: ActiveSessionAction
-    class SelectTagClicked(tagId: Int): ActiveSessionAction
+    class SelectTagCheckedChange(val tagId: Int, val checked: Boolean): ActiveSessionAction
     object AcceptTagSelectionClicked: ActiveSessionAction
 }

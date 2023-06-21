@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.ActiveSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +29,7 @@ class ActiveSessionViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _preSelectedTags = appDao.getPreSelectedTagsForSession(_sessionId.value)
         .map {
-            it.map { r -> appDao.getTag(r.tagId) }
+            it.map { r -> Pair(r, appDao.getTag(r.tagId)) }
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
@@ -69,8 +70,17 @@ class ActiveSessionViewModel @Inject constructor(
             is ActiveSessionAction.DismissTagDialog -> {
                 _state.update { it.copy( showTagsDialog = false) }
             }
-            is ActiveSessionAction.SelectTagClicked -> {
-
+            is ActiveSessionAction.SelectTagCheckedChange -> {
+                if (action.checked) {
+                    val pst = PreSelectedTag (
+                        sessionId = state.value.currentSession.id,
+                        tagId = action.tagId
+                    )
+                    viewModelScope.launch { appDao.upsertPreSelectedTag(pst) }
+                } else {
+                    val pst = state.value.preSelectedTags.firstOrNull { it.second.id == action.tagId }
+                    pst?.let { viewModelScope.launch { appDao.deletePreSelectedTag(it.first) } }
+                }
             }
             ActiveSessionAction.AcceptTagSelectionClicked -> {
                 _state.update { it.copy( showTagsDialog = false) }
