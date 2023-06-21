@@ -64,8 +64,9 @@ fun TagSelectionDialog(
                             containerColor = Color(tag.color),
                         ),
                         item = tag,
-                        checked = state.preSelectedTags.map { it.second }.contains(tag),
+                        checked = state.preSelectedTags.map { it.tagId }.contains(tag.id),
                         onCheckedChange = {
+//                            Log.d(TAG, "SelectTagCheckedChange: $it")
                             onAction(ActiveSessionAction.SelectTagCheckedChange(tag.id, it))
                         }
                         /*trailingIcon = R.drawable.baseline_edit_24,
@@ -93,3 +94,5 @@ fun TagSelectionDialog(
         },
     )
 }
+
+private const val TAG = "TagSelectionDialog"

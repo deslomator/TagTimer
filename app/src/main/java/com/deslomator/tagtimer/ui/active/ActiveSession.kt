@@ -35,6 +35,7 @@ fun ActiveSession(
         }
     }*/
     LaunchedEffect(Unit) {
+//        Log.d(TAG, "LaunchedEffect")
         onAction(ActiveSessionAction.UpdateSessionId(sessionId))
     }
     Scaffold(
@@ -62,3 +63,4 @@ fun ActiveSession(
     }
 }
 
+private const val TAG = "ActiveSession"

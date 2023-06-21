@@ -9,10 +9,11 @@ import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.ActiveSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,11 +26,18 @@ class ActiveSessionViewModel @Inject constructor(
 
     private val _sessionId = MutableStateFlow(0)
     private val _state = MutableStateFlow(ActiveSessionState())
-    private val _events = appDao.getActiveEventsForSession(_sessionId.value)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _events = _sessionId
+        .flatMapLatest {
+            Log.d(TAG, "_events, creating, session id: $it")
+            appDao.getActiveEventsForSession(_sessionId.value)
+        }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    private val _preSelectedTags = appDao.getPreSelectedTagsForSession(_sessionId.value)
-        .map {
-            it.map { r -> Pair(r, appDao.getTag(r.tagId)) }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _preSelectedTags = _sessionId
+        .flatMapLatest {
+            Log.d(TAG, "_preSelectedTags, creating, session id: $it")
+            appDao.getPreSelectedTagsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
@@ -45,8 +53,7 @@ class ActiveSessionViewModel @Inject constructor(
     fun onAction(action: ActiveSessionAction) {
         when(action) {
             is ActiveSessionAction.UpdateSessionId -> {
-                Log.d(TAG, "updating session ID: ${action.id}")
-                _sessionId.value = action.id
+                _sessionId.update { action.id }
                 viewModelScope.launch {
                     _state.update {
                         it.copy(currentSession = appDao.getSession(action.id))
@@ -78,8 +85,9 @@ class ActiveSessionViewModel @Inject constructor(
                     )
                     viewModelScope.launch { appDao.upsertPreSelectedTag(pst) }
                 } else {
-                    val pst = state.value.preSelectedTags.firstOrNull { it.second.id == action.tagId }
-                    pst?.let { viewModelScope.launch { appDao.deletePreSelectedTag(it.first) } }
+                    val pst = state.value.preSelectedTags
+                        .firstOrNull { it.tagId == action.tagId }
+                    pst?.let { viewModelScope.launch { appDao.deletePreSelectedTag(it) } }
                 }
             }
             ActiveSessionAction.AcceptTagSelectionClicked -> {

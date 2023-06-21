@@ -5,9 +5,9 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.model.PreSelectedTag
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -77,11 +77,9 @@ interface AppDao {
     suspend fun upsertPreSelectedTag(preSelectedTag: PreSelectedTag)
     @Delete
     suspend fun deletePreSelectedTag(preSelectedTag: PreSelectedTag)
-
-    @Query("SELECT preselectedtag.sessionId AS sessionId, preselectedtag.tagId AS tagId, preselectedtag.id AS id " +
-            "FROM preselectedtag INNER JOIN tag on preselectedtag.tagId = tag.id " +
-            "WHERE preselectedtag.sessionId = :sessionId " +
-            "ORDER BY tag.category, tag.label ASC")
+    @Query("DELETE FROM preselectedtag WHERE id = :preSelectedTagId")
+    suspend fun deletePreSelectedTag(preSelectedTagId: Int)
+    @Query("SELECT * FROM preselectedtag WHERE sessionId = :sessionId")
     fun getPreSelectedTagsForSession(sessionId: Int): Flow<List<PreSelectedTag>>
     /*
     ORPHAN
@@ -89,9 +87,10 @@ interface AppDao {
     @Query("DELETE FROM event " +
             "WHERE NOT EXISTS (SELECT NULL FROM session WHERE event.sessionId = session.id)")
     suspend fun clearOrphanEvents(): Int
-
     @Query("DELETE FROM preselectedtag " +
             "WHERE NOT EXISTS (SELECT NULL FROM session WHERE preselectedtag.sessionId = session.id)")
     suspend fun clearOrphanPreSelectedTags(): Int
 
 }
+
+private const val TAG ="AppDao"
