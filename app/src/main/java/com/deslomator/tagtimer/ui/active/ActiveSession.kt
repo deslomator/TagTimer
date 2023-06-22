@@ -45,6 +45,8 @@ fun ActiveSession(
                 onBackClicked = {
                     if (state.showTagsDialog) {
                         onAction(ActiveSessionAction.DismissTagDialog)
+                    } else if (state.showEventTrash) {
+                        onAction(ActiveSessionAction.DismissEventTrashDialog)
                     } else {
                         onAction(ActiveSessionAction.StopSession)
                         navHostController.navigateUp()
@@ -52,6 +54,7 @@ fun ActiveSession(
                 },
                 onPlayPauseClick = { onAction(ActiveSessionAction.PlayPauseClicked) },
                 onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
+                onEventTrashClick = { onAction(ActiveSessionAction.EventTrashClicked) },
             )
         },
         bottomBar = { },

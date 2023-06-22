@@ -19,4 +19,5 @@ data class ActiveSessionState(
     val isRunning: Boolean = false,
     val isAbsoluteTime: Boolean = false,
     val showSnackbar: Boolean = false,
+    val showEventTrash: Boolean = false,
 )

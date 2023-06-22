@@ -21,6 +21,7 @@ fun ActiveSessionTopBar(
     onBackClicked: () -> Unit,
     onPlayPauseClick: () -> Unit,
     onAddTagClick: () -> Unit,
+    onEventTrashClick: () -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -57,6 +58,15 @@ fun ActiveSessionTopBar(
                     modifier = Modifier.size(36.dp),
                     painter = painterResource(R.drawable.add_tag),
                     contentDescription = stringResource(id = R.string.add_tag)
+                )
+            }
+            IconButton(
+                onClick = onEventTrashClick
+            ) {
+                Icon(
+                    modifier = Modifier.size(36.dp),
+                    painter = painterResource(R.drawable.delete),
+                    contentDescription = stringResource(id = R.string.trash)
                 )
             }
         }

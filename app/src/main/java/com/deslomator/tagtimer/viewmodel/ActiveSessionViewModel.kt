@@ -122,6 +122,12 @@ class ActiveSessionViewModel @Inject constructor(
                 )
                 viewModelScope.launch { appDao.upsertEvent(event) }
             }
+            ActiveSessionAction.EventTrashClicked -> {
+                _state.update { it.copy( showEventTrash = true) }
+            }
+            ActiveSessionAction.DismissEventTrashDialog -> {
+                _state.update { it.copy( showEventTrash = false) }
+            }
         }
     }
 
