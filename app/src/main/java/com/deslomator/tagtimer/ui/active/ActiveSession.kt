@@ -42,7 +42,14 @@ fun ActiveSession(
         topBar = {
             ActiveSessionTopBar(
                 state = state,
-                onBackClicked = { navHostController.navigateUp() },
+                onBackClicked = {
+                    if (state.showTagsDialog) {
+                        onAction(ActiveSessionAction.DismissTagDialog)
+                    } else {
+                        onAction(ActiveSessionAction.StopSession)
+                        navHostController.navigateUp()
+                    }
+                },
                 onPlayPauseClick = { onAction(ActiveSessionAction.PlayPauseClicked) },
                 onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
             )

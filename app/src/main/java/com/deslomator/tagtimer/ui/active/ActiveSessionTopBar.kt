@@ -40,7 +40,13 @@ fun ActiveSessionTopBar(
             ) {
                 Icon(
                     modifier = Modifier.size(36.dp),
-                    painter = painterResource(R.drawable.play_circle_outline),
+                    painter = painterResource(
+                        if (state.isRunning) {
+                            R.drawable.pause_circle_outline
+                        } else {
+                            R.drawable.play_circle_outline
+                        }
+                    ),
                     contentDescription = "play pause"
                 )
             }
