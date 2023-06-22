@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,9 @@ fun ActiveSessionContent(
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit
 ) {
+    BackHandler(enabled = state.showTagsDialog) {
+        onAction(ActiveSessionAction.DismissTagDialog)
+    }
     Box {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
