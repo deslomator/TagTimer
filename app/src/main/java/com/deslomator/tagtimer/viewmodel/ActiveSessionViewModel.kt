@@ -1,11 +1,12 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.room.util.copy
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.ActiveSessionState
@@ -94,11 +95,21 @@ class ActiveSessionViewModel @Inject constructor(
             ActiveSessionAction.AcceptTagSelectionClicked -> {
                 _state.update { it.copy( showTagsDialog = false) }
             }
-            is ActiveSessionAction.ActiveSessionClicked -> {
-
+            is ActiveSessionAction.PreSelectedTagClicked -> {
+                val event = Event(
+                    sessionId = _sessionId.value,
+                    timestampMillis = System.currentTimeMillis(),
+                    category = action.tag.category,
+                    label = action.tag.label,
+                    color = action.tag.color
+                )
+                viewModelScope.launch { appDao.upsertEvent(event) }
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy( isRunning = false) }
+            }
+            is ActiveSessionAction.EventClicked -> {
+
             }
         }
     }

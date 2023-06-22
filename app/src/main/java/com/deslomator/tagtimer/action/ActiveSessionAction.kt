@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.action
 
+import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Tag
 
 sealed interface ActiveSessionAction {
@@ -10,5 +11,6 @@ sealed interface ActiveSessionAction {
     class SelectTagCheckedChange(val tagId: Int, val checked: Boolean): ActiveSessionAction
     object AcceptTagSelectionClicked: ActiveSessionAction
     object StopSession: ActiveSessionAction
-    class ActiveSessionClicked(tag: Tag) : ActiveSessionAction
+    class PreSelectedTagClicked(val tag: Tag) : ActiveSessionAction
+    class EventClicked(val event: Event) : ActiveSessionAction
 }
