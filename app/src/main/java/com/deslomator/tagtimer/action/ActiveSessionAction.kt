@@ -12,5 +12,5 @@ sealed interface ActiveSessionAction {
     object AcceptTagSelectionClicked: ActiveSessionAction
     object StopSession: ActiveSessionAction
     class PreSelectedTagClicked(val tag: Tag) : ActiveSessionAction
-    class EventClicked(val event: Event) : ActiveSessionAction
+    class AcceptEventNoteChanged(val event: Event, val note: String) : ActiveSessionAction
 }

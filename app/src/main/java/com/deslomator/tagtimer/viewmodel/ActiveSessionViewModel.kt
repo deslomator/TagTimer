@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -96,20 +95,32 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy( showTagsDialog = false) }
             }
             is ActiveSessionAction.PreSelectedTagClicked -> {
-                val event = Event(
-                    sessionId = _sessionId.value,
-                    timestampMillis = System.currentTimeMillis(),
-                    category = action.tag.category,
-                    label = action.tag.label,
-                    color = action.tag.color
-                )
-                viewModelScope.launch { appDao.upsertEvent(event) }
+                if (state.value.isRunning) {
+                    val event = Event(
+                        sessionId = _sessionId.value,
+                        timestampMillis = System.currentTimeMillis(),
+                        category = action.tag.category,
+                        label = action.tag.label,
+                        color = action.tag.color
+                    )
+                    viewModelScope.launch { appDao.upsertEvent(event) }
+                }
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy( isRunning = false) }
             }
-            is ActiveSessionAction.EventClicked -> {
-
+            is ActiveSessionAction.AcceptEventNoteChanged -> {
+                Log.d(TAG, "AcceptEventNoteChanged")
+                val event = Event(
+                    sessionId = _sessionId.value,
+                    timestampMillis = action.event.timestampMillis,
+                    category = action.event.category,
+                    label = action.event.label,
+                    color = action.event.color,
+                    note = action.note,
+                    id = action.event.id,
+                )
+                viewModelScope.launch { appDao.upsertEvent(event) }
             }
         }
     }

@@ -10,19 +10,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.MyListItem
-import com.deslomator.tagtimer.ui.theme.OnLightBackground
 import com.deslomator.tagtimer.ui.theme.contrasted
 
 @Composable
@@ -38,45 +37,35 @@ fun ActiveSessionContent(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.5f),
+                    .weight(0.4f),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 item {
                     if (state.events.isEmpty()) {
-                        Text(text = "Add some Event tapping a Tag below")
+                        Text(text = stringResource(id = R.string.tap_a_tag_below))
                     }
                 }
                 items(
                     items = state.events,
                     key = { it.id }
                 ) { event ->
-                    MyListItem(
-                        modifier = Modifier
-                            .clip(shape = RoundedCornerShape(20.dp))
-                            .border(4.dp, Color(event.color), RoundedCornerShape(20.dp)),
-                        colors = ListItemDefaults.colors(
-                            headlineColor = OnLightBackground,
-                        ),
-                        item = event,
-                        onItemClick = { onAction(ActiveSessionAction.EventClicked(event)) },
-                    ) { item ->
-                        Column {
-                            Text(item.label + "   " + item.timestampMillis)
-                        }
-                    }
+                    EventListItem(
+                        event,
+                        onAction
+                    )
                 }
             }
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(0.5f),
+                    .weight(0.6f),
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 item {
                     if (state.preSelectedTags.isEmpty()) {
-                        Text(text = "Add some Tag tapping the top bar icon")
+                        Text(text = stringResource(id = R.string.tap_toolbar_icon_add_pst))
                     }
                 }
                 items(
