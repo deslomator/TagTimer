@@ -52,7 +52,7 @@ fun ActiveSession(
                         navHostController.navigateUp()
                     }
                 },
-                onPlayPauseClick = { onAction(ActiveSessionAction.PlayPauseClicked) },
+                onEditSessionClick = { onAction(ActiveSessionAction.EditSessionClicked) },
                 onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
                 onEventTrashClick = { onAction(ActiveSessionAction.EventTrashClicked) },
             )

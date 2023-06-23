@@ -3,6 +3,7 @@ package com.deslomator.tagtimer.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.room.util.copy
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
@@ -171,6 +172,12 @@ class ActiveSessionViewModel @Inject constructor(
                         id = action.event.id,
                     )
                     appDao.upsertEvent(event) }
+            }
+            ActiveSessionAction.EditSessionClicked -> {
+                _state.update { it.copy(showSessionEditionDialog = true) }
+            }
+            ActiveSessionAction.AcceptSessionEditionClicked -> {
+                _state.update { it.copy(showSessionEditionDialog = false) }
             }
         }
     }

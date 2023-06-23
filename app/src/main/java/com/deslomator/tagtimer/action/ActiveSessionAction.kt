@@ -18,4 +18,6 @@ sealed interface ActiveSessionAction {
     class RestoreEventClicked(val event: Event): ActiveSessionAction
     class DeleteEventClicked(val event: Event): ActiveSessionAction
     class TrashEventSwiped(val event: Event): ActiveSessionAction
+    object EditSessionClicked: ActiveSessionAction
+    object AcceptSessionEditionClicked: ActiveSessionAction
 }

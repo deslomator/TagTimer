@@ -19,7 +19,7 @@ import com.deslomator.tagtimer.state.ActiveSessionState
 fun ActiveSessionTopBar(
     state: ActiveSessionState,
     onBackClicked: () -> Unit,
-    onPlayPauseClick: () -> Unit,
+    onEditSessionClick: () -> Unit,
     onAddTagClick: () -> Unit,
     onEventTrashClick: () -> Unit,
 ) {
@@ -34,22 +34,16 @@ fun ActiveSessionTopBar(
                 )
             }
         },
-        title = { Text(stringResource(id = R.string.active_session)) },
+        title = { Text(state.currentSession.name) },
         actions = {
             if (!state.showTagsDialog && !state.showEventTrash) {
                 IconButton(
-                    onClick = onPlayPauseClick
+                    onClick = onEditSessionClick
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
-                        painter = painterResource(
-                            if (state.isRunning) {
-                                R.drawable.pause_circle_outline
-                            } else {
-                                R.drawable.play_circle_outline
-                            }
-                        ),
-                        contentDescription = "play pause"
+                        painter = painterResource(R.drawable.edit),
+                        contentDescription = "edit Session"
                     )
                 }
             }

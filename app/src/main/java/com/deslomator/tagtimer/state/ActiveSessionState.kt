@@ -21,4 +21,5 @@ data class ActiveSessionState(
     val isAbsoluteTime: Boolean = false,
     val showSnackbar: Boolean = false,
     val showEventTrash: Boolean = false,
+    val showSessionEditionDialog: Boolean = false,
 )
