@@ -45,13 +45,13 @@ fun EventList(
             items = state.events,
             key = { it.id }
         ) { event ->
-            Log.d(TAG, "item note: ${event.note}, id: ${event.id}, category: ${event.category}")
+            Log.d(TAG, "item note: ${event.note}, id: ${event.id}, category: ${event.category}, label: ${event.label}")
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
                 onDismiss = {
-                    Log.d(TAG, "onDismiss() note: ${event.note}, id: ${event.id}, category: ${event.category}")
+                    Log.d(TAG, "onDismiss() note: ${event.note}, id: ${event.id}, category: ${event.category}, label: ${event.label}")
                     onAction(ActiveSessionAction.TrashEventSwiped(event))
-                            },
+                },
                 dismissColor = Pink80
             ) {
                 EventListItem(

@@ -1,5 +1,9 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,11 +45,8 @@ fun EventListItem(
     var expanded by rememberSaveable {
         mutableStateOf(false)
     }
-    var note by rememberSaveable {
-        mutableStateOf(event.note)
-    }
     val borderColor =
-        if (Color(event.color).brightness() > 0.85f) OnDarkBackground.toArgb()
+        if (Color(event.color).brightness() > 0.9f) OnDarkBackground.toArgb()
         else event.color
     MyListItem(
         modifier = Modifier
@@ -62,29 +63,47 @@ fun EventListItem(
         onTrailingClick = onTrailingClick
     ) { item ->
         Column {
-            Text(item.label + "   " + item.timestampMillis)
+            Text(item.label + "   " + item.category + "   " + item.note)
         }
-        if (expanded) {
-            TextField(
-                value = note,
-                onValueChange = { note = it },
-                placeholder = { Text(text = stringResource(id = R.string.type_a_note)) },
-                enabled = noteEnabled
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Button(
-                    onClick = {
-                        expanded = false
-                        onAcceptEventNote?.invoke(note)
-                    }
+        AnimatedVisibility(
+            visible = expanded,
+            enter = expandVertically(),
+            exit = shrinkVertically()
+        ) {
+            var note by rememberSaveable {
+                mutableStateOf(event.note)
+            }
+            Column {
+                TextField(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    value = note,
+                    onValueChange = { note = it },
+                    placeholder = {
+                        Text(
+                            text = if (noteEnabled) stringResource(id = R.string.type_a_note) else ""
+                        )
+                    },
+                    enabled = noteEnabled
+                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = stringResource(id = R.string.accept))
+                    Button(
+                        onClick = {
+                            expanded = false
+                            onAcceptEventNote?.invoke(note)
+                            Log.d(TAG, "onClick() note: $note, id: ${event.id}, category: ${event.category}, label: ${event.label}")
+                        }
+                    ) {
+                        Text(text = stringResource(id = R.string.accept))
+                    }
                 }
             }
         }
     }
 }
+
+private const val TAG = "EventListItem"

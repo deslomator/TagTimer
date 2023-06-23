@@ -73,7 +73,19 @@ class ActiveSessionViewModel @Inject constructor(
                     appDao.upsertSession(s) }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
-                _state.update { it.copy(isRunning = !state.value.isRunning) }
+                viewModelScope.launch {
+                    _state.update { it.copy(isRunning = !state.value.isRunning) }
+                    val s = if (state.value.isRunning) {
+                        state.value.currentSession.copy(
+                            startTimeMillis = System.currentTimeMillis()
+                        )
+                    } else {
+                        state.value.currentSession.copy(
+                            endTimeMillis = System.currentTimeMillis()
+                        )
+                    }
+                    appDao.upsertSession(s)
+                }
             }
             is ActiveSessionAction.SelectTagsClicked -> {
                 _state.update { it.copy( showTagsDialog = true) }
