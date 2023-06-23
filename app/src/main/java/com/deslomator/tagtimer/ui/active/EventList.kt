@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -44,9 +45,13 @@ fun EventList(
             items = state.events,
             key = { it.id }
         ) { event ->
+            Log.d(TAG, "item note: ${event.note}, id: ${event.id}, category: ${event.category}")
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
-                onDismiss = { onAction(ActiveSessionAction.TrashEventSwiped(event)) },
+                onDismiss = {
+                    Log.d(TAG, "onDismiss() note: ${event.note}, id: ${event.id}, category: ${event.category}")
+                    onAction(ActiveSessionAction.TrashEventSwiped(event))
+                            },
                 dismissColor = Pink80
             ) {
                 EventListItem(
@@ -59,3 +64,5 @@ fun EventList(
         }
     }
 }
+
+private const val TAG = "EventList"
