@@ -42,7 +42,7 @@ fun EventListItem(
         mutableStateOf(false)
     }
     var note by rememberSaveable {
-        mutableStateOf("")
+        mutableStateOf(event.note)
     }
     val borderColor =
         if (Color(event.color).brightness() > 0.85f) OnDarkBackground.toArgb()
@@ -55,10 +55,7 @@ fun EventListItem(
             headlineColor = OnLightBackground,
         ),
         item = event,
-        onItemClick = {
-            note = event.note
-            expanded = true
-        },
+        onItemClick = { expanded = true },
         leadingIcon = leadingIcon,
         onLeadingClick = onLeadingClick,
         trailingIcon = trailingIcon,
