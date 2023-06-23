@@ -34,6 +34,7 @@ class ActiveSessionViewModel @Inject constructor(
             appDao.getActiveEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val _trashedEvents = _sessionId
         .flatMapLatest {
             Log.d(TAG, "_trashedEvents, creating, session id: $it")
