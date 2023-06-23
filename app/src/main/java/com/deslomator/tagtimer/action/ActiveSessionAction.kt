@@ -15,4 +15,6 @@ sealed interface ActiveSessionAction {
     class AcceptEventNoteChanged(val event: Event, val note: String) : ActiveSessionAction
     object EventTrashClicked: ActiveSessionAction
     object DismissEventTrashDialog: ActiveSessionAction
+    class RestoreEventClicked(val event: Event): ActiveSessionAction
+    class DeleteEventClicked(val event: Event): ActiveSessionAction
 }

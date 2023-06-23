@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.OnLightBackground
@@ -29,7 +28,12 @@ import com.deslomator.tagtimer.ui.theme.OnLightBackground
 @Composable
 fun EventListItem(
     event: Event,
-    onAction: (ActiveSessionAction) -> Unit
+    leadingIcon: Int? = null,
+    onLeadingClick: ((Event) -> Unit)? = null,
+    trailingIcon: Int? = null,
+    onTrailingClick: ((Event) -> Unit)? = null,
+    noteEnabled: Boolean = true,
+    onAcceptEventNote: ((String) -> Unit)? = null,
 ) {
     var expanded by rememberSaveable {
         mutableStateOf(false)
@@ -49,6 +53,10 @@ fun EventListItem(
             note = event.note
             expanded = true
         },
+        leadingIcon = leadingIcon,
+        onLeadingClick = onLeadingClick,
+        trailingIcon = trailingIcon,
+        onTrailingClick = onTrailingClick
     ) { item ->
         Column {
             Text(item.label + "   " + item.timestampMillis)
@@ -58,6 +66,7 @@ fun EventListItem(
                 value = note,
                 onValueChange = { note = it },
                 placeholder = { Text(text = stringResource(id = R.string.type_a_note)) },
+                enabled = noteEnabled
             )
             Row(
                 modifier = Modifier
@@ -67,7 +76,7 @@ fun EventListItem(
                 Button(
                     onClick = {
                         expanded = false
-                        onAction(ActiveSessionAction.AcceptEventNoteChanged(item, note))
+                        onAcceptEventNote?.invoke(note)
                     }
                 ) {
                     Text(text = stringResource(id = R.string.accept))

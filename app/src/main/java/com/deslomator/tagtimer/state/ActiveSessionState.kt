@@ -7,6 +7,7 @@ import com.deslomator.tagtimer.model.Tag
 
 data class ActiveSessionState(
     val events: List<Event> = emptyList(),
+    val trashedEvents: List<Event> = emptyList(),
     val preSelectedTags: List<PreSelectedTag> = emptyList(),
     val tags: List<Tag> = emptyList(),
     val currentSession: Session = Session(),

@@ -34,6 +34,12 @@ class ActiveSessionViewModel @Inject constructor(
             appDao.getActiveEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _trashedEvents = _sessionId
+        .flatMapLatest {
+            Log.d(TAG, "_trashedEvents, creating, session id: $it")
+            appDao.getTrashedEventsForSession(_sessionId.value)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _sessionId
         .flatMapLatest {
@@ -43,9 +49,12 @@ class ActiveSessionViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_state, _events, _preSelectedTags, _tags) { state, events, preSelectedTags, tags ->
+    val state = combine(
+        _state, _events, _preSelectedTags, _tags, _trashedEvents
+    ) { state, events, preSelectedTags, tags, trashedEvents ->
         state.copy(
             events = events,
+            trashedEvents = trashedEvents,
             preSelectedTags = preSelectedTags,
             tags = tags,
         )
@@ -127,6 +136,23 @@ class ActiveSessionViewModel @Inject constructor(
             }
             ActiveSessionAction.DismissEventTrashDialog -> {
                 _state.update { it.copy( showEventTrash = false) }
+            }
+
+            is ActiveSessionAction.DeleteEventClicked -> {
+                viewModelScope.launch { appDao.deleteEvent(action.event) }
+            }
+            is ActiveSessionAction.RestoreEventClicked -> {
+                val event = Event(
+                    sessionId = _sessionId.value,
+                    timestampMillis = action.event.timestampMillis,
+                    category = action.event.category,
+                    label = action.event.label,
+                    color = action.event.color,
+                    note = action.event.note,
+                    inTrash = false,
+                    id = action.event.id,
+                )
+                viewModelScope.launch { appDao.upsertEvent(event) }
             }
         }
     }

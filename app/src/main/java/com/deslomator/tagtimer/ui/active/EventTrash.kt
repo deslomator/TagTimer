@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,10 +13,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -28,17 +25,16 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.theme.contrasted
 
 @Composable
-fun TagSelectionDialog(
+fun EventTrash(
     state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    onAction: (ActiveSessionAction) -> Unit
 ) {
     Box(
         modifier = Modifier
             .background(Color.Black.copy(alpha = .65f))
-            .clickable { onAction(ActiveSessionAction.DismissTagDialog) }
+            .clickable { onAction(ActiveSessionAction.DismissEventTrashDialog) }
             .fillMaxSize()
             .padding(top = 50.dp, bottom = 50.dp, start = 16.dp, end = 16.dp)
     ) {
@@ -62,32 +58,17 @@ fun TagSelectionDialog(
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
                     items(
-                        items = state.tags,
+                        items = state.trashedEvents,
                         key = { it.id }
-                    ) { tag ->
-                        SelectedTagListItem(
-                            modifier = Modifier
-                                .clip(CutCornerShape(topStart = 20.dp))
-                                .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
-                            leadingIcon = R.drawable.tag,
-                            colors = ListItemDefaults.colors(
-                                leadingIconColor = Color(tag.color).contrasted(),
-                                headlineColor = Color(tag.color).contrasted(),
-                                trailingIconColor = Color(tag.color).contrasted(),
-                                containerColor = Color(tag.color),
-                            ),
-                            item = tag,
-                            checked = state.preSelectedTags.map { it.tagId }.contains(tag.id),
-                            onCheckedChange = {
-//                            Log.d(TAG, "SelectTagCheckedChange: $it")
-                                onAction(ActiveSessionAction.SelectTagCheckedChange(tag.id, it))
-                            }
-                        ) { item ->
-                            Column {
-                                Text(item.label)
-                                Text(item.category)
-                            }
-                        }
+                    ) { event ->
+                        EventListItem(
+                            event = event,
+                            leadingIcon = R.drawable.delete_forever,
+                            onLeadingClick = { onAction(ActiveSessionAction.DeleteEventClicked(event)) },
+                            trailingIcon = R.drawable.restore_from_trash,
+                            onTrailingClick = { onAction(ActiveSessionAction.RestoreEventClicked(event)) },
+                            noteEnabled = false,
+                        )
                     }
                 }
                 Row(
@@ -96,7 +77,7 @@ fun TagSelectionDialog(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Button(
-                        onClick = { onAction(ActiveSessionAction.DismissTagDialog) }
+                        onClick = { onAction(ActiveSessionAction.DismissEventTrashDialog) }
                     ) {
                         Text(text = stringResource(id = R.string.accept))
                     }
@@ -106,4 +87,4 @@ fun TagSelectionDialog(
     }
 }
 
-private const val TAG = "TagSelectionDialog"
+private const val TAG = "EventTrash"

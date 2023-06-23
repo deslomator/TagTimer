@@ -36,38 +36,44 @@ fun ActiveSessionTopBar(
         },
         title = { Text(stringResource(id = R.string.active_session)) },
         actions = {
-            IconButton(
-                onClick = onPlayPauseClick
-            ) {
-                Icon(
-                    modifier = Modifier.size(36.dp),
-                    painter = painterResource(
-                        if (state.isRunning) {
-                            R.drawable.pause_circle_outline
-                        } else {
-                            R.drawable.play_circle_outline
-                        }
-                    ),
-                    contentDescription = "play pause"
-                )
+            if (!state.showTagsDialog && !state.showEventTrash) {
+                IconButton(
+                    onClick = onPlayPauseClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(
+                            if (state.isRunning) {
+                                R.drawable.pause_circle_outline
+                            } else {
+                                R.drawable.play_circle_outline
+                            }
+                        ),
+                        contentDescription = "play pause"
+                    )
+                }
             }
-            IconButton(
-                onClick = onAddTagClick
-            ) {
-                Icon(
-                    modifier = Modifier.size(36.dp),
-                    painter = painterResource(R.drawable.add_tag),
-                    contentDescription = stringResource(id = R.string.add_tag)
-                )
+            if (!state.showTagsDialog && !state.showEventTrash) {
+                IconButton(
+                    onClick = onAddTagClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(R.drawable.add_tag),
+                        contentDescription = stringResource(id = R.string.add_tag)
+                    )
+                }
             }
-            IconButton(
-                onClick = onEventTrashClick
-            ) {
-                Icon(
-                    modifier = Modifier.size(36.dp),
-                    painter = painterResource(R.drawable.delete),
-                    contentDescription = stringResource(id = R.string.trash)
-                )
+            if (!state.showTagsDialog && !state.showEventTrash) {
+                IconButton(
+                    onClick = onEventTrashClick
+                ) {
+                    Icon(
+                        modifier = Modifier.size(36.dp),
+                        painter = painterResource(R.drawable.delete),
+                        contentDescription = stringResource(id = R.string.trash)
+                    )
+                }
             }
         }
     )
