@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -18,12 +19,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.ui.MyListItem
+import com.deslomator.tagtimer.ui.theme.OnDarkBackground
 import com.deslomator.tagtimer.ui.theme.OnLightBackground
+import com.deslomator.tagtimer.ui.theme.brightness
 
 @Composable
 fun EventListItem(
@@ -41,10 +45,13 @@ fun EventListItem(
     var note by rememberSaveable {
         mutableStateOf("")
     }
+    val borderColor =
+        if (Color(event.color).brightness() > 0.85f) OnDarkBackground.toArgb()
+        else event.color
     MyListItem(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(20.dp))
-            .border(4.dp, Color(event.color), RoundedCornerShape(20.dp)),
+            .border(4.dp, Color(borderColor), RoundedCornerShape(20.dp)),
         colors = ListItemDefaults.colors(
             headlineColor = OnLightBackground,
         ),
