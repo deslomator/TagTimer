@@ -63,10 +63,10 @@ fun EventTrash(
                     ) { event ->
                         EventListItem(
                             event = event,
-                            leadingIcon = R.drawable.delete_forever,
-                            onLeadingClick = { onAction(ActiveSessionAction.DeleteEventClicked(event)) },
-                            trailingIcon = R.drawable.restore_from_trash,
-                            onTrailingClick = { onAction(ActiveSessionAction.RestoreEventClicked(event)) },
+                            leadingIcon = R.drawable.restore_from_trash,
+                            onLeadingClick = { onAction(ActiveSessionAction.RestoreEventClicked(event)) },
+                            trailingIcon = R.drawable.delete_forever,
+                            onTrailingClick = { onAction(ActiveSessionAction.DeleteEventClicked(event)) },
                             noteEnabled = false,
                         )
                     }

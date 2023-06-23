@@ -142,17 +142,34 @@ class ActiveSessionViewModel @Inject constructor(
                 viewModelScope.launch { appDao.deleteEvent(action.event) }
             }
             is ActiveSessionAction.RestoreEventClicked -> {
-                val event = Event(
-                    sessionId = _sessionId.value,
-                    timestampMillis = action.event.timestampMillis,
-                    category = action.event.category,
-                    label = action.event.label,
-                    color = action.event.color,
-                    note = action.event.note,
-                    inTrash = false,
-                    id = action.event.id,
-                )
-                viewModelScope.launch { appDao.upsertEvent(event) }
+                Log.d(TAG, "RestoreEventClicked")
+                viewModelScope.launch {
+                    val trashed = Event(
+                        sessionId = action.event.sessionId,
+                        timestampMillis = action.event.timestampMillis,
+                        category = action.event.category,
+                        label = action.event.label,
+                        color = action.event.color,
+                        note = action.event.note,
+                        inTrash = false,
+                        id = action.event.id,
+                    )
+                    appDao.upsertEvent(trashed) }
+            }
+            is ActiveSessionAction.TrashEventSwiped -> {
+                Log.d(TAG, "TrashEventSwiped")
+                viewModelScope.launch {
+                    val event = Event(
+                        sessionId = action.event.sessionId,
+                        timestampMillis = action.event.timestampMillis,
+                        category = action.event.category,
+                        label = action.event.label,
+                        color = action.event.color,
+                        note = action.event.note,
+                        inTrash = true,
+                        id = action.event.id,
+                    )
+                    appDao.upsertEvent(event) }
             }
         }
     }

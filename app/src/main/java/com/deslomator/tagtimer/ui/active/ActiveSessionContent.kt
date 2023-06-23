@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,10 +22,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.MyListItem
+import com.deslomator.tagtimer.ui.SwipeableListItem
+import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.contrasted
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActiveSessionContent(
     state: ActiveSessionState,
@@ -53,12 +59,18 @@ fun ActiveSessionContent(
                     items = state.events,
                     key = { it.id }
                 ) { event ->
-                    EventListItem(
-                        event = event,
-                        onAcceptEventNote = {
-                            onAction(ActiveSessionAction.AcceptEventNoteChanged(event, it))
-                        }
-                    )
+                    SwipeableListItem(
+                        dismissDirection = DismissDirection.StartToEnd,
+                        onDismiss = { onAction(ActiveSessionAction.TrashEventSwiped(event)) },
+                        dismissColor = Pink80
+                    ) {
+                        EventListItem(
+                            event = event,
+                            onAcceptEventNote = {
+                                onAction(ActiveSessionAction.AcceptEventNoteChanged(event, it))
+                            }
+                        )
+                    }
                 }
             }
             LazyColumn(

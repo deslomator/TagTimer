@@ -17,4 +17,5 @@ sealed interface ActiveSessionAction {
     object DismissEventTrashDialog: ActiveSessionAction
     class RestoreEventClicked(val event: Event): ActiveSessionAction
     class DeleteEventClicked(val event: Event): ActiveSessionAction
+    class TrashEventSwiped(val event: Event): ActiveSessionAction
 }
