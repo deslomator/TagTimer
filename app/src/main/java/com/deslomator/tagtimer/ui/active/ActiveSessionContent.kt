@@ -1,6 +1,9 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -147,13 +150,22 @@ fun ActiveSessionContent(
                 }
             }
         }
-        if (state.showTagsDialog) {
+        AnimatedVisibility(
+            visible = state.showTagsDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             TagSelectionDialog(
                 state = state,
                 onAction = onAction,
             )
         }
-        if (state.showEventTrash) {
+
+        AnimatedVisibility(
+            visible = state.showEventTrash,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
             EventTrash(
                 state = state,
                 onAction = onAction
