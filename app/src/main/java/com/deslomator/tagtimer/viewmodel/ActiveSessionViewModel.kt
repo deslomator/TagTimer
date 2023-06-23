@@ -69,15 +69,8 @@ class ActiveSessionViewModel @Inject constructor(
                     _state.update {
                         it.copy(currentSession = appDao.getSession(action.id))
                     }
-                    val session = Session(
-                        lastAccessMillis = System.currentTimeMillis(),
-                        name = state.value.currentSession.name,
-                        color = state.value.currentSession.color,
-                        startTimeMillis = state.value.currentSession.startTimeMillis,
-                        endTimeMillis = state.value.currentSession.endTimeMillis,
-                        id = state.value.currentSession.id,
-                    )
-                    appDao.upsertSession(session) }
+                    val s = state.value.currentSession.copy(lastAccessMillis = System.currentTimeMillis())
+                    appDao.upsertSession(s) }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
@@ -121,16 +114,8 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.AcceptEventNoteChanged -> {
                 Log.d(TAG, "AcceptEventNoteChanged")
-                val event = Event(
-                    sessionId = _sessionId.value,
-                    timestampMillis = action.event.timestampMillis,
-                    category = action.event.category,
-                    label = action.event.label,
-                    color = action.event.color,
-                    note = action.note,
-                    id = action.event.id,
-                )
-                viewModelScope.launch { appDao.upsertEvent(event) }
+                val e = action.event.copy(note = action.note)
+                viewModelScope.launch { appDao.upsertEvent(e) }
             }
             ActiveSessionAction.EventTrashClicked -> {
                 _state.update { it.copy( showEventTrash = true) }
@@ -138,39 +123,21 @@ class ActiveSessionViewModel @Inject constructor(
             ActiveSessionAction.DismissEventTrashDialog -> {
                 _state.update { it.copy( showEventTrash = false) }
             }
-
             is ActiveSessionAction.DeleteEventClicked -> {
                 viewModelScope.launch { appDao.deleteEvent(action.event) }
             }
             is ActiveSessionAction.RestoreEventClicked -> {
                 Log.d(TAG, "RestoreEventClicked")
                 viewModelScope.launch {
-                    val trashed = Event(
-                        sessionId = action.event.sessionId,
-                        timestampMillis = action.event.timestampMillis,
-                        category = action.event.category,
-                        label = action.event.label,
-                        color = action.event.color,
-                        note = action.event.note,
-                        inTrash = false,
-                        id = action.event.id,
-                    )
-                    appDao.upsertEvent(trashed) }
+                    val e = action.event.copy(inTrash = false)
+                    appDao.upsertEvent(e) }
             }
             is ActiveSessionAction.TrashEventSwiped -> {
-                Log.d(TAG, "TrashEventSwiped")
+                Log.d(TAG, "TrashEventSwiped. action.event.note: ${action.event.note}, id: ${action.event.id}")
                 viewModelScope.launch {
-                    val event = Event(
-                        sessionId = action.event.sessionId,
-                        timestampMillis = action.event.timestampMillis,
-                        category = action.event.category,
-                        label = action.event.label,
-                        color = action.event.color,
-                        note = action.event.note,
-                        inTrash = true,
-                        id = action.event.id,
-                    )
-                    appDao.upsertEvent(event) }
+                    val e = action.event.copy(inTrash = true)
+                    Log.d(TAG, "TrashEventSwiped. e.note: ${e.note}, id: ${e.id}")
+                    appDao.upsertEvent(e) }
             }
             ActiveSessionAction.EditSessionClicked -> {
                 _state.update { it.copy(showSessionEditionDialog = true) }
