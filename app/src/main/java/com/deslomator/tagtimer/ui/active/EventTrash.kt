@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -57,6 +58,15 @@ fun EventTrash(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
+                    if (state.trashedEvents.isEmpty()) {
+                        item {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Center,
+                                text = stringResource(id = R.string.event_trash_is_empty)
+                            )
+                        }
+                    }
                     items(
                         items = state.trashedEvents,
                         key = { it.id }
