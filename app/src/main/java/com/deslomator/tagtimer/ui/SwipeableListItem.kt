@@ -44,10 +44,18 @@ fun SwipeableListItem(
     doneColor: Color = Color(0xff04a48f),
     content: @Composable (DismissState) -> Unit
 ) {
-    val dismissState = rememberDismissState(initialValue = DismissValue.Default)
-    if (dismissState.isDismissed(dismissDirection)) {
-        onDismiss()
-    }
+    // confirmValueChange wasn't well documented, but this implementation
+    // of rememberDismissState seems to work fine, not firing onDismiss() twice
+    val dismissState = rememberDismissState(
+        initialValue = DismissValue.Default,
+        confirmValueChange = { dismissValue ->
+            if (dismissValue == if (dismissDirection == StartToEnd) DismissValue.DismissedToEnd
+                else DismissValue.DismissedToStart) {
+                onDismiss()
+                true
+            } else false
+        }
+    )
 
     SwipeToDismiss(
         state = dismissState,
