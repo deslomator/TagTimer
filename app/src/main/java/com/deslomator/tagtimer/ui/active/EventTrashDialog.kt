@@ -22,12 +22,13 @@ fun EventTrashDialog(
     onAction: (ActiveSessionAction) -> Unit
 ) {
     MyDialog(
-        onDismiss = { onAction(ActiveSessionAction.DismissEventTrashDialog) }
+        onDismiss = { onAction(ActiveSessionAction.DismissEventTrashDialog) },
+        onAccept = { onAction(ActiveSessionAction.DismissEventTrashDialog) },
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(6.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             if (state.trashedEvents.isEmpty()) {

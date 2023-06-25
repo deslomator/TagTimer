@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsScreenAction
@@ -36,10 +35,9 @@ class SessionsScreenViewModel @Inject constructor(
                 _state.update { it.copy(
                     sessionColor = it.currentSession.color,
                     showSessionDialog = true,
-                    isAddingNewSession = true
                 ) }
             }
-            is SessionsScreenAction.AcceptAddNewSessionClicked -> {
+            is SessionsScreenAction.AcceptAddSessionClicked -> {
                 val session = Session(
                     name = state.value.sessionName,
                     color = state.value.sessionColor,
@@ -47,45 +45,14 @@ class SessionsScreenViewModel @Inject constructor(
                 )
                 _state.update { it.copy(
                     showSessionDialog = false,
-                    isAddingNewSession = false,
                     sessionColor = 0,
                     sessionName = ""
-                ) }
-                viewModelScope.launch { appDao.upsertSession(session) }
-            }
-            is SessionsScreenAction.EditSessionClicked -> {
-                _state.update { it.copy(
-                    showSessionDialog = true,
-                    isEditingSession = true,
-                    lastAccessMillis = System.currentTimeMillis(),
-                    currentSession = action.session,
-                    sessionColor = action.session.color,
-                    sessionName = action.session.name
-                ) }
-            }
-            is SessionsScreenAction.AcceptSessionEditionClicked -> {
-                val session = Session(
-                    id = state.value.currentSession.id,
-                    startTimeMillis = action.session.startTimeMillis,
-                    endTimeMillis = action.session.endTimeMillis,
-                    name = state.value.sessionName,
-                    color = state.value.sessionColor,
-                    lastAccessMillis = System.currentTimeMillis()
-                )
-                _state.update { it.copy(
-                    showSessionDialog = false,
-                    isEditingSession = false,
-                    sessionColor = 0,
-                    sessionName = "",
-                    currentSession = Session()
                 ) }
                 viewModelScope.launch { appDao.upsertSession(session) }
             }
             is SessionsScreenAction.DismissSessionDialog -> {
                 _state.update { it.copy(
                     showSessionDialog = false,
-                    isEditingSession = false,
-                    isAddingNewSession = false,
                     sessionColor = 0,
                     sessionName = ""
                 ) }

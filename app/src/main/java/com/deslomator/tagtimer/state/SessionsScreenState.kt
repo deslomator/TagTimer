@@ -9,7 +9,5 @@ data class SessionsScreenState(
     val sessionName: String = "",
     val sessionColor: Int = 0,
     val showSessionDialog: Boolean = false,
-    val isEditingSession: Boolean = false,
-    val isAddingNewSession: Boolean = false,
     val showSnackbar: Boolean = false,
 )

@@ -58,7 +58,7 @@ fun TrashContent(
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(6.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(
@@ -112,7 +112,7 @@ fun TrashContent(
         ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
+                contentPadding = PaddingValues(6.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(
@@ -163,7 +163,7 @@ fun TrashContent(
 fun TrashContentPreview() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(6.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(colorPickerColors) { background ->

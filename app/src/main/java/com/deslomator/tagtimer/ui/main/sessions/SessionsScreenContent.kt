@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.main.sessions
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,12 +44,8 @@ fun SessionsScreenContent(
     state: SessionsScreenState,
     onAction: (SessionsScreenAction) -> Unit
 ) {
-    if (state.showSessionDialog) {
-        SessionDialog(
-            state = state,
-            onAction = onAction,
-            session = state.currentSession
-        )
+    BackHandler(enabled = state.showSessionDialog) {
+        onAction(SessionsScreenAction.DismissSessionDialog)
     }
     Box(
         modifier = Modifier
@@ -57,7 +54,7 @@ fun SessionsScreenContent(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(6.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
@@ -91,13 +88,6 @@ fun SessionsScreenContent(
                                 RootScreen.Active.routeWithArg(session.id)
                             )
                         },
-                        /*trailingIcon = R.drawable.baseline_edit_24,
-                        onTrailingClick = {
-                            onAction(SessionsScreenAction.EditSessionClicked(session))
-                        },*/
-                        /*shadowElevation = animateDpAsState(
-                            if (dismissState.dismissDirection != null) 6.dp else 0.dp
-                        ).value*/
                     ) { item ->
                         Column {
                             Text(item.name)
@@ -108,6 +98,12 @@ fun SessionsScreenContent(
             }
         }
     }
+    if (state.showSessionDialog) {
+        SessionDialog(
+            state = state,
+            onAction = onAction,
+        )
+    }
 }
 
 
@@ -117,7 +113,7 @@ fun SessionsScreenContent(
 fun TagsScreenContentPreview() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
+        contentPadding = PaddingValues(6.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(colorPickerColors) { background ->

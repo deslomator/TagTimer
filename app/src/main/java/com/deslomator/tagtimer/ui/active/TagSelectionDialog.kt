@@ -27,12 +27,13 @@ fun TagSelectionDialog(
     onAction: (ActiveSessionAction) -> Unit,
 ) {
     MyDialog(
-        onDismiss = { onAction(ActiveSessionAction.DismissTagDialog) }
+        onDismiss = { onAction(ActiveSessionAction.DismissTagDialog) },
+        onAccept = { onAction(ActiveSessionAction.DismissTagDialog) },
     ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp),
+            contentPadding = PaddingValues(6.dp),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             items(

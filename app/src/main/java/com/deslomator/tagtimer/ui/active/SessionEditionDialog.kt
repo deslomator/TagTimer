@@ -12,7 +12,8 @@ fun SessionEditionDialog(
     onAction: (ActiveSessionAction) -> Unit
 ) {
     MyDialog(
-        onDismiss = { onAction(ActiveSessionAction.DismissSessionEditionDialog) }
+        onDismiss = { onAction(ActiveSessionAction.DismissSessionEditionDialog) },
+        onAccept = { onAction(ActiveSessionAction.DismissSessionEditionDialog) },
     ) {
         Text("Session Edition Dialog")
     }
