@@ -16,7 +16,7 @@ import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.TagsScreenState
 
 @Composable
@@ -26,7 +26,7 @@ fun MainScreen(
     onSessionsAction: (SessionsScreenAction) -> Unit,
     tagsScreenState: TagsScreenState,
     onTagsAction: (TagsScreenAction) -> Unit,
-    sessionsTrashState: SessionsTrashState,
+    trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit
 ) {
     val innerNavHostController: NavHostController = rememberNavController()
@@ -54,14 +54,14 @@ fun MainScreen(
             onTagsAction(TagsScreenAction.HideSnackbar)
         }
     }
-    if (sessionsTrashState.showSnackBar) {
-        LaunchedEffect(key1 = snackbarHostState) {
-            snackbarHostState.currentSnackbarData?.dismiss()
+    if (trashTabState.showSnackBar) {
+//        snackbarHostState.currentSnackbarData?.dismiss()
+        LaunchedEffect(key1 = Unit) {
             snackbarHostState.showSnackbar(
-                message = context.getString(sessionsTrashState.snackbarMessage),
+                message = context.getString(trashTabState.snackbarMessage),
                 duration = SnackbarDuration.Short
             )
-            onSessionsTrashAction(TrashTabAction.HideSnackbar)
+//            onSessionsTrashAction(TrashTabAction.HideSnackbar)
         }
     }
     Scaffold(
@@ -70,7 +70,7 @@ fun MainScreen(
                 backStackEntry = backStackEntry,
                 onNewSessionClick = { onSessionsAction(SessionsScreenAction.AddNewSessionClicked) },
                 onNewTagClick = { onTagsAction(TagsScreenAction.AddNewTagClicked) },
-                trashState = sessionsTrashState,
+                trashState = trashTabState,
                 onShowSessionsClick = { onSessionsTrashAction(TrashTabAction.ShowSessionsClicked) },
                 onShowTagsClick = { onSessionsTrashAction(TrashTabAction.ShowTagsClicked) }
             )
@@ -91,7 +91,7 @@ fun MainScreen(
                 onSessionsAction = onSessionsAction,
                 tagsScreenState = tagsScreenState,
                 onTagsAction = onTagsAction,
-                sessionsTrashState = sessionsTrashState,
+                trashTabState = trashTabState,
                 onSessionsTrashAction = onSessionsTrashAction
             )
         }

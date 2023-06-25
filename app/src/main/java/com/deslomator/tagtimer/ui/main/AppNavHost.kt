@@ -14,7 +14,7 @@ import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.TagsScreenState
 import com.deslomator.tagtimer.ui.active.ActiveSession
 
@@ -26,7 +26,7 @@ fun AppNavHost(
     onSessionsAction: (SessionsScreenAction) -> Unit,
     tagsScreenState: TagsScreenState,
     onTagsAction: (TagsScreenAction) -> Unit,
-    sessionsTrashState: SessionsTrashState,
+    trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
     activeSessionState: ActiveSessionState,
     onActiveSessionAction: (ActiveSessionAction) -> Unit,
@@ -45,7 +45,7 @@ fun AppNavHost(
                 onSessionsAction = onSessionsAction,
                 tagsScreenState = tagsScreenState,
                 onTagsAction = onTagsAction,
-                sessionsTrashState = sessionsTrashState,
+                trashTabState = trashTabState,
                 onSessionsTrashAction = onSessionsTrashAction
             )
         }

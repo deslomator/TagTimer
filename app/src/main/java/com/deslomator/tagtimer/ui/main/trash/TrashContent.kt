@@ -29,7 +29,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Trash
-import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness
@@ -39,7 +39,7 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 @Composable
 fun TrashContent(
     paddingValues: PaddingValues,
-    state: SessionsTrashState,
+    state: TrashTabState,
     onAction: (TrashTabAction) -> Unit
 ) {
     Box(

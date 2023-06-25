@@ -6,7 +6,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Trash
-import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TrashTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,7 +21,7 @@ class TrashTabViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(SessionsTrashState())
+    private val _state = MutableStateFlow(TrashTabState())
     private val _sessions = appDao.getTrashedSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getTrashedTags()
@@ -31,7 +31,7 @@ class TrashTabViewModel @Inject constructor(
             sessions = sessions,
             tags = tags,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsTrashState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrashTabState())
 
     fun onAction(action: TrashTabAction) {
         when(action) {
@@ -46,6 +46,7 @@ class TrashTabViewModel @Inject constructor(
                     appDao.deleteSession(action.session)
                     appDao.deleteEventsForSession(action.session.id)
                 }
+                _state.update { it.copy(showSnackBar = false) }
                 _state.update { it.copy(
                     snackbarMessage = R.string.session_deleted,
                     showSnackBar = true
@@ -56,6 +57,7 @@ class TrashTabViewModel @Inject constructor(
                     val trashed = action.session.copy(inTrash = false)
                     appDao.upsertSession(trashed)
                 }
+                _state.update { it.copy(showSnackBar = false) }
                 _state.update { it.copy(
                     snackbarMessage = R.string.session_restored,
                     showSnackBar = true
@@ -65,6 +67,7 @@ class TrashTabViewModel @Inject constructor(
                 viewModelScope.launch {
                     appDao.deleteTag(action.tag)
                 }
+                _state.update { it.copy(showSnackBar = false) }
                 _state.update { it.copy(
                     snackbarMessage = R.string.tag_deleted,
                     showSnackBar = true
@@ -75,6 +78,7 @@ class TrashTabViewModel @Inject constructor(
                     val trashed = action.tag.copy(inTrash = false)
                     appDao.upsertTag(trashed)
                 }
+                _state.update { it.copy(showSnackBar = false) }
                 _state.update { it.copy(
                     snackbarMessage = R.string.tag_restored,
                     showSnackBar = true

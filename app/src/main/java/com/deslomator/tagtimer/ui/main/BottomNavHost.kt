@@ -10,7 +10,7 @@ import com.deslomator.tagtimer.action.SessionsScreenAction
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.TagsScreenState
 import com.deslomator.tagtimer.ui.main.sessions.SessionsScreenContent
 import com.deslomator.tagtimer.ui.main.trash.TrashContent
@@ -26,7 +26,7 @@ fun BottomNavHost(
     onSessionsAction: (SessionsScreenAction) -> Unit,
     tagsScreenState: TagsScreenState,
     onTagsAction: (TagsScreenAction) -> Unit,
-    sessionsTrashState: SessionsTrashState,
+    trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
 ) {
     NavHost(
@@ -52,7 +52,7 @@ fun BottomNavHost(
         composable(BottomNavigationScreen.Trash.route) {
             TrashContent(
                 paddingValues = paddingValues,
-                state = sessionsTrashState,
+                state = trashTabState,
                 onAction = onSessionsTrashAction
             )
         }

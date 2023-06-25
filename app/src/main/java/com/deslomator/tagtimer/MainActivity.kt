@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
             TagTimerTheme {
                 LaunchedEffect(Unit) {
                     withContext(Dispatchers.IO) { cleanOrphans(appDao) }
-//                    populateDb(appDao)
+                    populateDb(appDao)
                 }
                 val sessionsScreenViewModel = viewModel<SessionsScreenViewModel>()
                 val tagsScreenViewModel = viewModel<TagsScreenViewModel>()
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                         onSessionsAction = sessionsScreenViewModel::onAction,
                         tagsScreenState = tagsScreenState,
                         onTagsAction = tagsScreenViewModel::onAction,
-                        sessionsTrashState = sessionsTrashState,
+                        trashTabState = sessionsTrashState,
                         onSessionsTrashAction = trashTabViewModel::onAction,
                         activeSessionState = activeSessionState,
                         onActiveSessionAction = activeSessionViewModel::onAction,

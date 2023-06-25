@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Trash
-import com.deslomator.tagtimer.state.SessionsTrashState
+import com.deslomator.tagtimer.state.TrashTabState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -27,7 +27,7 @@ fun MainTopBar(
     backStackEntry: State<NavBackStackEntry?>,
     onNewSessionClick: () -> Unit,
     onNewTagClick: () -> Unit,
-    trashState: SessionsTrashState,
+    trashState: TrashTabState,
     onShowSessionsClick: () -> Unit,
     onShowTagsClick: () -> Unit,
 ) {
