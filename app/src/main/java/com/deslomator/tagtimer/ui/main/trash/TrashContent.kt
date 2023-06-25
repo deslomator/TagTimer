@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.SessionsTrashAction
+import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Trash
 import com.deslomator.tagtimer.state.SessionsTrashState
@@ -40,7 +40,7 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 fun TrashContent(
     paddingValues: PaddingValues,
     state: SessionsTrashState,
-    onAction: (SessionsTrashAction) -> Unit
+    onAction: (TrashTabAction) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -79,7 +79,7 @@ fun TrashContent(
                         leadingIcon = R.drawable.restore_from_trash,
                         onLeadingClick = {
                             onAction(
-                                SessionsTrashAction.RestoreSessionClicked(
+                                TrashTabAction.RestoreSessionClicked(
                                     session
                                 )
                             )
@@ -87,7 +87,7 @@ fun TrashContent(
                         trailingIcon = R.drawable.delete_forever,
                         onTrailingClick = {
                             onAction(
-                                SessionsTrashAction.DeleteSessionClicked(
+                                TrashTabAction.DeleteSessionClicked(
                                     session
                                 )
                             )
@@ -133,7 +133,7 @@ fun TrashContent(
                         leadingIcon = R.drawable.restore_from_trash,
                         onLeadingClick = {
                             onAction(
-                                SessionsTrashAction.RestoreTagClicked(
+                                TrashTabAction.RestoreTagClicked(
                                     tag
                                 )
                             )
@@ -141,7 +141,7 @@ fun TrashContent(
                         trailingIcon = R.drawable.delete_forever,
                         onTrailingClick = {
                             onAction(
-                                SessionsTrashAction.DeleteTagClicked(
+                                TrashTabAction.DeleteTagClicked(
                                     tag
                                 )
                             )

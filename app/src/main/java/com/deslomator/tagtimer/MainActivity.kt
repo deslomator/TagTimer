@@ -24,7 +24,7 @@ import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
-import com.deslomator.tagtimer.viewmodel.SessionsTrashViewModel
+import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
 import com.deslomator.tagtimer.viewmodel.TagsScreenViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 }
                 val sessionsScreenViewModel = viewModel<SessionsScreenViewModel>()
                 val tagsScreenViewModel = viewModel<TagsScreenViewModel>()
-                val sessionsTrashViewModel = viewModel<SessionsTrashViewModel>()
+                val trashTabViewModel = viewModel<TrashTabViewModel>()
                 val activeSessionViewModel = viewModel<ActiveSessionViewModel>()
 
                 Surface(
@@ -60,7 +60,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val sessionsScreenState by sessionsScreenViewModel.state.collectAsState()
                     val tagsScreenState by tagsScreenViewModel.state.collectAsState()
-                    val sessionsTrashState by sessionsTrashViewModel.state.collectAsState()
+                    val sessionsTrashState by trashTabViewModel.state.collectAsState()
                     val activeSessionState by activeSessionViewModel.state.collectAsState()
                     AppNavHost(
                         sessionsScreenState = sessionsScreenState,
@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
                         tagsScreenState = tagsScreenState,
                         onTagsAction = tagsScreenViewModel::onAction,
                         sessionsTrashState = sessionsTrashState,
-                        onSessionsTrashAction = sessionsTrashViewModel::onAction,
+                        onSessionsTrashAction = trashTabViewModel::onAction,
                         activeSessionState = activeSessionState,
                         onActiveSessionAction = activeSessionViewModel::onAction,
                     )

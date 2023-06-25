@@ -13,7 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.action.SessionsTrashAction
+import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.TagsScreenAction
 import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.state.SessionsTrashState
@@ -27,7 +27,7 @@ fun MainScreen(
     tagsScreenState: TagsScreenState,
     onTagsAction: (TagsScreenAction) -> Unit,
     sessionsTrashState: SessionsTrashState,
-    onSessionsTrashAction: (SessionsTrashAction) -> Unit
+    onSessionsTrashAction: (TrashTabAction) -> Unit
 ) {
     val innerNavHostController: NavHostController = rememberNavController()
     val backStackEntry = innerNavHostController.currentBackStackEntryAsState()
@@ -56,12 +56,12 @@ fun MainScreen(
     }
     if (sessionsTrashState.showSnackBar) {
         LaunchedEffect(key1 = snackbarHostState) {
-//            Log.d(TAG, "launching snackbar")
+            snackbarHostState.currentSnackbarData?.dismiss()
             snackbarHostState.showSnackbar(
                 message = context.getString(sessionsTrashState.snackbarMessage),
                 duration = SnackbarDuration.Short
             )
-            onSessionsTrashAction(SessionsTrashAction.HideSnackbar)
+            onSessionsTrashAction(TrashTabAction.HideSnackbar)
         }
     }
     Scaffold(
@@ -71,14 +71,15 @@ fun MainScreen(
                 onNewSessionClick = { onSessionsAction(SessionsScreenAction.AddNewSessionClicked) },
                 onNewTagClick = { onTagsAction(TagsScreenAction.AddNewTagClicked) },
                 trashState = sessionsTrashState,
-                onShowSessionsClick = { onSessionsTrashAction(SessionsTrashAction.ShowSessionsClicked) },
-                onShowTagsClick = { onSessionsTrashAction(SessionsTrashAction.ShowTagsClicked) }
+                onShowSessionsClick = { onSessionsTrashAction(TrashTabAction.ShowSessionsClicked) },
+                onShowTagsClick = { onSessionsTrashAction(TrashTabAction.ShowTagsClicked) }
             )
         },
         bottomBar = {
             MainNavigationBar(
                 backStackEntry,
-                innerNavHostController)
+                innerNavHostController
+            )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
