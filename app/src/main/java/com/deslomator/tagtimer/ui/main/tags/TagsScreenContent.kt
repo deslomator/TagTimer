@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.main.tags
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -40,12 +41,10 @@ fun TagsScreenContent(
     state: TagsScreenState,
     onAction: (TagsScreenAction) -> Unit
 ) {
-    if (state.showTagDialog) {
-        TagDialog(
-            state = state,
-            onAction = onAction,
-            tag = state.currentTag
-        )
+    BackHandler(
+        enabled = state.showTagDialog
+    ) {
+        onAction(TagsScreenAction.DismissTagDialog)
     }
     Box(
         modifier = Modifier
@@ -80,11 +79,6 @@ fun TagsScreenContent(
                         ),
                         item = tag,
                         onItemClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
-                        /*trailingIcon = R.drawable.baseline_edit_24,
-                        onTrailingClick = { onAction(TagsScreenAction.EditTagClicked(tag)) },
-                        shadowElevation = animateDpAsState(
-                            if (dismissState.dismissDirection != null) 20.dp else 10.dp
-                        ).value*/
                     ) { item ->
                         Column {
                             Text(item.label)
@@ -95,6 +89,13 @@ fun TagsScreenContent(
             }
 
         }
+    }
+    if (state.showTagDialog) {
+        TagDialog(
+            state = state,
+            onAction = onAction,
+            tag = state.currentTag
+        )
     }
 }
 
