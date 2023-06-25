@@ -101,13 +101,7 @@ class TagsScreenViewModel @Inject constructor(
             }
             is TagsScreenAction.TrashTagSwiped -> {
                 viewModelScope.launch {
-                    val trashed = Tag(
-                        category = action.tag.category,
-                        label = action.tag.label,
-                        color = action.tag.color,
-                        inTrash = true,
-                        id = action.tag.id,
-                    )
+                    val trashed = action.tag.copy(inTrash = true)
                     appDao.upsertTag(trashed)
 //                    Log.d(TAG, "TagsScreenAction.TrashTagSwiped $trashed")
                 }

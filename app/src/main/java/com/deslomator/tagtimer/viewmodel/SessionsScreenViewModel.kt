@@ -65,16 +65,8 @@ class SessionsScreenViewModel @Inject constructor(
             }
             is SessionsScreenAction.TrashSessionSwiped -> {
                 viewModelScope.launch {
-                    val trashed = Session(
-                        lastAccessMillis = action.session.lastAccessMillis,
-                        name = action.session.name,
-                        color = action.session.color,
-                        startTimeMillis = action.session.startTimeMillis,
-                        endTimeMillis = action.session.endTimeMillis,
-                        inTrash = true,
-                        id = action.session.id,
-                    )
-                    appDao.upsertSession(trashed)
+                    val trashed = action.session.copy(inTrash = true)
+                        appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
                 _state.update { it.copy(showSnackbar = true) }
