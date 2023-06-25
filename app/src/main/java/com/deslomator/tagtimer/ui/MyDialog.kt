@@ -46,7 +46,7 @@ fun MyDialog(
                 modifier = Modifier
                     .background(Color.White)
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp)
+                    .padding(5.dp)
             ) {
                 content()
                 Row(
