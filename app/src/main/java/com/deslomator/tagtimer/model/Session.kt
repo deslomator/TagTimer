@@ -7,7 +7,7 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
 @Entity
 data class Session(
-    val lastAccessMillis: Long = 0,
+    val lastAccessMillis: Long = System.currentTimeMillis(),
     val name: String = "",
     val color: Int = colorPickerColors[7].toArgb(),
     val durationMillis: Long = 0,
