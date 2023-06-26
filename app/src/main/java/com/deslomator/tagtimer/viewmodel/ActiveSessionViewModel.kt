@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,6 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.PreSelectedTag
-import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.ActiveSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.Duration
 import javax.inject.Inject
 
 @HiltViewModel
@@ -59,7 +60,9 @@ class ActiveSessionViewModel @Inject constructor(
             preSelectedTags = preSelectedTags,
             tags = tags,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ActiveSessionState())
+    }.stateIn(
+        viewModelScope, SharingStarted.WhileSubscribed(5000), ActiveSessionState()
+    )
 
     fun onAction(action: ActiveSessionAction) {
         when(action) {
@@ -69,7 +72,9 @@ class ActiveSessionViewModel @Inject constructor(
                     _state.update {
                         it.copy(currentSession = appDao.getSession(action.id))
                     }
-                    val s = state.value.currentSession.copy(lastAccessMillis = System.currentTimeMillis())
+                    val s = state.value.currentSession.copy(
+                        lastAccessMillis = System.currentTimeMillis()
+                    )
                     appDao.upsertSession(s) }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
@@ -77,14 +82,16 @@ class ActiveSessionViewModel @Inject constructor(
                     _state.update { it.copy(isRunning = !state.value.isRunning) }
                     val s = if (state.value.isRunning) {
                         state.value.currentSession.copy(
-                            startTimeMillis = System.currentTimeMillis()
+                            startTimeMillis = SystemClock.uptimeMillis()
                         )
                     } else {
                         state.value.currentSession.copy(
-                            endTimeMillis = System.currentTimeMillis()
+                            endTimeMillis = SystemClock.uptimeMillis()
                         )
                     }
+                    Log.d(TAG, "PlayPauseClicked. start: ${state.value.currentSession.startTimeMillis}")
                     appDao.upsertSession(s)
+                    _state.update { it.copy(currentSession = s) }
                 }
             }
             is ActiveSessionAction.SelectTagsClicked -> {
@@ -111,21 +118,25 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
+                    val current = SystemClock.elapsedRealtime()
+                    val elapsed = current - state.value.currentSession.startTimeMillis
                     val event = Event(
                         sessionId = _sessionId.value,
-                        timestampMillis = System.currentTimeMillis(),
+                        elapsedTimeMillis = elapsed,
                         category = action.tag.category,
                         label = action.tag.label,
                         color = action.tag.color
                     )
                     viewModelScope.launch { appDao.upsertEvent(event) }
+                    Log.d(TAG, "PreSelectedTagClicked. elapsed: ${elapsed}, clock: $current, start: ${state.value.currentSession.startTimeMillis}")
+                    Log.d(TAG, "PreSelectedTagClicked. duration: ${Duration.ofMillis(event.elapsedTimeMillis)}")
+                    Log.d(TAG, "PreSelectedTagClicked. duration: ${Duration.ofMillis(elapsed)}")
                 }
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy( isRunning = false) }
             }
             is ActiveSessionAction.AcceptEventNoteChanged -> {
-                Log.d(TAG, "AcceptEventNoteChanged")
                 val e = action.event.copy(note = action.note)
                 viewModelScope.launch { appDao.upsertEvent(e) }
             }

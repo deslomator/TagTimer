@@ -113,7 +113,7 @@ private suspend fun populateDb (dao: AppDao) {
         repeat(colorPickerColors.size) {
             val event = Event(
                 sessionId = i,
-                timestampMillis = System.currentTimeMillis(),
+                elapsedTimeMillis = System.currentTimeMillis(),
                 note = "lskflsflslsjlsfl",
                 category = "cat cata cat acat",
                 label = "event label: $i",

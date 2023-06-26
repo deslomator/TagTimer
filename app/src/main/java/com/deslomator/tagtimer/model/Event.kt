@@ -8,7 +8,7 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 @Entity
 data class Event(
     val sessionId: Int = 0,
-    val timestampMillis: Long = 0,
+    val elapsedTimeMillis: Long = 0,
     val note: String = "",
     val category: String = "",
     val label: String = "",

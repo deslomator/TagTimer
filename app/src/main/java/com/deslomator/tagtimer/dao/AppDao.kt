@@ -24,10 +24,10 @@ interface AppDao {
     @Query("DELETE FROM event WHERE sessionId = :sessionId")
     suspend fun deleteEventsForSession(sessionId: Int)
 
-    @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 0 ORDER BY timestampMillis ASC")
+    @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 0 ORDER BY elapsedTimeMillis ASC")
     fun getActiveEventsForSession(sessionId: Int): Flow<List<Event>>
 
-    @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY timestampMillis ASC")
+    @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY elapsedTimeMillis ASC")
     fun getTrashedEventsForSession(sessionId: Int): Flow<List<Event>>
     /*
     CATEGORY
