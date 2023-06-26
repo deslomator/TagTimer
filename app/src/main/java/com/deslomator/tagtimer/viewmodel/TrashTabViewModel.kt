@@ -2,7 +2,6 @@ package com.deslomator.tagtimer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Trash
@@ -46,47 +45,23 @@ class TrashTabViewModel @Inject constructor(
                     appDao.deleteSession(action.session)
                     appDao.deleteEventsForSession(action.session.id)
                 }
-                _state.update { it.copy(showSnackBar = false) }
-                _state.update { it.copy(
-                    snackbarMessage = R.string.session_deleted,
-                    showSnackBar = true
-                ) }
             }
             is TrashTabAction.RestoreSessionClicked -> {
                 viewModelScope.launch {
                     val trashed = action.session.copy(inTrash = false)
                     appDao.upsertSession(trashed)
                 }
-                _state.update { it.copy(showSnackBar = false) }
-                _state.update { it.copy(
-                    snackbarMessage = R.string.session_restored,
-                    showSnackBar = true
-                ) }
             }
             is TrashTabAction.DeleteTagClicked -> {
                 viewModelScope.launch {
                     appDao.deleteTag(action.tag)
                 }
-                _state.update { it.copy(showSnackBar = false) }
-                _state.update { it.copy(
-                    snackbarMessage = R.string.tag_deleted,
-                    showSnackBar = true
-                ) }
             }
             is TrashTabAction.RestoreTagClicked -> {
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = false)
                     appDao.upsertTag(trashed)
                 }
-                _state.update { it.copy(showSnackBar = false) }
-                _state.update { it.copy(
-                    snackbarMessage = R.string.tag_restored,
-                    showSnackBar = true
-                ) }
-            }
-            is TrashTabAction.HideSnackbar -> {
-//                Log.d(TAG, "HideSessionTrashSnackbar")
-                _state.update { it.copy(showSnackBar = false) }
             }
         }
     }

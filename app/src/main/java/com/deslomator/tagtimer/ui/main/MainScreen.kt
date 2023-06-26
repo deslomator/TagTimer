@@ -13,11 +13,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.TagsScreenState
+import com.deslomator.tagtimer.state.TrashTabState
 
 @Composable
 fun MainScreen(
@@ -54,16 +54,6 @@ fun MainScreen(
             onTagsAction(TagsScreenAction.HideSnackbar)
         }
     }
-    if (trashTabState.showSnackBar) {
-//        snackbarHostState.currentSnackbarData?.dismiss()
-        LaunchedEffect(key1 = Unit) {
-            snackbarHostState.showSnackbar(
-                message = context.getString(trashTabState.snackbarMessage),
-                duration = SnackbarDuration.Short
-            )
-//            onSessionsTrashAction(TrashTabAction.HideSnackbar)
-        }
-    }
     Scaffold(
         topBar = {
             MainTopBar(
@@ -92,7 +82,8 @@ fun MainScreen(
                 tagsScreenState = tagsScreenState,
                 onTagsAction = onTagsAction,
                 trashTabState = trashTabState,
-                onSessionsTrashAction = onSessionsTrashAction
+                onSessionsTrashAction = onSessionsTrashAction,
+                snackbarHostState = snackbarHostState
             )
         }
     )

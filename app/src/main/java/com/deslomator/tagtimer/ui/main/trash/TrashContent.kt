@@ -17,12 +17,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -35,13 +39,18 @@ import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.contrasted
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun TrashContent(
     paddingValues: PaddingValues,
     state: TrashTabState,
-    onAction: (TrashTabAction) -> Unit
+    onAction: (TrashTabAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -83,6 +92,11 @@ fun TrashContent(
                                     session
                                 )
                             )
+                            showSnackbar(
+                                scope,
+                                snackbarHostState,
+                                context.getString(R.string.session_restored)
+                            )
                         },
                         trailingIcon = R.drawable.delete_forever,
                         onTrailingClick = {
@@ -90,6 +104,11 @@ fun TrashContent(
                                 TrashTabAction.DeleteSessionClicked(
                                     session
                                 )
+                            )
+                            showSnackbar(
+                                scope,
+                                snackbarHostState,
+                                context.getString(R.string.session_deleted)
                             )
                         },
                     ) { item ->
@@ -137,6 +156,11 @@ fun TrashContent(
                                     tag
                                 )
                             )
+                            showSnackbar(
+                                scope,
+                                snackbarHostState,
+                                context.getString(R.string.tag_restored)
+                            )
                         },
                         trailingIcon = R.drawable.delete_forever,
                         onTrailingClick = {
@@ -144,6 +168,11 @@ fun TrashContent(
                                 TrashTabAction.DeleteTagClicked(
                                     tag
                                 )
+                            )
+                            showSnackbar(
+                                scope,
+                                snackbarHostState,
+                                context.getString(R.string.tag_deleted)
                             )
                         },
                     ) { item ->
@@ -155,6 +184,20 @@ fun TrashContent(
                 }
             }
         }
+    }
+}
+
+fun showSnackbar(
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState,
+    message: String
+) {
+    scope.launch {
+        snackbarHostState.currentSnackbarData?.dismiss()
+        snackbarHostState.showSnackbar(
+            message = message,
+            duration = SnackbarDuration.Short
+        )
     }
 }
 

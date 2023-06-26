@@ -11,6 +11,4 @@ data class TrashTabState(
     val sessions: List<Session> = emptyList(),
     val tags: List<Tag> = emptyList(),
     val currentSession: Session = Session(),
-    val showSnackBar: Boolean = false,
-    @StringRes val snackbarMessage: Int = R.string.session_sent_to_trash
 )

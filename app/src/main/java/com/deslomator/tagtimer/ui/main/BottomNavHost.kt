@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.main
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -28,6 +29,7 @@ fun BottomNavHost(
     onTagsAction: (TagsScreenAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     NavHost(
         modifier = modifier,
@@ -39,21 +41,24 @@ fun BottomNavHost(
                 paddingValues = paddingValues,
                 outerNavHostController = outerNavHostController,
                 state = sessionsScreenState,
-                onAction = onSessionsAction
+                onAction = onSessionsAction,
+                snackbarHostState = snackbarHostState
             )
         }
         composable(BottomNavigationScreen.Tags.route) {
             TagsScreenContent(
                 paddingValues = paddingValues,
                 state = tagsScreenState,
-                onAction = onTagsAction
+                onAction = onTagsAction,
+                snackbarHostState = snackbarHostState
             )
         }
         composable(BottomNavigationScreen.Trash.route) {
             TrashContent(
                 paddingValues = paddingValues,
                 state = trashTabState,
-                onAction = onSessionsTrashAction
+                onAction = onSessionsTrashAction,
+                snackbarHostState = snackbarHostState
             )
         }
     }

@@ -10,5 +10,4 @@ sealed interface TrashTabAction {
     data class RestoreSessionClicked(val session: Session): TrashTabAction
     data class DeleteTagClicked(val tag: Tag): TrashTabAction
     data class RestoreTagClicked(val tag: Tag): TrashTabAction
-    object HideSnackbar: TrashTabAction
 }

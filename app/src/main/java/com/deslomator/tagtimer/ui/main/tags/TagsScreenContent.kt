@@ -15,12 +15,15 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -39,8 +42,11 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 fun TagsScreenContent(
     paddingValues: PaddingValues,
     state: TagsScreenState,
-    onAction: (TagsScreenAction) -> Unit
+    onAction: (TagsScreenAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     BackHandler(
         enabled = state.showTagDialog
     ) {
