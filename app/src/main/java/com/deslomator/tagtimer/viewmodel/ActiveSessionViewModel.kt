@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.Duration
 import javax.inject.Inject
 
 @HiltViewModel
@@ -78,20 +77,22 @@ class ActiveSessionViewModel @Inject constructor(
                     appDao.upsertSession(s) }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(isRunning = !state.value.isRunning) }
-                    if (_state.value.isRunning) {
-                        _state.update {
-                            it.copy(baseTimeMillis =
-                            SystemClock.elapsedRealtime() - state.value.currentSession.durationMillis)
-                        }
-                    } else {
-                        val session = state.value.currentSession.copy(
-                            durationMillis = SystemClock.elapsedRealtime() - state.value.baseTimeMillis
-                        )
-                        appDao.upsertSession(session)
-                        _state.update { it.copy(currentSession = session) }
+                _state.update { it.copy(isRunning = !state.value.isRunning) }
+                if (_state.value.isRunning) {
+                    _state.update {
+                        it.copy(baseTimeMillis =
+                        SystemClock.elapsedRealtime() - state.value.currentSession.durationMillis)
                     }
+                } else {
+                    val stopTime = SystemClock.elapsedRealtime()
+                    val session = state.value.currentSession.copy(
+                        durationMillis = stopTime - state.value.baseTimeMillis
+                    )
+                    _state.update { it.copy(
+                        isRunning = false,
+                        currentSession = session
+                    ) }
+                    viewModelScope.launch { appDao.upsertSession(session) }
                 }
             }
             is ActiveSessionAction.SelectTagsClicked -> {
@@ -128,12 +129,18 @@ class ActiveSessionViewModel @Inject constructor(
                         color = action.tag.color
                     )
                     viewModelScope.launch { appDao.upsertEvent(event) }
-                    Log.d(TAG, "PreSelectedTagClicked. duration: ${Duration.ofMillis(event.elapsedTimeMillis)}")
-                    Log.d(TAG, "PreSelectedTagClicked. duration: ${Duration.ofMillis(elapsed)}")
                 }
             }
             is ActiveSessionAction.StopSession -> {
-                _state.update { it.copy( isRunning = false) }
+                if (state.value.isRunning) { // only update duration if it's running
+                    Log.d(TAG, "StopSession, running")
+                    val stopTime = SystemClock.elapsedRealtime()
+                    _state.update { it.copy(isRunning = false) }
+                    val session = state.value.currentSession.copy(
+                        durationMillis = stopTime - state.value.baseTimeMillis
+                    )
+                    viewModelScope.launch { appDao.upsertSession(session) }
+                }
             }
             is ActiveSessionAction.AcceptEventNoteChanged -> {
                 val e = action.event.copy(note = action.note)
@@ -149,7 +156,6 @@ class ActiveSessionViewModel @Inject constructor(
                 viewModelScope.launch { appDao.deleteEvent(action.event) }
             }
             is ActiveSessionAction.RestoreEventClicked -> {
-                Log.d(TAG, "RestoreEventClicked")
                 viewModelScope.launch {
                     val e = action.event.copy(inTrash = false)
                     appDao.upsertEvent(e) }

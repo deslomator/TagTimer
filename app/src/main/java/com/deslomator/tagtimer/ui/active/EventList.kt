@@ -13,6 +13,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,6 +43,7 @@ fun EventList(
     val listState = rememberLazyListState()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    val empty by remember(state.events.size) { derivedStateOf { state.events.isEmpty() } }
     LaunchedEffect(state.events.size) {
         if (!deleting)
             listState.animateScrollToItem(maxOf(0, state.events.size - 1))
@@ -54,7 +56,7 @@ fun EventList(
         state = listState
     ) {
         item {
-            if (state.events.isEmpty()) {
+            if (empty) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = stringResource(id = R.string.tap_a_tag_below),

@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -17,6 +18,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,6 +32,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.toElapsedTime
+import kotlinx.coroutines.delay
 
 @Composable
 fun ActiveSessionContent(
@@ -38,6 +45,21 @@ fun ActiveSessionContent(
     }
     BackHandler(enabled = state.showEventTrash) {
         onAction(ActiveSessionAction.DismissEventTrashDialog)
+    }
+    var runTimer by remember { mutableStateOf(false)}
+    var ticks by remember { mutableStateOf(state.currentSession.durationMillis) }
+    LaunchedEffect(state.currentSession) {
+//        Log.d(TAG, "updating timer at start: ${state.currentSession.durationMillis}")
+        ticks = state.currentSession.durationMillis
+    }
+    LaunchedEffect(runTimer) {
+        if (runTimer) {
+            ticks = state.currentSession.durationMillis
+            while (true) {
+                delay(1000)
+                ticks += 1000
+            }
+        }
     }
     Box {
         Column {
@@ -56,9 +78,12 @@ fun ActiveSessionContent(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(state.currentSession.durationMillis.toElapsedTime())
+//                Text(state.currentSession.durationMillis.toElapsedTime())
+                Text(ticks.toElapsedTime())
                 IconButton(
-                    onClick = { onAction(ActiveSessionAction.PlayPauseClicked) }
+                    onClick = {
+                        runTimer = !state.isRunning
+                        onAction(ActiveSessionAction.PlayPauseClicked) }
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
