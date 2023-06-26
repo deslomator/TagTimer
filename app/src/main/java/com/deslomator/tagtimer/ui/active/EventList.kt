@@ -85,6 +85,7 @@ fun EventList(
             ) {
                 EventListItem(
                     event = event,
+                    trailingIcon = if (event.note.isEmpty()) null else R.drawable.edit_note,
                     onAcceptEventNote = {
                         onAction(ActiveSessionAction.AcceptEventNoteChanged(event, it))
                     }
