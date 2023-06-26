@@ -2,11 +2,11 @@ package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHostState
@@ -36,20 +36,20 @@ fun PreSelectedTagsList(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    LazyColumn(
+    if (state.preSelectedTags.isEmpty()) {
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.tap_toolbar_icon_add_pst),
+            textAlign = TextAlign.Center
+        )
+    }
+    LazyVerticalGrid(
         modifier = modifier,
         contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
-        item {
-            if (state.preSelectedTags.isEmpty()) {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = stringResource(id = R.string.tap_toolbar_icon_add_pst),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
         items(
             items = state.tags.filter { tag ->
                 state.preSelectedTags.map { it.tagId }.contains(tag.id)
@@ -60,11 +60,8 @@ fun PreSelectedTagsList(
                 modifier = Modifier
                     .clip(CutCornerShape(topStart = 20.dp))
                     .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
-                leadingIcon = R.drawable.tag,
                 colors = ListItemDefaults.colors(
-                    leadingIconColor = Color(tag.color).contrasted(),
                     headlineColor = Color(tag.color).contrasted(),
-                    trailingIconColor = Color(tag.color).contrasted(),
                     containerColor = Color(tag.color),
                 ),
                 item = tag,
@@ -79,10 +76,7 @@ fun PreSelectedTagsList(
                     onAction(ActiveSessionAction.PreSelectedTagClicked(tag))
                 },
             ) { item ->
-                Column {
-                    Text(item.label)
-                    Text(item.category)
-                }
+                Text(item.label)
             }
         }
     }
