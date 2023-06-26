@@ -16,7 +16,7 @@ import com.deslomator.tagtimer.state.TagsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 
 @Composable
-fun MainScreen(
+fun MainScreenScaffold(
     outerNavHostController: NavHostController,
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,

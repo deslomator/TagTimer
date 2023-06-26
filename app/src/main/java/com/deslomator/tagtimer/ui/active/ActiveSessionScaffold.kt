@@ -10,20 +10,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 
 @Composable
-fun ActiveSession(
+fun ActiveSessionScaffold(
     sessionId: Int,
     navHostController: NavHostController,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
     LaunchedEffect(Unit) {
 //        Log.d(TAG, "LaunchedEffect")
         onAction(ActiveSessionAction.UpdateSessionId(sessionId))

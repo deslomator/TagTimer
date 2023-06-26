@@ -16,7 +16,7 @@ import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.TagsTabState
-import com.deslomator.tagtimer.ui.active.ActiveSession
+import com.deslomator.tagtimer.ui.active.ActiveSessionScaffold
 
 @Composable
 fun AppNavHost(
@@ -39,7 +39,7 @@ fun AppNavHost(
         composable(
             route = RootScreen.Main.route,
         ) {
-            MainScreen(
+            MainScreenScaffold(
                 outerNavHostController = navController,
                 sessionsTabState = sessionsTabState,
                 onSessionsAction = onSessionsAction,
@@ -53,7 +53,7 @@ fun AppNavHost(
             route = "${RootScreen.Active.route}/{sessionId}",
             arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
         ) { backStackEntry ->
-            ActiveSession(
+            ActiveSessionScaffold(
                 sessionId = backStackEntry.arguments?.getInt("sessionId") ?: 0,
                 navHostController = navController,
                 state = activeSessionState,
