@@ -43,7 +43,7 @@ fun ActiveSessionContent(
                     .fillMaxSize()
                     .weight(0.4f),
                 state = state,
-                onAction = onAction
+                onAction = onAction,
             )
             Row(
                 modifier = Modifier
@@ -72,7 +72,7 @@ fun ActiveSessionContent(
                     .fillMaxSize()
                     .weight(0.6f),
                 state = state,
-                onAction = onAction
+                onAction = onAction,
             )
         }
         AnimatedVisibility(

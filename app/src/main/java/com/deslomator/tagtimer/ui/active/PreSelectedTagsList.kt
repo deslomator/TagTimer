@@ -27,7 +27,7 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 fun PreSelectedTagsList(
     modifier: Modifier,
     state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit
+    onAction: (ActiveSessionAction) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
