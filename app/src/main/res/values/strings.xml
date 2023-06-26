@@ -32,4 +32,5 @@
     <string name="event_trash_is_empty">Event trash is empty</string>
     <string name="event_restored">Event restored</string>
     <string name="event_deleted">Event permanently deleted</string>
+    <string name="tap_play_to_add_event">Tap Play button to add Events</string>
 </resources>

@@ -73,6 +73,7 @@ fun ActiveSessionContent(
                     .weight(0.6f),
                 state = state,
                 onAction = onAction,
+                snackbarHostState = snackbarHostState
             )
         }
         AnimatedVisibility(
