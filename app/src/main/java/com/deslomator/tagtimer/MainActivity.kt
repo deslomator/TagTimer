@@ -47,7 +47,7 @@ class MainActivity : ComponentActivity() {
             TagTimerTheme {
                 LaunchedEffect(Unit) {
                     withContext(Dispatchers.IO) { cleanOrphans(appDao) }
-                    populateDb(appDao)
+//                    populateDb(appDao)
                 }
                 val sessionsTabViewModel = viewModel<SessionsTabViewModel>()
                 val tagsTabViewModel = viewModel<TagsTabViewModel>()
@@ -86,12 +86,13 @@ private suspend fun cleanOrphans(dao: AppDao) {
     delay(4000)
     val oe = dao.clearOrphanEvents()
     val out = dao.clearOrphanPreSelectedTags()
-    Log.d("MainActivity", "dao.clearOrphanEvents(): $oe")
-    Log.d("MainActivity", "dao.clearOrphanUsedTags(): $out")
+    Log.d(TAG, "dao.clearOrphanEvents(): $oe")
+    Log.d(TAG, "dao.clearOrphanUsedTags(): $out")
 }
 
 private suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
+        Log.d(TAG, "populateDb() creating sessions andd tags")
         val i = index + 100
         val session = Session(
             id = i,
@@ -99,7 +100,10 @@ private suspend fun populateDb (dao: AppDao) {
             name = "Session ${it.toArgb()}"
         )
         dao.upsertSession(session)
-        val sessionT = session.copy(inTrash = true)
+        val sessionT = session.copy(
+            id = i + 200,
+            inTrash = true
+        )
         dao.upsertSession(sessionT)
         val tag = Tag(
             id = i,
@@ -108,7 +112,10 @@ private suspend fun populateDb (dao: AppDao) {
             category = "Category ${it.brightness()}",
         )
         dao.upsertTag(tag)
-        val tagT = tag.copy(inTrash = true)
+        val tagT = tag.copy(
+            id = i + 200,
+            inTrash = true
+        )
         dao.upsertTag(tagT)
         repeat(colorPickerColors.size) {
             val event = Event(
@@ -119,8 +126,13 @@ private suspend fun populateDb (dao: AppDao) {
                 label = "event label: $i",
             )
             dao.upsertEvent(event)
-            val eventT = event.copy(inTrash = true)
+            val eventT = event.copy(
+                sessionId = i + 200,
+                inTrash = true
+            )
             dao.upsertEvent(eventT)
         }
     }
 }
+
+private const val TAG = "MainActivity"
