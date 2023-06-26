@@ -1,6 +1,7 @@
-package com.deslomator.tagtimer.ui.main.sessions
+package com.deslomator.tagtimer.ui.main.tags
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ListItemDefaults
@@ -25,15 +26,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.state.SessionsScreenState
-import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.action.TagsTabAction
+import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.state.TagsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
-import com.deslomator.tagtimer.ui.main.RootScreen
+import com.deslomator.tagtimer.ui.main.trash.showSnackbar
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
@@ -41,17 +40,18 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SessionsScreenContent(
+fun TagsTabContent(
     paddingValues: PaddingValues,
-    outerNavHostController: NavHostController,
-    state: SessionsScreenState,
-    onAction: (SessionsScreenAction) -> Unit,
+    state: TagsTabState,
+    onAction: (TagsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    BackHandler(enabled = state.showSessionDialog) {
-        onAction(SessionsScreenAction.DismissSessionDialog)
+    BackHandler(
+        enabled = state.showTagDialog
+    ) {
+        onAction(TagsTabAction.DismissTagDialog)
     }
     Box(
         modifier = Modifier
@@ -64,54 +64,54 @@ fun SessionsScreenContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                items = state.sessions,
+                items = state.tags,
                 key = { it.id }
-            ) { session ->
+            ) { tag ->
                 SwipeableListItem(
                     dismissDirection = DismissDirection.StartToEnd,
-                    onDismiss = { onAction(SessionsScreenAction.TrashSessionSwiped(session)) },
+                    onDismiss = {
+                        showSnackbar(
+                            scope,
+                            snackbarHostState,
+                            context.getString(R.string.tag_sent_to_trash)
+                        )
+                        onAction(TagsTabAction.TrashTagSwiped(tag))
+                                },
                     dismissColor = Pink80
                 ) {
                     MyListItem(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(25.dp))
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
+                            .clip(CutCornerShape(topStart = 20.dp))
+                            .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
+                        leadingIcon = R.drawable.tag,
+                        onLeadingClick = { onAction(TagsTabAction.EditTagClicked(tag)) },
                         colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(session.color).contrasted(),
-                            headlineColor = Color(session.color).contrasted(),
-                            trailingIconColor = Color(session.color).contrasted(),
-                            containerColor = Color(session.color),
+                            leadingIconColor = Color(tag.color).contrasted(),
+                            headlineColor = Color(tag.color).contrasted(),
+                            trailingIconColor = Color(tag.color).contrasted(),
+                            containerColor = Color(tag.color),
                         ),
-                        item = session,
-                        leadingIcon = R.drawable.document_and_ray,
-                        onLeadingClick = {
-                            outerNavHostController.navigate(
-                                RootScreen.Active.routeWithArg(session.id)
-                            )
-                        },
-                        onItemClick = {
-                            outerNavHostController.navigate(
-                                RootScreen.Active.routeWithArg(session.id)
-                            )
-                        },
+                        item = tag,
+                        onItemClick = { onAction(TagsTabAction.EditTagClicked(tag)) },
                     ) { item ->
                         Column {
-                            Text(item.name)
-                            Text(item.lastAccessMillis.toDateTime())
+                            Text(item.label)
+                            Text(item.category)
                         }
                     }
                 }
             }
+
         }
     }
-    if (state.showSessionDialog) {
-        SessionDialog(
+    if (state.showTagDialog) {
+        TagDialog(
             state = state,
             onAction = onAction,
+            tag = state.currentTag
         )
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,43 +123,40 @@ fun TagsScreenContentPreview() {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(colorPickerColors) { background ->
-            val session = Session(
-                name = "background: ${background.brightness()}",
-                lastAccessMillis = 333445666,
-                color = background.toArgb()
+            val tag = Tag(
+                color = background.toArgb(),
+                label = "brightness: ${background.brightness()}",
+                category = "asfa sfasf asfasf ddd444"
             )
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
                 onDismiss = { },
                 dismissColor = Pink80
-            ) {
+            ) { dismissState ->
                 MyListItem(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(25.dp))
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
+                        .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
+                        .clip(CutCornerShape(topStart = 20.dp)),
                     colors = ListItemDefaults.colors(
-                        leadingIconColor = Color(session.color).contrasted(),
-                        headlineColor = Color(session.color).contrasted(),
-                        trailingIconColor = Color(session.color).contrasted(),
-                        containerColor = Color(session.color),
+                        leadingIconColor = Color(tag.color).contrasted(),
+                        headlineColor = Color(tag.color).contrasted(),
+                        trailingIconColor = Color(tag.color).contrasted(),
+                        containerColor = Color(tag.color),
                     ),
-                    item = session,
-                    leadingIcon = R.drawable.document_and_ray,
-                    onItemClick = { },
+                    item = tag,
+                    onItemClick = {  },
                     trailingIcon = R.drawable.edit,
-                    onTrailingClick = {},
-                    /*shadowElevation = animateDpAsState(
-                        if (dismissState.dismissDirection != null) 6.dp else 0.dp
-                    ).value*/
+                    onTrailingClick = {  },
+                    shadowElevation = animateDpAsState(
+                        if (dismissState.dismissDirection != null) 20.dp else 10.dp
+                    ).value
                 ) { item ->
                     Column {
-                        Text(item.name)
-                        Text(item.lastAccessMillis.toDateTime())
+                        Text(item.label)
+                        Text(item.category)
                     }
                 }
             }
         }
     }
 }
-
-private const val TAG = "SessionsScreenContent"

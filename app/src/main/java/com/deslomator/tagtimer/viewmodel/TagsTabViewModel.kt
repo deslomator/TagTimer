@@ -2,10 +2,10 @@ package com.deslomator.tagtimer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.state.TagsScreenState
+import com.deslomator.tagtimer.state.TagsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,29 +16,29 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TagsScreenViewModel @Inject constructor(
+class TagsTabViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(TagsScreenState())
+    private val _state = MutableStateFlow(TagsTabState())
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val state = combine(_state, _tags) { state, tags ->
         state.copy(
             tags = tags,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TagsScreenState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TagsTabState())
 
-    fun onAction(action: TagsScreenAction) {
+    fun onAction(action: TagsTabAction) {
         when(action) {
-            is TagsScreenAction.AddNewTagClicked -> {
+            is TagsTabAction.AddNewTagClicked -> {
                 _state.update { it.copy(
                     tagColor = it.currentTag.color,
                     showTagDialog = true,
                     isAddingNewTag = true
                 ) }
             }
-            is TagsScreenAction.AcceptAddNewTagClicked -> {
+            is TagsTabAction.AcceptAddNewTagClicked -> {
                 val tag = Tag(
                     category = state.value.tagCategory,
                     label = state.value.tagLabel,
@@ -53,7 +53,7 @@ class TagsScreenViewModel @Inject constructor(
                 ) }
                 viewModelScope.launch { appDao.upsertTag(tag) }
             }
-            is TagsScreenAction.EditTagClicked -> {
+            is TagsTabAction.EditTagClicked -> {
                 _state.update { it.copy(
                     showTagDialog = true,
                     isEditingTag = true,
@@ -63,7 +63,7 @@ class TagsScreenViewModel @Inject constructor(
                     tagLabel = action.tag.label
                 ) }
             }
-            is TagsScreenAction.AcceptTagEditionClicked -> {
+            is TagsTabAction.AcceptTagEditionClicked -> {
                 val tag = Tag(
                     id = state.value.currentTag.id,
                     category = state.value.tagCategory,
@@ -80,7 +80,7 @@ class TagsScreenViewModel @Inject constructor(
                 ) }
                 viewModelScope.launch { appDao.upsertTag(tag) }
             }
-            is TagsScreenAction.DismissTagDialog -> {
+            is TagsTabAction.DismissTagDialog -> {
                 _state.update { it.copy(
                     showTagDialog = false,
                     isEditingTag = false,
@@ -90,25 +90,21 @@ class TagsScreenViewModel @Inject constructor(
                     tagColor = 0,
                 ) }
             }
-            is TagsScreenAction.UpdateTagCategory -> {
+            is TagsTabAction.UpdateTagCategory -> {
                 _state.update { it.copy(tagCategory = action.category) }
             }
-            is TagsScreenAction.UpdateTagLabel -> {
+            is TagsTabAction.UpdateTagLabel -> {
                 _state.update { it.copy(tagLabel = action.label) }
             }
-            is TagsScreenAction.UpdateTagColor -> {
+            is TagsTabAction.UpdateTagColor -> {
                 _state.update { it.copy(tagColor = action.color) }
             }
-            is TagsScreenAction.TrashTagSwiped -> {
+            is TagsTabAction.TrashTagSwiped -> {
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = true)
                     appDao.upsertTag(trashed)
 //                    Log.d(TAG, "TagsScreenAction.TrashTagSwiped $trashed")
                 }
-                _state.update { it.copy(showSnackbar = true) }
-            }
-            is TagsScreenAction.HideSnackbar -> {
-                _state.update { it.copy(showSnackbar = false) }
             }
         }
     }

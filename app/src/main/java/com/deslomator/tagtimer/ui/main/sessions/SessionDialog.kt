@@ -10,22 +10,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.SessionsScreenAction
-import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.action.SessionsTabAction
+import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.MyDialog
 
 @Composable
 fun SessionDialog(
-    state: SessionsScreenState,
-    onAction: (SessionsScreenAction) -> Unit,
+    state: SessionsTabState,
+    onAction: (SessionsTabAction) -> Unit,
 ) {
     MyDialog(
         onDismiss = {
-            onAction(SessionsScreenAction.DismissSessionDialog)
+            onAction(SessionsTabAction.DismissSessionDialog)
         },
         onAccept = {
-            onAction(SessionsScreenAction.AcceptAddSessionClicked)
+            onAction(SessionsTabAction.AcceptAddSessionClicked)
         },
     ) {
         Text(
@@ -36,12 +36,12 @@ fun SessionDialog(
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.sessionName,
-            onValueChange = { onAction(SessionsScreenAction.UpdateSessionName(it)) },
+            onValueChange = { onAction(SessionsTabAction.UpdateSessionName(it)) },
             placeholder = { Text(text = stringResource(id = R.string.name)) }
         )
         ColorPicker(
             selectedColor = Color(state.sessionColor),
-            onItemClick = { onAction(SessionsScreenAction.UpdateSessionColor(it)) }
+            onItemClick = { onAction(SessionsTabAction.UpdateSessionColor(it)) }
         )
     }
 }
@@ -50,7 +50,7 @@ fun SessionDialog(
 @Preview
 fun SessionDialogPreview() {
     SessionDialog(
-        state = SessionsScreenState(sessionColor = 0xff4477),
+        state = SessionsTabState(sessionColor = 0xff4477),
         onAction = {},
     )
 }

@@ -43,7 +43,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun TrashContent(
+fun TrashTabContent(
     paddingValues: PaddingValues,
     state: TrashTabState,
     onAction: (TrashTabAction) -> Unit,

@@ -2,10 +2,10 @@ package com.deslomator.tagtimer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deslomator.tagtimer.action.SessionsScreenAction
+import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.state.SessionsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,28 +16,28 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SessionsScreenViewModel @Inject constructor(
+class SessionsTabViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(SessionsScreenState())
+    private val _state = MutableStateFlow(SessionsTabState())
     private val _sessions = appDao.getActiveSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val state = combine(_state, _sessions) { state, sessions ->
         state.copy(
             sessions = sessions,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsScreenState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsTabState())
 
-    fun onAction(action: SessionsScreenAction) {
+    fun onAction(action: SessionsTabAction) {
         when(action) {
-            SessionsScreenAction.AddNewSessionClicked -> {
+            SessionsTabAction.AddNewSessionClicked -> {
                 _state.update { it.copy(
                     sessionColor = it.currentSession.color,
                     showSessionDialog = true,
                 ) }
             }
-            is SessionsScreenAction.AcceptAddSessionClicked -> {
+            is SessionsTabAction.AcceptAddSessionClicked -> {
                 val session = Session(
                     name = state.value.sessionName,
                     color = state.value.sessionColor,
@@ -50,29 +50,25 @@ class SessionsScreenViewModel @Inject constructor(
                 ) }
                 viewModelScope.launch { appDao.upsertSession(session) }
             }
-            is SessionsScreenAction.DismissSessionDialog -> {
+            is SessionsTabAction.DismissSessionDialog -> {
                 _state.update { it.copy(
                     showSessionDialog = false,
                     sessionColor = 0,
                     sessionName = ""
                 ) }
             }
-            is SessionsScreenAction.UpdateSessionName -> {
+            is SessionsTabAction.UpdateSessionName -> {
                 _state.update { it.copy(sessionName = action.name) }
             }
-            is SessionsScreenAction.UpdateSessionColor -> {
+            is SessionsTabAction.UpdateSessionColor -> {
                 _state.update { it.copy(sessionColor = action.color) }
             }
-            is SessionsScreenAction.TrashSessionSwiped -> {
+            is SessionsTabAction.TrashSessionSwiped -> {
                 viewModelScope.launch {
                     val trashed = action.session.copy(inTrash = true)
                         appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
-                _state.update { it.copy(showSnackbar = true) }
-            }
-            is SessionsScreenAction.HideSnackbar -> {
-                _state.update { it.copy(showSnackbar = false) }
             }
         }
     }

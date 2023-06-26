@@ -2,7 +2,7 @@ package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Tag
 
-data class TagsScreenState(
+data class TagsTabState(
     val tags: List<Tag> = emptyList(),
     val currentTag: Tag = Tag(),
     val tagCategory: String = "",
@@ -11,5 +11,4 @@ data class TagsScreenState(
     val showTagDialog: Boolean = false,
     val isEditingTag: Boolean = false,
     val isAddingNewTag: Boolean = false,
-    val showSnackbar: Boolean = false,
 )

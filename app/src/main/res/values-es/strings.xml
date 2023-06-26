@@ -30,4 +30,6 @@
     <string name="tap_a_tag_below">Pulsa una Etiqueta en la lista inferior para añadir un Evento</string>
     <string name="tap_toolbar_icon_add_pst">Pulsa el icono de la barra superior para preseleccionar Etiquetas</string>
     <string name="event_trash_is_empty">La papelera de Eventos está vacía</string>
+    <string name="event_restored">Evento restaurado</string>
+    <string name="event_deleted">Evento eliminado definitivamente</string>
 </resources>

@@ -23,9 +23,9 @@ import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
-import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
+import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
-import com.deslomator.tagtimer.viewmodel.TagsScreenViewModel
+import com.deslomator.tagtimer.viewmodel.TagsTabViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
@@ -49,8 +49,8 @@ class MainActivity : ComponentActivity() {
                     withContext(Dispatchers.IO) { cleanOrphans(appDao) }
                     populateDb(appDao)
                 }
-                val sessionsScreenViewModel = viewModel<SessionsScreenViewModel>()
-                val tagsScreenViewModel = viewModel<TagsScreenViewModel>()
+                val sessionsTabViewModel = viewModel<SessionsTabViewModel>()
+                val tagsTabViewModel = viewModel<TagsTabViewModel>()
                 val trashTabViewModel = viewModel<TrashTabViewModel>()
                 val activeSessionViewModel = viewModel<ActiveSessionViewModel>()
 
@@ -58,15 +58,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val sessionsScreenState by sessionsScreenViewModel.state.collectAsState()
-                    val tagsScreenState by tagsScreenViewModel.state.collectAsState()
+                    val sessionsScreenState by sessionsTabViewModel.state.collectAsState()
+                    val tagsScreenState by tagsTabViewModel.state.collectAsState()
                     val sessionsTrashState by trashTabViewModel.state.collectAsState()
                     val activeSessionState by activeSessionViewModel.state.collectAsState()
                     AppNavHost(
-                        sessionsScreenState = sessionsScreenState,
-                        onSessionsAction = sessionsScreenViewModel::onAction,
-                        tagsScreenState = tagsScreenState,
-                        onTagsAction = tagsScreenViewModel::onAction,
+                        sessionsTabState = sessionsScreenState,
+                        onSessionsAction = sessionsTabViewModel::onAction,
+                        tagsTabState = tagsScreenState,
+                        onTagsAction = tagsTabViewModel::onAction,
                         trashTabState = sessionsTrashState,
                         onSessionsTrashAction = trashTabViewModel::onAction,
                         activeSessionState = activeSessionState,
@@ -93,19 +93,13 @@ private suspend fun cleanOrphans(dao: AppDao) {
 private suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
         val i = index + 100
-        val iT = index + 200
         val session = Session(
             id = i,
             color = it.toArgb(),
             name = "Session ${it.toArgb()}"
         )
         dao.upsertSession(session)
-        val sessionT = Session(
-            id = iT,
-            color = it.toArgb(),
-            name = "Session ${it.toArgb()}",
-            inTrash = true
-        )
+        val sessionT = session.copy(inTrash = true)
         dao.upsertSession(sessionT)
         val tag = Tag(
             id = i,
@@ -114,15 +108,9 @@ private suspend fun populateDb (dao: AppDao) {
             category = "Category ${it.brightness()}",
         )
         dao.upsertTag(tag)
-        val tagT = Tag(
-            id = iT,
-            color = it.toArgb(),
-            label = "Label ${it.toArgb()}",
-            category = "Category ${it.brightness()}",
-            inTrash = true
-        )
+        val tagT = tag.copy(inTrash = true)
         dao.upsertTag(tagT)
-        colorPickerColors.forEach { item ->
+        repeat(colorPickerColors.size) {
             val event = Event(
                 sessionId = i,
                 timestampMillis = System.currentTimeMillis(),
@@ -131,14 +119,7 @@ private suspend fun populateDb (dao: AppDao) {
                 label = "event label: $i",
             )
             dao.upsertEvent(event)
-            val eventT = Event(
-                sessionId = i,
-                timestampMillis = System.currentTimeMillis(),
-                note = "lskflsflslsjlsfl",
-                category = "cat cata cat acat",
-                label = "event label: $i",
-                inTrash = true
-            )
+            val eventT = event.copy(inTrash = true)
             dao.upsertEvent(eventT)
         }
     }

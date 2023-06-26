@@ -10,21 +10,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.state.TagsScreenState
+import com.deslomator.tagtimer.state.TagsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.MyDialog
 
 @Composable
 fun TagDialog(
-    state: TagsScreenState,
-    onAction: (TagsScreenAction) -> Unit,
+    state: TagsTabState,
+    onAction: (TagsTabAction) -> Unit,
     tag: Tag
 ) {
     MyDialog(
-        onDismiss = { onAction(TagsScreenAction.DismissTagDialog) },
-        onAccept = { onAction(TagsScreenAction.AcceptTagEditionClicked(tag)) }
+        onDismiss = { onAction(TagsTabAction.DismissTagDialog) },
+        onAccept = { onAction(TagsTabAction.AcceptTagEditionClicked(tag)) }
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -35,18 +35,18 @@ fun TagDialog(
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.tagLabel,
-            onValueChange = { onAction(TagsScreenAction.UpdateTagLabel(it)) },
+            onValueChange = { onAction(TagsTabAction.UpdateTagLabel(it)) },
             placeholder = { Text(text = stringResource(id = R.string.label)) }
         )
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = state.tagCategory,
-            onValueChange = { onAction(TagsScreenAction.UpdateTagCategory(it)) },
+            onValueChange = { onAction(TagsTabAction.UpdateTagCategory(it)) },
             placeholder = { Text(text = stringResource(id = R.string.category)) }
         )
         ColorPicker(
             selectedColor = Color(state.tagColor),
-            onItemClick = { onAction(TagsScreenAction.UpdateTagColor(it)) }
+            onItemClick = { onAction(TagsTabAction.UpdateTagColor(it)) }
         )
     }
 }
@@ -55,7 +55,7 @@ fun TagDialog(
 @Preview
 fun TagDialogPreview() {
     TagDialog(
-        state = TagsScreenState(tagColor = 0xff4477),
+        state = TagsTabState(tagColor = 0xff4477),
         onAction = {},
         tag = Tag()
     )

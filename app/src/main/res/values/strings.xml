@@ -30,4 +30,6 @@
     <string name="tap_a_tag_below">Tap a Tag below to add an Event</string>
     <string name="tap_toolbar_icon_add_pst">Tap the toolbar icon to preselect some Tags</string>
     <string name="event_trash_is_empty">Event trash is empty</string>
+    <string name="event_restored">Event restored</string>
+    <string name="event_deleted">Event permanently deleted</string>
 </resources>

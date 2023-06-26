@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,7 +27,8 @@ import com.deslomator.tagtimer.state.ActiveSessionState
 @Composable
 fun ActiveSessionContent(
     state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit
+    onAction: (ActiveSessionAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
     BackHandler(enabled = state.showTagsDialog) {
         onAction(ActiveSessionAction.DismissTagDialog)
@@ -90,7 +92,8 @@ fun ActiveSessionContent(
         ) {
             EventTrashDialog(
                 state = state,
-                onAction = onAction
+                onAction = onAction,
+                snackbarHostState = snackbarHostState
             )
         }
         AnimatedVisibility(

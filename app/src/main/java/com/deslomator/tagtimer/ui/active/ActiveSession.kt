@@ -24,16 +24,6 @@ fun ActiveSession(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    /*if (sessionsScreenState.showSnackbar) {
-        LaunchedEffect(key1 = snackbarHostState) {
-//            Log.d(TAG, "launching snackbar")
-            snackbarHostState.showSnackbar(
-                message = context.getString(R.string.session_sent_to_trash),
-                duration = SnackbarDuration.Short
-            )
-            onSessionsAction(SessionsScreenAction.HideSnackbar)
-        }
-    }*/
     LaunchedEffect(Unit) {
 //        Log.d(TAG, "LaunchedEffect")
         onAction(ActiveSessionAction.UpdateSessionId(sessionId))
@@ -68,6 +58,7 @@ fun ActiveSession(
             ActiveSessionContent(
                 state = state,
                 onAction = onAction,
+                snackbarHostState = snackbarHostState
             )
         }
     }

@@ -9,23 +9,23 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.action.SessionsScreenAction
+import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.action.TagsScreenAction
+import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.state.SessionsScreenState
+import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.state.TagsScreenState
+import com.deslomator.tagtimer.state.TagsTabState
 import com.deslomator.tagtimer.ui.active.ActiveSession
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    sessionsScreenState: SessionsScreenState,
-    onSessionsAction: (SessionsScreenAction) -> Unit,
-    tagsScreenState: TagsScreenState,
-    onTagsAction: (TagsScreenAction) -> Unit,
+    sessionsTabState: SessionsTabState,
+    onSessionsAction: (SessionsTabAction) -> Unit,
+    tagsTabState: TagsTabState,
+    onTagsAction: (TagsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
     activeSessionState: ActiveSessionState,
@@ -41,9 +41,9 @@ fun AppNavHost(
         ) {
             MainScreen(
                 outerNavHostController = navController,
-                sessionsScreenState = sessionsScreenState,
+                sessionsTabState = sessionsTabState,
                 onSessionsAction = onSessionsAction,
-                tagsScreenState = tagsScreenState,
+                tagsTabState = tagsTabState,
                 onTagsAction = onTagsAction,
                 trashTabState = trashTabState,
                 onSessionsTrashAction = onSessionsTrashAction
