@@ -33,4 +33,5 @@
     <string name="event_restored">Evento restaurado</string>
     <string name="event_deleted">Evento eliminado definitivamente</string>
     <string name="tap_play_to_add_event">Pulsa el botón Play para añadir Eventos</string>
+    <string name="event_sent_to_trash">Evento enviado a la Papelera</string>
 </resources>

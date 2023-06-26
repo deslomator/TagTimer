@@ -47,6 +47,7 @@ fun ActiveSessionContent(
                     .weight(0.4f),
                 state = state,
                 onAction = onAction,
+                snackbarHostState = snackbarHostState
             )
             Row(
                 modifier = Modifier
@@ -55,7 +56,7 @@ fun ActiveSessionContent(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("duration: ${state.currentSession.durationMillis.toElapsedTime()}")
+                Text(state.currentSession.durationMillis.toElapsedTime())
                 IconButton(
                     onClick = { onAction(ActiveSessionAction.PlayPauseClicked) }
                 ) {
