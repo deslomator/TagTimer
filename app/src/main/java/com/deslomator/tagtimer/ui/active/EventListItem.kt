@@ -119,8 +119,7 @@ fun EventListItem(
         Spacer(modifier = Modifier.width(16.dp))
         Text(
             modifier = Modifier.weight(.2f),
-//            text = event.elapsedTimeMillis.toElapsedTime()
-            text = event.elapsedTimeMillis.toString()
+            text = event.elapsedTimeMillis.toElapsedTime()
         )
     }
 }

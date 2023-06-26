@@ -80,18 +80,18 @@ class ActiveSessionViewModel @Inject constructor(
             is ActiveSessionAction.PlayPauseClicked -> {
                 viewModelScope.launch {
                     _state.update { it.copy(isRunning = !state.value.isRunning) }
-                    val s = if (state.value.isRunning) {
-                        state.value.currentSession.copy(
-                            startTimeMillis = SystemClock.uptimeMillis()
-                        )
+                    if (_state.value.isRunning) {
+                        _state.update {
+                            it.copy(baseTimeMillis =
+                            SystemClock.elapsedRealtime() - state.value.currentSession.durationMillis)
+                        }
                     } else {
-                        state.value.currentSession.copy(
-                            endTimeMillis = SystemClock.uptimeMillis()
+                        val session = state.value.currentSession.copy(
+                            durationMillis = SystemClock.elapsedRealtime() - state.value.baseTimeMillis
                         )
+                        appDao.upsertSession(session)
+                        _state.update { it.copy(currentSession = session) }
                     }
-                    Log.d(TAG, "PlayPauseClicked. start: ${state.value.currentSession.startTimeMillis}")
-                    appDao.upsertSession(s)
-                    _state.update { it.copy(currentSession = s) }
                 }
             }
             is ActiveSessionAction.SelectTagsClicked -> {
@@ -119,7 +119,7 @@ class ActiveSessionViewModel @Inject constructor(
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
                     val current = SystemClock.elapsedRealtime()
-                    val elapsed = current - state.value.currentSession.startTimeMillis
+                    val elapsed = current - state.value.baseTimeMillis
                     val event = Event(
                         sessionId = _sessionId.value,
                         elapsedTimeMillis = elapsed,
@@ -128,7 +128,6 @@ class ActiveSessionViewModel @Inject constructor(
                         color = action.tag.color
                     )
                     viewModelScope.launch { appDao.upsertEvent(event) }
-                    Log.d(TAG, "PreSelectedTagClicked. elapsed: ${elapsed}, clock: $current, start: ${state.value.currentSession.startTimeMillis}")
                     Log.d(TAG, "PreSelectedTagClicked. duration: ${Duration.ofMillis(event.elapsedTimeMillis)}")
                     Log.d(TAG, "PreSelectedTagClicked. duration: ${Duration.ofMillis(elapsed)}")
                 }

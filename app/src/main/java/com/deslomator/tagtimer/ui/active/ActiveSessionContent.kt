@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -23,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.toElapsedTime
 
 @Composable
 fun ActiveSessionContent(
@@ -50,7 +53,9 @@ fun ActiveSessionContent(
                     .background(Color.LightGray)
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
+                Text("duration: ${state.currentSession.durationMillis.toElapsedTime()}")
                 IconButton(
                     onClick = { onAction(ActiveSessionAction.PlayPauseClicked) }
                 ) {

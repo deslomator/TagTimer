@@ -10,9 +10,7 @@ data class Session(
     val lastAccessMillis: Long = 0,
     val name: String = "",
     val color: Int = colorPickerColors[7].toArgb(),
-    val startTimeMillis: Long = 0,
-    val endTimeMillis: Long = 0,
-    val offsetMillis: Long = 0,
+    val durationMillis: Long = 0,
     val inTrash: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 )
