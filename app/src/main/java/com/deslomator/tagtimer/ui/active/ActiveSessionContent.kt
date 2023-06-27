@@ -1,7 +1,5 @@
 package com.deslomator.tagtimer.ui.active
 
-import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -30,14 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.startActivity
-import androidx.core.content.FileProvider
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.toElapsedTime
 import kotlinx.coroutines.delay
-import java.io.File
 
 @Composable
 fun ActiveSessionContent(
@@ -67,29 +62,7 @@ fun ActiveSessionContent(
         }
     }
     if (state.exportSession) {
-        LaunchedEffect(Unit) {
-            try {
-                val file = File(
-                    context.cacheDir,
-                    "${state.currentSession.name}.$JSON_EXTENSION"
-                )
-                file.writeBytes(state.sessionToExport.encodeToByteArray())
-                val uri = FileProvider.getUriForFile(
-                    context,
-                    FILE_PROVIDER,
-                    file
-                )
-                val intent = Intent(Intent.ACTION_SEND)
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    .setType("application/json")
-                    .putExtra(Intent.EXTRA_STREAM, uri)
-                Intent.createChooser(intent, "Choose an App")
-                startActivity(context, intent, null)
-                onAction(ActiveSessionAction.SessionExported)
-            } catch (error: Error) {
-                Log.d(TAG, "ShareSession, error: $error")
-            }
-        }
+        ExportSession(context, state, onAction)
     }
     Box {
         Column {
@@ -195,5 +168,3 @@ fun ActiveSessionContent(
 }
 
 private const val TAG = "ActiveSessionContent"
-private const val JSON_EXTENSION = "json"
-const val FILE_PROVIDER = "com.deslomator.tagtimer.fileprovider"
