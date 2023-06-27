@@ -132,15 +132,12 @@ class ActiveSessionViewModel @Inject constructor(
                 }
             }
             is ActiveSessionAction.StopSession -> {
-                if (state.value.isRunning) { // only update duration if it's running
-                    Log.d(TAG, "StopSession, running")
-                    val stopTime = SystemClock.elapsedRealtime()
-                    _state.update { it.copy(isRunning = false) }
-                    val session = state.value.currentSession.copy(
-                        durationMillis = stopTime - state.value.baseTimeMillis
-                    )
-                    viewModelScope.launch { appDao.upsertSession(session) }
-                }
+                _state.update { it.copy(isRunning = false) }
+                val duration = state.value.events.maxOf { it.elapsedTimeMillis }
+                val session = state.value.currentSession.copy(
+                    durationMillis = duration
+                )
+                viewModelScope.launch { appDao.upsertSession(session) }
             }
             ActiveSessionAction.EventTrashClicked -> {
                 _state.update { it.copy( showEventTrash = true) }
