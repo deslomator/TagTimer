@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.state.ActiveSessionState
@@ -34,7 +35,11 @@ fun ActiveSessionTopBar(
                 )
             }
         },
-        title = { Text(state.currentSession.name) },
+        title = { Text(
+            text = state.currentSession.name,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        ) },
         actions = {
             if (!state.showTagsDialog && !state.showEventTrash) {
                 IconButton(
