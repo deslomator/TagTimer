@@ -184,13 +184,22 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 viewModelScope.launch { appDao.upsertEvent(action.event) }
-                val duration =
-                    maxOf(action.event.elapsedTimeMillis, state.value.currentSession.durationMillis)
-                val s = state.value.currentSession.copy(durationMillis = duration)
-                _state.update { it.copy(
-                    currentSession = s,
-                    showEventEditionDialog = false
-                ) }
+                /*
+                 state takes some time to update after upserting the event;
+                 workaround: we take the updated event out of the list and
+                 compare it with the rest of the list to set the new duration
+                */
+                val maxInList = state.value.events
+                    .filter { it.id != action.event.id }
+                    .maxOfOrNull { it.elapsedTimeMillis } ?: 0
+                val duration = maxOf(maxInList, action.event.elapsedTimeMillis)
+                val session = state.value.currentSession.copy(durationMillis = duration)
+                _state.update {
+                    it.copy(
+                        currentSession = session,
+                        showEventEditionDialog = false
+                    )
+                }
             }
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
