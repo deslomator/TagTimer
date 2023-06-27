@@ -39,6 +39,12 @@ fun SessionDialog(
             onValueChange = { onAction(SessionsTabAction.UpdateSessionName(it)) },
             placeholder = { Text(text = stringResource(id = R.string.name)) }
         )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = state.sessionNotes,
+            onValueChange = { onAction(SessionsTabAction.UpdateSessionNotes(it)) },
+            placeholder = { Text(text = stringResource(id = R.string.type_a_note)) }
+        )
         ColorPicker(
             selectedColor = Color(state.sessionColor),
             onItemClick = { onAction(SessionsTabAction.UpdateSessionColor(it)) }

@@ -9,6 +9,7 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 data class Session(
     val lastAccessMillis: Long = System.currentTimeMillis(),
     val name: String = "",
+    val notes: String = "",
     val color: Int = colorPickerColors[7].toArgb(),
     val durationMillis: Long = 0,
     val inTrash: Boolean = false,

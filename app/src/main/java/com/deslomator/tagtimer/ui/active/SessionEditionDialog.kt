@@ -25,6 +25,9 @@ fun SessionEditionDialog(
     var name by rememberSaveable {
         mutableStateOf(session.name)
     }
+    var notes by rememberSaveable {
+        mutableStateOf(session.notes)
+    }
     var color by rememberSaveable {
         mutableStateOf(session.color)
     }
@@ -33,6 +36,7 @@ fun SessionEditionDialog(
         onAccept = {
             val s = session.copy(
                 name = name,
+                notes = notes,
                 color = color
             )
             onAction(ActiveSessionAction.AcceptSessionEditionClicked(s))
@@ -43,6 +47,12 @@ fun SessionEditionDialog(
             value = name,
             onValueChange = { name = it },
             placeholder = { Text(text = stringResource(id = R.string.name)) },
+        )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = notes,
+            onValueChange = { notes = it },
+            placeholder = { Text(text = stringResource(id = R.string.type_a_note)) },
         )
         ColorPicker(
             selectedColor = Color(color),

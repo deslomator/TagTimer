@@ -40,6 +40,7 @@ class SessionsTabViewModel @Inject constructor(
             is SessionsTabAction.AcceptAddSessionClicked -> {
                 val session = Session(
                     name = state.value.sessionName,
+                    notes = state.value.sessionNotes,
                     color = state.value.sessionColor,
                     lastAccessMillis = System.currentTimeMillis()
                 )
@@ -59,6 +60,9 @@ class SessionsTabViewModel @Inject constructor(
             }
             is SessionsTabAction.UpdateSessionName -> {
                 _state.update { it.copy(sessionName = action.name) }
+            }
+            is SessionsTabAction.UpdateSessionNotes -> {
+                _state.update { it.copy(sessionNotes = action.notes) }
             }
             is SessionsTabAction.UpdateSessionColor -> {
                 _state.update { it.copy(sessionColor = action.color) }
