@@ -134,7 +134,7 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy(isRunning = false) }
-                val duration = state.value.events.maxOf { it.elapsedTimeMillis }
+                val duration = state.value.events.maxOfOrNull { it.elapsedTimeMillis } ?: 0
                 val session = state.value.currentSession.copy(
                     durationMillis = duration
                 )
