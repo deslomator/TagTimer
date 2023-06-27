@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -136,6 +135,29 @@ fun ActiveSessionContent(
             SessionEditionDialog(
                 state = state,
                 onAction = onAction
+            )
+        }
+        AnimatedVisibility(
+            visible = state.showEventEditionDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            EventEditionDialog(
+                event = state.currentEvent,
+                onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
+                onDismiss = { onAction(ActiveSessionAction.DismissSessionEditionDialog) },
+            )
+        }
+        AnimatedVisibility(
+            visible = state.showEventInTrashDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            EventEditionDialog(
+                event = state.currentEvent,
+                onAccept = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
+                onDismiss = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
+                enabled = false
             )
         }
     }

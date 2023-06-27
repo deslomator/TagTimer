@@ -71,7 +71,7 @@ fun EventTrashDialog(
                         )
                         onAction(ActiveSessionAction.DeleteEventClicked(event))
                     },
-                    noteEnabled = false,
+                    onItemClick = { onAction(ActiveSessionAction.EventInTrashClicked(event)) },
                 )
             }
         }

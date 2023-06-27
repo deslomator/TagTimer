@@ -32,6 +32,7 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 fun ColorPicker(
     selectedColor: Color,
     onItemClick: (Int) -> Unit,
+    enabled: Boolean = true
 ) {
     var showGrid by rememberSaveable { mutableStateOf(false) }
 
@@ -45,9 +46,7 @@ fun ColorPicker(
                     .align(Alignment.TopCenter)
                     .border(1.dp, Color.Gray),
                 color = selectedColor,
-                onClick = {
-                    showGrid = true
-                }
+                onClick = { if (enabled) showGrid = true }
             )
         }
     } else {

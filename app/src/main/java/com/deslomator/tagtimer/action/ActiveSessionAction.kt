@@ -12,12 +12,16 @@ sealed interface ActiveSessionAction {
     object AcceptTagSelectionClicked: ActiveSessionAction
     object StopSession: ActiveSessionAction
     class PreSelectedTagClicked(val tag: Tag) : ActiveSessionAction
-    class AcceptEventNoteChanged(val event: Event, val note: String) : ActiveSessionAction
     object EventTrashClicked: ActiveSessionAction
     object DismissEventTrashDialog: ActiveSessionAction
     class RestoreEventClicked(val event: Event): ActiveSessionAction
     class DeleteEventClicked(val event: Event): ActiveSessionAction
-    class TrashEventSwiped(val event: Event): ActiveSessionAction
+    class TrashEventSwiped(val eventId: Int): ActiveSessionAction
     object EditSessionClicked: ActiveSessionAction
     object DismissSessionEditionDialog: ActiveSessionAction
+    class EventClicked(val event: Event): ActiveSessionAction
+    class AcceptEventEditionClicked(val event: Event) : ActiveSessionAction
+    object DismissEventEditionDialog: ActiveSessionAction
+    class EventInTrashClicked(val event: Event): ActiveSessionAction
+    object DismissEventInTrashDialog: ActiveSessionAction
 }

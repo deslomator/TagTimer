@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,7 +67,6 @@ fun EventList(
             items = state.events,
             key = { it.id }
         ) { event ->
-            Log.d(TAG, "item note: ${event.note}, id: ${event.id}, category: ${event.category}, label: ${event.label}")
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
                 onDismiss = {
@@ -77,18 +75,16 @@ fun EventList(
                         snackbarHostState,
                         context.getString(R.string.event_sent_to_trash)
                     )
-                    Log.d(TAG, "onDismiss() note: ${event.note}, id: ${event.id}, category: ${event.category}, label: ${event.label}")
                     deleting = true
-                    onAction(ActiveSessionAction.TrashEventSwiped(event))
+                    onAction(ActiveSessionAction.TrashEventSwiped(event.id))
                 },
                 dismissColor = Pink80
             ) {
                 EventListItem(
                     event = event,
                     trailingIcon = if (event.note.isEmpty()) null else R.drawable.edit_note,
-                    onAcceptEventNote = {
-                        onAction(ActiveSessionAction.AcceptEventNoteChanged(event, it))
-                    }
+                    onTrailingClick = { onAction(ActiveSessionAction.EventClicked(event)) },
+                    onItemClick = { onAction(ActiveSessionAction.EventClicked(event)) },
                 )
             }
         }

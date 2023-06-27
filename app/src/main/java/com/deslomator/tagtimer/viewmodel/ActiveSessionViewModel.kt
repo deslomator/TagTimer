@@ -142,10 +142,6 @@ class ActiveSessionViewModel @Inject constructor(
                     viewModelScope.launch { appDao.upsertSession(session) }
                 }
             }
-            is ActiveSessionAction.AcceptEventNoteChanged -> {
-                val e = action.event.copy(note = action.note)
-                viewModelScope.launch { appDao.upsertEvent(e) }
-            }
             ActiveSessionAction.EventTrashClicked -> {
                 _state.update { it.copy( showEventTrash = true) }
             }
@@ -161,17 +157,41 @@ class ActiveSessionViewModel @Inject constructor(
                     appDao.upsertEvent(e) }
             }
             is ActiveSessionAction.TrashEventSwiped -> {
-                Log.d(TAG, "TrashEventSwiped. action.event.note: ${action.event.note}, id: ${action.event.id}")
                 viewModelScope.launch {
-                    val e = action.event.copy(inTrash = true)
-                    Log.d(TAG, "TrashEventSwiped. e.note: ${e.note}, id: ${e.id}")
-                    appDao.upsertEvent(e) }
+                    // we don't want the Event that was retrieved
+                    // in the action because it was stale
+                    // get the updated one from the DB instead
+                    val event = appDao.getEventById(action.eventId)
+                    val trashed = event.copy(inTrash = true)
+                    appDao.upsertEvent(trashed) }
             }
             ActiveSessionAction.EditSessionClicked -> {
                 _state.update { it.copy(showSessionEditionDialog = true) }
             }
             ActiveSessionAction.DismissSessionEditionDialog -> {
                 _state.update { it.copy(showSessionEditionDialog = false) }
+            }
+            is ActiveSessionAction.EventClicked -> {
+                _state.update { it.copy(
+                    currentEvent = action.event,
+                    showEventEditionDialog = true
+                ) }
+            }
+            is ActiveSessionAction.AcceptEventEditionClicked -> {
+                viewModelScope.launch { appDao.upsertEvent(action.event) }
+                _state.update { it.copy(showEventEditionDialog = false) }
+            }
+            ActiveSessionAction.DismissEventEditionDialog -> {
+                _state.update { it.copy(showEventEditionDialog = false) }
+            }
+            is ActiveSessionAction.EventInTrashClicked -> {
+                _state.update { it.copy(
+                    currentEvent = action.event,
+                    showEventInTrashDialog = true
+                ) }
+            }
+            is ActiveSessionAction.DismissEventInTrashDialog -> {
+                _state.update { it.copy(showEventInTrashDialog = false) }
             }
         }
     }
