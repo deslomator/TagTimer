@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.content.Intent
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -25,12 +26,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startActivity
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.toElapsedTime
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
 
 @Composable
@@ -45,6 +50,7 @@ fun ActiveSessionContent(
     BackHandler(enabled = state.showEventTrash) {
         onAction(ActiveSessionAction.DismissEventTrashDialog)
     }
+    val context = LocalContext.current
     var runTimer by remember { mutableStateOf(false)}
     var ticks by remember { mutableStateOf(state.currentSession.durationMillis) }
     LaunchedEffect(state.currentSession) {
@@ -58,6 +64,16 @@ fun ActiveSessionContent(
                 delay(1000)
                 ticks += 1000
             }
+        }
+    }
+    if (state.exportSession) {
+        LaunchedEffect(Unit) {
+            val i = Intent(Intent.ACTION_SEND)
+            i.putExtra(Intent.EXTRA_TEXT, state.sessionToExport)
+            i.type = "application/json"
+            Intent.createChooser(i, "Choose an App")
+            startActivity(context, i, null)
+            onAction(ActiveSessionAction.SessionExported)
         }
     }
     Box {

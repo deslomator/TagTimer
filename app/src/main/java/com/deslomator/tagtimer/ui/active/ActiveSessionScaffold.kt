@@ -40,6 +40,7 @@ fun ActiveSessionScaffold(
                         navHostController.navigateUp()
                     }
                 },
+                onShareSessionClick = { onAction(ActiveSessionAction.ExportSessionClicked) },
                 onEditSessionClick = { onAction(ActiveSessionAction.EditSessionClicked) },
                 onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
                 onEventTrashClick = { onAction(ActiveSessionAction.EventTrashClicked) },

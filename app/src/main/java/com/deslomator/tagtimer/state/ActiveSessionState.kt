@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.ExportedSession
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
@@ -20,4 +21,6 @@ data class ActiveSessionState(
     val currentEvent: Event = Event(),
     val showEventEditionDialog: Boolean = false,
     val showEventInTrashDialog: Boolean = false,
+    val exportSession: Boolean = false,
+    val sessionToExport: String = ""
 )

@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.ExportedEvent
+import com.deslomator.tagtimer.model.ExportedSession
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.toDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,6 +21,8 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,21 +35,18 @@ class ActiveSessionViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _events = _sessionId
         .flatMapLatest {
-            Log.d(TAG, "_events, creating, session id: $it")
             appDao.getActiveEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _trashedEvents = _sessionId
         .flatMapLatest {
-            Log.d(TAG, "_trashedEvents, creating, session id: $it")
             appDao.getTrashedEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _sessionId
         .flatMapLatest {
-            Log.d(TAG, "_preSelectedTags, creating, session id: $it")
             appDao.getPreSelectedTagsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -202,6 +204,31 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.DismissEventInTrashDialog -> {
                 _state.update { it.copy(showEventInTrashDialog = false) }
+            }
+            ActiveSessionAction.ExportSessionClicked -> {
+                val s = state.value.currentSession
+                val exported = ExportedSession(
+                    date = s.lastAccessMillis.toDateTime(),
+                    name = s.name,
+                    durationSecs = (s.durationMillis/1000).toInt(),
+                    events = state.value.events.map {
+                        ExportedEvent(
+                            label = it.label,
+                            category = it.category,
+                            note = it.note,
+                            elapsedTimeSeconds = (it.elapsedTimeMillis/1000).toInt(),
+                        )
+                    }
+                )
+                val json = Json.encodeToString(exported)
+                _state.update { it.copy(
+                    sessionToExport = json,
+                    exportSession = true
+                ) }
+                Log.d(TAG, "ShareSessionClicked, json: $json")
+            }
+            ActiveSessionAction.SessionExported -> {
+                _state.update { it.copy(exportSession = false) }
             }
         }
     }
