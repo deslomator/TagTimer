@@ -5,6 +5,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,7 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -75,15 +76,12 @@ fun TrashTabContent(
                     key = { it.id }
                 ) { session ->
                     MyListItem(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(25.dp))
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                        colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(session.color).contrasted(),
-                            headlineColor = Color(session.color).contrasted(),
-                            trailingIconColor = Color(session.color).contrasted(),
+                        colors = CardDefaults.cardColors(
+                            contentColor = Color(session.color).contrasted(),
                             containerColor = Color(session.color),
                         ),
+                        shape = RoundedCornerShape(25.dp),
+                        border = BorderStroke(1.dp, Color.LightGray),
                         item = session,
                         leadingIcon = R.drawable.restore_from_trash,
                         onLeadingClick = {
@@ -142,10 +140,8 @@ fun TrashTabContent(
                         modifier = Modifier
                             .clip(CutCornerShape(topStart = 20.dp))
                             .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
-                        colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(tag.color).contrasted(),
-                            headlineColor = Color(tag.color).contrasted(),
-                            trailingIconColor = Color(tag.color).contrasted(),
+                        colors = CardDefaults.cardColors(
+                            contentColor = Color(tag.color).contrasted(),
                             containerColor = Color(tag.color),
                         ),
                         item = tag,
@@ -219,10 +215,8 @@ fun TrashContentPreview() {
                 modifier = Modifier
                     .clip(RoundedCornerShape(25.dp))
                     .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                colors = ListItemDefaults.colors(
-                    leadingIconColor = Color(session.color).contrasted(),
-                    headlineColor = Color(session.color).contrasted(),
-                    trailingIconColor = Color(session.color).contrasted(),
+                colors = CardDefaults.cardColors(
+                    contentColor = Color(session.color).contrasted(),
                     containerColor = Color(session.color),
                 ),
                 item = session,
@@ -230,7 +224,6 @@ fun TrashContentPreview() {
                 onLeadingClick = {  },
                 trailingIcon = R.drawable.delete_forever,
                 onTrailingClick = {  },
-                shadowElevation = 0.dp
             ) { item ->
                 Column {
                     Text(item.name)
