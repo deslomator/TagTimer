@@ -133,7 +133,7 @@ fun ActiveSessionContent(
             exit = fadeOut()
         ) {
             SessionEditionDialog(
-                state = state,
+                session = state.currentSession,
                 onAction = onAction
             )
         }

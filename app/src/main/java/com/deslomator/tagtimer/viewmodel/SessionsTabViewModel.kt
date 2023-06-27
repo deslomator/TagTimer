@@ -66,7 +66,7 @@ class SessionsTabViewModel @Inject constructor(
             is SessionsTabAction.TrashSessionSwiped -> {
                 viewModelScope.launch {
                     val trashed = action.session.copy(inTrash = true)
-                        appDao.upsertSession(trashed)
+                    appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
             }

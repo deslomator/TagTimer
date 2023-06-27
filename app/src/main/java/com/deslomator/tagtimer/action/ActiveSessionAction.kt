@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
 
 sealed interface ActiveSessionAction {
@@ -18,6 +19,7 @@ sealed interface ActiveSessionAction {
     class DeleteEventClicked(val event: Event): ActiveSessionAction
     class TrashEventSwiped(val eventId: Int): ActiveSessionAction
     object EditSessionClicked: ActiveSessionAction
+    class AcceptSessionEditionClicked(val session: Session): ActiveSessionAction
     object DismissSessionEditionDialog: ActiveSessionAction
     class EventClicked(val event: Event): ActiveSessionAction
     class AcceptEventEditionClicked(val event: Event) : ActiveSessionAction
