@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
 import android.os.SystemClock
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -225,7 +224,6 @@ class ActiveSessionViewModel @Inject constructor(
                     sessionToExport = json,
                     exportSession = true
                 ) }
-                Log.d(TAG, "ShareSessionClicked, json: $json")
             }
             ActiveSessionAction.SessionExported -> {
                 _state.update { it.copy(exportSession = false) }
