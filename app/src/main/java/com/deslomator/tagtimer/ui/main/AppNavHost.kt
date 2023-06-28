@@ -11,7 +11,7 @@ import androidx.navigation.navArgument
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.action.TagsTabAction
+import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
@@ -25,7 +25,7 @@ fun AppNavHost(
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,
     labelsTabState: LabelsTabState,
-    onTagsAction: (TagsTabAction) -> Unit,
+    onTagsAction: (LabelsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
     activeSessionState: ActiveSessionState,

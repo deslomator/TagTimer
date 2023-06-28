@@ -1,7 +1,12 @@
 package com.deslomator.tagtimer.ui.main.labels
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,23 +32,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.TagsTabAction
+import com.deslomator.tagtimer.action.LabelsTabAction
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
-import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.contrasted
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabelsTabContent(
     paddingValues: PaddingValues,
     state: LabelsTabState,
-    onAction: (TagsTabAction) -> Unit,
+    onAction: (LabelsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
@@ -51,57 +55,45 @@ fun LabelsTabContent(
     BackHandler(
         enabled = state.showTagDialog
     ) {
-        onAction(TagsTabAction.DismissTagDialog)
+        onAction(LabelsTabAction.DismissTagDialog)
     }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(6.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        AnimatedVisibility(
+            visible = state.currentLabel == Label.TAG,
+            enter = fadeIn(
+                animationSpec = tween(500, 0, LinearEasing)
+            ),
+            exit = fadeOut(
+                animationSpec = tween(500, 0, LinearEasing)
+            )
         ) {
-            items(
-                items = state.tags,
-                key = { it.id }
-            ) { tag ->
-                SwipeableListItem(
-                    dismissDirection = DismissDirection.StartToEnd,
-                    onDismiss = {
-                        showSnackbar(
-                            scope,
-                            snackbarHostState,
-                            context.getString(R.string.tag_sent_to_trash)
-                        )
-                        onAction(TagsTabAction.TrashTagSwiped(tag))
-                                },
-                    dismissColor = Pink80
-                ) {
-                    MyListItem(
-                        modifier = Modifier
-                            .clip(CutCornerShape(topStart = 20.dp))
-                            .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
-                        leadingIcon = R.drawable.tag,
-                        onLeadingClick = { onAction(TagsTabAction.EditTagClicked(tag)) },
-                        colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(tag.color).contrasted(),
-                            headlineColor = Color(tag.color).contrasted(),
-                            trailingIconColor = Color(tag.color).contrasted(),
-                            containerColor = Color(tag.color),
-                        ),
-                        item = tag,
-                        onItemClick = { onAction(TagsTabAction.EditTagClicked(tag)) },
-                    ) { item ->
-                        Column {
-                            Text(item.label)
-                            Text(item.category)
-                        }
-                    }
-                }
-            }
-
+            TagLabel(state, scope, snackbarHostState, context, onAction)
+        }
+        AnimatedVisibility(
+            visible = state.currentLabel == Label.PERSON,
+            enter = fadeIn(
+                animationSpec = tween(500, 0, LinearEasing)
+            ),
+            exit = fadeOut(
+                animationSpec = tween(500, 0, LinearEasing)
+            )
+        ) {
+            PersonLabel(state, scope, snackbarHostState, context, onAction)
+        }
+        AnimatedVisibility(
+            visible = state.currentLabel == Label.PLACE,
+            enter = fadeIn(
+                animationSpec = tween(500, 0, LinearEasing)
+            ),
+            exit = fadeOut(
+                animationSpec = tween(500, 0, LinearEasing)
+            )
+        ) {
+            PlaceLabel(state, scope, snackbarHostState, context, onAction)
         }
     }
     if (state.showTagDialog) {
@@ -109,6 +101,20 @@ fun LabelsTabContent(
             state = state,
             onAction = onAction,
             tag = state.currentTag
+        )
+    }
+    if (state.showPersonDialog) {
+        PersonDialog(
+            state = state,
+            onAction = onAction,
+            person = state.currentPerson
+        )
+    }
+    if (state.showPlaceDialog) {
+        PlaceDialog(
+            state = state,
+            onAction = onAction,
+            place = state.currentPlace
         )
     }
 }

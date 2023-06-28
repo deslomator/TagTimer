@@ -15,12 +15,15 @@
     <string name="session_restored">Session restored</string>
     <string name="sessions">Sessions</string>
     <string name="tags">Tags</string>
+    <string name="labels">Labels</string>
     <string name="trash">Trash</string>
     <string name="new_tag">New Tag</string>
     <string name="edit_tag">Edit Tag</string>
     <string name="label">Label</string>
     <string name="category">Category</string>
     <string name="tag_sent_to_trash">Tag sent to Trash</string>
+    <string name="person_sent_to_trash">Person sent to Trash</string>
+    <string name="place_sent_to_trash">Place sent to Trash</string>
     <string name="active_session">Active Session</string>
     <string name="tag_deleted">Tag permanently deleted</string>
     <string name="tag_restored">Tag restored</string>
@@ -40,4 +43,10 @@
     <string name="event_sent_to_trash">Event sent to Trash</string>
     <string name="persons">Persons</string>
     <string name="places">Places</string>
+    <string name="add_person">Add Person</string>
+    <string name="new_person">New Person</string>
+    <string name="edit_person">Edit Person</string>
+    <string name="add_place">Add Place</string>
+    <string name="new_place">New Place</string>
+    <string name="edit_place">Edit Place</string>
 </resources>

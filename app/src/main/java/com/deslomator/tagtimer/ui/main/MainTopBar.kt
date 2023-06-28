@@ -27,7 +27,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Trash
+import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.ui.theme.PurpleGrey40
 import com.deslomator.tagtimer.ui.theme.contrasted
@@ -38,8 +40,12 @@ fun MainTopBar(
     backStackEntry: State<NavBackStackEntry?>,
     onNewSessionClick: () -> Unit,
     onNewTagClick: () -> Unit,
+    onNewPersonClick: () -> Unit,
+    onNewPlaceClick: () -> Unit,
     trashState: TrashTabState,
     onTrashTypeClick: (Trash) -> Unit,
+    labelsTabState: LabelsTabState,
+    onLabelTypeClick: (Label) -> Unit
 ) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
@@ -56,15 +62,66 @@ fun MainTopBar(
                         )
                     }
                 }
-                BottomNavigationScreen.Tags.route -> {
-                    IconButton(
-                        onClick = onNewTagClick
+                BottomNavigationScreen.Labels.route -> {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            modifier = Modifier.size(36.dp),
-                            painter = painterResource(R.drawable.add_tag),
-                            contentDescription = stringResource(id = R.string.new_tag)
+                        Spacer(modifier = Modifier.width(15.dp))
+                        TopButton2(
+                            modifier = Modifier.weight(1F),
+                            type = Label.TAG,
+                            currentType = labelsTabState.currentLabel,
+                            onTypeClick = { onLabelTypeClick(it) },
+                            text = R.string.tags
                         )
+                        Spacer(modifier = Modifier.width(15.dp))
+                        TopButton2(
+                            modifier = Modifier.weight(1F),
+                            type = Label.PERSON,
+                            currentType = labelsTabState.currentLabel,
+                            onTypeClick = { onLabelTypeClick(it) },
+                            text = R.string.persons
+                        )
+                        Spacer(modifier = Modifier.width(15.dp))
+                        TopButton2(
+                            modifier = Modifier.weight(1F),
+                            type = Label.PLACE,
+                            currentType = labelsTabState.currentLabel,
+                            onTypeClick = { onLabelTypeClick(it) },
+                            text = R.string.places
+                        )
+                        Spacer(modifier = Modifier.width(15.dp))
+                        if (labelsTabState.currentLabel == Label.TAG) {
+                            IconButton(
+                                onClick = onNewTagClick
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.add_tag),
+                                    contentDescription = stringResource(id = R.string.new_tag)
+                                )
+                            }
+                        }
+                        if (labelsTabState.currentLabel == Label.PERSON) {
+                            IconButton(
+                                onClick = onNewPersonClick
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.add_person),
+                                    contentDescription = stringResource(id = R.string.new_person)
+                                )
+                            }
+                        }
+                        if (labelsTabState.currentLabel == Label.PLACE) {
+                            IconButton(
+                                onClick = onNewPlaceClick
+                            ) {
+                                Icon(
+                                    painter = painterResource(R.drawable.add_place),
+                                    contentDescription = stringResource(id = R.string.new_place)
+                                )
+                            }
+                        }
                     }
                 }
                 BottomNavigationScreen.Trash.route -> {
@@ -73,7 +130,7 @@ fun MainTopBar(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Spacer(modifier = Modifier.width(15.dp))
-                        TrashButton(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.SESSION,
                             currentTrash = trashState.currentTrash,
@@ -81,7 +138,7 @@ fun MainTopBar(
                             label = R.string.sessions
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        TrashButton(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.TAG,
                             currentTrash = trashState.currentTrash,
@@ -89,7 +146,7 @@ fun MainTopBar(
                             label = R.string.tags
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        TrashButton(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.PERSON,
                             currentTrash = trashState.currentTrash,
@@ -97,7 +154,7 @@ fun MainTopBar(
                             label = R.string.persons
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        TrashButton(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.PLACE,
                             currentTrash = trashState.currentTrash,
@@ -113,7 +170,7 @@ fun MainTopBar(
 }
 
 @Composable
-private fun TrashButton(
+private fun TopButton(
     modifier: Modifier,
     type: Trash,
     currentTrash: Trash,
@@ -131,6 +188,29 @@ private fun TrashButton(
     ) {
         Text(
             text = stringResource(id = label),
+            color = PurpleGrey40.contrasted()
+        )
+    }
+}
+@Composable
+private fun <T>TopButton2(
+    modifier: Modifier,
+    type: T,
+    currentType: T,
+    onTypeClick: (T) -> Unit,
+    @StringRes text: Int
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(5.dp))
+            .background(PurpleGrey40)
+            .alpha(if (currentType == type) 1F else 0.5F)
+            .clickable { onTypeClick(type) }
+            .padding(top= 5.dp, bottom = 5.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(id = text),
             color = PurpleGrey40.contrasted()
         )
     }

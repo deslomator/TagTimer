@@ -40,4 +40,13 @@
     <string name="event_sent_to_trash">Evento enviado a la Papelera</string>
     <string name="persons">Personas</string>
     <string name="places">Lugares</string>
+    <string name="labels">Marcadores</string>
+    <string name="person_sent_to_trash">Persona enviada a la Papelera</string>
+    <string name="place_sent_to_trash">Lugar enviado a la Papelera</string>
+    <string name="add_person">Añadir Persona</string>
+    <string name="new_person">Nueva Persona</string>
+    <string name="edit_person">Editar Persona</string>
+    <string name="add_place">Añadir Lugar</string>
+    <string name="new_place">Nuevo Lugar</string>
+    <string name="edit_place">Editar Lugar</string>
 </resources>

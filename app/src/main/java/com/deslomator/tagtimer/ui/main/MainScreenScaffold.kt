@@ -9,7 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.action.SessionsTabAction
-import com.deslomator.tagtimer.action.TagsTabAction
+import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.LabelsTabState
@@ -21,7 +21,7 @@ fun MainScreenScaffold(
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,
     labelsTabState: LabelsTabState,
-    onTagsAction: (TagsTabAction) -> Unit,
+    onTagsAction: (LabelsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit
 ) {
@@ -34,9 +34,13 @@ fun MainScreenScaffold(
             MainTopBar(
                 backStackEntry = backStackEntry,
                 onNewSessionClick = { onSessionsAction(SessionsTabAction.AddNewSessionClicked) },
-                onNewTagClick = { onTagsAction(TagsTabAction.AddNewTagClicked) },
+                onNewTagClick = { onTagsAction(LabelsTabAction.AddNewTagClicked) },
+                onNewPersonClick = { onTagsAction(LabelsTabAction.AddNewPersonClicked) },
+                onNewPlaceClick = { onTagsAction(LabelsTabAction.AddNewPlaceClicked) },
                 trashState = trashTabState,
                 onTrashTypeClick = { onSessionsTrashAction(TrashTabAction.TrashTypeClicked(it)) },
+                labelsTabState = labelsTabState,
+                onLabelTypeClick = { onTagsAction(LabelsTabAction.LabelTypeSelected(it)) },
             )
         },
         bottomBar = {

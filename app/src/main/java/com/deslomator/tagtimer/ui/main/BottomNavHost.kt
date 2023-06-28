@@ -9,7 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.action.TagsTabAction
+import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.LabelsTabState
@@ -26,7 +26,7 @@ fun BottomNavHost(
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,
     labelsTabState: LabelsTabState,
-    onTagsAction: (TagsTabAction) -> Unit,
+    onTagsAction: (LabelsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
@@ -45,7 +45,7 @@ fun BottomNavHost(
                 snackbarHostState = snackbarHostState
             )
         }
-        composable(BottomNavigationScreen.Tags.route) {
+        composable(BottomNavigationScreen.Labels.route) {
             LabelsTabContent(
                 paddingValues = paddingValues,
                 state = labelsTabState,

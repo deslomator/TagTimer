@@ -10,6 +10,6 @@ sealed class BottomNavigationScreen(
     @DrawableRes val icon: Int,
 ) {
     object Sessions : BottomNavigationScreen("sessions", R.string.sessions, R.drawable.document_and_ray)
-    object Tags : BottomNavigationScreen("tags", R.string.tags, R.drawable.tag)
+    object Labels : BottomNavigationScreen("labels", R.string.labels, R.drawable.tag)
     object Trash : BottomNavigationScreen("trash", R.string.trash, R.drawable.delete)
 }
