@@ -15,6 +15,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.MyDialog
+import com.deslomator.tagtimer.ui.TimeNumberPicker
 
 @Composable
 fun EventEditionDialog(
@@ -51,12 +52,9 @@ fun EventEditionDialog(
             onAccept(e)
         },
     ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = elapsed.toString(),
-            onValueChange = { elapsed = it.toLong() },
-            placeholder = { Text(text = "timestamp") },
-            enabled = enabled
+        TimeNumberPicker(
+            timeMillis = elapsed,
+            onValueChange = { elapsed = it }
         )
         TextField(
             modifier = Modifier.fillMaxWidth(),

@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -73,28 +72,14 @@ class ActiveSessionViewModel @Inject constructor(
                         it.copy(currentSession = appDao.getSession(action.id))
                     }
                     val s = state.value.currentSession.copy(
-                        lastAccessMillis = System.currentTimeMillis()
+                        lastAccessMillis = System.currentTimeMillis(),
+                        durationMillis = getSessionDuration()
                     )
-                    appDao.upsertSession(s) }
+                    appDao.upsertSession(s)
+                }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
-                if (_state.value.isRunning) {
-                    _state.update {
-                        it.copy(baseTimeMillis =
-                        SystemClock.elapsedRealtime() - state.value.currentSession.durationMillis)
-                    }
-                } else {
-                    val stopTime = SystemClock.elapsedRealtime()
-                    val session = state.value.currentSession.copy(
-                        durationMillis = stopTime - state.value.baseTimeMillis
-                    )
-                    _state.update { it.copy(
-                        isRunning = false,
-                        currentSession = session
-                    ) }
-                    viewModelScope.launch { appDao.upsertSession(session) }
-                }
             }
             is ActiveSessionAction.SelectTagsClicked -> {
                 _state.update { it.copy( showTagsDialog = true) }
@@ -120,11 +105,9 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
-                    val current = SystemClock.elapsedRealtime()
-                    val elapsed = current - state.value.baseTimeMillis
                     val event = Event(
                         sessionId = _sessionId.value,
-                        elapsedTimeMillis = elapsed,
+                        elapsedTimeMillis = state.value.cursor,
                         category = action.tag.category,
                         label = action.tag.label,
                         color = action.tag.color
@@ -134,9 +117,9 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy(isRunning = false) }
-                val duration = state.value.events.maxOfOrNull { it.elapsedTimeMillis } ?: 0
                 val session = state.value.currentSession.copy(
-                    durationMillis = duration
+                    durationMillis = getSessionDuration(),
+                    eventCount = state.value.events.size
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
             }
@@ -184,13 +167,22 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 viewModelScope.launch { appDao.upsertEvent(action.event) }
-                val duration =
-                    maxOf(action.event.elapsedTimeMillis, state.value.currentSession.durationMillis)
-                val s = state.value.currentSession.copy(durationMillis = duration)
-                _state.update { it.copy(
-                    currentSession = s,
-                    showEventEditionDialog = false
-                ) }
+                /*
+                 state takes some time to update after upserting the event;
+                 workaround: we take the updated event out of the list and
+                 compare it with the rest of the list to set the new duration
+                */
+                val maxInList = state.value.events
+                    .filter { it.id != action.event.id }
+                    .maxOfOrNull { it.elapsedTimeMillis } ?: 0
+                val duration = maxOf(maxInList, action.event.elapsedTimeMillis)
+                val session = state.value.currentSession.copy(durationMillis = duration)
+                _state.update {
+                    it.copy(
+                        currentSession = session,
+                        showEventEditionDialog = false
+                    )
+                }
             }
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
@@ -205,32 +197,61 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy(showEventInTrashDialog = false) }
             }
             ActiveSessionAction.ExportSessionClicked -> {
-                val s = state.value.currentSession
-                val exported = ExportedSession(
-                    date = s.lastAccessMillis.toDateTime(),
-                    name = s.name,
-                    durationSecs = (s.durationMillis/1000).toInt(),
-                    events = state.value.events.map {
-                        ExportedEvent(
-                            label = it.label,
-                            category = it.category,
-                            note = it.note,
-                            elapsedTimeSeconds = (it.elapsedTimeMillis/1000).toInt(),
-                        )
-                    }
-                )
-                val json = Json.encodeToString(exported)
-                _state.update { it.copy(
-                    sessionToExport = json,
-                    exportSession = true
-                ) }
+                exportSession()
             }
             ActiveSessionAction.SessionExported -> {
                 _state.update { it.copy(exportSession = false) }
             }
+            is ActiveSessionAction.TimeClicked -> {
+                val s = state.value.currentSession.copy(
+                    durationMillis = getSessionDuration()
+                )
+                _state.update { it.copy(
+                    currentSession = s,
+                    showTimeDialog = true
+                ) }
+            }
+            is ActiveSessionAction.SetCursor -> {
+                _state.update { it.copy(cursor = action.time) }
+            }
+            is ActiveSessionAction.IncreaseCursor -> {
+                val newTime = state.value.cursor + action.stepMillis
+                _state.update { it.copy(cursor = newTime) }
+            }
+            is ActiveSessionAction.DismissTimeDialog -> {
+                _state.update { it.copy(showTimeDialog = false) }
+            }
         }
     }
 
+    private fun exportSession() {
+        val s = state.value.currentSession
+        val exported = ExportedSession(
+            date = s.lastAccessMillis.toDateTime(),
+            name = s.name,
+            durationSecs = (s.durationMillis / 1000).toInt(),
+            events = state.value.events.map {
+                ExportedEvent(
+                    label = it.label,
+                    category = it.category,
+                    note = it.note,
+                    elapsedTimeSeconds = (it.elapsedTimeMillis / 1000).toInt(),
+                )
+            }
+        )
+        val json = Json.encodeToString(exported)
+        _state.update {
+            it.copy(
+                sessionToExport = json,
+                exportSession = true
+            )
+        }
+    }
+
+    private fun getSessionDuration(): Long {
+        return state.value.events
+            .maxOfOrNull { it.elapsedTimeMillis } ?: 0
+    }
     companion object {
         private const val TAG = "ActiveSessionViewModel"
     }

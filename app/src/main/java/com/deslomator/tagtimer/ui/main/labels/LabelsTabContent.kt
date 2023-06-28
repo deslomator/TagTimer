@@ -17,9 +17,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -143,19 +143,17 @@ fun LabelsTabContentPreview() {
                     modifier = Modifier
                         .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp))
                         .clip(CutCornerShape(topStart = 20.dp)),
-                    colors = ListItemDefaults.colors(
-                        leadingIconColor = Color(tag.color).contrasted(),
-                        headlineColor = Color(tag.color).contrasted(),
-                        trailingIconColor = Color(tag.color).contrasted(),
+                    colors = CardDefaults.cardColors(
+                        contentColor = Color(tag.color).contrasted(),
                         containerColor = Color(tag.color),
                     ),
                     item = tag,
                     onItemClick = {  },
                     trailingIcon = R.drawable.edit,
                     onTrailingClick = {  },
-                    shadowElevation = animateDpAsState(
-                        if (dismissState.dismissDirection != null) 20.dp else 10.dp
-                    ).value
+//                    shadowElevation = animateDpAsState(
+//                        if (dismissState.dismissDirection != null) 20.dp else 10.dp
+//                    ).value
                 ) { item ->
                     Column {
                         Text(item.label)

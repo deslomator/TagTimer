@@ -44,13 +44,13 @@ fun ActiveSessionTopBar(
                 !state.showEventTrash  &&
                 !state.showSessionEditionDialog  &&
                 !state.showEventEditionDialog  &&
-                !state.showEventInTrashDialog
+                !state.showEventInTrashDialog &&
+                !state.showTimeDialog
             ) {
                 IconButton(
                     onClick = onShareSessionClick
                 ) {
                     Icon(
-//                        modifier = Modifier.size(36.dp),
                         painter = painterResource(R.drawable.share),
                         contentDescription = "share Session"
                     )
@@ -59,7 +59,6 @@ fun ActiveSessionTopBar(
                     onClick = onEditSessionClick
                 ) {
                     Icon(
-//                        modifier = Modifier.size(36.dp),
                         painter = painterResource(R.drawable.edit),
                         contentDescription = "edit Session"
                     )
@@ -68,7 +67,6 @@ fun ActiveSessionTopBar(
                     onClick = onAddTagClick
                 ) {
                     Icon(
-//                        modifier = Modifier.size(36.dp),
                         painter = painterResource(R.drawable.add_tag),
                         contentDescription = stringResource(id = R.string.add_tag)
                     )
@@ -77,7 +75,6 @@ fun ActiveSessionTopBar(
                     onClick = onEventTrashClick
                 ) {
                     Icon(
-//                        modifier = Modifier.size(36.dp),
                         painter = painterResource(R.drawable.delete),
                         contentDescription = stringResource(id = R.string.trash)
                     )

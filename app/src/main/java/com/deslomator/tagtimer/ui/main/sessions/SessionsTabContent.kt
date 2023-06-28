@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.ui.main.sessions
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.border
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,18 +11,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -31,6 +31,7 @@ import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.main.RootScreen
@@ -81,15 +82,12 @@ fun SessionsTabContent(
                     dismissColor = Pink80
                 ) {
                     MyListItem(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(25.dp))
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                        colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(session.color).contrasted(),
-                            headlineColor = Color(session.color).contrasted(),
-                            trailingIconColor = Color(session.color).contrasted(),
+                        colors = CardDefaults.cardColors(
+                            contentColor = Color(session.color).contrasted(),
                             containerColor = Color(session.color),
                         ),
+                        shape = RoundedCornerShape(25.dp),
+                        border = BorderStroke(1.dp, Color.LightGray),
                         item = session,
                         leadingIcon = R.drawable.document_and_ray,
                         onLeadingClick = {
@@ -103,9 +101,17 @@ fun SessionsTabContent(
                             )
                         },
                     ) { item ->
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(1F)
+                        ) {
                             Text(item.name)
                             Text(item.lastAccessMillis.toDateTime())
+                        }
+                        Column(
+                            modifier = Modifier.padding(end = 5.dp)
+                        ) {
+                            Text(stringResource(R.string.events, item.eventCount))
+                            Text(item.durationMillis.toElapsedTime())
                         }
                     }
                 }
@@ -142,15 +148,12 @@ fun TagsScreenContentPreview() {
                 dismissColor = Pink80
             ) {
                 MyListItem(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(25.dp))
-                        .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                    colors = ListItemDefaults.colors(
-                        leadingIconColor = Color(session.color).contrasted(),
-                        headlineColor = Color(session.color).contrasted(),
-                        trailingIconColor = Color(session.color).contrasted(),
+                    colors = CardDefaults.cardColors(
+                        contentColor = Color(session.color).contrasted(),
                         containerColor = Color(session.color),
                     ),
+                    shape = RoundedCornerShape(25.dp),
+                    border = BorderStroke(1.dp, Color.LightGray),
                     item = session,
                     leadingIcon = R.drawable.document_and_ray,
                     onItemClick = { },
@@ -162,8 +165,13 @@ fun TagsScreenContentPreview() {
                 ) { item ->
                     Column {
                         Text(item.name)
-                        Text(item.lastAccessMillis.toDateTime())
+                        Text(
+                            text = item.lastAccessMillis.toDateTime()
+                        )
                     }
+                    Text(
+                        item.durationMillis.toElapsedTime()
+                    )
                 }
             }
         }

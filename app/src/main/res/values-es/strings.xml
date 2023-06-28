@@ -38,6 +38,8 @@
     <string name="event_deleted">Evento eliminado definitivamente</string>
     <string name="tap_play_to_add_event">Pulsa el botón Play para añadir Eventos</string>
     <string name="event_sent_to_trash">Evento enviado a la Papelera</string>
+    <string name="timestamp">Tiempo</string>
+    <string name="events">Eventos: %1d</string>
     <string name="persons">Personas</string>
     <string name="places">Lugares</string>
     <string name="labels">Marcadores</string>

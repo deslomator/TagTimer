@@ -5,6 +5,7 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -33,6 +35,7 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Trash
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
@@ -117,10 +120,8 @@ fun TrashTabContentPreview() {
                 modifier = Modifier
                     .clip(RoundedCornerShape(25.dp))
                     .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                colors = ListItemDefaults.colors(
-                    leadingIconColor = Color(session.color).contrasted(),
-                    headlineColor = Color(session.color).contrasted(),
-                    trailingIconColor = Color(session.color).contrasted(),
+                colors = CardDefaults.cardColors(
+                    contentColor = Color(session.color).contrasted(),
                     containerColor = Color(session.color),
                 ),
                 item = session,
@@ -128,7 +129,6 @@ fun TrashTabContentPreview() {
                 onLeadingClick = {  },
                 trailingIcon = R.drawable.delete_forever,
                 onTrailingClick = {  },
-                shadowElevation = 0.dp
             ) { item ->
                 Column {
                     Text(item.name)

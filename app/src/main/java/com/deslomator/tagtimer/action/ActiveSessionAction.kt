@@ -28,4 +28,8 @@ sealed interface ActiveSessionAction {
     object DismissEventEditionDialog: ActiveSessionAction
     class EventInTrashClicked(val event: Event): ActiveSessionAction
     object DismissEventInTrashDialog: ActiveSessionAction
+    object TimeClicked: ActiveSessionAction
+    class SetCursor(val time: Long): ActiveSessionAction
+    class IncreaseCursor(val stepMillis: Long): ActiveSessionAction
+    object DismissTimeDialog: ActiveSessionAction
 }
