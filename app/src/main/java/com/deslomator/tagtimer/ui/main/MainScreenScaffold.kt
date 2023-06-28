@@ -12,7 +12,7 @@ import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.state.SessionsTabState
-import com.deslomator.tagtimer.state.TagsTabState
+import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 
 @Composable
@@ -20,7 +20,7 @@ fun MainScreenScaffold(
     outerNavHostController: NavHostController,
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,
-    tagsTabState: TagsTabState,
+    labelsTabState: LabelsTabState,
     onTagsAction: (TagsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit
@@ -36,8 +36,7 @@ fun MainScreenScaffold(
                 onNewSessionClick = { onSessionsAction(SessionsTabAction.AddNewSessionClicked) },
                 onNewTagClick = { onTagsAction(TagsTabAction.AddNewTagClicked) },
                 trashState = trashTabState,
-                onShowSessionsClick = { onSessionsTrashAction(TrashTabAction.ShowSessionsClicked) },
-                onShowTagsClick = { onSessionsTrashAction(TrashTabAction.ShowTagsClicked) }
+                onTrashTypeClick = { onSessionsTrashAction(TrashTabAction.TrashTypeClicked(it)) },
             )
         },
         bottomBar = {
@@ -54,7 +53,7 @@ fun MainScreenScaffold(
                 innerNavHostController = innerNavHostController,
                 sessionsTabState = sessionsTabState,
                 onSessionsAction = onSessionsAction,
-                tagsTabState = tagsTabState,
+                labelsTabState = labelsTabState,
                 onTagsAction = onTagsAction,
                 trashTabState = trashTabState,
                 onSessionsTrashAction = onSessionsTrashAction,

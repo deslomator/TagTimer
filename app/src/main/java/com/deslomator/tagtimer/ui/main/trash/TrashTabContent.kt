@@ -14,10 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ListItemDefaults
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,8 +37,6 @@ import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.contrasted
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun TrashTabContent(
@@ -65,60 +61,7 @@ fun TrashTabContent(
                 animationSpec = tween(500, 0, LinearEasing)
             )
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(6.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    items = state.sessions,
-                    key = { it.id }
-                ) { session ->
-                    MyListItem(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(25.dp))
-                            .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                        colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(session.color).contrasted(),
-                            headlineColor = Color(session.color).contrasted(),
-                            trailingIconColor = Color(session.color).contrasted(),
-                            containerColor = Color(session.color),
-                        ),
-                        item = session,
-                        leadingIcon = R.drawable.restore_from_trash,
-                        onLeadingClick = {
-                            onAction(
-                                TrashTabAction.RestoreSessionClicked(
-                                    session
-                                )
-                            )
-                            showSnackbar(
-                                scope,
-                                snackbarHostState,
-                                context.getString(R.string.session_restored)
-                            )
-                        },
-                        trailingIcon = R.drawable.delete_forever,
-                        onTrailingClick = {
-                            onAction(
-                                TrashTabAction.DeleteSessionClicked(
-                                    session
-                                )
-                            )
-                            showSnackbar(
-                                scope,
-                                snackbarHostState,
-                                context.getString(R.string.session_deleted)
-                            )
-                        },
-                    ) { item ->
-                        Column {
-                            Text(item.name)
-                            Text(item.lastAccessMillis.toDateTime())
-                        }
-                    }
-                }
-            }
+            SessionTrash(state, onAction, scope, snackbarHostState, context)
         }
         AnimatedVisibility(
             visible = state.currentTrash == Trash.TAG,
@@ -129,81 +72,36 @@ fun TrashTabContent(
                 animationSpec = tween(500, 0, LinearEasing)
             )
         ) {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(6.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(
-                    items = state.tags,
-                    key = { it.id }
-                ) { tag ->
-                    MyListItem(
-                        modifier = Modifier
-                            .clip(CutCornerShape(topStart = 20.dp))
-                            .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
-                        colors = ListItemDefaults.colors(
-                            leadingIconColor = Color(tag.color).contrasted(),
-                            headlineColor = Color(tag.color).contrasted(),
-                            trailingIconColor = Color(tag.color).contrasted(),
-                            containerColor = Color(tag.color),
-                        ),
-                        item = tag,
-                        leadingIcon = R.drawable.restore_from_trash,
-                        onLeadingClick = {
-                            onAction(
-                                TrashTabAction.RestoreTagClicked(
-                                    tag
-                                )
-                            )
-                            showSnackbar(
-                                scope,
-                                snackbarHostState,
-                                context.getString(R.string.tag_restored)
-                            )
-                        },
-                        trailingIcon = R.drawable.delete_forever,
-                        onTrailingClick = {
-                            onAction(
-                                TrashTabAction.DeleteTagClicked(
-                                    tag
-                                )
-                            )
-                            showSnackbar(
-                                scope,
-                                snackbarHostState,
-                                context.getString(R.string.tag_deleted)
-                            )
-                        },
-                    ) { item ->
-                        Column {
-                            Text(item.label)
-                            Text(item.category)
-                        }
-                    }
-                }
-            }
+            TagTrash(state, onAction, scope, snackbarHostState, context)
         }
-    }
-}
-
-fun showSnackbar(
-    scope: CoroutineScope,
-    snackbarHostState: SnackbarHostState,
-    message: String
-) {
-    scope.launch {
-        snackbarHostState.currentSnackbarData?.dismiss()
-        snackbarHostState.showSnackbar(
-            message = message,
-            duration = SnackbarDuration.Short
-        )
+        AnimatedVisibility(
+            visible = state.currentTrash == Trash.PERSON,
+            enter = fadeIn(
+                animationSpec = tween(500, 0, LinearEasing)
+            ),
+            exit = fadeOut(
+                animationSpec = tween(500, 0, LinearEasing)
+            )
+        ) {
+            PersonTrash(state, onAction, scope, snackbarHostState, context)
+        }
+        AnimatedVisibility(
+            visible = state.currentTrash == Trash.PLACE,
+            enter = fadeIn(
+                animationSpec = tween(500, 0, LinearEasing)
+            ),
+            exit = fadeOut(
+                animationSpec = tween(500, 0, LinearEasing)
+            )
+        ) {
+            PlaceTrash(state, onAction, scope, snackbarHostState, context)
+        }
     }
 }
 
 @Composable
 @Preview
-fun TrashContentPreview() {
+fun TrashTabContentPreview() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(6.dp),

@@ -1,9 +1,13 @@
 package com.deslomator.tagtimer.state
 
+import com.deslomator.tagtimer.model.Person
+import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.Tag
 
-data class TagsTabState(
+data class LabelsTabState(
     val tags: List<Tag> = emptyList(),
+    val persons: List<Person> = emptyList(),
+    val places: List<Place> = emptyList(),
     val currentTag: Tag = Tag(),
     val tagCategory: String = "",
     val tagLabel: String = "",

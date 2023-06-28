@@ -5,6 +5,10 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.Person
+import com.deslomator.tagtimer.model.Place
+import com.deslomator.tagtimer.model.PreSelectedPerson
+import com.deslomator.tagtimer.model.PreSelectedPlace
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
@@ -32,12 +36,14 @@ interface AppDao {
 
     @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY elapsedTimeMillis ASC")
     fun getTrashedEventsForSession(sessionId: Int): Flow<List<Event>>
+    
     /*
     CATEGORY
      */
 
     @Query("SELECT DISTINCT category FROM tag ORDER BY category ASC")
     fun getCategories(): Flow<List<String>>
+    
     /*
     SESSION
      */
@@ -58,6 +64,7 @@ interface AppDao {
 
     @Query("SELECT * FROM session WHERE inTrash = 1 ORDER BY lastAccessMillis DESC")
     fun getTrashedSessions(): Flow<List<Session>>
+    
     /*
     TAG
      */
@@ -73,6 +80,39 @@ interface AppDao {
     fun getActiveTags(): Flow<List<Tag>>
     @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label,category ASC")
     fun getTrashedTags(): Flow<List<Tag>>
+    
+    /*
+    PERSON
+     */
+    @Upsert
+    suspend fun upsertPerson(person: Person)
+    @Delete
+    suspend fun deletePerson(person: Person)
+    @Query("SELECT * FROM person WHERE name = :name")
+    suspend fun getPerson(name: String): Person
+    @Query("SELECT * FROM person ORDER BY name ASC")
+    fun getPersons(): Flow<List<Person>>
+    @Query("SELECT * FROM person WHERE inTrash = 0 ORDER BY name ASC")
+    fun getActivePersons(): Flow<List<Person>>
+    @Query("SELECT * FROM person WHERE inTrash = 1 ORDER BY name ASC")
+    fun getTrashedPersons(): Flow<List<Person>>
+    
+    /*
+    PLACE
+     */
+    @Upsert
+    suspend fun upsertPlace(place: Place)
+    @Delete
+    suspend fun deletePlace(place: Place)
+    @Query("SELECT * FROM place WHERE name = :name")
+    suspend fun getPlace(name: String): Place
+    @Query("SELECT * FROM place ORDER BY name ASC")
+    fun getPlaces(): Flow<List<Place>>
+    @Query("SELECT * FROM place WHERE inTrash = 0 ORDER BY name ASC")
+    fun getActivePlaces(): Flow<List<Place>>
+    @Query("SELECT * FROM place WHERE inTrash = 1 ORDER BY name ASC")
+    fun getTrashedPlaces(): Flow<List<Place>>
+    
     /*
     PRESELECTED TAG
      */
@@ -84,6 +124,31 @@ interface AppDao {
     suspend fun deletePreSelectedTag(preSelectedTagId: Int)
     @Query("SELECT * FROM preselectedtag WHERE sessionId = :sessionId")
     fun getPreSelectedTagsForSession(sessionId: Int): Flow<List<PreSelectedTag>>
+    
+    /*
+    PRESELECTED TAG
+     */
+    @Upsert
+    suspend fun upsertPreSelectedPerson(preSelectedPerson: PreSelectedPerson)
+    @Delete
+    suspend fun deletePreSelectedPerson(preSelectedPerson: PreSelectedPerson)
+    @Query("DELETE FROM preselectedperson WHERE id = :preSelectedPersonId")
+    suspend fun deletePreSelectedPerson(preSelectedPersonId: Int)
+    @Query("SELECT * FROM preselectedperson WHERE sessionId = :sessionId")
+    fun getPreSelectedPersonsForSession(sessionId: Int): Flow<List<PreSelectedPerson>>
+    
+    /*
+    PRESELECTED TAG
+     */
+    @Upsert
+    suspend fun upsertPreSelectedPlace(preSelectedPlace: PreSelectedPlace)
+    @Delete
+    suspend fun deletePreSelectedPlace(preSelectedPlace: PreSelectedPlace)
+    @Query("DELETE FROM preselectedplace WHERE id = :preSelectedPlaceId")
+    suspend fun deletePreSelectedPlace(preSelectedPlaceId: Int)
+    @Query("SELECT * FROM preselectedplace WHERE sessionId = :sessionId")
+    fun getPreSelectedPlacesForSession(sessionId: Int): Flow<List<PreSelectedPlace>>
+    
     /*
     ORPHAN
      */

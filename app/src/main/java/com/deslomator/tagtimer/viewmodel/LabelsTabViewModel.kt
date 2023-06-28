@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.state.TagsTabState
+import com.deslomator.tagtimer.state.LabelsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,18 +16,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TagsTabViewModel @Inject constructor(
+class LabelsTabViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
-    private val _state = MutableStateFlow(TagsTabState())
+    private val _state = MutableStateFlow(LabelsTabState())
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     val state = combine(_state, _tags) { state, tags ->
         state.copy(
             tags = tags,
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TagsTabState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelsTabState())
 
     fun onAction(action: TagsTabAction) {
         when(action) {

@@ -24,6 +24,10 @@
     <string name="active_session">Sesión Activa</string>
     <string name="tag_deleted">Etiqueta eliminada definitivamente</string>
     <string name="tag_restored">Etiqueta restaurada</string>
+    <string name="person_deleted">Persona eliminada definitivamente</string>
+    <string name="person_restored">Persona restaurada</string>
+    <string name="place_deleted">Lugar eliminado definitivamente</string>
+    <string name="place_restored">Lugar restaurado</string>
     <string name="add_tag">Añadir Etiqueta</string>
     <string name="select_tags">Seleccionar Etiquetas</string>
     <string name="type_a_note">Añade una Nota</string>
@@ -34,4 +38,6 @@
     <string name="event_deleted">Evento eliminado definitivamente</string>
     <string name="tap_play_to_add_event">Pulsa el botón Play para añadir Eventos</string>
     <string name="event_sent_to_trash">Evento enviado a la Papelera</string>
+    <string name="persons">Personas</string>
+    <string name="places">Lugares</string>
 </resources>

@@ -12,10 +12,10 @@ import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.state.TagsTabState
+import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.main.sessions.SessionsTabContent
 import com.deslomator.tagtimer.ui.main.trash.TrashTabContent
-import com.deslomator.tagtimer.ui.main.tags.TagsTabContent
+import com.deslomator.tagtimer.ui.main.labels.LabelsTabContent
 
 @Composable
 fun BottomNavHost(
@@ -25,7 +25,7 @@ fun BottomNavHost(
     innerNavHostController: NavHostController,
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,
-    tagsTabState: TagsTabState,
+    labelsTabState: LabelsTabState,
     onTagsAction: (TagsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
@@ -46,9 +46,9 @@ fun BottomNavHost(
             )
         }
         composable(BottomNavigationScreen.Tags.route) {
-            TagsTabContent(
+            LabelsTabContent(
                 paddingValues = paddingValues,
-                state = tagsTabState,
+                state = labelsTabState,
                 onAction = onTagsAction,
                 snackbarHostState = snackbarHostState
             )

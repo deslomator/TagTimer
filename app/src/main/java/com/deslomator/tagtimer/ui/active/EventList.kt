@@ -27,7 +27,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.SwipeableListItem
-import com.deslomator.tagtimer.ui.main.trash.showSnackbar
+import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.Pink80
 
 @Composable

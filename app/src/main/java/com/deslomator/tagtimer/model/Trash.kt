@@ -5,5 +5,5 @@ package com.deslomator.tagtimer.model
  * be shown in trash screen
  */
 enum class Trash {
-    SESSION, TAG
+    SESSION, TAG, PERSON, PLACE
 }

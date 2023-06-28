@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main.tags
+package com.deslomator.tagtimer.ui.main.labels
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -12,13 +12,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.state.TagsTabState
+import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.MyDialog
 
 @Composable
 fun TagDialog(
-    state: TagsTabState,
+    state: LabelsTabState,
     onAction: (TagsTabAction) -> Unit,
     tag: Tag
 ) {
@@ -55,7 +55,7 @@ fun TagDialog(
 @Preview
 fun TagDialogPreview() {
     TagDialog(
-        state = TagsTabState(tagColor = 0xff4477),
+        state = LabelsTabState(tagColor = 0xff4477),
         onAction = {},
         tag = Tag()
     )

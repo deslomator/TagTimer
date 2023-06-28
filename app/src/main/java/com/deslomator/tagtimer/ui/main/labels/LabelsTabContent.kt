@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main.tags
+package com.deslomator.tagtimer.ui.main.labels
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.state.TagsTabState
+import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
-import com.deslomator.tagtimer.ui.main.trash.showSnackbar
+import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
@@ -40,9 +40,9 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TagsTabContent(
+fun LabelsTabContent(
     paddingValues: PaddingValues,
-    state: TagsTabState,
+    state: LabelsTabState,
     onAction: (TagsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
@@ -116,7 +116,7 @@ fun TagsTabContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun TagsScreenContentPreview() {
+fun LabelsTabContentPreview() {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(6.dp),

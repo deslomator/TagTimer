@@ -15,7 +15,7 @@ import com.deslomator.tagtimer.action.TagsTabAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.state.TagsTabState
+import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.active.ActiveSessionScaffold
 
 @Composable
@@ -24,7 +24,7 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     sessionsTabState: SessionsTabState,
     onSessionsAction: (SessionsTabAction) -> Unit,
-    tagsTabState: TagsTabState,
+    labelsTabState: LabelsTabState,
     onTagsAction: (TagsTabAction) -> Unit,
     trashTabState: TrashTabState,
     onSessionsTrashAction: (TrashTabAction) -> Unit,
@@ -43,7 +43,7 @@ fun AppNavHost(
                 outerNavHostController = navController,
                 sessionsTabState = sessionsTabState,
                 onSessionsAction = onSessionsAction,
-                tagsTabState = tagsTabState,
+                labelsTabState = labelsTabState,
                 onTagsAction = onTagsAction,
                 trashTabState = trashTabState,
                 onSessionsTrashAction = onSessionsTrashAction

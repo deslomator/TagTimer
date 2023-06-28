@@ -24,6 +24,10 @@
     <string name="active_session">Active Session</string>
     <string name="tag_deleted">Tag permanently deleted</string>
     <string name="tag_restored">Tag restored</string>
+    <string name="person_deleted">Person permanently deleted</string>
+    <string name="person_restored">Person restored</string>
+    <string name="place_deleted">Place permanently deleted</string>
+    <string name="place_restored">Place restored</string>
     <string name="add_tag">Add Tag</string>
     <string name="select_tags">Select Tags</string>
     <string name="type_a_note">Type a Note</string>
@@ -34,4 +38,6 @@
     <string name="event_deleted">Event permanently deleted</string>
     <string name="tap_play_to_add_event">Tap Play button to add Events</string>
     <string name="event_sent_to_trash">Event sent to Trash</string>
+    <string name="persons">Persons</string>
+    <string name="places">Places</string>
 </resources>

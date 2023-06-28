@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.model.Trash
 import com.deslomator.tagtimer.state.TrashTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,22 +22,25 @@ class TrashTabViewModel @Inject constructor(
     private val _state = MutableStateFlow(TrashTabState())
     private val _sessions = appDao.getTrashedSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _persons = appDao.getTrashedPersons()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    private val _places = appDao.getTrashedPlaces()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getTrashedTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_state, _sessions, _tags) { state, sessions, tags ->
+    val state = combine(_state, _sessions, _tags, _persons, _places) { state, sessions, tags, persons, places ->
         state.copy(
             sessions = sessions,
             tags = tags,
+            persons = persons,
+            places = places
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrashTabState())
 
     fun onAction(action: TrashTabAction) {
         when(action) {
-            is TrashTabAction.ShowSessionsClicked -> {
-                _state.update { it.copy(currentTrash = Trash.SESSION) }
-            }
-            is TrashTabAction.ShowTagsClicked -> {
-                _state.update { it.copy(currentTrash = Trash.TAG) }
+            is TrashTabAction.TrashTypeClicked -> {
+                _state.update { it.copy(currentTrash = action.trash) }
             }
             is TrashTabAction.DeleteSessionClicked -> {
                 viewModelScope.launch {
@@ -63,6 +65,10 @@ class TrashTabViewModel @Inject constructor(
                     appDao.upsertTag(trashed)
                 }
             }
+            is TrashTabAction.DeletePersonClicked -> TODO()
+            is TrashTabAction.DeletePlaceClicked -> TODO()
+            is TrashTabAction.RestorePersonClicked -> TODO()
+            is TrashTabAction.RestorePlaceClicked -> TODO()
         }
     }
 
