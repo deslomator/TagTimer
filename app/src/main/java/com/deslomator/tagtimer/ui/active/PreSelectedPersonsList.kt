@@ -1,13 +1,20 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -20,26 +27,26 @@ fun PreSelectedPersonsList(
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit
 ) {
-    LazyRow {
-        items(
-            items = state.persons.filter { person ->
-                state.preSelectedPersons.map { it.personId }.contains(person.id)
-            },
-            key = { it.id }
-        ) { person ->
-            MyListItem(
-                leadingIcon = R.drawable.person,
-                onLeadingClick = { onAction(ActiveSessionAction.PreSelectedPersonClicked(person.name)) },
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White,
-                    contentColor = Color.White.contrasted()
+    Row {
+        state.persons.filter { person ->
+            state.preSelectedPersons.map { it.personId }.contains(person.id)
+        }.forEach { person ->
+            TextButton(
+                modifier = Modifier
+                    .weight(1F)
+                    .alpha(if (state.currentPersonName == person.name) 1F else 0.5F),
+                onClick = { onAction(ActiveSessionAction.PreSelectedPersonClicked(person.name)) },
+                colors = ButtonDefaults.buttonColors(
+                    contentColor = Color.White.contrasted(),
+                    containerColor = Color.White
                 ),
-                item = person,
-                shape = CutCornerShape(topStart = 20.dp),
-                border = BorderStroke(5.dp, Color(person.color)),
-                onItemClick = { onAction(ActiveSessionAction.PreSelectedPersonClicked(person.name)) },
-            ) { item ->
-                Text(item.name)
+                border = BorderStroke(1.dp, Color.Green)
+            ) {
+                Icon(
+                    painterResource(id = R.drawable.person),
+                    contentDescription = null
+                )
+                Text(text = person.name)
             }
         }
     }
