@@ -64,7 +64,10 @@ fun <T> MyListItem(
                     )
                 }
             }
-            Row(modifier = Modifier.weight(1.0f)) {
+            Row(
+                modifier = Modifier.weight(1.0f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 centralContent(item)
             }
             trailingIcon?.let {

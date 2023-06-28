@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -36,6 +37,7 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Trash
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
@@ -110,9 +112,15 @@ fun TrashTabContent(
                             )
                         },
                     ) { item ->
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(1F)
+                        ) {
                             Text(item.name)
                             Text(item.lastAccessMillis.toDateTime())
+                        }
+                        Column {
+                            Text(stringResource(R.string.events, item.eventCount))
+                            Text(item.durationMillis.toElapsedTime())
                         }
                     }
                 }

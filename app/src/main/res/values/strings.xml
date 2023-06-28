@@ -35,4 +35,5 @@
     <string name="tap_play_to_add_event">Tap Play button to add Events</string>
     <string name="event_sent_to_trash">Event sent to Trash</string>
     <string name="timestamp">Timestamp</string>
+    <string name="events">Events: %1d</string>
 </resources>

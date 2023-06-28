@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -30,6 +31,7 @@ import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.main.RootScreen
@@ -99,9 +101,15 @@ fun SessionsTabContent(
                             )
                         },
                     ) { item ->
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(1F)
+                        ) {
                             Text(item.name)
                             Text(item.lastAccessMillis.toDateTime())
+                        }
+                        Column {
+                            Text(stringResource(R.string.events, item.eventCount))
+                            Text(item.durationMillis.toElapsedTime())
                         }
                     }
                 }
@@ -155,8 +163,13 @@ fun TagsScreenContentPreview() {
                 ) { item ->
                     Column {
                         Text(item.name)
-                        Text(item.lastAccessMillis.toDateTime())
+                        Text(
+                            text = item.lastAccessMillis.toDateTime()
+                        )
                     }
+                    Text(
+                        item.durationMillis.toElapsedTime()
+                    )
                 }
             }
         }

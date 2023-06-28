@@ -117,9 +117,9 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy(isRunning = false) }
-                val duration = getSessionDuration()
                 val session = state.value.currentSession.copy(
-                    durationMillis = duration
+                    durationMillis = getSessionDuration(),
+                    eventCount = state.value.events.size
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
             }
