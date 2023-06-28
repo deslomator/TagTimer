@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.main.labels
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,9 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DismissDirection
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,7 +45,7 @@ fun PlaceLabel(
     ) {
         items(
             items = state.places,
-            key = { it.name }
+            key = { it.id }
         ) { place ->
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
@@ -59,18 +60,15 @@ fun PlaceLabel(
                 dismissColor = Pink80
             ) {
                 MyListItem(
-                    modifier = Modifier
-                        .clip(CutCornerShape(topStart = 20.dp))
-                        .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
                     leadingIcon = R.drawable.place,
                     onLeadingClick = { onAction(LabelsTabAction.EditPlaceClicked(place)) },
-                    colors = ListItemDefaults.colors(
-                        leadingIconColor = Color(place.color).contrasted(),
-                        headlineColor = Color(place.color).contrasted(),
-                        trailingIconColor = Color(place.color).contrasted(),
+                    colors = CardDefaults.cardColors(
+                        contentColor = Color(place.color).contrasted(),
                         containerColor = Color(place.color),
                     ),
                     item = place,
+                    shape = CutCornerShape(18.dp),
+                    border = BorderStroke(1.dp, Color.LightGray),
                     onItemClick = { onAction(LabelsTabAction.EditPlaceClicked(place)) },
                 ) { item ->
                     Text(item.name)

@@ -65,10 +65,28 @@ class TrashTabViewModel @Inject constructor(
                     appDao.upsertTag(trashed)
                 }
             }
-            is TrashTabAction.DeletePersonClicked -> TODO()
-            is TrashTabAction.DeletePlaceClicked -> TODO()
-            is TrashTabAction.RestorePersonClicked -> TODO()
-            is TrashTabAction.RestorePlaceClicked -> TODO()
+            is TrashTabAction.DeletePersonClicked -> {
+                viewModelScope.launch {
+                    appDao.deletePerson(action.person)
+                }
+            }
+            is TrashTabAction.RestorePersonClicked -> {
+                viewModelScope.launch {
+                    val trashed = action.person.copy(inTrash = false)
+                    appDao.upsertPerson(trashed)
+                }
+            }
+            is TrashTabAction.DeletePlaceClicked -> {
+                viewModelScope.launch {
+                    appDao.deletePlace(action.place)
+                }
+            }
+            is TrashTabAction.RestorePlaceClicked -> {
+                viewModelScope.launch {
+                    val trashed = action.place.copy(inTrash = false)
+                    appDao.upsertPlace(trashed)
+                }
+            }
         }
     }
 

@@ -36,6 +36,12 @@ fun EventEditionDialog(
     var note by rememberSaveable {
         mutableStateOf(event.note)
     }
+    var person by rememberSaveable {
+        mutableStateOf(event.person)
+    }
+    var place by rememberSaveable {
+        mutableStateOf(event.place)
+    }
     var color by rememberSaveable {
         mutableStateOf(event.color)
     }
@@ -47,6 +53,8 @@ fun EventEditionDialog(
                 label = label,
                 category = category,
                 note = note,
+                person = person,
+                place = place,
                 color = color
             )
             onAccept(e)
@@ -75,6 +83,20 @@ fun EventEditionDialog(
             value = note,
             onValueChange = { note = it },
             placeholder = { Text(text = stringResource(id = R.string.type_a_note)) },
+            enabled = enabled
+        )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = person,
+            onValueChange = { person = it },
+            placeholder = { Text(text = stringResource(id = R.string.person)) },
+            enabled = enabled
+        )
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = place,
+            onValueChange = { place = it },
+            placeholder = { Text(text = stringResource(id = R.string.place)) },
             enabled = enabled
         )
         ColorPicker(

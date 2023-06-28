@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.main.trash
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -44,16 +46,13 @@ fun SessionTrash(
             key = { it.id }
         ) { session ->
             MyListItem(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(25.dp))
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                colors = ListItemDefaults.colors(
-                    leadingIconColor = Color(session.color).contrasted(),
-                    headlineColor = Color(session.color).contrasted(),
-                    trailingIconColor = Color(session.color).contrasted(),
+                colors = CardDefaults.cardColors(
+                    contentColor = Color(session.color).contrasted(),
                     containerColor = Color(session.color),
                 ),
                 item = session,
+                shape = RoundedCornerShape(25.dp),
+                border = BorderStroke(1.dp, Color.LightGray),
                 leadingIcon = R.drawable.restore_from_trash,
                 onLeadingClick = {
                     onAction(

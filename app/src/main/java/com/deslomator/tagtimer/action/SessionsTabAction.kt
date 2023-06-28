@@ -4,10 +4,7 @@ import com.deslomator.tagtimer.model.Session
 
 sealed interface SessionsTabAction {
     object AddNewSessionClicked: SessionsTabAction
-    object AcceptAddSessionClicked: SessionsTabAction
+    data class AcceptAddSessionClicked(val session: Session): SessionsTabAction
     object DismissSessionDialog: SessionsTabAction
-    data class UpdateSessionName(val name: String): SessionsTabAction
-    data class UpdateSessionNotes(val notes: String): SessionsTabAction
-    data class UpdateSessionColor(val color: Int): SessionsTabAction
     data class TrashSessionSwiped(val session: Session): SessionsTabAction
 }

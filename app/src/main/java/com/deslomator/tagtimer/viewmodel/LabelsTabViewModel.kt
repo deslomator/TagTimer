@@ -44,29 +44,22 @@ class LabelsTabViewModel @Inject constructor(
             }
             is LabelsTabAction.AddNewTagClicked -> {
                 _state.update { it.copy(
+                    currentTag = Tag(),
                     showTagDialog = true,
                     isAddingNewTag = true
                 ) }
             }
-            is LabelsTabAction.AcceptAddNewTagClicked -> {
-                _state.update { it.copy(
-                    showTagDialog = false,
-                    isAddingNewTag = false,
-                ) }
-                viewModelScope.launch { appDao.upsertTag(action.tag) }
-            }
             is LabelsTabAction.EditTagClicked -> {
                 _state.update { it.copy(
+                    currentTag = action.tag,
                     showTagDialog = true,
                     isEditingTag = true,
-                    currentTag = action.tag,
                 ) }
             }
             is LabelsTabAction.AcceptTagEditionClicked -> {
                 _state.update { it.copy(
                     showTagDialog = false,
                     isEditingTag = false,
-                    currentTag = Tag()
                 ) }
                 viewModelScope.launch { appDao.upsertTag(action.tag) }
             }
@@ -89,29 +82,22 @@ class LabelsTabViewModel @Inject constructor(
              */
             is LabelsTabAction.AddNewPersonClicked -> {
                 _state.update { it.copy(
+                    currentPerson = Person(),
                     showPersonDialog = true,
                     isAddingNewPerson = true
                 ) }
             }
-            is LabelsTabAction.AcceptAddNewPersonClicked -> {
-                _state.update { it.copy(
-                    showPersonDialog = false,
-                    isAddingNewPerson = false,
-                ) }
-                viewModelScope.launch { appDao.upsertPerson(action.person) }
-            }
             is LabelsTabAction.EditPersonClicked -> {
                 _state.update { it.copy(
+                    currentPerson = action.person,
                     showPersonDialog = true,
                     isEditingPerson = true,
-                    currentPerson = action.person,
                 ) }
             }
             is LabelsTabAction.AcceptPersonEditionClicked -> {
                 _state.update { it.copy(
                     showPersonDialog = false,
                     isEditingPerson = false,
-                    currentPerson = Person()
                 ) }
                 viewModelScope.launch { appDao.upsertPerson(action.person) }
             }
@@ -133,29 +119,22 @@ class LabelsTabViewModel @Inject constructor(
              */
             is LabelsTabAction.AddNewPlaceClicked -> {
                 _state.update { it.copy(
+                    currentPlace = Place(),
                     showPlaceDialog = true,
                     isAddingNewPlace = true
                 ) }
             }
-            is LabelsTabAction.AcceptAddNewPlaceClicked -> {
-                _state.update { it.copy(
-                    showPlaceDialog = false,
-                    isAddingNewPlace = false,
-                ) }
-                viewModelScope.launch { appDao.upsertPlace(action.place) }
-            }
             is LabelsTabAction.EditPlaceClicked -> {
                 _state.update { it.copy(
+                    currentPlace = action.place,
                     showPlaceDialog = true,
                     isEditingPlace = true,
-                    currentPlace = action.place,
                 ) }
             }
             is LabelsTabAction.AcceptPlaceEditionClicked -> {
                 _state.update { it.copy(
                     showPlaceDialog = false,
                     isEditingPlace = false,
-                    currentPlace = Place()
                 ) }
                 viewModelScope.launch { appDao.upsertPlace(action.place) }
             }

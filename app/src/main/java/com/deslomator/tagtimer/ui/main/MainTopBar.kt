@@ -68,7 +68,7 @@ fun MainTopBar(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Spacer(modifier = Modifier.width(15.dp))
-                        TopButton2(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Label.TAG,
                             currentType = labelsTabState.currentLabel,
@@ -76,7 +76,7 @@ fun MainTopBar(
                             text = R.string.tags
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        TopButton2(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Label.PERSON,
                             currentType = labelsTabState.currentLabel,
@@ -84,7 +84,7 @@ fun MainTopBar(
                             text = R.string.persons
                         )
                         Spacer(modifier = Modifier.width(15.dp))
-                        TopButton2(
+                        TopButton(
                             modifier = Modifier.weight(1F),
                             type = Label.PLACE,
                             currentType = labelsTabState.currentLabel,
@@ -133,33 +133,33 @@ fun MainTopBar(
                         TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.SESSION,
-                            currentTrash = trashState.currentTrash,
-                            onTrashTypeClick = { onTrashTypeClick(it) },
-                            label = R.string.sessions
+                            currentType = trashState.currentTrash,
+                            onTypeClick = { onTrashTypeClick(it) },
+                            text = R.string.sessions
                         )
                         Spacer(modifier = Modifier.width(15.dp))
                         TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.TAG,
-                            currentTrash = trashState.currentTrash,
-                            onTrashTypeClick = { onTrashTypeClick(it) },
-                            label = R.string.tags
+                            currentType = trashState.currentTrash,
+                            onTypeClick = { onTrashTypeClick(it) },
+                            text = R.string.tags
                         )
                         Spacer(modifier = Modifier.width(15.dp))
                         TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.PERSON,
-                            currentTrash = trashState.currentTrash,
-                            onTrashTypeClick = { onTrashTypeClick(it) },
-                            label = R.string.persons
+                            currentType = trashState.currentTrash,
+                            onTypeClick = { onTrashTypeClick(it) },
+                            text = R.string.persons
                         )
                         Spacer(modifier = Modifier.width(15.dp))
                         TopButton(
                             modifier = Modifier.weight(1F),
                             type = Trash.PLACE,
-                            currentTrash = trashState.currentTrash,
-                            onTrashTypeClick = { onTrashTypeClick(it) },
-                            label = R.string.places
+                            currentType = trashState.currentTrash,
+                            onTypeClick = { onTrashTypeClick(it) },
+                            text = R.string.places
                         )
                         Spacer(modifier = Modifier.width(15.dp))
                     }
@@ -170,30 +170,7 @@ fun MainTopBar(
 }
 
 @Composable
-private fun TopButton(
-    modifier: Modifier,
-    type: Trash,
-    currentTrash: Trash,
-    onTrashTypeClick: (Trash) -> Unit,
-    @StringRes label: Int
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(5.dp))
-            .background(PurpleGrey40)
-            .alpha(if (currentTrash == type) 1F else 0.5F)
-            .clickable { onTrashTypeClick(type) }
-            .padding(top= 5.dp, bottom = 5.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(id = label),
-            color = PurpleGrey40.contrasted()
-        )
-    }
-}
-@Composable
-private fun <T>TopButton2(
+private fun <T>TopButton(
     modifier: Modifier,
     type: T,
     currentType: T,

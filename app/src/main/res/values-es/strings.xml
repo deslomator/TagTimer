@@ -51,4 +51,6 @@
     <string name="add_place">Añadir Lugar</string>
     <string name="new_place">Nuevo Lugar</string>
     <string name="edit_place">Editar Lugar</string>
+    <string name="person">Persona</string>
+    <string name="place">Lugar</string>
 </resources>

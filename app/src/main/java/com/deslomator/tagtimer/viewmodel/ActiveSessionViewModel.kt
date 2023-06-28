@@ -235,6 +235,8 @@ class ActiveSessionViewModel @Inject constructor(
                     label = it.label,
                     category = it.category,
                     note = it.note,
+                    person = it.person,
+                    place = it.place,
                     elapsedTimeSeconds = (it.elapsedTimeMillis / 1000).toInt(),
                 )
             }

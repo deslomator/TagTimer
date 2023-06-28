@@ -7,7 +7,8 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
 @Entity
 data class Place(
+    val name: String = "",
     val color: Int = colorPickerColors[7].toArgb(),
     val inTrash: Boolean = false,
-    @PrimaryKey val name: String = ""
+    @PrimaryKey(autoGenerate = true) val id: Int = 0
 )

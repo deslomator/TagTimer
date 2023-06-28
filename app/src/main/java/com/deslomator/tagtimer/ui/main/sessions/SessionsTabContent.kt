@@ -120,7 +120,7 @@ fun SessionsTabContent(
     }
     if (state.showSessionDialog) {
         SessionDialog(
-            state = state,
+            session = state.currentSession,
             onAction = onAction,
         )
     }

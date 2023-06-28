@@ -13,6 +13,8 @@ data class Event(
     val note: String = "",
     val category: String = "",
     val label: String = "",
+    val person: String = "",
+    val place: String = "",
     val color: Int = colorPickerColors[7].toArgb(),
     val inTrash: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0

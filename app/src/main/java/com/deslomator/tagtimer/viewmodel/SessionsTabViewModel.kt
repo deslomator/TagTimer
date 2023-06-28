@@ -33,39 +33,16 @@ class SessionsTabViewModel @Inject constructor(
         when(action) {
             SessionsTabAction.AddNewSessionClicked -> {
                 _state.update { it.copy(
-                    sessionColor = it.currentSession.color,
+                    currentSession = Session(),
                     showSessionDialog = true,
                 ) }
             }
             is SessionsTabAction.AcceptAddSessionClicked -> {
-                val session = Session(
-                    name = state.value.sessionName,
-                    notes = state.value.sessionNotes,
-                    color = state.value.sessionColor,
-                    lastAccessMillis = System.currentTimeMillis()
-                )
-                _state.update { it.copy(
-                    showSessionDialog = false,
-                    sessionColor = 0,
-                    sessionName = ""
-                ) }
-                viewModelScope.launch { appDao.upsertSession(session) }
+                _state.update { it.copy(showSessionDialog = false) }
+                viewModelScope.launch { appDao.upsertSession(action.session) }
             }
             is SessionsTabAction.DismissSessionDialog -> {
-                _state.update { it.copy(
-                    showSessionDialog = false,
-                    sessionColor = 0,
-                    sessionName = ""
-                ) }
-            }
-            is SessionsTabAction.UpdateSessionName -> {
-                _state.update { it.copy(sessionName = action.name) }
-            }
-            is SessionsTabAction.UpdateSessionNotes -> {
-                _state.update { it.copy(sessionNotes = action.notes) }
-            }
-            is SessionsTabAction.UpdateSessionColor -> {
-                _state.update { it.copy(sessionColor = action.color) }
+                _state.update { it.copy(showSessionDialog = false) }
             }
             is SessionsTabAction.TrashSessionSwiped -> {
                 viewModelScope.launch {

@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.main.trash
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -40,19 +42,16 @@ fun PersonTrash(
     ) {
         items(
             items = state.persons,
-            key = { it.name }
+            key = { it.id }
         ) { person ->
             MyListItem(
-                modifier = Modifier
-                    .clip(CutCornerShape(topStart = 20.dp))
-                    .border(1.dp, Color.LightGray, CutCornerShape(topStart = 20.dp)),
-                colors = ListItemDefaults.colors(
-                    leadingIconColor = Color(person.color).contrasted(),
-                    headlineColor = Color(person.color).contrasted(),
-                    trailingIconColor = Color(person.color).contrasted(),
-                    containerColor = Color(person.color),
+                colors = CardDefaults.cardColors(
+                    contentColor = Color.White.contrasted(),
+                    containerColor = Color.White,
                 ),
                 item = person,
+                shape = CutCornerShape(topStart = 20.dp),
+                border = BorderStroke(5.dp, Color(person.color)),
                 leadingIcon = R.drawable.restore_from_trash,
                 onLeadingClick = {
                     onAction(TrashTabAction.RestorePersonClicked(person))

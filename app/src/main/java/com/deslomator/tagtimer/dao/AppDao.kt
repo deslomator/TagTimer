@@ -88,8 +88,8 @@ interface AppDao {
     suspend fun upsertPerson(person: Person)
     @Delete
     suspend fun deletePerson(person: Person)
-    @Query("SELECT * FROM person WHERE name = :name")
-    suspend fun getPerson(name: String): Person
+    @Query("SELECT * FROM person WHERE id = :id")
+    suspend fun getPerson(id: Int): Person
     @Query("SELECT * FROM person ORDER BY name ASC")
     fun getPersons(): Flow<List<Person>>
     @Query("SELECT * FROM person WHERE inTrash = 0 ORDER BY name ASC")
@@ -104,8 +104,8 @@ interface AppDao {
     suspend fun upsertPlace(place: Place)
     @Delete
     suspend fun deletePlace(place: Place)
-    @Query("SELECT * FROM place WHERE name = :name")
-    suspend fun getPlace(name: String): Place
+    @Query("SELECT * FROM place WHERE id = :id")
+    suspend fun getPlace(id: Int): Place
     @Query("SELECT * FROM place ORDER BY name ASC")
     fun getPlaces(): Flow<List<Place>>
     @Query("SELECT * FROM place WHERE inTrash = 0 ORDER BY name ASC")
@@ -126,7 +126,7 @@ interface AppDao {
     fun getPreSelectedTagsForSession(sessionId: Int): Flow<List<PreSelectedTag>>
     
     /*
-    PRESELECTED TAG
+    PRESELECTED PERSON
      */
     @Upsert
     suspend fun upsertPreSelectedPerson(preSelectedPerson: PreSelectedPerson)
@@ -138,7 +138,7 @@ interface AppDao {
     fun getPreSelectedPersonsForSession(sessionId: Int): Flow<List<PreSelectedPerson>>
     
     /*
-    PRESELECTED TAG
+    PRESELECTED PLACE
      */
     @Upsert
     suspend fun upsertPreSelectedPlace(preSelectedPlace: PreSelectedPlace)
