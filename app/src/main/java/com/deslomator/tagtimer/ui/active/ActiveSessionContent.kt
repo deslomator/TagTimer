@@ -167,9 +167,10 @@ fun ActiveSessionContent(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
+            val max = maxOf(state.cursor, state.currentSession.durationMillis)
             TimeDialog(
                 current = state.cursor.toFloat(),
-                max = state.currentSession.durationMillis.toFloat(),
+                maximum = max.toFloat(),
                 onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
                 onAccept = {
                     onAction(ActiveSessionAction.SetCursor(it.toLong()))

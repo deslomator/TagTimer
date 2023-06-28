@@ -16,11 +16,12 @@ import com.deslomator.tagtimer.ui.MyDialog
 @Composable
 fun TimeDialog(
     current: Float,
-    max: Float,
+    maximum: Float,
     onDismiss: () -> Unit,
     onAccept: (Float) -> Unit,
 ) {
     var value by rememberSaveable { mutableStateOf(current) }
+    val max by rememberSaveable { mutableStateOf(maximum) }
     MyDialog(
         onDismiss = onDismiss,
         onAccept = { onAccept(value) },

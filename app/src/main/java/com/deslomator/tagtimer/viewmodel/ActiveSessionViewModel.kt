@@ -203,7 +203,13 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy(exportSession = false) }
             }
             is ActiveSessionAction.TimeClicked -> {
-                _state.update { it.copy(showTimeDialog = true) }
+                val s = state.value.currentSession.copy(
+                    durationMillis = getSessionDuration()
+                )
+                _state.update { it.copy(
+                    currentSession = s,
+                    showTimeDialog = true
+                ) }
             }
             is ActiveSessionAction.SetCursor -> {
                 _state.update { it.copy(cursor = action.time) }
