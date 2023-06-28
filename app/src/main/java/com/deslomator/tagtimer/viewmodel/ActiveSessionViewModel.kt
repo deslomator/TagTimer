@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.os.SystemClock
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -73,28 +72,14 @@ class ActiveSessionViewModel @Inject constructor(
                         it.copy(currentSession = appDao.getSession(action.id))
                     }
                     val s = state.value.currentSession.copy(
-                        lastAccessMillis = System.currentTimeMillis()
+                        lastAccessMillis = System.currentTimeMillis(),
+                        durationMillis = getSessionDuration()
                     )
-                    appDao.upsertSession(s) }
+                    appDao.upsertSession(s)
+                }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
-                if (_state.value.isRunning) {
-                    _state.update {
-                        it.copy(baseTimeMillis =
-                        SystemClock.elapsedRealtime() - state.value.currentSession.durationMillis)
-                    }
-                } else {
-                    val stopTime = SystemClock.elapsedRealtime()
-                    val session = state.value.currentSession.copy(
-                        durationMillis = stopTime - state.value.baseTimeMillis
-                    )
-                    _state.update { it.copy(
-                        isRunning = false,
-                        currentSession = session
-                    ) }
-                    viewModelScope.launch { appDao.upsertSession(session) }
-                }
             }
             is ActiveSessionAction.SelectTagsClicked -> {
                 _state.update { it.copy( showTagsDialog = true) }
@@ -132,7 +117,7 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.StopSession -> {
                 _state.update { it.copy(isRunning = false) }
-                val duration = state.value.events.maxOfOrNull { it.elapsedTimeMillis } ?: 0
+                val duration = getSessionDuration()
                 val session = state.value.currentSession.copy(
                     durationMillis = duration
                 )

@@ -13,7 +13,6 @@ data class ActiveSessionState(
     val currentSession: Session = Session(),
     val showTagsDialog: Boolean = false,
     val isRunning: Boolean = false,
-    val baseTimeMillis: Long = 0,
     val cursor: Long = 0,
     val showSnackbar: Boolean = false,
     val showEventTrash: Boolean = false,
