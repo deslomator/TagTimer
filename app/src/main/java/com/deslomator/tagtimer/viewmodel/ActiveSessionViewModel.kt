@@ -68,13 +68,14 @@ class ActiveSessionViewModel @Inject constructor(
             is ActiveSessionAction.UpdateSessionId -> {
                 _sessionId.update { action.id }
                 viewModelScope.launch {
-                    _state.update {
-                        it.copy(currentSession = appDao.getSession(action.id))
-                    }
-                    val s = state.value.currentSession.copy(
+                    val cur = appDao.getSession(action.id)
+                    val s = cur.copy(
                         lastAccessMillis = System.currentTimeMillis(),
                         durationMillis = getSessionDuration()
                     )
+                    _state.update {
+                        it.copy(currentSession = s)
+                    }
                     appDao.upsertSession(s)
                 }
             }
