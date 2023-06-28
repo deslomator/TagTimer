@@ -39,13 +39,13 @@ fun ActiveSessionContent(
     onAction: (ActiveSessionAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
+    val context = LocalContext.current
     BackHandler(enabled = state.showTagsDialog) {
         onAction(ActiveSessionAction.DismissTagDialog)
     }
     BackHandler(enabled = state.showEventTrash) {
         onAction(ActiveSessionAction.DismissEventTrashDialog)
     }
-    val context = LocalContext.current
     LaunchedEffect(state.currentSession) {
         onAction(ActiveSessionAction.SetCursor(state.currentSession.durationMillis))
     }

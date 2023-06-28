@@ -197,25 +197,7 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy(showEventInTrashDialog = false) }
             }
             ActiveSessionAction.ExportSessionClicked -> {
-                val s = state.value.currentSession
-                val exported = ExportedSession(
-                    date = s.lastAccessMillis.toDateTime(),
-                    name = s.name,
-                    durationSecs = (s.durationMillis/1000).toInt(),
-                    events = state.value.events.map {
-                        ExportedEvent(
-                            label = it.label,
-                            category = it.category,
-                            note = it.note,
-                            elapsedTimeSeconds = (it.elapsedTimeMillis/1000).toInt(),
-                        )
-                    }
-                )
-                val json = Json.encodeToString(exported)
-                _state.update { it.copy(
-                    sessionToExport = json,
-                    exportSession = true
-                ) }
+                exportSession()
             }
             ActiveSessionAction.SessionExported -> {
                 _state.update { it.copy(exportSession = false) }
@@ -236,6 +218,34 @@ class ActiveSessionViewModel @Inject constructor(
         }
     }
 
+    private fun exportSession() {
+        val s = state.value.currentSession
+        val exported = ExportedSession(
+            date = s.lastAccessMillis.toDateTime(),
+            name = s.name,
+            durationSecs = (s.durationMillis / 1000).toInt(),
+            events = state.value.events.map {
+                ExportedEvent(
+                    label = it.label,
+                    category = it.category,
+                    note = it.note,
+                    elapsedTimeSeconds = (it.elapsedTimeMillis / 1000).toInt(),
+                )
+            }
+        )
+        val json = Json.encodeToString(exported)
+        _state.update {
+            it.copy(
+                sessionToExport = json,
+                exportSession = true
+            )
+        }
+    }
+
+    private fun getSessionDuration(): Long {
+        return state.value.events
+            .maxOfOrNull { it.elapsedTimeMillis } ?: 0
+    }
     companion object {
         private const val TAG = "ActiveSessionViewModel"
     }
