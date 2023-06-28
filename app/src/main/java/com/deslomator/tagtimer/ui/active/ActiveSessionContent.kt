@@ -107,6 +107,8 @@ fun ActiveSessionContent(
                 onAction = onAction,
                 snackbarHostState = snackbarHostState
             )
+            PreSelectedPlacesList(state, onAction)
+            PreSelectedPersonsList(state, onAction)
         }
         AnimatedVisibility(
             visible = state.showTagsDialog,

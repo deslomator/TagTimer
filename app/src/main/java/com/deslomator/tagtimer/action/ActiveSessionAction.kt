@@ -16,6 +16,8 @@ sealed interface ActiveSessionAction {
     object AcceptTagSelectionClicked: ActiveSessionAction
     object StopSession: ActiveSessionAction
     class PreSelectedTagClicked(val tag: Tag) : ActiveSessionAction
+    class PreSelectedPersonClicked(val personName: String) : ActiveSessionAction
+    class PreSelectedPlaceClicked(val placeName: String) : ActiveSessionAction
     object EventTrashClicked: ActiveSessionAction
     object DismissEventTrashDialog: ActiveSessionAction
     class RestoreEventClicked(val event: Event): ActiveSessionAction

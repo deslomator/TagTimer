@@ -163,7 +163,9 @@ class ActiveSessionViewModel @Inject constructor(
                         elapsedTimeMillis = state.value.cursor,
                         category = action.tag.category,
                         label = action.tag.label,
-                        color = action.tag.color
+                        color = action.tag.color,
+                        person = state.value.currentPersonName,
+                        place = state.value.currentPlaceName,
                     )
                     viewModelScope.launch { appDao.upsertEvent(event) }
                 }
@@ -276,6 +278,12 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.LabelTypeSelected -> {
                 _state.update { it.copy(currentLabel = action.type) }
+            }
+            is ActiveSessionAction.PreSelectedPersonClicked -> {
+                _state.update { it.copy(currentPersonName = action.personName) }
+            }
+            is ActiveSessionAction.PreSelectedPlaceClicked -> {
+                _state.update { it.copy(currentPlaceName = action.placeName) }
             }
         }
     }
