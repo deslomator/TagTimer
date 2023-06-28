@@ -107,7 +107,9 @@ fun SessionsTabContent(
                             Text(item.name)
                             Text(item.lastAccessMillis.toDateTime())
                         }
-                        Column {
+                        Column(
+                            modifier = Modifier.padding(end = 5.dp)
+                        ) {
                             Text(stringResource(R.string.events, item.eventCount))
                             Text(item.durationMillis.toElapsedTime())
                         }
