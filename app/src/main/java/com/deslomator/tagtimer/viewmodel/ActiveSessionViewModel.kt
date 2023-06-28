@@ -120,11 +120,9 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
-                    val current = SystemClock.elapsedRealtime()
-                    val elapsed = current - state.value.baseTimeMillis
                     val event = Event(
                         sessionId = _sessionId.value,
-                        elapsedTimeMillis = elapsed,
+                        elapsedTimeMillis = state.value.cursor,
                         category = action.tag.category,
                         label = action.tag.label,
                         color = action.tag.color
@@ -236,6 +234,19 @@ class ActiveSessionViewModel @Inject constructor(
             }
             ActiveSessionAction.SessionExported -> {
                 _state.update { it.copy(exportSession = false) }
+            }
+            is ActiveSessionAction.TimeClicked -> {
+                _state.update { it.copy(showTimeDialog = true) }
+            }
+            is ActiveSessionAction.SetCursor -> {
+                _state.update { it.copy(cursor = action.time) }
+            }
+            is ActiveSessionAction.IncreaseCursor -> {
+                val newTime = state.value.cursor + action.stepMillis
+                _state.update { it.copy(cursor = newTime) }
+            }
+            is ActiveSessionAction.DismissTimeDialog -> {
+                _state.update { it.copy(showTimeDialog = false) }
             }
         }
     }

@@ -9,19 +9,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,17 +46,14 @@ fun ActiveSessionContent(
         onAction(ActiveSessionAction.DismissEventTrashDialog)
     }
     val context = LocalContext.current
-    var runTimer by remember { mutableStateOf(false)}
-    var ticks by remember { mutableStateOf(state.currentSession.durationMillis) }
     LaunchedEffect(state.currentSession) {
-        ticks = state.currentSession.durationMillis
+        onAction(ActiveSessionAction.SetCursor(state.currentSession.durationMillis))
     }
-    LaunchedEffect(runTimer) {
-        if (runTimer) {
-            ticks = state.currentSession.durationMillis
+    LaunchedEffect(state.isRunning) {
+        if (state.isRunning) {
             while (true) {
                 delay(1000)
-                ticks += 1000
+                onAction(ActiveSessionAction.IncreaseCursor(1000))
             }
         }
     }
@@ -81,12 +77,14 @@ fun ActiveSessionContent(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-//                Text(state.currentSession.durationMillis.toElapsedTime())
-                Text(ticks.toElapsedTime())
+                Button(
+                    onClick = { onAction(ActiveSessionAction.TimeClicked) }
+                ) {
+                    Text(text = state.cursor.toElapsedTime())
+                }
+                Spacer(modifier = Modifier.width(30.dp))
                 IconButton(
-                    onClick = {
-                        runTimer = !state.isRunning
-                        onAction(ActiveSessionAction.PlayPauseClicked) }
+                    onClick = { onAction(ActiveSessionAction.PlayPauseClicked) }
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
@@ -162,6 +160,21 @@ fun ActiveSessionContent(
                 onAccept = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
                 enabled = false
+            )
+        }
+        AnimatedVisibility(
+            visible = state.showTimeDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            TimeDialog(
+                current = state.cursor.toFloat(),
+                max = state.currentSession.durationMillis.toFloat(),
+                onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
+                onAccept = {
+                    onAction(ActiveSessionAction.SetCursor(it.toLong()))
+                    onAction(ActiveSessionAction.DismissTimeDialog)
+                }
             )
         }
     }
