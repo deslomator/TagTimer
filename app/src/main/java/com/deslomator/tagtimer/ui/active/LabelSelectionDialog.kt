@@ -62,10 +62,10 @@ fun LabelSelectionDialog(
         AnimatedVisibility(
             visible = state.currentLabel == Label.TAG,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             TagSelectionList(state, onAction)
@@ -73,10 +73,10 @@ fun LabelSelectionDialog(
         AnimatedVisibility(
             visible = state.currentLabel == Label.PERSON,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             PersonSelectionList(state, onAction)
@@ -84,10 +84,10 @@ fun LabelSelectionDialog(
         AnimatedVisibility(
             visible = state.currentLabel == Label.PLACE,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             PlaceSelectionList(state, onAction)

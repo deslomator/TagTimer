@@ -64,10 +64,10 @@ fun LabelsTabContent(
         AnimatedVisibility(
             visible = state.currentLabel == Label.TAG,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             TagLabel(state, scope, snackbarHostState, context, onAction)
@@ -75,10 +75,10 @@ fun LabelsTabContent(
         AnimatedVisibility(
             visible = state.currentLabel == Label.PERSON,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             PersonLabel(state, scope, snackbarHostState, context, onAction)
@@ -86,10 +86,10 @@ fun LabelsTabContent(
         AnimatedVisibility(
             visible = state.currentLabel == Label.PLACE,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             PlaceLabel(state, scope, snackbarHostState, context, onAction)

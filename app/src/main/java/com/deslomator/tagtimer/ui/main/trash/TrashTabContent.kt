@@ -55,10 +55,10 @@ fun TrashTabContent(
         AnimatedVisibility(
             visible = state.currentTrash == Trash.SESSION,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             SessionTrash(state, onAction, scope, snackbarHostState, context)
@@ -66,10 +66,10 @@ fun TrashTabContent(
         AnimatedVisibility(
             visible = state.currentTrash == Trash.TAG,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             TagTrash(state, onAction, scope, snackbarHostState, context)
@@ -77,10 +77,10 @@ fun TrashTabContent(
         AnimatedVisibility(
             visible = state.currentTrash == Trash.PERSON,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             PersonTrash(state, onAction, scope, snackbarHostState, context)
@@ -88,10 +88,10 @@ fun TrashTabContent(
         AnimatedVisibility(
             visible = state.currentTrash == Trash.PLACE,
             enter = fadeIn(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             ),
             exit = fadeOut(
-                animationSpec = tween(500, 0, LinearEasing)
+                animationSpec = tween(250, 0, LinearEasing)
             )
         ) {
             PlaceTrash(state, onAction, scope, snackbarHostState, context)

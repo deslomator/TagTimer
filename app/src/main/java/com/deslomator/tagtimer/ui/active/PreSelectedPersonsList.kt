@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -40,13 +41,17 @@ fun PreSelectedPersonsList(
                     contentColor = Color.White.contrasted(),
                     containerColor = Color.White
                 ),
-                border = BorderStroke(1.dp, Color.Green)
+                border = BorderStroke(3.dp, Color(person.color))
             ) {
                 Icon(
                     painterResource(id = R.drawable.person),
                     contentDescription = null
                 )
-                Text(text = person.name)
+                Text(
+                    text = person.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Clip
+                )
             }
         }
     }
