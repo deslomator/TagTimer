@@ -170,7 +170,7 @@ fun MainTopBar(
 }
 
 @Composable
-private fun <T>TopButton(
+fun <T>TopButton(
     modifier: Modifier,
     type: T,
     currentType: T,

@@ -113,7 +113,7 @@ fun ActiveSessionContent(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            TagSelectionDialog(
+            LabelSelectionDialog(
                 state = state,
                 onAction = onAction,
             )
