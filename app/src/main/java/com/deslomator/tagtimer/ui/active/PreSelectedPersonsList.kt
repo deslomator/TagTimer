@@ -2,6 +2,7 @@ package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -24,7 +25,9 @@ fun PreSelectedPersonsList(
     currentPerson: String,
     onAction: (ActiveSessionAction) -> Unit
 ) {
-    Row {
+    Row(
+        modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+    ) {
         persons.forEach { person ->
             TextButton(
                 modifier = Modifier
