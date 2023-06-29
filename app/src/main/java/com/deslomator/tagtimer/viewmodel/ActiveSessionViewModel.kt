@@ -280,10 +280,14 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy(currentLabel = action.type) }
             }
             is ActiveSessionAction.PreSelectedPersonClicked -> {
-                _state.update { it.copy(currentPersonName = action.personName) }
+                val person = if (action.personName == state.value.currentPersonName) ""
+                else action.personName
+                _state.update { it.copy(currentPersonName = person) }
             }
             is ActiveSessionAction.PreSelectedPlaceClicked -> {
-                _state.update { it.copy(currentPlaceName = action.placeName) }
+                val place = if (action.placeName == state.value.currentPlaceName) ""
+                else action.placeName
+                _state.update { it.copy(currentPlaceName = place) }
             }
         }
     }
