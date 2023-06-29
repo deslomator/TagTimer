@@ -11,6 +11,7 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.navigation.screen.ActiveNavigationScreen
 import com.deslomator.tagtimer.ui.active.ActiveSessionContent
+import com.deslomator.tagtimer.ui.active.filter.EventFilterContent
 
 @Composable
 fun ActiveNavHost(
@@ -35,11 +36,10 @@ fun ActiveNavHost(
             )
         }
         composable(ActiveNavigationScreen.EventFilter.route) {
-            ActiveSessionContent(
+            EventFilterContent(
                 paddingValues = paddingValues,
                 state = state,
                 onAction = onAction,
-                snackbarHostState = snackbarHostState
             )
         }
     }
