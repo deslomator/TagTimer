@@ -1,34 +1,35 @@
 package com.deslomator.tagtimer.ui.active
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 
 @Composable
 fun ActiveSessionScaffold(
     sessionId: Int,
-    navHostController: NavHostController,
+    outerNavHostController: NavHostController,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
 ) {
+    val innerNavHostController: NavHostController = rememberNavController()
+    val backStackEntry = innerNavHostController.currentBackStackEntryAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     LaunchedEffect(Unit) {
-//        Log.d(TAG, "LaunchedEffect")
         onAction(ActiveSessionAction.UpdateSessionId(sessionId))
     }
     Scaffold(
         topBar = {
             ActiveSessionTopBar(
+                backStackEntry = backStackEntry,
                 state = state,
                 onBackClicked = {
                     if (state.showTagsDialog) {
@@ -37,29 +38,39 @@ fun ActiveSessionScaffold(
                         onAction(ActiveSessionAction.DismissEventTrashDialog)
                     } else {
                         onAction(ActiveSessionAction.StopSession)
-                        navHostController.navigateUp()
+                        if (backStackEntry.value?.destination?.route == ActiveNavigationScreen.EventFilter.route) {
+                            innerNavHostController.navigateUp()
+                        } else {
+                            outerNavHostController.navigateUp()
+                        }
                     }
                 },
                 onShareSessionClick = { onAction(ActiveSessionAction.ExportSessionClicked) },
                 onEditSessionClick = { onAction(ActiveSessionAction.EditSessionClicked) },
                 onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
                 onEventTrashClick = { onAction(ActiveSessionAction.EventTrashClicked) },
+                onFilterClick = {
+                    onAction(ActiveSessionAction.StopSession)
+                    innerNavHostController.navigate(ActiveNavigationScreen.EventFilter.route) {
+                        popUpTo(innerNavHostController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
             )
         },
         bottomBar = { },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-        ) {
-            ActiveSessionContent(
-                state = state,
-                onAction = onAction,
-                snackbarHostState = snackbarHostState
-            )
-        }
+        ActiveNavHost(
+            paddingValues = paddingValues,
+            innerNavHostController = innerNavHostController,
+            state = state,
+            onAction = onAction,
+            snackbarHostState = snackbarHostState
+        )
     }
 }
 

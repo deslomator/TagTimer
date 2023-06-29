@@ -53,4 +53,6 @@
     <string name="edit_place">Editar Lugar</string>
     <string name="person">Persona</string>
     <string name="place">Lugar</string>
+    <string name="filter_events">Filtrar Eventos</string>
+    <string name="session">Sesión</string>
 </resources>

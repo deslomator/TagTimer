@@ -55,7 +55,7 @@ fun AppNavHost(
         ) { backStackEntry ->
             ActiveSessionScaffold(
                 sessionId = backStackEntry.arguments?.getInt("sessionId") ?: 0,
-                navHostController = navController,
+                outerNavHostController = navController,
                 state = activeSessionState,
                 onAction = onActiveSessionAction,
             )

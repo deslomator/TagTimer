@@ -14,6 +14,7 @@
     <string name="session_deleted">Session permanently deleted</string>
     <string name="session_restored">Session restored</string>
     <string name="sessions">Sessions</string>
+    <string name="session">Session</string>
     <string name="tags">Tags</string>
     <string name="labels">Labels</string>
     <string name="trash">Trash</string>
@@ -53,4 +54,5 @@
     <string name="events">Events: %1d</string>
     <string name="person">Person</string>
     <string name="place">Place</string>
+    <string name="filter_events">Filter Events</string>
 </resources>
