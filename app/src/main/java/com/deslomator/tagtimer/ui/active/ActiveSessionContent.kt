@@ -49,6 +49,12 @@ fun ActiveSessionContent(
     BackHandler(enabled = state.showEventTrash) {
         onAction(ActiveSessionAction.DismissEventTrashDialog)
     }
+    BackHandler(enabled = state.showEventEditionDialog) {
+        onAction(ActiveSessionAction.DismissEventEditionDialog)
+    }
+    BackHandler(enabled = state.showSessionEditionDialog) {
+        onAction(ActiveSessionAction.DismissSessionEditionDialog)
+    }
     LaunchedEffect(state.currentSession) {
         onAction(ActiveSessionAction.SetCursor(state.currentSession.durationMillis))
     }
@@ -168,7 +174,7 @@ fun ActiveSessionContent(
             EventEditionDialog(
                 event = state.currentEvent,
                 onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
-                onDismiss = { onAction(ActiveSessionAction.DismissSessionEditionDialog) },
+                onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
             )
         }
         AnimatedVisibility(

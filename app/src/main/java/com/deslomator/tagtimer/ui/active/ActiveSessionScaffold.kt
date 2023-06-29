@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -38,6 +39,10 @@ fun ActiveSessionScaffold(
                         onAction(ActiveSessionAction.DismissTagDialog)
                     } else if (state.showEventTrash) {
                         onAction(ActiveSessionAction.DismissEventTrashDialog)
+                    } else if (state.showEventEditionDialog) {
+                        onAction(ActiveSessionAction.DismissEventEditionDialog)
+                    } else if (state.showSessionEditionDialog) {
+                        onAction(ActiveSessionAction.DismissSessionEditionDialog)
                     } else {
                         onAction(ActiveSessionAction.StopSession)
                         if (backStackEntry.value?.destination?.route == ActiveNavigationScreen.EventFilter.route) {

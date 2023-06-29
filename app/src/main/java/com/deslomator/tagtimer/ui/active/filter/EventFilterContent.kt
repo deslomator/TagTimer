@@ -72,6 +72,9 @@ fun EventFilterContent(
                 }
         }
     }
+    BackHandler(enabled = state.showEventEditionDialog) {
+        onAction(ActiveSessionAction.DismissEventEditionDialog)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -126,6 +129,17 @@ fun EventFilterContent(
                     )
                 }
             }
+        }
+        AnimatedVisibility(
+            visible = state.showEventEditionDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            EventEditionDialog(
+                event = state.currentEvent,
+                onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
+                onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
+            )
         }
     }
 }
