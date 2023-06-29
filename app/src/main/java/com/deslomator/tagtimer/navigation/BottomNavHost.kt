@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main
+package com.deslomator.tagtimer.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarHostState
@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.LabelsTabAction
+import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.LabelsTabState

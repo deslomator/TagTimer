@@ -34,7 +34,7 @@ import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
-import com.deslomator.tagtimer.ui.main.RootScreen
+import com.deslomator.tagtimer.navigation.screen.RootScreen
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness

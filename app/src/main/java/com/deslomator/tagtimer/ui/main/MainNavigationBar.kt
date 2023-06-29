@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 
 @Composable
 fun MainNavigationBar(

@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.navigation.screen
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main
+package com.deslomator.tagtimer.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,11 +12,13 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.action.LabelsTabAction
+import com.deslomator.tagtimer.navigation.screen.RootScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.active.ActiveSessionScaffold
+import com.deslomator.tagtimer.ui.main.MainScreenScaffold
 
 @Composable
 fun AppNavHost(

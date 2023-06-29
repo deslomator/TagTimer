@@ -29,6 +29,7 @@ import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Trash
+import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.ui.theme.PurpleGrey40

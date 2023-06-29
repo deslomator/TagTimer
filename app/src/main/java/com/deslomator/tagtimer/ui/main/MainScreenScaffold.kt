@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.action.TrashTabAction
+import com.deslomator.tagtimer.navigation.BottomNavHost
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.state.TrashTabState

@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.navigation.screen.ActiveNavigationScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
 
 @OptIn(ExperimentalMaterial3Api::class)

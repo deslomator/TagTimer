@@ -18,7 +18,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.ui.main.AppNavHost
+import com.deslomator.tagtimer.navigation.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors

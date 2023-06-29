@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.SnackbarHostState
@@ -9,6 +9,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.navigation.screen.ActiveNavigationScreen
+import com.deslomator.tagtimer.ui.active.ActiveSessionContent
 
 @Composable
 fun ActiveNavHost(

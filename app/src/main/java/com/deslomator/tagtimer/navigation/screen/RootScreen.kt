@@ -1,6 +1,5 @@
-package com.deslomator.tagtimer.ui.main
+package com.deslomator.tagtimer.navigation.screen
 
-import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.deslomator.tagtimer.R
 
