@@ -1,5 +1,9 @@
 package com.deslomator.tagtimer.ui.active.filter
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.ui.active.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
@@ -42,7 +47,7 @@ fun EventFilterContent(
     /*
     get places that are actually used in and Event
      */
-    val places by remember {
+    val places by remember(state.events) {
         derivedStateOf {
             state.places
                 .filter { place ->
@@ -53,7 +58,7 @@ fun EventFilterContent(
     /*
     get places that are actually used in an Event
      */
-    val persons by remember {
+    val persons by remember(state.events) {
         derivedStateOf {
             state.persons
                 .filter { person ->
@@ -62,7 +67,7 @@ fun EventFilterContent(
         }
     }
     var query by rememberSaveable { mutableStateOf("") }
-    val events by remember(state.currentPlaceName, state.currentPersonName, query) {
+    val events by remember(state.currentPlaceName, state.currentPersonName, query, state.events) {
         derivedStateOf {
             state.events
                 .filter { event ->
