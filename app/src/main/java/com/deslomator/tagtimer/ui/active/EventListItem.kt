@@ -60,7 +60,7 @@ fun EventListItem(
         Row(
             modifier = Modifier
                 .offset(x = offset)
-                .width(170.dp),
+                .width(190.dp),
         ) {
             MyListItem(
                 colors = CardDefaults.cardColors(
