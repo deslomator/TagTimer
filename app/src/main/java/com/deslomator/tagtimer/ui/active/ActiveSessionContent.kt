@@ -114,8 +114,20 @@ fun ActiveSessionContent(
                 onAction = onAction,
                 snackbarHostState = snackbarHostState
             )
-            PreSelectedPlacesList(state, onAction)
-            PreSelectedPersonsList(state, onAction)
+            PreSelectedPlacesList(
+                places = state.places.filter { place ->
+                    state.preSelectedPlaces.map { it.placeId }.contains(place.id)
+                },
+                currentPlace = state.currentPlaceName,
+                onAction = onAction
+            )
+            PreSelectedPersonsList(
+                persons = state.persons.filter { person ->
+                    state.preSelectedPersons.map { it.personId }.contains(person.id)
+                },
+                currentPerson = state.currentPersonName,
+                onAction = onAction
+            )
         }
         AnimatedVisibility(
             visible = state.showTagsDialog,

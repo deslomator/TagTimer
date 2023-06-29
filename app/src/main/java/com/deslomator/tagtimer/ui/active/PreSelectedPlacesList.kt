@@ -15,22 +15,21 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.ui.theme.contrasted
 
 @Composable
 fun PreSelectedPlacesList(
-    state: ActiveSessionState,
+    places: List<Place>,
+    currentPlace: String,
     onAction: (ActiveSessionAction) -> Unit
 ) {
     Row {
-        state.places.filter { place ->
-            state.preSelectedPlaces.map { it.placeId }.contains(place.id)
-        }.forEach { place ->
+        places.forEach { place ->
             TextButton(
                 modifier = Modifier
                     .weight(1F)
-                    .alpha(if (state.currentPlaceName == place.name) 1F else 0.5F),
+                    .alpha(if (currentPlace == place.name) 1F else 0.4F),
                 onClick = { onAction(ActiveSessionAction.PreSelectedPlaceClicked(place.name)) },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = Color(place.color).contrasted(),
