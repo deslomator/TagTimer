@@ -47,7 +47,7 @@ fun EventListItem(
         derivedStateOf {
             val names = persons.map { it.name }
             val o = if (names.contains(event.person)) {
-                (-50).dp * names.indexOf(event.person)
+                (-40).dp * names.indexOf(event.person)
             } else 0.dp
             o
         }
