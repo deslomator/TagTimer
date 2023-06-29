@@ -101,7 +101,7 @@ fun EventListItemPreview() {
         elapsedTimeMillis = 25_000L,
     )
     EventListItem(
-        trailingIcon = if (event.note.isEmpty()) null else R.drawable.edit_note,
+        trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
         event = event,
         onItemClick = {  },
         )

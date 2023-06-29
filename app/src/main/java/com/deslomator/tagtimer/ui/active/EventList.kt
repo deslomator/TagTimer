@@ -82,7 +82,7 @@ fun EventList(
             ) {
                 EventListItem(
                     event = event,
-                    trailingIcon = if (event.note.isEmpty()) null else R.drawable.edit_note,
+                    trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
                     onTrailingClick = { onAction(ActiveSessionAction.EventClicked(event)) },
                     onItemClick = { onAction(ActiveSessionAction.EventClicked(event)) },
                     persons = state.persons.filter { person ->
