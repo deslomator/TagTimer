@@ -55,4 +55,6 @@
     <string name="place">Lugar</string>
     <string name="filter_events">Filtrar Eventos</string>
     <string name="session">Sesión</string>
+    <string name="search_for_tag">busca una etiqueta</string>
+    <string name="total_events">Total: %1d</string>
 </resources>

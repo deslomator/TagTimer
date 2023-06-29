@@ -23,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.deslomator.tagtimer.R
@@ -39,7 +40,7 @@ fun EventFilterContent(
     onAction: (ActiveSessionAction) -> Unit,
 ) {
     /*
-    get places that are preselected AND actually used as Event
+    get places that are actually used in and Event
      */
     val places by remember {
         derivedStateOf {
@@ -50,7 +51,7 @@ fun EventFilterContent(
         }
     }
     /*
-    get places that are preselected AND actually used as Event
+    get places that are actually used in an Event
      */
     val persons by remember {
         derivedStateOf {
@@ -95,12 +96,12 @@ fun EventFilterContent(
                     modifier = Modifier.weight(1F),
                     value = query,
                     onValueChange = { query = it },
-                    placeholder = { Text("search for specific tag") },
+                    placeholder = { Text(stringResource(R.string.search_for_tag)) },
                     shape = RoundedCornerShape(10.dp)
                 )
                 Spacer(modifier = Modifier.width(40.dp))
                 Text(
-                    text = "Total: ${events.size}",
+                    text = stringResource(R.string.total_events, events.size),
                     fontSize = 24.sp
                 )
                 Spacer(modifier = Modifier.width(20.dp))
