@@ -20,12 +20,11 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.navigation.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
-import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
+import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
-import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
@@ -109,7 +108,6 @@ private suspend fun populateDb (dao: AppDao) {
             id = i,
             color = it.toArgb(),
             label = "Label ${it.toArgb()}",
-            category = "Category ${it.brightness()}",
         )
         dao.upsertTag(tag)
         val tagT = tag.copy(
@@ -122,7 +120,6 @@ private suspend fun populateDb (dao: AppDao) {
                 sessionId = i,
                 elapsedTimeMillis = System.currentTimeMillis(),
                 note = "lskflsflslsjlsfl",
-                category = "cat cata cat acat",
                 label = "event label: $i",
             )
             dao.upsertEvent(event)

@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.main.TopButton

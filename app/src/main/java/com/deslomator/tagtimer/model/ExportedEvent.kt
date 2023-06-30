@@ -10,7 +10,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ExportedEvent(
     val label: String = "",
-    val category: String = "",
     val note: String = "",
     val person: String = "",
     val place: String = "",

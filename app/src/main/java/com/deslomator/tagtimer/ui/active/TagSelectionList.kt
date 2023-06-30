@@ -2,7 +2,6 @@ package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,10 +49,9 @@ fun TagSelectionList(
                 shape = CutCornerShape(topStart = 20.dp),
                 border = BorderStroke(1.dp, Color.LightGray),
             ) {
-                Column(modifier = Modifier.weight(1.0f)) {
-                    Text(tag.label)
-                    Text(tag.category)
-                }
+                Text(
+                    modifier = Modifier.weight(1.0f),
+                    text = tag.label)
                 Checkbox(
                     checked = checked,
                     onCheckedChange = { onCheckedChange(it) }

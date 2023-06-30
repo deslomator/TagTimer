@@ -7,7 +7,6 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
 @Entity
 data class Tag(
-    val category: String = "",
     val label: String = "",
     val color: Int = colorPickerColors[7].toArgb(),
     val inTrash: Boolean = false,

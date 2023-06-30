@@ -36,14 +36,7 @@ interface AppDao {
 
     @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY elapsedTimeMillis ASC")
     fun getTrashedEventsForSession(sessionId: Int): Flow<List<Event>>
-    
-    /*
-    CATEGORY
-     */
 
-    @Query("SELECT DISTINCT category FROM tag ORDER BY category ASC")
-    fun getCategories(): Flow<List<String>>
-    
     /*
     SESSION
      */
@@ -74,11 +67,11 @@ interface AppDao {
     suspend fun deleteTag(tag: Tag)
     @Query("SELECT * FROM tag WHERE id = :id")
     suspend fun getTag(id: Int): Tag
-    @Query("SELECT * FROM tag ORDER BY category, label ASC")
+    @Query("SELECT * FROM tag ORDER BY label ASC")
     fun getTags(): Flow<List<Tag>>
-    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY label,category ASC")
+    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY label ASC")
     fun getActiveTags(): Flow<List<Tag>>
-    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label,category ASC")
+    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label ASC")
     fun getTrashedTags(): Flow<List<Tag>>
     
     /*

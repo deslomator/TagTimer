@@ -30,9 +30,6 @@ fun EventEditionDialog(
     var label by rememberSaveable {
         mutableStateOf(event.label)
     }
-    var category by rememberSaveable {
-        mutableStateOf(event.category)
-    }
     var note by rememberSaveable {
         mutableStateOf(event.note)
     }
@@ -51,7 +48,6 @@ fun EventEditionDialog(
             val e = event.copy(
                 elapsedTimeMillis = elapsed,
                 label = label,
-                category = category,
                 note = note,
                 person = person,
                 place = place,
@@ -69,13 +65,6 @@ fun EventEditionDialog(
             value = label,
             onValueChange = { label = it },
             placeholder = { Text(text = stringResource(id = R.string.label)) },
-            enabled = enabled
-        )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = category,
-            onValueChange = { category = it },
-            placeholder = { Text(text = stringResource(id = R.string.category)) },
             enabled = enabled
         )
         TextField(

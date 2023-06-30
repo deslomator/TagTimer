@@ -161,7 +161,6 @@ class ActiveSessionViewModel @Inject constructor(
                     val event = Event(
                         sessionId = _sessionId.value,
                         elapsedTimeMillis = state.value.cursor,
-                        category = action.tag.category,
                         label = action.tag.label,
                         color = action.tag.color,
                         person = state.value.currentPersonName,
@@ -301,7 +300,6 @@ class ActiveSessionViewModel @Inject constructor(
             events = state.value.events.map {
                 ExportedEvent(
                     label = it.label,
-                    category = it.category,
                     note = it.note,
                     person = it.person,
                     place = it.place,
@@ -323,7 +321,7 @@ class ActiveSessionViewModel @Inject constructor(
             .maxOfOrNull { it.elapsedTimeMillis } ?: 0
     }
 
-    inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
+    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
         flow3: Flow<T3>,

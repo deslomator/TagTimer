@@ -1,10 +1,9 @@
 package com.deslomator.tagtimer.state
 
-import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.model.Person
 import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.model.Trash
 
 data class LabelsTabState(
     val currentLabel: Label = Label.TAG,

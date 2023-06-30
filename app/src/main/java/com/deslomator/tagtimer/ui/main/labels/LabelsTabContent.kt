@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
-import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.MyListItem
@@ -131,7 +131,6 @@ fun LabelsTabContentPreview() {
             val tag = Tag(
                 color = background.toArgb(),
                 label = "brightness: ${background.brightness()}",
-                category = "asfa sfasf asfasf ddd444"
             )
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
@@ -154,10 +153,7 @@ fun LabelsTabContentPreview() {
 //                        if (dismissState.dismissDirection != null) 20.dp else 10.dp
 //                    ).value
                 ) { item ->
-                    Column {
-                        Text(item.label)
-                        Text(item.category)
-                    }
+                    Text(item.label)
                 }
             }
         }

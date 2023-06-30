@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
 

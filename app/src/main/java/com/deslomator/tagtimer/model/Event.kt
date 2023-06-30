@@ -11,7 +11,6 @@ data class Event(
     val sessionId: Int = 0,
     val elapsedTimeMillis: Long = 0,
     val note: String = "",
-    val category: String = "",
     val label: String = "",
     val person: String = "",
     val place: String = "",

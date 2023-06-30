@@ -4,7 +4,7 @@ import com.deslomator.tagtimer.model.Person
 import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
-import com.deslomator.tagtimer.model.Trash
+import com.deslomator.tagtimer.model.type.Trash
 
 sealed interface TrashTabAction {
     data class TrashTypeClicked(val trash: Trash): TrashTabAction

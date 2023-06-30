@@ -27,8 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.Trash
+import com.deslomator.tagtimer.model.type.Label
+import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.state.TrashTabState

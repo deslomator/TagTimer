@@ -1,6 +1,6 @@
 package com.deslomator.tagtimer.action
 
-import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.model.Person
 import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.Tag

@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.model
+package com.deslomator.tagtimer.model.type
 
 /**
  * Types of objects that can

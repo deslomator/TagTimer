@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.model.Person
 import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.PreSelectedPerson

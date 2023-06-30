@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.Trash
+import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem

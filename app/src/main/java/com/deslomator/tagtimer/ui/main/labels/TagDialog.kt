@@ -26,14 +26,12 @@ fun TagDialog(
     tag: Tag
 ) {
     var label by rememberSaveable { mutableStateOf(tag.label) }
-    var category by rememberSaveable { mutableStateOf(tag.category) }
     var color by rememberSaveable { mutableStateOf(tag.color) }
     MyDialog(
         onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
         onAccept = {
             val t = tag.copy(
                 label = label,
-                category = category,
                 color = color
             )
             onAction(LabelsTabAction.AcceptTagEditionClicked(t))
@@ -50,12 +48,6 @@ fun TagDialog(
             value = label,
             onValueChange = { label = it },
             placeholder = { Text(text = stringResource(id = R.string.label)) }
-        )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = category,
-            onValueChange = { category = it },
-            placeholder = { Text(text = stringResource(id = R.string.category)) }
         )
         ColorPicker(
             selectedColor = Color(color),

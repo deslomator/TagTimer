@@ -106,7 +106,6 @@ fun EventListItem(
 fun EventListItemPreview() {
     val event = Event(
         label = "label",
-        category = "category",
         note = "",
         elapsedTimeMillis = 25_000L,
     )
