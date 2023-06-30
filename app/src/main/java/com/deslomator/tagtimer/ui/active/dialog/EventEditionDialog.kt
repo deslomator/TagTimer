@@ -1,8 +1,7 @@
 package com.deslomator.tagtimer.ui.active.dialog
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,10 +9,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.ui.ColorPicker
+import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.TimeNumberPicker
 
@@ -60,34 +60,35 @@ fun EventEditionDialog(
             timeMillis = elapsed,
             onValueChange = { elapsed = it }
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = label,
             onValueChange = { label = it },
-            placeholder = { Text(text = stringResource(id = R.string.label)) },
+            placeholder = R.string.label,
+            icon = R.drawable.tag,
             enabled = enabled
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = note,
             onValueChange = { note = it },
-            placeholder = { Text(text = stringResource(id = R.string.type_a_note)) },
+            placeholder = R.string.type_a_note,
+            icon = R.drawable.note,
             enabled = enabled
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = person,
             onValueChange = { person = it },
-            placeholder = { Text(text = stringResource(id = R.string.person)) },
+            placeholder = R.string.person,
+            icon = R.drawable.person,
             enabled = enabled
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = place,
             onValueChange = { place = it },
-            placeholder = { Text(text = stringResource(id = R.string.place)) },
+            placeholder = R.string.place,
+            icon = R.drawable.place,
             enabled = enabled
         )
+        Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
             selectedColor = Color(color),
             onItemClick = { color = it },

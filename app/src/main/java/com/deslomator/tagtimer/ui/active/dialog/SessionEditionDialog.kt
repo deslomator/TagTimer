@@ -1,8 +1,7 @@
 package com.deslomator.tagtimer.ui.active.dialog
 
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -10,11 +9,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.ui.ColorPicker
+import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
 
 @Composable
@@ -42,18 +42,19 @@ fun SessionEditionDialog(
             onAction(ActiveSessionAction.AcceptSessionEditionClicked(s))
         },
     ) {
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = name,
             onValueChange = { name = it },
-            placeholder = { Text(text = stringResource(id = R.string.name)) },
+            placeholder = R.string.name,
+            icon = R.drawable.document_and_ray
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = notes,
             onValueChange = { notes = it },
-            placeholder = { Text(text = stringResource(id = R.string.type_a_note)) },
+            placeholder = R.string.type_a_note,
+            icon = R.drawable.note
         )
+        Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
             selectedColor = Color(color),
             onItemClick = { color = it }

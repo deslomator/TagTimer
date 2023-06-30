@@ -2,7 +2,6 @@ package com.deslomator.tagtimer.ui.main.sessions
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +15,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.ui.ColorPicker
+import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
 
 @Composable
@@ -51,17 +51,17 @@ fun SessionDialog(
             text = stringResource(id = R.string.new_session),
             textAlign = TextAlign.Center
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = name,
             onValueChange = { name = it },
-            placeholder = { Text(text = stringResource(id = R.string.name)) }
+            placeholder = R.string.name,
+            icon = R.drawable.document_and_ray
         )
-        TextField(
-            modifier = Modifier.fillMaxWidth(),
+        DialogTextField(
             value = notes,
             onValueChange = { notes = it },
-            placeholder = { Text(text = stringResource(id = R.string.type_a_note)) }
+            placeholder = R.string.type_a_note,
+            icon = R.drawable.note
         )
         ColorPicker(
             selectedColor = Color(color),
