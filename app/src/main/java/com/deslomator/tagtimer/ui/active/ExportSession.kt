@@ -14,16 +14,17 @@ import java.io.File
 @Composable
 fun ExportSession(
     context: Context,
-    state: ActiveSessionState,
+    fileName: String,
+    data: String,
     onAction: (ActiveSessionAction) -> Unit
 ) {
     LaunchedEffect(Unit) {
         try {
             val file = File(
                 context.cacheDir,
-                "${state.currentSession.name}.$JSON_EXTENSION"
+                "$fileName.$JSON_EXTENSION"
             )
-            file.writeBytes(state.sessionToExport.encodeToByteArray())
+            file.writeBytes(data.encodeToByteArray())
             val uri = FileProvider.getUriForFile(
                 context,
                 FILE_PROVIDER,

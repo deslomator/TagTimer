@@ -8,6 +8,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.Person
+import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.navigation.screen.ActiveNavigationScreen
 import com.deslomator.tagtimer.ui.active.ActiveSessionContent
@@ -20,7 +23,12 @@ fun ActiveNavHost(
     innerNavHostController: NavHostController,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    persons: List<Person>,
+    places: List<Place>,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    filteredEvents: List<Event>
 ) {
     NavHost(
         modifier = modifier,
@@ -40,6 +48,11 @@ fun ActiveNavHost(
                 paddingValues = paddingValues,
                 state = state,
                 onAction = onAction,
+                places = places,
+                persons = persons,
+                query = query,
+                onQueryChange = onQueryChange,
+                filteredEvents = filteredEvents
             )
         }
     }

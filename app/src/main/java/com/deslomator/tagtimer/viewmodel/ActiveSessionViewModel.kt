@@ -11,7 +11,6 @@ import com.deslomator.tagtimer.model.PreSelectedPerson
 import com.deslomator.tagtimer.model.PreSelectedPlace
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.toDateTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -254,7 +253,7 @@ class ActiveSessionViewModel @Inject constructor(
                 exportSession()
             }
             ActiveSessionAction.SessionExported -> {
-                _state.update { it.copy(exportSession = false) }
+                _state.update { it.copy(exportData = false) }
             }
             is ActiveSessionAction.TimeClicked -> {
                 val s = state.value.currentSession.copy(
@@ -288,30 +287,28 @@ class ActiveSessionViewModel @Inject constructor(
                 else action.placeName
                 _state.update { it.copy(currentPlaceName = place) }
             }
+            is ActiveSessionAction.ExportFilteredEventsClicked -> {
+                exportFilteredEvents(action.filteredEvents)
+            }
         }
     }
 
     private fun exportSession() {
-        val s = state.value.currentSession
-        val exported = ExportedSession(
-            date = s.lastAccessMillis.toDateTime(),
-            name = s.name,
-            durationSecs = (s.durationMillis / 1000).toInt(),
-            events = state.value.events.map {
-                ExportedEvent(
-                    label = it.label,
-                    note = it.note,
-                    person = it.person,
-                    place = it.place,
-                    elapsedTimeSeconds = (it.elapsedTimeMillis / 1000).toInt(),
-                )
-            }
+        val json = Json.encodeToString(
+            ExportedSession(state.value.currentSession, state.value.events)
         )
-        val json = Json.encodeToString(exported)
+        _state.update { it.copy(
+            dataToExport = json,
+            exportData = true
+        ) }
+    }
+
+    private fun exportFilteredEvents(filteredEvents: List<Event> = emptyList()) {
+        val json = Json.encodeToString( filteredEvents.map { ExportedEvent(it) })
         _state.update {
             it.copy(
-                sessionToExport = json,
-                exportSession = true
+                dataToExport = json,
+                exportData = true
             )
         }
     }

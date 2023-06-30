@@ -26,6 +26,7 @@ fun ActiveSessionTopBar(
     onAddTagClick: () -> Unit,
     onFilterClick: () -> Unit,
     onEventTrashClick: () -> Unit,
+    onShareFilteredEventsClick: () -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -97,7 +98,14 @@ fun ActiveSessionTopBar(
                     }
                 }
                 ActiveNavigationScreen.EventFilter.route -> {
-
+                    IconButton(
+                        onClick = { onShareFilteredEventsClick() }
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.share),
+                            contentDescription = "share Events"
+                        )
+                    }
                 }
             }
         }

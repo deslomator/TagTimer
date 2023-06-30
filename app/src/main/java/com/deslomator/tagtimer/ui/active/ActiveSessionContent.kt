@@ -26,7 +26,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -47,7 +46,6 @@ fun ActiveSessionContent(
     onAction: (ActiveSessionAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
     BackHandler(enabled = state.showTagsDialog) {
         onAction(ActiveSessionAction.DismissTagDialog)
     }
@@ -70,9 +68,6 @@ fun ActiveSessionContent(
                 onAction(ActiveSessionAction.IncreaseCursor(1000))
             }
         }
-    }
-    if (state.exportSession) {
-        ExportSession(context, state, onAction)
     }
     Box(
         modifier = Modifier

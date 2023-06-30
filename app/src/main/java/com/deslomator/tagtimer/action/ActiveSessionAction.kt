@@ -38,5 +38,6 @@ sealed interface ActiveSessionAction {
     class IncreaseCursor(val stepMillis: Long): ActiveSessionAction
     object DismissTimeDialog: ActiveSessionAction
     data class LabelTypeSelected(val type: Label): ActiveSessionAction
+    data class ExportFilteredEventsClicked(val filteredEvents: List<Event>): ActiveSessionAction
 
 }
