@@ -68,7 +68,8 @@ fun EventListItem(
                     onTrailingClick = onTrailingClick
                 ) { item ->
                     Text(
-                        text = "${item.label}  ${item.person}  ${item.place}",
+                        text = listOf(item.label, item.place,item.person)
+                            .filter { it.isNotEmpty() }.joinToString(separator = ","),
                         maxLines = 1,
                         overflow = TextOverflow.Clip
                     )
