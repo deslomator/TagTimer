@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,10 +57,11 @@ fun EventListItem(
                         containerColor = Color.White,
                         contentColor = OnLightBackground,
                     ),
-                    shape = RoundedCornerShape(20.dp),
+                    shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(4.dp, Color(borderColor)),
                     item = event,
                     onItemClick = { onItemClick() },
+                    iconSize = 22.dp,
                     leadingIcon = leadingIcon,
                     onLeadingClick = onLeadingClick,
                     trailingIcon = trailingIcon,
@@ -106,14 +108,26 @@ fun EventListItem(
 fun EventListItemPreview() {
     val event = Event(
         label = "label",
+        note = "fff",
+        elapsedTimeMillis = 25_000L,
+    )
+    val event2 = Event(
+        label = "label",
         note = "",
         elapsedTimeMillis = 25_000L,
     )
-    EventListItem(
-        trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
-        event = event,
-        onItemClick = {  },
-    )
+    Column {
+        EventListItem(
+            trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
+            event = event,
+            onItemClick = { },
+        )
+        EventListItem(
+            trailingIcon = if (event2.note.isEmpty()) null else R.drawable.note,
+            event = event2,
+            onItemClick = { },
+        )
+    }
 }
 
 private const val TAG = "EventListItem"

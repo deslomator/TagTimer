@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.toDateTime
@@ -33,6 +34,7 @@ fun <T> MyListItem(
     shape: Shape = RectangleShape,
     border: BorderStroke? = null,
     item: T,
+    iconSize: Dp = 36.dp,
     @DrawableRes leadingIcon: Int? = null,
     onLeadingClick: ((T) -> Unit)? = null,
     onItemClick: ((T) -> Unit)? = null,
@@ -55,10 +57,11 @@ fun <T> MyListItem(
         ) {
             leadingIcon?.let {
                 IconButton(
+                    modifier = Modifier.size(iconSize + 2.dp),
                     onClick = { onLeadingClick?.invoke(item) },
                 ) {
                     Icon(
-                        modifier = Modifier.size(36.dp),
+                        modifier = Modifier.size(iconSize),
                         painter = painterResource(id = it),
                         contentDescription = "Edit",
                     )
@@ -72,10 +75,11 @@ fun <T> MyListItem(
             }
             trailingIcon?.let {
                 IconButton(
+                    modifier = Modifier.size(iconSize + 2.dp),
                     onClick = { onTrailingClick?.invoke(item) },
                 ) {
                     Icon(
-                        modifier = Modifier.size(36.dp),
+                        modifier = Modifier.size(iconSize),
                         painter = painterResource(id = it),
                         contentDescription = "Edit",
                     )
