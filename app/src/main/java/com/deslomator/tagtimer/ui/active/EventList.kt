@@ -85,9 +85,7 @@ fun EventList(
                     trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
                     onTrailingClick = { onAction(ActiveSessionAction.EventClicked(event)) },
                     onItemClick = { onAction(ActiveSessionAction.EventClicked(event)) },
-                    persons = state.persons.filter { person ->
-                        state.preSelectedPersons.map { it.personId }.contains(person.id)
-                    }
+                    persons = state.events.map { it.person }.distinct().sorted()
                 )
             }
         }

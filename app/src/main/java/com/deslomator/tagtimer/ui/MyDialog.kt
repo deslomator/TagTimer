@@ -47,8 +47,7 @@ fun MyDialog(
                 .background(VeryLightGray)
                 .padding(5.dp),
         ) { constraints ->
-            val footer = subcompose(1)
-            {
+            val footer = subcompose(1) {
                 Row(
                     modifier = Modifier
                         .heightIn(min = 50.dp)
