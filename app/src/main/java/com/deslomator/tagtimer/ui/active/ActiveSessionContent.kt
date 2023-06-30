@@ -127,14 +127,16 @@ fun ActiveSessionContent(
             )
             PreSelectedPlacesList(
                 places = state.places.filter { place ->
-                    state.preSelectedPlaces.map { it.placeId }.contains(place.id)
+                    state.preSelectedPlaces.map { it.placeId }.contains(place.id) &&
+                            place.name.isNotEmpty()
                 },
                 currentPlace = state.currentPlaceName,
                 onAction = onAction
             )
             PreSelectedPersonsList(
                 persons = state.persons.filter { person ->
-                    state.preSelectedPersons.map { it.personId }.contains(person.id)
+                    state.preSelectedPersons.map { it.personId }.contains(person.id) &&
+                            person.name.isNotEmpty()
                 },
                 currentPerson = state.currentPersonName,
                 onAction = onAction

@@ -33,10 +33,10 @@ import androidx.compose.ui.unit.sp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
+import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 
 @Composable
 fun EventFilterContent(
@@ -51,7 +51,8 @@ fun EventFilterContent(
         derivedStateOf {
             state.places
                 .filter { place ->
-                    state.events.map { it.place }.distinct().contains(place.name)
+                    place.name.isNotEmpty() &&
+                            state.events.map { it.place }.distinct().contains(place.name)
                 }
         }
     }
@@ -62,7 +63,8 @@ fun EventFilterContent(
         derivedStateOf {
             state.persons
                 .filter { person ->
-                    state.events.map { it.person }.distinct().contains(person.name)
+                    person.name.isNotEmpty() &&
+                            state.events.map { it.person }.distinct().contains(person.name)
                 }
         }
     }
