@@ -49,6 +49,9 @@ fun ActiveSessionScaffold(
                 }
         }
     }
+    val totalEvents by remember(filteredEvents) {
+        derivedStateOf { filteredEvents.size }
+    }
     LaunchedEffect(Unit) {
         onAction(ActiveSessionAction.UpdateSessionId(sessionId))
     }
@@ -111,6 +114,7 @@ fun ActiveSessionScaffold(
                         .joinToString(separator = ",")
                     onAction(ActiveSessionAction.ExportFilteredEventsClicked(filteredEvents))
                 },
+                totalEvents = totalEvents
             )
         },
         bottomBar = { },
