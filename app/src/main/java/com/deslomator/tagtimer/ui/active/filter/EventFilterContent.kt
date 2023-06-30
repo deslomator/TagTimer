@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.active.EventEditionDialog
+import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList

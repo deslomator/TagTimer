@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.dialog
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text

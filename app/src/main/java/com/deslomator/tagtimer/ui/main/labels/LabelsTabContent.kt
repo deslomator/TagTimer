@@ -9,7 +9,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -37,6 +36,9 @@ import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
+import com.deslomator.tagtimer.ui.main.labels.dialog.PersonDialog
+import com.deslomator.tagtimer.ui.main.labels.dialog.PlaceDialog
+import com.deslomator.tagtimer.ui.main.labels.dialog.TagDialog
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors

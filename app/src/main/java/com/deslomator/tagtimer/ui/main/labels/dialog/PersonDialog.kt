@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main.labels
+package com.deslomator.tagtimer.ui.main.labels.dialog
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -14,40 +14,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
-import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.Person
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.MyDialog
 
 @Composable
-fun TagDialog(
+fun PersonDialog(
     state: LabelsTabState,
     onAction: (LabelsTabAction) -> Unit,
-    tag: Tag
+    person: Person
 ) {
-    var label by rememberSaveable { mutableStateOf(tag.label) }
-    var color by rememberSaveable { mutableStateOf(tag.color) }
+    var name by rememberSaveable { mutableStateOf(person.name) }
+    var color by rememberSaveable { mutableStateOf(person.color) }
     MyDialog(
-        onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
+        onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
         onAccept = {
-            val t = tag.copy(
-                label = label,
+            val t = person.copy(
+                name = name,
                 color = color
             )
-            onAction(LabelsTabAction.AcceptTagEditionClicked(t))
+            onAction(LabelsTabAction.AcceptPersonEditionClicked(t))
         }
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = if(state.isEditingTag) R.string.edit_tag
-            else R.string.new_tag),
+            text = stringResource(id = if(state.isEditingPerson) R.string.edit_person
+            else R.string.new_person),
             textAlign = TextAlign.Center
         )
         TextField(
             modifier = Modifier.fillMaxWidth(),
-            value = label,
-            onValueChange = { label = it },
-            placeholder = { Text(text = stringResource(id = R.string.label)) }
+            value = name,
+            onValueChange = { name = it },
+            placeholder = { Text(text = stringResource(id = R.string.name)) }
         )
         ColorPicker(
             selectedColor = Color(color),

@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.dialog
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.LinearEasing
@@ -18,6 +18,9 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.MyDialog
+import com.deslomator.tagtimer.ui.active.PersonSelectionList
+import com.deslomator.tagtimer.ui.active.PlaceSelectionList
+import com.deslomator.tagtimer.ui.active.TagSelectionList
 import com.deslomator.tagtimer.ui.main.TopButton
 
 @Composable
@@ -95,4 +98,4 @@ fun LabelSelectionDialog(
     }
 }
 
-private const val TAG = "TagSelectionDialog"
+private const val TAG = "LabelSelectionDialog"

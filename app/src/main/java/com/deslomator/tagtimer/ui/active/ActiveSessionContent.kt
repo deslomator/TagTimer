@@ -33,6 +33,11 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.toElapsedTime
+import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
+import com.deslomator.tagtimer.ui.active.dialog.EventTrashDialog
+import com.deslomator.tagtimer.ui.active.dialog.LabelSelectionDialog
+import com.deslomator.tagtimer.ui.active.dialog.SessionEditionDialog
+import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import kotlinx.coroutines.delay
 
 @Composable
