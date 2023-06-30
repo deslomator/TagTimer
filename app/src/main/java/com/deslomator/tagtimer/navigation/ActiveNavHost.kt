@@ -11,6 +11,7 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Person
 import com.deslomator.tagtimer.model.Place
+import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.navigation.screen.ActiveNavigationScreen
 import com.deslomator.tagtimer.ui.active.ActiveSessionContent
@@ -24,10 +25,6 @@ fun ActiveNavHost(
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
     snackbarHostState: SnackbarHostState,
-    persons: List<Person>,
-    places: List<Place>,
-    query: String,
-    onQueryChange: (String) -> Unit,
     filteredEvents: List<Event>
 ) {
     NavHost(
@@ -48,10 +45,6 @@ fun ActiveNavHost(
                 paddingValues = paddingValues,
                 state = state,
                 onAction = onAction,
-                places = places,
-                persons = persons,
-                query = query,
-                onQueryChange = onQueryChange,
                 filteredEvents = filteredEvents
             )
         }

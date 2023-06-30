@@ -287,6 +287,11 @@ class ActiveSessionViewModel @Inject constructor(
                 else action.placeName
                 _state.update { it.copy(currentPlaceName = place) }
             }
+            is ActiveSessionAction.UsedTagClicked -> {
+                val tag = if (action.tagName == state.value.currentLabelName) ""
+                else action.tagName
+                _state.update { it.copy(currentLabelName = tag) }
+            }
             is ActiveSessionAction.ExportFilteredEventsClicked -> {
                 exportFilteredEvents(action.filteredEvents)
             }

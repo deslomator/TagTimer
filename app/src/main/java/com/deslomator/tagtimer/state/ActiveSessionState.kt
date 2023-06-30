@@ -35,4 +35,5 @@ data class ActiveSessionState(
     val currentLabel: Label = Label.TAG,
     val currentPersonName: String = "",
     val currentPlaceName: String = "",
+    val currentLabelName: String = "",
 )
