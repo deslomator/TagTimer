@@ -42,7 +42,7 @@ fun UsedTagsList(
             items(
                 items = tags,
                 key = { it.id }
-            ) {tag ->
+            ) { tag ->
                 TextButton(
                     modifier = Modifier
                         .weight(1F)
@@ -63,28 +63,6 @@ fun UsedTagsList(
                         overflow = TextOverflow.Clip
                     )
                 }
-            }
-        }
-        tags.forEach { tag ->
-            TextButton(
-                modifier = Modifier
-                    .weight(1F)
-                    .alpha(if (currentTag == tag.label) 1F else 0.4F),
-                onClick = { onAction(ActiveSessionAction.UsedTagClicked(tag.label)) },
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = Color(tag.color).contrasted(),
-                    containerColor = Color(tag.color),
-                ),
-                border = BorderStroke(1.dp, Color.LightGray),
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.tag),
-                    contentDescription = null
-                )
-                Text(text = tag.label,
-                    maxLines = 1,
-                    overflow = TextOverflow.Clip
-                )
             }
         }
     }
