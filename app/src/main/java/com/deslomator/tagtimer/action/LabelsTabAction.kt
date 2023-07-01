@@ -6,7 +6,6 @@ import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.Tag
 
 sealed interface LabelsTabAction {
-    data class LabelTypeSelected(val type: Label): LabelsTabAction
     /*
     TAG
      */

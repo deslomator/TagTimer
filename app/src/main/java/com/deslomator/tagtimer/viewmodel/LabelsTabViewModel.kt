@@ -39,9 +39,6 @@ class LabelsTabViewModel @Inject constructor(
 
     fun onAction(action: LabelsTabAction) {
         when(action) {
-            is LabelsTabAction.LabelTypeSelected -> {
-                _state.update { it.copy(currentLabel = action.type) }
-            }
             is LabelsTabAction.AddNewTagClicked -> {
                 _state.update { it.copy(
                     currentTag = Tag(),

@@ -27,10 +27,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.type.Label
 import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
-import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.ui.theme.PurpleGrey40
 import com.deslomator.tagtimer.ui.theme.contrasted
@@ -45,8 +43,6 @@ fun MainTopBar(
     onNewPlaceClick: () -> Unit,
     trashState: TrashTabState,
     onTrashTypeClick: (Trash) -> Unit,
-    labelsTabState: LabelsTabState,
-    onLabelTypeClick: (Label) -> Unit
 ) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
@@ -68,60 +64,29 @@ fun MainTopBar(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Label.TAG,
-                            currentType = labelsTabState.currentLabel,
-                            onTypeClick = { onLabelTypeClick(it) },
-                            text = R.string.tags
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Label.PERSON,
-                            currentType = labelsTabState.currentLabel,
-                            onTypeClick = { onLabelTypeClick(it) },
-                            text = R.string.persons
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Label.PLACE,
-                            currentType = labelsTabState.currentLabel,
-                            onTypeClick = { onLabelTypeClick(it) },
-                            text = R.string.places
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        if (labelsTabState.currentLabel == Label.TAG) {
-                            IconButton(
-                                onClick = onNewTagClick
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.add_tag),
-                                    contentDescription = stringResource(id = R.string.new_tag)
-                                )
-                            }
+                        IconButton(
+                            onClick = onNewTagClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add_tag),
+                                contentDescription = stringResource(id = R.string.new_tag)
+                            )
                         }
-                        if (labelsTabState.currentLabel == Label.PERSON) {
-                            IconButton(
-                                onClick = onNewPersonClick
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.add_person),
-                                    contentDescription = stringResource(id = R.string.new_person)
-                                )
-                            }
+                        IconButton(
+                            onClick = onNewPersonClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add_person),
+                                contentDescription = stringResource(id = R.string.new_person)
+                            )
                         }
-                        if (labelsTabState.currentLabel == Label.PLACE) {
-                            IconButton(
-                                onClick = onNewPlaceClick
-                            ) {
-                                Icon(
-                                    painter = painterResource(R.drawable.add_place),
-                                    contentDescription = stringResource(id = R.string.new_place)
-                                )
-                            }
+                        IconButton(
+                            onClick = onNewPlaceClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add_place),
+                                contentDescription = stringResource(id = R.string.new_place)
+                            )
                         }
                     }
                 }

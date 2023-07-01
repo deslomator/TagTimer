@@ -28,7 +28,6 @@ fun MainScreenScaffold(
 ) {
     val innerNavHostController: NavHostController = rememberNavController()
     val backStackEntry = innerNavHostController.currentBackStackEntryAsState()
-
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
@@ -40,8 +39,6 @@ fun MainScreenScaffold(
                 onNewPlaceClick = { onTagsAction(LabelsTabAction.AddNewPlaceClicked) },
                 trashState = trashTabState,
                 onTrashTypeClick = { onSessionsTrashAction(TrashTabAction.TrashTypeClicked(it)) },
-                labelsTabState = labelsTabState,
-                onLabelTypeClick = { onTagsAction(LabelsTabAction.LabelTypeSelected(it)) },
             )
         },
         bottomBar = {

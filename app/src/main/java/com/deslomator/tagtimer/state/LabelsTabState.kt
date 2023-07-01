@@ -6,7 +6,6 @@ import com.deslomator.tagtimer.model.Place
 import com.deslomator.tagtimer.model.Tag
 
 data class LabelsTabState(
-    val currentLabel: Label = Label.TAG,
     val tags: List<Tag> = emptyList(),
     val persons: List<Person> = emptyList(),
     val places: List<Place> = emptyList(),

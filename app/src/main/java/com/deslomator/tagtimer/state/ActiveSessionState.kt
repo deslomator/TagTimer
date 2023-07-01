@@ -32,7 +32,7 @@ data class ActiveSessionState(
     val showTimeDialog: Boolean = false,
     val exportData: Boolean = false,
     val dataToExport: String = "",
-    val currentLabel: Label = Label.TAG,
+    val currentLabel: Label = Label.Tag,
     val currentPersonName: String = "",
     val currentPlaceName: String = "",
     val currentLabelName: String = "",

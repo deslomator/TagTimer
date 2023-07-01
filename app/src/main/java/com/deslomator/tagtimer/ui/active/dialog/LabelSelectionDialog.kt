@@ -39,7 +39,7 @@ fun LabelSelectionDialog(
             Spacer(modifier = Modifier.width(15.dp))
             TopButton(
                 modifier = Modifier.weight(1F),
-                type = Label.TAG,
+                type = Label.Tag,
                 currentType = state.currentLabel,
                 onTypeClick = { onAction(ActiveSessionAction.LabelTypeSelected(it)) },
                 text = R.string.tags
@@ -47,7 +47,7 @@ fun LabelSelectionDialog(
             Spacer(modifier = Modifier.width(15.dp))
             TopButton(
                 modifier = Modifier.weight(1F),
-                type = Label.PERSON,
+                type = Label.Person,
                 currentType = state.currentLabel,
                 onTypeClick = { onAction(ActiveSessionAction.LabelTypeSelected(it)) },
                 text = R.string.persons
@@ -55,7 +55,7 @@ fun LabelSelectionDialog(
             Spacer(modifier = Modifier.width(15.dp))
             TopButton(
                 modifier = Modifier.weight(1F),
-                type = Label.PLACE,
+                type = Label.Place,
                 currentType = state.currentLabel,
                 onTypeClick = { onAction(ActiveSessionAction.LabelTypeSelected(it)) },
                 text = R.string.places
@@ -63,7 +63,7 @@ fun LabelSelectionDialog(
             Spacer(modifier = Modifier.width(15.dp))
         }
         AnimatedVisibility(
-            visible = state.currentLabel == Label.TAG,
+            visible = state.currentLabel == Label.Tag,
             enter = fadeIn(
                 animationSpec = tween(250, 0, LinearEasing)
             ),
@@ -74,7 +74,7 @@ fun LabelSelectionDialog(
             TagSelectionList(state, onAction)
         }
         AnimatedVisibility(
-            visible = state.currentLabel == Label.PERSON,
+            visible = state.currentLabel == Label.Person,
             enter = fadeIn(
                 animationSpec = tween(250, 0, LinearEasing)
             ),
@@ -85,7 +85,7 @@ fun LabelSelectionDialog(
             PersonSelectionList(state, onAction)
         }
         AnimatedVisibility(
-            visible = state.currentLabel == Label.PLACE,
+            visible = state.currentLabel == Label.Place,
             enter = fadeIn(
                 animationSpec = tween(250, 0, LinearEasing)
             ),
