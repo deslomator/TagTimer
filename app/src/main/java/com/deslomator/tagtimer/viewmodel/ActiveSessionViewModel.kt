@@ -103,7 +103,7 @@ class ActiveSessionViewModel @Inject constructor(
                     }
                     appDao.upsertSession(s)
                     if (state.value.events.isNotEmpty())
-                    _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
+                        _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
                 }
             }
             is ActiveSessionAction.PlayPauseClicked -> {

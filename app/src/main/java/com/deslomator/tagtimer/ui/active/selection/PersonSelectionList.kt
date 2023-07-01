@@ -2,24 +2,25 @@ package com.deslomator.tagtimer.ui.active.selection
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.MyListItem
+import com.deslomator.tagtimer.ui.MyButton
 import com.deslomator.tagtimer.ui.theme.contrasted
 
 @Composable
@@ -27,38 +28,37 @@ fun PersonSelectionList(
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
+    LazyVerticalGrid(
+        modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp),
+        columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(
             items = state.persons,
             key = { it.id }
         ) { person ->
-            val checked = state.preSelectedPersons.map { it.personId }.contains(person.id)
-            val onCheckedChange: (Boolean) -> Unit = { it ->
-                onAction(ActiveSessionAction.SelectPersonCheckedChange(person.id, it))
+            var checked by remember {
+                mutableStateOf(state.preSelectedPersons.map { it.personId }.contains(person.id))
             }
-            MyListItem(
+            val onCheckedChange: () -> Unit = {
+                checked = !checked
+                onAction(ActiveSessionAction.SelectPersonCheckedChange(person.id, checked))
+            }
+            MyButton(
+                modifier = Modifier.alpha(if (checked) 1F else .4F),
                 leadingIcon = R.drawable.person,
-                colors = CardDefaults.cardColors(
+                onLeadingClick = { onCheckedChange() },
+                colors = ButtonDefaults.buttonColors(
                     contentColor = Color.White.contrasted(),
                     containerColor = Color.White,
                 ),
                 item = person,
-                shape = CutCornerShape(topStart = 20.dp),
+                text = person.name,
                 border = BorderStroke(5.dp, Color(person.color)),
-            ) {
-                Column(modifier = Modifier.weight(1.0f)) {
-                    Text(person.name)
-                }
-                Checkbox(
-                    checked = checked,
-                    onCheckedChange = { onCheckedChange(it) }
-                )
-            }
+                onItemClick = { onCheckedChange() },
+            )
         }
     }
 }
