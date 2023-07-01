@@ -33,7 +33,7 @@
     <string name="place_deleted">Place permanently deleted</string>
     <string name="place_restored">Place restored</string>
     <string name="add_tag">Add Tag</string>
-    <string name="select_tags">Select Tags</string>
+    <string name="select_labels">Select Labels</string>
     <string name="type_a_note">Type a Note</string>
     <string name="tap_a_tag_below">Tap a Tag below to add an Event</string>
     <string name="tap_toolbar_icon_add_pst">Tap the toolbar icon to preselect some Tags</string>

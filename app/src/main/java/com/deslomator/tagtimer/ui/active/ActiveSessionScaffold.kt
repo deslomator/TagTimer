@@ -69,15 +69,15 @@ fun ActiveSessionScaffold(
                 backStackEntry = backStackEntry,
                 state = state,
                 onBackClicked = {
-                    if (state.showTagsDialog) {
-                        onAction(ActiveSessionAction.DismissTagDialog)
-                    } else if (state.showEventTrash) {
-                        onAction(ActiveSessionAction.DismissEventTrashDialog)
-                    } else if (state.showEventEditionDialog) {
+                    if (state.showEventEditionDialog) {
                         onAction(ActiveSessionAction.DismissEventEditionDialog)
+                    } else if (state.showEventInTrashDialog) {
+                        onAction(ActiveSessionAction.DismissEventInTrashDialog)
+                    } else if (state.showTimeDialog) {
+                        onAction(ActiveSessionAction.DismissTimeDialog)
                     } else {
                         onAction(ActiveSessionAction.StopSession)
-                        if (backStackEntry.value?.destination?.route == ActiveNavigationScreen.EventFilter.route) {
+                        if (backStackEntry.value?.destination?.route != ActiveNavigationScreen.ActiveSession.route) {
                             innerNavHostController.navigateUp()
                         } else {
                             outerNavHostController.navigateUp()
@@ -88,8 +88,26 @@ fun ActiveSessionScaffold(
                     fileName = state.currentSession.name
                     onAction(ActiveSessionAction.ExportSessionClicked)
                 },
-                onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
-                onEventTrashClick = { onAction(ActiveSessionAction.EventTrashClicked) },
+                onAddLabelClick = {
+//                    onAction(ActiveSessionAction.StopSession)
+                    innerNavHostController.navigate(ActiveNavigationScreen.LabelSelection.route) {
+                        popUpTo(innerNavHostController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                onEventTrashClick = {
+//                    onAction(ActiveSessionAction.StopSession)
+                    innerNavHostController.navigate(ActiveNavigationScreen.EventTrash.route) {
+                        popUpTo(innerNavHostController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
                 onFilterClick = {
                     onAction(ActiveSessionAction.StopSession)
                     innerNavHostController.navigate(ActiveNavigationScreen.EventFilter.route) {

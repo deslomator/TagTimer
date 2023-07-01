@@ -88,27 +88,3 @@ fun MainTopBar(
         }
     )
 }
-
-@Composable
-fun <T>TopButton(
-    modifier: Modifier,
-    type: T,
-    currentType: T,
-    onTypeClick: (T) -> Unit,
-    @StringRes text: Int
-) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(5.dp))
-            .background(PurpleGrey40)
-            .alpha(if (currentType == type) 1F else 0.5F)
-            .clickable { onTypeClick(type) }
-            .padding(top= 5.dp, bottom = 5.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = stringResource(id = text),
-            color = PurpleGrey40.contrasted()
-        )
-    }
-}

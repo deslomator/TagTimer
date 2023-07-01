@@ -9,13 +9,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Person
-import com.deslomator.tagtimer.model.Place
-import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.navigation.screen.ActiveNavigationScreen
 import com.deslomator.tagtimer.ui.active.ActiveSessionContent
 import com.deslomator.tagtimer.ui.active.filter.EventFilterContent
+import com.deslomator.tagtimer.ui.active.selection.LabelSelectionContent
+import com.deslomator.tagtimer.ui.active.trash.EventTrashContent
 
 @Composable
 fun ActiveNavHost(
@@ -40,12 +39,27 @@ fun ActiveNavHost(
                 snackbarHostState = snackbarHostState
             )
         }
+        composable(ActiveNavigationScreen.LabelSelection.route) {
+            LabelSelectionContent(
+                paddingValues = paddingValues,
+                state = state,
+                onAction = onAction,
+            )
+        }
         composable(ActiveNavigationScreen.EventFilter.route) {
             EventFilterContent(
                 paddingValues = paddingValues,
                 state = state,
                 onAction = onAction,
                 filteredEvents = filteredEvents
+            )
+        }
+        composable(ActiveNavigationScreen.EventTrash.route) {
+            EventTrashContent(
+                paddingValues = paddingValues,
+                state = state,
+                onAction = onAction,
+                snackbarHostState = snackbarHostState
             )
         }
     }

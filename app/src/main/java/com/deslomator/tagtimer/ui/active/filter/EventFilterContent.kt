@@ -26,7 +26,6 @@ import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
-import com.deslomator.tagtimer.ui.active.UsedTagsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 
 @Composable

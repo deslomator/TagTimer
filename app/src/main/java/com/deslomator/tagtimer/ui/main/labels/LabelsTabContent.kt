@@ -84,9 +84,9 @@ fun LabelsTabContent(
 //        Log.d(TAG, "navigating to page: $currentPage")
         pagerState.animateScrollToPage(currentPage)
     }
-    LaunchedEffect(pagerState.settledPage) {
+    LaunchedEffect(pagerState.targetPage) {
 //        Log.d(TAG, "setting page: $currentPage")
-        currentPage = pagerState.settledPage
+        currentPage = pagerState.targetPage
     }
     Box(
         modifier = Modifier

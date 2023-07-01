@@ -102,17 +102,12 @@ class ActiveSessionViewModel @Inject constructor(
                         it.copy(currentSession = s)
                     }
                     appDao.upsertSession(s)
+                    if (state.value.events.isNotEmpty())
                     _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
                 }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
-            }
-            is ActiveSessionAction.SelectTagsClicked -> {
-                _state.update { it.copy( showTagsDialog = true) }
-            }
-            is ActiveSessionAction.DismissTagDialog -> {
-                _state.update { it.copy( showTagsDialog = false) }
             }
             is ActiveSessionAction.SelectTagCheckedChange -> {
                 if (action.checked) {
@@ -153,9 +148,6 @@ class ActiveSessionViewModel @Inject constructor(
                     pst?.let { viewModelScope.launch { appDao.deletePreSelectedPlace(it) } }
                 }
             }
-            ActiveSessionAction.AcceptTagSelectionClicked -> {
-                _state.update { it.copy( showTagsDialog = false) }
-            }
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
                     viewModelScope.launch {
@@ -181,12 +173,6 @@ class ActiveSessionViewModel @Inject constructor(
                     eventCount = state.value.events.size
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
-            }
-            ActiveSessionAction.EventTrashClicked -> {
-                _state.update { it.copy( showEventTrash = true) }
-            }
-            ActiveSessionAction.DismissEventTrashDialog -> {
-                _state.update { it.copy( showEventTrash = false) }
             }
             is ActiveSessionAction.DeleteEventClicked -> {
                 viewModelScope.launch { appDao.deleteEvent(action.event) }
@@ -240,7 +226,7 @@ class ActiveSessionViewModel @Inject constructor(
                     showEventInTrashDialog = true
                 ) }
             }
-            is ActiveSessionAction.DismissEventInTrashDialog -> {
+            ActiveSessionAction.DismissEventInTrashDialog -> {
                 _state.update { it.copy(showEventInTrashDialog = false) }
             }
             ActiveSessionAction.ExportSessionClicked -> {
@@ -267,9 +253,6 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.DismissTimeDialog -> {
                 _state.update { it.copy(showTimeDialog = false) }
-            }
-            is ActiveSessionAction.LabelTypeSelected -> {
-                _state.update { it.copy(currentLabel = action.type) }
             }
             is ActiveSessionAction.PreSelectedPersonClicked -> {
                 val person = if (action.personName == state.value.currentPersonName) ""

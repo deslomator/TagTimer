@@ -62,8 +62,8 @@ fun TrashTabContent(
     LaunchedEffect(currentPage) {
         pagerState.animateScrollToPage(currentPage)
     }
-    LaunchedEffect(pagerState.settledPage) {
-        currentPage = pagerState.settledPage
+    LaunchedEffect(pagerState.targetPage) {
+        currentPage = pagerState.targetPage
     }
     Box(
         modifier = Modifier

@@ -29,7 +29,7 @@
     <string name="place_deleted">Lugar eliminado definitivamente</string>
     <string name="place_restored">Lugar restaurado</string>
     <string name="add_tag">Añadir Etiqueta</string>
-    <string name="select_tags">Seleccionar Etiquetas</string>
+    <string name="select_labels">Seleccionar Marcadores</string>
     <string name="type_a_note">Añade una Nota</string>
     <string name="tap_a_tag_below">Pulsa una Etiqueta en la lista inferior para añadir un Evento</string>
     <string name="tap_toolbar_icon_add_pst">Pulsa el icono de la barra superior para preseleccionar Etiquetas</string>

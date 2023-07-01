@@ -10,5 +10,7 @@ sealed class ActiveNavigationScreen(
     @DrawableRes val icon: Int,
 ) {
     object ActiveSession : ActiveNavigationScreen("ActiveSession", R.string.session, R.drawable.document_and_ray)
+    object LabelSelection : ActiveNavigationScreen("LabelSelection", R.string.select_labels, R.drawable.add_tag)
     object EventFilter : ActiveNavigationScreen("EventFilter", R.string.filter_events, R.drawable.filter)
+    object EventTrash : ActiveNavigationScreen("EventTrash", R.string.trash, R.drawable.delete)
 }

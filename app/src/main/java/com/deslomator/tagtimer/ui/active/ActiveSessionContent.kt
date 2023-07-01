@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -38,8 +37,6 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
-import com.deslomator.tagtimer.ui.active.dialog.EventTrashDialog
-import com.deslomator.tagtimer.ui.active.dialog.LabelSelectionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import kotlinx.coroutines.delay
@@ -52,11 +49,8 @@ fun ActiveSessionContent(
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
-    BackHandler(enabled = state.showTagsDialog) {
-        onAction(ActiveSessionAction.DismissTagDialog)
-    }
-    BackHandler(enabled = state.showEventTrash) {
-        onAction(ActiveSessionAction.DismissEventTrashDialog)
+    BackHandler(enabled = state.showTimeDialog) {
+        onAction(ActiveSessionAction.DismissTimeDialog)
     }
     BackHandler(enabled = state.showEventEditionDialog) {
         onAction(ActiveSessionAction.DismissEventEditionDialog)
@@ -163,27 +157,6 @@ fun ActiveSessionContent(
             )
         }
         AnimatedVisibility(
-            visible = state.showTagsDialog,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            LabelSelectionDialog(
-                state = state,
-                onAction = onAction,
-            )
-        }
-        AnimatedVisibility(
-            visible = state.showEventTrash,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            EventTrashDialog(
-                state = state,
-                onAction = onAction,
-                snackbarHostState = snackbarHostState
-            )
-        }
-        AnimatedVisibility(
             visible = state.showEventEditionDialog,
             enter = fadeIn(),
             exit = fadeOut()
@@ -192,18 +165,6 @@ fun ActiveSessionContent(
                 event = state.eventForDialog,
                 onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
-            )
-        }
-        AnimatedVisibility(
-            visible = state.showEventInTrashDialog,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            EventEditionDialog(
-                event = state.eventForDialog,
-                onAccept = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
-                onDismiss = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
-                enabled = false
             )
         }
         AnimatedVisibility(

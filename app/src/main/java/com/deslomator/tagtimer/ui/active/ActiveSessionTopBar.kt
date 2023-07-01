@@ -26,7 +26,7 @@ fun ActiveSessionTopBar(
     state: ActiveSessionState,
     onBackClicked: () -> Unit,
     onShareSessionClick: () -> Unit,
-    onAddTagClick: () -> Unit,
+    onAddLabelClick: () -> Unit,
     onFilterClick: () -> Unit,
     onEventTrashClick: () -> Unit,
     onShareFilteredEventsClick: () -> Unit,
@@ -52,8 +52,6 @@ fun ActiveSessionTopBar(
             when (backStackEntry.value?.destination?.route) {
                 ActiveNavigationScreen.ActiveSession.route -> {
                     if (
-                        !state.showTagsDialog &&
-                        !state.showEventTrash &&
                         !state.showEventEditionDialog &&
                         !state.showEventInTrashDialog &&
                         !state.showTimeDialog
@@ -67,7 +65,7 @@ fun ActiveSessionTopBar(
                             )
                         }
                         IconButton(
-                            onClick = onAddTagClick
+                            onClick = onAddLabelClick
                         ) {
                             Icon(
                                 painter = painterResource(R.drawable.add_tag),

@@ -1,9 +1,9 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.selection
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,37 +22,37 @@ import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.contrasted
 
 @Composable
-fun PlaceSelectionList(
+fun TagSelectionList(
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxSize(),
         contentPadding = PaddingValues(6.dp),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         items(
-            items = state.places,
+            items = state.tags,
             key = { it.id }
-        ) { place ->
-            val checked = state.preSelectedPlaces.map { it.placeId }.contains(place.id)
+        ) { tag ->
+            val checked = state.preSelectedTags.map { it.tagId }.contains(tag.id)
             val onCheckedChange: (Boolean) -> Unit = { it ->
-                onAction(ActiveSessionAction.SelectPlaceCheckedChange(place.id, it))
+                onAction(ActiveSessionAction.SelectTagCheckedChange(tag.id, it))
             }
             MyListItem(
-                leadingIcon = R.drawable.place,
+                leadingIcon = R.drawable.tag,
                 colors = CardDefaults.cardColors(
-                    contentColor = Color(place.color).contrasted(),
-                    containerColor = Color(place.color),
+                    contentColor = Color(tag.color).contrasted(),
+                    containerColor = Color(tag.color),
                 ),
-                item = place,
-                shape = CutCornerShape(18.dp),
+                item = tag,
+                shape = CutCornerShape(topStart = 20.dp),
                 border = BorderStroke(1.dp, Color.LightGray),
             ) {
-                Column(modifier = Modifier.weight(1.0f)) {
-                    Text(place.name)
-                }
+                Text(
+                    modifier = Modifier.weight(1.0f),
+                    text = tag.label)
                 Checkbox(
                     checked = checked,
                     onCheckedChange = { onCheckedChange(it) }
