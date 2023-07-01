@@ -20,7 +20,7 @@ interface AppDao {
     EVENT
     */
     @Upsert
-    suspend fun upsertEvent(event: Event)
+    suspend fun upsertEvent(event: Event): Long
 
     @Delete
     suspend fun deleteEvent(event: Event)
@@ -29,7 +29,7 @@ interface AppDao {
     suspend fun deleteEventsForSession(sessionId: Int)
 
     @Query("SELECT * FROM event WHERE id = :eventId")
-    suspend fun getEventById(eventId: Int): Event
+    suspend fun getEvent(eventId: Int): Event
 
     @Query("SELECT * FROM event WHERE sessionId = :sessionId AND inTrash = 0 ORDER BY elapsedTimeMillis ASC")
     fun getActiveEventsForSession(sessionId: Int): Flow<List<Event>>

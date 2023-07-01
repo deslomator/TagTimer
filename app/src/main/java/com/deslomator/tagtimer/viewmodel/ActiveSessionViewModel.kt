@@ -102,6 +102,7 @@ class ActiveSessionViewModel @Inject constructor(
                         it.copy(currentSession = s)
                     }
                     appDao.upsertSession(s)
+                    _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
                 }
             }
             is ActiveSessionAction.PlayPauseClicked -> {
@@ -157,15 +158,20 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
-                    val event = Event(
-                        sessionId = _sessionId.value,
-                        elapsedTimeMillis = state.value.cursor,
-                        label = action.tag.label,
-                        color = action.tag.color,
-                        person = state.value.currentPersonName,
-                        place = state.value.currentPlaceName,
-                    )
-                    viewModelScope.launch { appDao.upsertEvent(event) }
+                    viewModelScope.launch {
+                        val event = Event(
+                            sessionId = _sessionId.value,
+                            elapsedTimeMillis = state.value.cursor,
+                            label = action.tag.label,
+                            person = state.value.currentPersonName,
+                            place = state.value.currentPlaceName,
+                            color = action.tag.color,
+                        )
+                        val id = appDao.upsertEvent(event)
+                        _state.update {
+                            it.copy( eventForScrollTo = event.copy(id = id.toInt()))
+                        }
+                    }
                 }
             }
             is ActiveSessionAction.StopSession -> {
@@ -195,13 +201,13 @@ class ActiveSessionViewModel @Inject constructor(
                     // we don't want the Event that was retrieved
                     // in the action because it was stale
                     // get the updated one from the DB instead
-                    val event = appDao.getEventById(action.eventId)
+                    val event = appDao.getEvent(action.event.id)
                     val trashed = event.copy(inTrash = true)
                     appDao.upsertEvent(trashed) }
             }
             is ActiveSessionAction.EventClicked -> {
                 _state.update { it.copy(
-                    currentEvent = action.event,
+                    eventForDialog = action.event,
                     showEventEditionDialog = true
                 ) }
             }
@@ -220,7 +226,8 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentSession = session,
-                        showEventEditionDialog = false
+                        showEventEditionDialog = false,
+                        eventForScrollTo = action.event
                     )
                 }
             }
@@ -229,7 +236,7 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.EventInTrashClicked -> {
                 _state.update { it.copy(
-                    currentEvent = action.event,
+                    eventForDialog = action.event,
                     showEventInTrashDialog = true
                 ) }
             }

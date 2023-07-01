@@ -1,9 +1,8 @@
 package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.type.Label
-import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.type.Label
 
 sealed interface ActiveSessionAction {
     class UpdateSessionId(val id: Int): ActiveSessionAction
@@ -23,7 +22,7 @@ sealed interface ActiveSessionAction {
     object DismissEventTrashDialog: ActiveSessionAction
     class RestoreEventClicked(val event: Event): ActiveSessionAction
     class DeleteEventClicked(val event: Event): ActiveSessionAction
-    class TrashEventSwiped(val eventId: Int): ActiveSessionAction
+    class TrashEventSwiped(val event: Event): ActiveSessionAction
     object ExportSessionClicked: ActiveSessionAction
     object SessionExported: ActiveSessionAction
     class EventClicked(val event: Event): ActiveSessionAction

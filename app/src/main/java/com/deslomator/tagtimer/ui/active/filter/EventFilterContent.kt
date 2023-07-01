@@ -128,7 +128,7 @@ fun EventFilterContent(
             exit = fadeOut()
         ) {
             EventEditionDialog(
-                event = state.currentEvent,
+                event = state.eventForDialog,
                 onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
             )

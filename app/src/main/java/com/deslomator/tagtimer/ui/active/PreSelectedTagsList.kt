@@ -7,8 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,9 +19,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.MyListItem
+import com.deslomator.tagtimer.ui.MyButton
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.contrasted
 
@@ -30,7 +29,7 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 fun PreSelectedTagsList(
     modifier: Modifier,
     state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    onItemClicked: (Tag) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
@@ -45,9 +44,9 @@ fun PreSelectedTagsList(
     LazyVerticalGrid(
         modifier = modifier,
         contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        columns = GridCells.Adaptive(minSize = 120.dp)
+        columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(
             items = state.tags.filter { tag ->
@@ -55,14 +54,25 @@ fun PreSelectedTagsList(
             },
             key = { it.id }
         ) { tag ->
-            MyListItem(
-                colors = CardDefaults.cardColors(
+            MyButton(
+                leadingIcon = R.drawable.tag,
+                onLeadingClick = {
+                    if (!state.isRunning) {
+                        showSnackbar(
+                            scope,
+                            snackbarHostState,
+                            context.getString(R.string.tap_play_to_add_event)
+                        )
+                    }
+                    onItemClicked(tag)
+                },
+                colors = ButtonDefaults.buttonColors(
                     contentColor = Color(tag.color).contrasted(),
                     containerColor = Color(tag.color),
                 ),
-                shape = CutCornerShape(topStart = 20.dp),
-                border = BorderStroke(1.dp, Color.LightGray),
                 item = tag,
+                text = tag.label,
+                border = BorderStroke(1.dp, Color.LightGray),
                 onItemClick = {
                     if (!state.isRunning) {
                         showSnackbar(
@@ -71,11 +81,9 @@ fun PreSelectedTagsList(
                             context.getString(R.string.tap_play_to_add_event)
                         )
                     }
-                    onAction(ActiveSessionAction.PreSelectedTagClicked(tag))
+                    onItemClicked(tag)
                 },
-            ) { item ->
-                Text(item.label)
-            }
+            )
         }
     }
 }

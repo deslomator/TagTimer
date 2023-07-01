@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -13,10 +14,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
@@ -25,7 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -36,6 +41,7 @@ import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.EventTrashDialog
 import com.deslomator.tagtimer.ui.active.dialog.LabelSelectionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
+import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import kotlinx.coroutines.delay
 
 @Composable
@@ -45,6 +51,7 @@ fun ActiveSessionContent(
     onAction: (ActiveSessionAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
+    val listState = rememberLazyListState()
     BackHandler(enabled = state.showTagsDialog) {
         onAction(ActiveSessionAction.DismissTagDialog)
     }
@@ -65,24 +72,42 @@ fun ActiveSessionContent(
             }
         }
     }
+    /*
+    tis effect launches twice as needed but at least it's not very frequent
+     */
+    LaunchedEffect(state.eventForScrollTo, state.events) {
+        val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.id)
+//        Log.d(TAG, "events changed, current event index is: $index")
+        if (index >= 0) {
+            listState.animateScrollToItem(index, 0)
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
     ) {
-        Column {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Divider()
             EventList(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.4f),
-                state = state,
-                onAction = onAction,
+                events = state.events,
+                listState = listState,
+                onItemClicked = { onAction(ActiveSessionAction.EventClicked(it)) },
+                onItemSwiped = { onAction(ActiveSessionAction.TrashEventSwiped(it)) },
                 snackbarHostState = snackbarHostState
             )
+            Divider()
+            Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier
-                    .background(Color.LightGray)
-                    .fillMaxWidth(),
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(VeryLightGray)
+                    .fillMaxWidth(.9F),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -113,23 +138,27 @@ fun ActiveSessionContent(
                     .fillMaxSize()
                     .weight(0.6f),
                 state = state,
-                onAction = onAction,
+                onItemClicked = {
+                    onAction(ActiveSessionAction.PreSelectedTagClicked(it))
+                },
                 snackbarHostState = snackbarHostState
             )
-            PreSelectedPlacesList(
-                places = state.places.filter { place ->
-                    state.preSelectedPlaces.map { it.placeId }.contains(place.id) &&
-                            place.name.isNotEmpty()
-                },
-                currentPlace = state.currentPlaceName,
-                onAction = onAction
-            )
+            Divider()
             PreSelectedPersonsList(
                 persons = state.persons.filter { person ->
                     state.preSelectedPersons.map { it.personId }.contains(person.id) &&
                             person.name.isNotEmpty()
                 },
                 currentPerson = state.currentPersonName,
+                onAction = onAction
+            )
+            Divider()
+            PreSelectedPlacesList(
+                places = state.places.filter { place ->
+                    state.preSelectedPlaces.map { it.placeId }.contains(place.id) &&
+                            place.name.isNotEmpty()
+                },
+                currentPlace = state.currentPlaceName,
                 onAction = onAction
             )
         }
@@ -160,7 +189,7 @@ fun ActiveSessionContent(
             exit = fadeOut()
         ) {
             EventEditionDialog(
-                event = state.currentEvent,
+                event = state.eventForDialog,
                 onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
             )
@@ -171,7 +200,7 @@ fun ActiveSessionContent(
             exit = fadeOut()
         ) {
             EventEditionDialog(
-                event = state.currentEvent,
+                event = state.eventForDialog,
                 onAccept = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
                 enabled = false
