@@ -68,6 +68,7 @@ class LabelsTabViewModel @Inject constructor(
                 ) }
             }
             is LabelsTabAction.TrashTagSwiped -> {
+                _state.update { it.copy(showTagDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = true)
                     appDao.upsertTag(trashed)
@@ -106,6 +107,7 @@ class LabelsTabViewModel @Inject constructor(
                 ) }
             }
             is LabelsTabAction.TrashPersonSwiped -> {
+                _state.update { it.copy(showPersonDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.person.copy(inTrash = true)
                     appDao.upsertPerson(trashed)
@@ -143,6 +145,7 @@ class LabelsTabViewModel @Inject constructor(
                 ) }
             }
             is LabelsTabAction.TrashPlaceSwiped -> {
+                _state.update { it.copy(showPlaceDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.place.copy(inTrash = true)
                     appDao.upsertPlace(trashed)

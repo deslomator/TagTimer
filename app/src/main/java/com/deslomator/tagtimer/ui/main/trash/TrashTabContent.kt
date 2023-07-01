@@ -62,6 +62,9 @@ fun TrashTabContent(
     LaunchedEffect(currentPage) {
         pagerState.animateScrollToPage(currentPage)
     }
+    LaunchedEffect(pagerState.settledPage) {
+        currentPage = pagerState.settledPage
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()

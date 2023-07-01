@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +13,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,7 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -29,6 +34,9 @@ import com.deslomator.tagtimer.ui.theme.VeryLightGray
 fun MyDialog(
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
+    showTrash: Boolean = false,
+    onTrash: (() -> Unit)? = null,
+    @StringRes title: Int? = null,
     content: @Composable () -> Unit
 ) {
     Box(
@@ -42,11 +50,33 @@ fun MyDialog(
         SubcomposeLayout(
             modifier = Modifier
                 .clickable { } // intercept clicks, only dismiss tapping the outer box
-//                .wrapContentSize()
                 .clip(shape = RoundedCornerShape(10.dp))
                 .background(VeryLightGray)
                 .padding(5.dp),
         ) { constraints ->
+            val header = subcompose(3) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    title?.let {
+                        Text(
+                            modifier = Modifier.weight(1F),
+                            text = stringResource(id = it),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    if (showTrash) {
+                        IconButton(onClick = { onTrash?.invoke() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.delete),
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
+            }.map { it.measure(constraints) }.first()
             val footer = subcompose(1) {
                 Row(
                     modifier = Modifier
@@ -60,10 +90,7 @@ fun MyDialog(
                         Text(text = stringResource(id = R.string.accept))
                     }
                 }
-            }.map {
-                it.measure(constraints)
-            }
-            val footerHeight = footer[0].height
+            }.map { it.measure(constraints) }.first()
             val list = subcompose(0) {
                 Column {
                     content()
@@ -71,18 +98,19 @@ fun MyDialog(
             }.map {
                 it.measure(
                     Constraints(
-                        maxHeight = constraints.maxHeight - footerHeight,
+                        maxHeight = constraints.maxHeight - header.height - footer.height,
                         maxWidth = constraints.maxWidth
                     )
                 )
-            }
-            val listHeight = list[0].height
+            }.first()
+            val listHeight = list.height
             layout(
                 width = constraints.maxWidth,
-                height = listHeight + footerHeight
+                height = listHeight + header.height + footer.height
             ) {
-                list[0].place(x = 0, y = 0)
-                footer[0].place(x = 0, y = listHeight)
+                header.place(x = 0, y = 0)
+                list.place(x = 0, y = header.height)
+                footer.place(x = 0, y = header.height + listHeight)
             }
         }
     }

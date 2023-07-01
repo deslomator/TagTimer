@@ -34,7 +34,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -63,7 +62,6 @@ fun LabelsTabContent(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     var currentPage by remember { mutableIntStateOf(0) }
     val pages = listOf(Label.Tag, Label.Person, Label.Place)
     val pagerState = rememberPagerState(initialPage = 0) { pages.size }
@@ -85,6 +83,10 @@ fun LabelsTabContent(
     LaunchedEffect(currentPage) {
 //        Log.d(TAG, "navigating to page: $currentPage")
         pagerState.animateScrollToPage(currentPage)
+    }
+    LaunchedEffect(pagerState.settledPage) {
+//        Log.d(TAG, "setting page: $currentPage")
+        currentPage = pagerState.settledPage
     }
     Box(
         modifier = Modifier
@@ -113,17 +115,16 @@ fun LabelsTabContent(
             HorizontalPager(
                 modifier = Modifier.weight(1F),
                 state = pagerState,
-                userScrollEnabled = false
             ) { page ->
                 when (pages[page]) {
                     Label.Tag -> {
-                        TagLabel(state, scope, snackbarHostState, context, onAction)
+                        TagLabel(state, onAction)
                     }
                     Label.Person -> {
-                        PersonLabel (state, scope, snackbarHostState, context, onAction)
+                        PersonLabel (state, onAction)
                     }
                     Label.Place -> {
-                        PlaceLabel(state, scope, snackbarHostState, context, onAction)
+                        PlaceLabel(state, onAction)
                     }
                 }
             }
@@ -133,21 +134,24 @@ fun LabelsTabContent(
         TagDialog(
             state = state,
             onAction = onAction,
-            tag = state.currentTag
+            scope = scope,
+            snackbarHostState = snackbarHostState
         )
     }
     if (state.showPersonDialog) {
         PersonDialog(
             state = state,
             onAction = onAction,
-            person = state.currentPerson
+            scope = scope,
+            snackbarHostState = snackbarHostState
         )
     }
     if (state.showPlaceDialog) {
         PlaceDialog(
             state = state,
             onAction = onAction,
-            place = state.currentPlace
+            scope = scope,
+            snackbarHostState = snackbarHostState
         )
     }
 }
