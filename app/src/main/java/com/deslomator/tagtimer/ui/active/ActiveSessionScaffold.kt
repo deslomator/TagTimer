@@ -75,8 +75,6 @@ fun ActiveSessionScaffold(
                         onAction(ActiveSessionAction.DismissEventTrashDialog)
                     } else if (state.showEventEditionDialog) {
                         onAction(ActiveSessionAction.DismissEventEditionDialog)
-                    } else if (state.showSessionEditionDialog) {
-                        onAction(ActiveSessionAction.DismissSessionEditionDialog)
                     } else {
                         onAction(ActiveSessionAction.StopSession)
                         if (backStackEntry.value?.destination?.route == ActiveNavigationScreen.EventFilter.route) {
@@ -90,7 +88,6 @@ fun ActiveSessionScaffold(
                     fileName = state.currentSession.name
                     onAction(ActiveSessionAction.ExportSessionClicked)
                 },
-                onEditSessionClick = { onAction(ActiveSessionAction.EditSessionClicked) },
                 onAddTagClick = { onAction(ActiveSessionAction.SelectTagsClicked) },
                 onEventTrashClick = { onAction(ActiveSessionAction.EventTrashClicked) },
                 onFilterClick = {

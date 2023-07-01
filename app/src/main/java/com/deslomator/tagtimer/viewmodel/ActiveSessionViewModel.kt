@@ -199,19 +199,6 @@ class ActiveSessionViewModel @Inject constructor(
                     val trashed = event.copy(inTrash = true)
                     appDao.upsertEvent(trashed) }
             }
-            ActiveSessionAction.EditSessionClicked -> {
-                _state.update { it.copy(showSessionEditionDialog = true) }
-            }
-            is ActiveSessionAction.AcceptSessionEditionClicked -> {
-                _state.update { it.copy(
-                    showSessionEditionDialog = false,
-                    currentSession = action.session
-                ) }
-                viewModelScope.launch { appDao.upsertSession(action.session) }
-            }
-            ActiveSessionAction.DismissSessionEditionDialog -> {
-                _state.update { it.copy(showSessionEditionDialog = false) }
-            }
             is ActiveSessionAction.EventClicked -> {
                 _state.update { it.copy(
                     currentEvent = action.event,

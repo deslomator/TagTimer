@@ -26,9 +26,6 @@ sealed interface ActiveSessionAction {
     class TrashEventSwiped(val eventId: Int): ActiveSessionAction
     object ExportSessionClicked: ActiveSessionAction
     object SessionExported: ActiveSessionAction
-    object EditSessionClicked: ActiveSessionAction
-    class AcceptSessionEditionClicked(val session: Session): ActiveSessionAction
-    object DismissSessionEditionDialog: ActiveSessionAction
     class EventClicked(val event: Event): ActiveSessionAction
     class AcceptEventEditionClicked(val event: Event) : ActiveSessionAction
     object DismissEventEditionDialog: ActiveSessionAction

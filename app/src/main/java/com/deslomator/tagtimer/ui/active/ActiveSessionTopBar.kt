@@ -25,7 +25,6 @@ fun ActiveSessionTopBar(
     backStackEntry: State<NavBackStackEntry?>,
     state: ActiveSessionState,
     onBackClicked: () -> Unit,
-    onEditSessionClick: () -> Unit,
     onShareSessionClick: () -> Unit,
     onAddTagClick: () -> Unit,
     onFilterClick: () -> Unit,
@@ -55,7 +54,6 @@ fun ActiveSessionTopBar(
                     if (
                         !state.showTagsDialog &&
                         !state.showEventTrash &&
-                        !state.showSessionEditionDialog &&
                         !state.showEventEditionDialog &&
                         !state.showEventInTrashDialog &&
                         !state.showTimeDialog
@@ -66,14 +64,6 @@ fun ActiveSessionTopBar(
                             Icon(
                                 painter = painterResource(R.drawable.share),
                                 contentDescription = "share Session"
-                            )
-                        }
-                        IconButton(
-                            onClick = onEditSessionClick
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.edit),
-                                contentDescription = "edit Session"
                             )
                         }
                         IconButton(

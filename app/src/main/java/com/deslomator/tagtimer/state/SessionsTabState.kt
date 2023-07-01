@@ -7,4 +7,5 @@ data class SessionsTabState(
     val currentSession: Session = Session(),
     val lastAccessMillis: Long = 0,
     val showSessionDialog: Boolean = false,
+    val isEditingSession: Boolean = false,
 )

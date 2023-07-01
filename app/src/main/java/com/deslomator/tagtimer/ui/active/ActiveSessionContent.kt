@@ -35,7 +35,6 @@ import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.EventTrashDialog
 import com.deslomator.tagtimer.ui.active.dialog.LabelSelectionDialog
-import com.deslomator.tagtimer.ui.active.dialog.SessionEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import kotlinx.coroutines.delay
 
@@ -54,9 +53,6 @@ fun ActiveSessionContent(
     }
     BackHandler(enabled = state.showEventEditionDialog) {
         onAction(ActiveSessionAction.DismissEventEditionDialog)
-    }
-    BackHandler(enabled = state.showSessionEditionDialog) {
-        onAction(ActiveSessionAction.DismissSessionEditionDialog)
     }
     LaunchedEffect(state.currentSession) {
         onAction(ActiveSessionAction.SetCursor(state.currentSession.durationMillis))
@@ -156,16 +152,6 @@ fun ActiveSessionContent(
                 state = state,
                 onAction = onAction,
                 snackbarHostState = snackbarHostState
-            )
-        }
-        AnimatedVisibility(
-            visible = state.showSessionEditionDialog,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            SessionEditionDialog(
-                session = state.currentSession,
-                onAction = onAction
             )
         }
         AnimatedVisibility(

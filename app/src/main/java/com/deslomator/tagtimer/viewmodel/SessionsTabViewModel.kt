@@ -34,10 +34,18 @@ class SessionsTabViewModel @Inject constructor(
             SessionsTabAction.AddNewSessionClicked -> {
                 _state.update { it.copy(
                     currentSession = Session(),
+                    isEditingSession = false,
                     showSessionDialog = true,
                 ) }
             }
-            is SessionsTabAction.AcceptAddSessionClicked -> {
+            is SessionsTabAction.ItemClicked -> {
+                _state.update { it.copy(
+                    currentSession = action.session,
+                    isEditingSession = true,
+                    showSessionDialog = true
+                ) }
+            }
+            is SessionsTabAction.DialogAcceptClicked -> {
                 _state.update { it.copy(showSessionDialog = false) }
                 viewModelScope.launch { appDao.upsertSession(action.session) }
             }
@@ -46,6 +54,7 @@ class SessionsTabViewModel @Inject constructor(
             }
             is SessionsTabAction.TrashSessionSwiped -> {
                 viewModelScope.launch {
+                    _state.update { it.copy(showSessionDialog = false) }
                     val trashed = action.session.copy(inTrash = true)
                     appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")

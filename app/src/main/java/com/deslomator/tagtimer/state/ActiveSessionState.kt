@@ -25,7 +25,6 @@ data class ActiveSessionState(
     val cursor: Long = 0,
     val showSnackbar: Boolean = false,
     val showEventTrash: Boolean = false,
-    val showSessionEditionDialog: Boolean = false,
     val currentEvent: Event = Event(),
     val showEventEditionDialog: Boolean = false,
     val showEventInTrashDialog: Boolean = false,
