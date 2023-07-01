@@ -37,8 +37,6 @@ fun MainScreenScaffold(
                 onNewTagClick = { onTagsAction(LabelsTabAction.AddNewTagClicked) },
                 onNewPersonClick = { onTagsAction(LabelsTabAction.AddNewPersonClicked) },
                 onNewPlaceClick = { onTagsAction(LabelsTabAction.AddNewPlaceClicked) },
-                trashState = trashTabState,
-                onTrashTypeClick = { onSessionsTrashAction(TrashTabAction.TrashTypeClicked(it)) },
             )
         },
         bottomBar = {

@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -39,9 +38,6 @@ class TrashTabViewModel @Inject constructor(
 
     fun onAction(action: TrashTabAction) {
         when(action) {
-            is TrashTabAction.TrashTypeClicked -> {
-                _state.update { it.copy(currentTrash = action.trash) }
-            }
             is TrashTabAction.DeleteSessionClicked -> {
                 viewModelScope.launch {
                     appDao.deleteSession(action.session)

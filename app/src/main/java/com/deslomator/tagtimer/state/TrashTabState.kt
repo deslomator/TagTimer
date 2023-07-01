@@ -7,7 +7,6 @@ import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.model.type.Trash
 
 data class TrashTabState(
-    val currentTrash: Trash = Trash.SESSION,
     val sessions: List<Session> = emptyList(),
     val tags: List<Tag> = emptyList(),
     val persons: List<Person> = emptyList(),

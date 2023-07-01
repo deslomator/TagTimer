@@ -6,10 +6,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -27,9 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
-import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.ui.theme.PurpleGrey40
 import com.deslomator.tagtimer.ui.theme.contrasted
 
@@ -41,8 +37,6 @@ fun MainTopBar(
     onNewTagClick: () -> Unit,
     onNewPersonClick: () -> Unit,
     onNewPlaceClick: () -> Unit,
-    trashState: TrashTabState,
-    onTrashTypeClick: (Trash) -> Unit,
 ) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
@@ -88,46 +82,6 @@ fun MainTopBar(
                                 contentDescription = stringResource(id = R.string.new_place)
                             )
                         }
-                    }
-                }
-                BottomNavigationScreen.Trash.route -> {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Trash.SESSION,
-                            currentType = trashState.currentTrash,
-                            onTypeClick = { onTrashTypeClick(it) },
-                            text = R.string.sessions
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Trash.TAG,
-                            currentType = trashState.currentTrash,
-                            onTypeClick = { onTrashTypeClick(it) },
-                            text = R.string.tags
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Trash.PERSON,
-                            currentType = trashState.currentTrash,
-                            onTypeClick = { onTrashTypeClick(it) },
-                            text = R.string.persons
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
-                        TopButton(
-                            modifier = Modifier.weight(1F),
-                            type = Trash.PLACE,
-                            currentType = trashState.currentTrash,
-                            onTypeClick = { onTrashTypeClick(it) },
-                            text = R.string.places
-                        )
-                        Spacer(modifier = Modifier.width(15.dp))
                     }
                 }
             }
