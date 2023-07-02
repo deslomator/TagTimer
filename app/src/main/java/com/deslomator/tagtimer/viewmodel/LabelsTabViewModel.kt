@@ -4,9 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.model.Person
-import com.deslomator.tagtimer.model.Place
-import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.Lbl
 import com.deslomator.tagtimer.state.LabelsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +39,7 @@ class LabelsTabViewModel @Inject constructor(
         when(action) {
             is LabelsTabAction.AddNewTagClicked -> {
                 _state.update { it.copy(
-                    currentTag = Tag(),
+                    currentTag = Lbl.Tag(),
                     showTagDialog = true,
                     isAddingNewTag = true
                 ) }
@@ -80,7 +78,7 @@ class LabelsTabViewModel @Inject constructor(
              */
             is LabelsTabAction.AddNewPersonClicked -> {
                 _state.update { it.copy(
-                    currentPerson = Person(),
+                    currentPerson = Lbl.Person(),
                     showPersonDialog = true,
                     isAddingNewPerson = true
                 ) }
@@ -118,7 +116,7 @@ class LabelsTabViewModel @Inject constructor(
              */
             is LabelsTabAction.AddNewPlaceClicked -> {
                 _state.update { it.copy(
-                    currentPlace = Place(),
+                    currentPlace = Lbl.Place(),
                     showPlaceDialog = true,
                     isAddingNewPlace = true
                 ) }

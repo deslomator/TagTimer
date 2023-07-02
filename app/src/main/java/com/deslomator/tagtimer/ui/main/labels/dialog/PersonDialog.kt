@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -30,7 +31,7 @@ fun PersonDialog(
 ) {
     val message = stringResource(id = R.string.person_sent_to_trash)
     var name by rememberSaveable { mutableStateOf(state.currentPerson.name) }
-    var color by rememberSaveable { mutableStateOf(state.currentPerson.color) }
+    var color by rememberSaveable { mutableIntStateOf(state.currentPerson.color) }
     MyDialog(
         onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
         onAccept = {

@@ -5,13 +5,11 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Person
-import com.deslomator.tagtimer.model.Place
+import com.deslomator.tagtimer.model.Lbl
 import com.deslomator.tagtimer.model.PreSelectedPerson
 import com.deslomator.tagtimer.model.PreSelectedPlace
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.Tag
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -62,49 +60,49 @@ interface AppDao {
     TAG
      */
     @Upsert
-    suspend fun upsertTag(tag: Tag)
+    suspend fun upsertTag(tag: Lbl.Tag)
     @Delete
-    suspend fun deleteTag(tag: Tag)
+    suspend fun deleteTag(tag: Lbl.Tag)
     @Query("SELECT * FROM tag WHERE id = :id")
-    suspend fun getTag(id: Int): Tag
-    @Query("SELECT * FROM tag ORDER BY label ASC")
-    fun getTags(): Flow<List<Tag>>
-    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY label ASC")
-    fun getActiveTags(): Flow<List<Tag>>
-    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY label ASC")
-    fun getTrashedTags(): Flow<List<Tag>>
+    suspend fun getTag(id: Int): Lbl.Tag
+    @Query("SELECT * FROM tag ORDER BY name ASC")
+    fun getTags(): Flow<List<Lbl.Tag>>
+    @Query("SELECT * FROM tag WHERE inTrash = 0 ORDER BY name ASC")
+    fun getActiveTags(): Flow<List<Lbl.Tag>>
+    @Query("SELECT * FROM tag WHERE inTrash = 1 ORDER BY name ASC")
+    fun getTrashedTags(): Flow<List<Lbl.Tag>>
     
     /*
     PERSON
      */
     @Upsert
-    suspend fun upsertPerson(person: Person)
+    suspend fun upsertPerson(person: Lbl.Person)
     @Delete
-    suspend fun deletePerson(person: Person)
+    suspend fun deletePerson(person: Lbl.Person)
     @Query("SELECT * FROM person WHERE id = :id")
-    suspend fun getPerson(id: Int): Person
+    suspend fun getPerson(id: Int): Lbl.Person
     @Query("SELECT * FROM person ORDER BY name ASC")
-    fun getPersons(): Flow<List<Person>>
+    fun getPersons(): Flow<List<Lbl.Person>>
     @Query("SELECT * FROM person WHERE inTrash = 0 ORDER BY name ASC")
-    fun getActivePersons(): Flow<List<Person>>
+    fun getActivePersons(): Flow<List<Lbl.Person>>
     @Query("SELECT * FROM person WHERE inTrash = 1 ORDER BY name ASC")
-    fun getTrashedPersons(): Flow<List<Person>>
+    fun getTrashedPersons(): Flow<List<Lbl.Person>>
     
     /*
     PLACE
      */
     @Upsert
-    suspend fun upsertPlace(place: Place)
+    suspend fun upsertPlace(place: Lbl.Place)
     @Delete
-    suspend fun deletePlace(place: Place)
+    suspend fun deletePlace(place: Lbl.Place)
     @Query("SELECT * FROM place WHERE id = :id")
-    suspend fun getPlace(id: Int): Place
+    suspend fun getPlace(id: Int): Lbl.Place
     @Query("SELECT * FROM place ORDER BY name ASC")
-    fun getPlaces(): Flow<List<Place>>
+    fun getPlaces(): Flow<List<Lbl.Place>>
     @Query("SELECT * FROM place WHERE inTrash = 0 ORDER BY name ASC")
-    fun getActivePlaces(): Flow<List<Place>>
+    fun getActivePlaces(): Flow<List<Lbl.Place>>
     @Query("SELECT * FROM place WHERE inTrash = 1 ORDER BY name ASC")
-    fun getTrashedPlaces(): Flow<List<Place>>
+    fun getTrashedPlaces(): Flow<List<Lbl.Place>>
     
     /*
     PRESELECTED TAG

@@ -67,7 +67,7 @@ fun ActiveSessionContent(
         }
     }
     /*
-    tis effect launches twice as needed but at least it's not very frequent
+    this effect launches twice as needed but at least it's not very frequent
      */
     LaunchedEffect(state.eventForScrollTo, state.events) {
         val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.id)
@@ -87,8 +87,7 @@ fun ActiveSessionContent(
             Divider()
             EventList(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.4f),
+                    .weight(0.5F),
                 events = state.events,
                 listState = listState,
                 onItemClicked = { onAction(ActiveSessionAction.EventClicked(it)) },

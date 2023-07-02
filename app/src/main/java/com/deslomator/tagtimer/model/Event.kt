@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
-import kotlinx.serialization.Serializable
 
 @Entity
 data class Event(

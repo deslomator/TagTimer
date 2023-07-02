@@ -12,15 +12,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.toArgb
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.Tag
 import com.deslomator.tagtimer.navigation.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
-import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
@@ -87,49 +82,6 @@ private suspend fun cleanOrphans(dao: AppDao) {
     val out = dao.clearOrphanPreSelectedTags()
     Log.d(TAG, "dao.clearOrphanEvents(): $oe")
     Log.d(TAG, "dao.clearOrphanUsedTags(): $out")
-}
-
-private suspend fun populateDb (dao: AppDao) {
-    colorPickerColors.forEachIndexed { index, it ->
-        Log.d(TAG, "populateDb() creating sessions andd tags")
-        val i = index + 100
-        val session = Session(
-            id = i,
-            color = it.toArgb(),
-            name = "Session ${it.toArgb()}"
-        )
-        dao.upsertSession(session)
-        val sessionT = session.copy(
-            id = i + 200,
-            inTrash = true
-        )
-        dao.upsertSession(sessionT)
-        val tag = Tag(
-            id = i,
-            color = it.toArgb(),
-            label = "Label ${it.toArgb()}",
-        )
-        dao.upsertTag(tag)
-        val tagT = tag.copy(
-            id = i + 200,
-            inTrash = true
-        )
-        dao.upsertTag(tagT)
-        repeat(colorPickerColors.size) {
-            val event = Event(
-                sessionId = i,
-                elapsedTimeMillis = System.currentTimeMillis(),
-                note = "lskflsflslsjlsfl",
-                label = "event label: $i",
-            )
-            dao.upsertEvent(event)
-            val eventT = event.copy(
-                sessionId = i + 200,
-                inTrash = true
-            )
-            dao.upsertEvent(eventT)
-        }
-    }
 }
 
 private const val TAG = "MainActivity"

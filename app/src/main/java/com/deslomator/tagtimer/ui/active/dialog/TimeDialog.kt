@@ -5,7 +5,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -20,8 +20,8 @@ fun TimeDialog(
     onDismiss: () -> Unit,
     onAccept: (Float) -> Unit,
 ) {
-    var value by rememberSaveable { mutableStateOf(current) }
-    val max by rememberSaveable { mutableStateOf(maximum) }
+    var value by rememberSaveable { mutableFloatStateOf(current) }
+    val max by rememberSaveable { mutableFloatStateOf(maximum) }
     MyDialog(
         onDismiss = onDismiss,
         onAccept = { onAccept(value) },

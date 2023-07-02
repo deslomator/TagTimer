@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.Lbl
 
 sealed interface ActiveSessionAction {
     class UpdateSessionId(val id: Int): ActiveSessionAction
@@ -21,7 +21,7 @@ sealed interface ActiveSessionAction {
     object DismissTimeDialog: ActiveSessionAction
     object PlayPauseClicked: ActiveSessionAction
     class UsedTagClicked(val tagName: String) : ActiveSessionAction
-    class PreSelectedTagClicked(val tag: Tag) : ActiveSessionAction
+    class PreSelectedTagClicked(val tag: Lbl.Tag) : ActiveSessionAction
     class PreSelectedPersonClicked(val personName: String) : ActiveSessionAction
     class PreSelectedPlaceClicked(val placeName: String) : ActiveSessionAction
     /*

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -30,7 +31,7 @@ fun PlaceDialog(
 ) {
     val message = stringResource(id = R.string.place_sent_to_trash)
     var name by rememberSaveable { mutableStateOf(state.currentPlace.name) }
-    var color by rememberSaveable { mutableStateOf(state.currentPlace.color) }
+    var color by rememberSaveable { mutableIntStateOf(state.currentPlace.color) }
     MyDialog(
         onDismiss = { onAction(LabelsTabAction.DismissPlaceDialog) },
         onAccept = {

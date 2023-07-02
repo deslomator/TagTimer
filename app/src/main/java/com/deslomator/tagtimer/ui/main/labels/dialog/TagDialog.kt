@@ -30,13 +30,13 @@ fun TagDialog(
     snackbarHostState: SnackbarHostState
 ) {
     val message = stringResource(id = R.string.tag_sent_to_trash)
-    var label by rememberSaveable { mutableStateOf(state.currentTag.label) }
+    var name by rememberSaveable { mutableStateOf(state.currentTag.name) }
     var color by rememberSaveable { mutableIntStateOf(state.currentTag.color) }
     MyDialog(
         onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
         onAccept = {
             val t = state.currentTag.copy(
-                label = label,
+                name = name,
                 color = color
             )
             onAction(LabelsTabAction.AcceptTagEditionClicked(t))
@@ -53,8 +53,8 @@ fun TagDialog(
         title = if (state.isEditingTag) R.string.edit_tag else R.string.new_tag
     ) {
         DialogTextField(
-            value = label,
-            onValueChange = { label = it },
+            value = name,
+            onValueChange = { name = it },
             placeholder = R.string.label,
             icon = R.drawable.tag
         )

@@ -68,13 +68,11 @@ fun EventFilterContent(
         derivedStateOf {
             state.tags
                 .filter { tag ->
-                    tag.label.isNotEmpty() &&
-                            state.events.map { it.label }.distinct().contains(tag.label)
+                    tag.name.isNotEmpty() &&
+                            state.events.map { it.label }.distinct().contains(tag.name)
                 }
         }
     }
-//    var query by rememberSaveable { mutableStateOf("") }
-
     BackHandler(enabled = state.showEventEditionDialog) {
         onAction(ActiveSessionAction.DismissEventEditionDialog)
     }

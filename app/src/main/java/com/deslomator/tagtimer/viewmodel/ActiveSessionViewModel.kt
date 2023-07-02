@@ -154,7 +154,7 @@ class ActiveSessionViewModel @Inject constructor(
                         val event = Event(
                             sessionId = _sessionId.value,
                             elapsedTimeMillis = state.value.cursor,
-                            label = action.tag.label,
+                            label = action.tag.name,
                             person = state.value.currentPersonName,
                             place = state.value.currentPlaceName,
                             color = action.tag.color,

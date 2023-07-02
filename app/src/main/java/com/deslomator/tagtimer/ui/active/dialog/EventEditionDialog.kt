@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -25,7 +27,7 @@ fun EventEditionDialog(
     enabled: Boolean = true
 ) {
     var elapsed by rememberSaveable {
-        mutableStateOf(event.elapsedTimeMillis)
+        mutableLongStateOf(event.elapsedTimeMillis)
     }
     var label by rememberSaveable {
         mutableStateOf(event.label)
@@ -40,7 +42,7 @@ fun EventEditionDialog(
         mutableStateOf(event.place)
     }
     var color by rememberSaveable {
-        mutableStateOf(event.color)
+        mutableIntStateOf(event.color)
     }
     MyDialog(
         onDismiss = onDismiss,

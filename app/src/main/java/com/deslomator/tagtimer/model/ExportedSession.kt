@@ -13,10 +13,10 @@ data class ExportedSession(
     val events: List<ExportedEvent> = emptyList()
 ) {
     constructor(session: Session, events: List<Event>): this(
-        session.lastAccessMillis.toDateTime(),
-        session.name,
-        session.notes,
-        (session.durationMillis / 1000).toInt(),
-        events.map { ExportedEvent(it) }
+        date = session.lastAccessMillis.toDateTime(),
+        name = session.name,
+        notes = session.notes,
+        durationSecs = (session.durationMillis / 1000).toInt(),
+        events = events.map { ExportedEvent(it) }
     )
 }

@@ -1,14 +1,12 @@
 package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.type.Label
-import com.deslomator.tagtimer.model.Person
-import com.deslomator.tagtimer.model.Place
+import com.deslomator.tagtimer.model.Lbl
 import com.deslomator.tagtimer.model.PreSelectedPerson
 import com.deslomator.tagtimer.model.PreSelectedPlace
 import com.deslomator.tagtimer.model.PreSelectedTag
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.Tag
+import com.deslomator.tagtimer.model.type.Label
 
 data class ActiveSessionState(
     val events: List<Event> = emptyList(),
@@ -16,9 +14,9 @@ data class ActiveSessionState(
     val preSelectedTags: List<PreSelectedTag> = emptyList(),
     val preSelectedPersons: List<PreSelectedPerson> = emptyList(),
     val preSelectedPlaces: List<PreSelectedPlace> = emptyList(),
-    val tags: List<Tag> = emptyList(),
-    val persons: List<Person> = emptyList(),
-    val places: List<Place> = emptyList(),
+    val tags: List<Lbl.Tag> = emptyList(),
+    val persons: List<Lbl.Person> = emptyList(),
+    val places: List<Lbl.Place> = emptyList(),
     val currentSession: Session = Session(),
     val isRunning: Boolean = false,
     val cursor: Long = 0,
