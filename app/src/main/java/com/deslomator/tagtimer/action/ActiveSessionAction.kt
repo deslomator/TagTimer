@@ -4,7 +4,6 @@ import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Lbl
 
 sealed interface ActiveSessionAction {
-    class UpdateSessionId(val id: Int): ActiveSessionAction
     class SetCursor(val time: Long): ActiveSessionAction
     class IncreaseCursor(val stepMillis: Long): ActiveSessionAction
     object StopSession: ActiveSessionAction

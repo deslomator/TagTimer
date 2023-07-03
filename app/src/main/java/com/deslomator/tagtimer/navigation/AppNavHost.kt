@@ -1,66 +1,117 @@
 package com.deslomator.tagtimer.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.action.SessionsTabAction
-import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.action.LabelsTabAction
+import androidx.navigation.navigation
+import com.deslomator.tagtimer.navigation.screen.ActiveScreen
 import com.deslomator.tagtimer.navigation.screen.RootScreen
-import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.state.SessionsTabState
-import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.active.ActiveSessionScaffold
-import com.deslomator.tagtimer.ui.main.MainScreenScaffold
+import com.deslomator.tagtimer.ui.active.filter.FilterScaffold
+import com.deslomator.tagtimer.ui.active.selection.SelectionScaffold
+import com.deslomator.tagtimer.ui.active.trash.TrashScaffold
+import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
-    sessionsTabState: SessionsTabState,
-    onSessionsAction: (SessionsTabAction) -> Unit,
-    labelsTabState: LabelsTabState,
-    onTagsAction: (LabelsTabAction) -> Unit,
-    trashTabState: TrashTabState,
-    onSessionsTrashAction: (TrashTabAction) -> Unit,
-    activeSessionState: ActiveSessionState,
-    onActiveSessionAction: (ActiveSessionAction) -> Unit,
 ) {
+    val navController = rememberNavController()
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = RootScreen.Main.route,
+        startDestination = "root",
     ) {
-        composable(
-            route = RootScreen.Main.route,
+        navigation(
+            route = "root",
+            startDestination = RootScreen.Main.route
         ) {
-            MainScreenScaffold(
-                outerNavHostController = navController,
-                sessionsTabState = sessionsTabState,
-                onSessionsAction = onSessionsAction,
-                labelsTabState = labelsTabState,
-                onTagsAction = onTagsAction,
-                trashTabState = trashTabState,
-                onSessionsTrashAction = onSessionsTrashAction
-            )
+            composable(
+                route = RootScreen.Main.route,
+            ) {
+                BottomNavHost(
+                    outerNavHostController = navController,
+                )
+            }
         }
-        composable(
-            route = "${RootScreen.Active.route}/{sessionId}",
+        navigation(
+            route = "active/{sessionId}",
+            startDestination = ActiveScreen.ActiveSession.route,
             arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
-        ) { backStackEntry ->
-            ActiveSessionScaffold(
-                sessionId = backStackEntry.arguments?.getInt("sessionId") ?: 0,
-                outerNavHostController = navController,
-                state = activeSessionState,
-                onAction = onActiveSessionAction,
-            )
+        ) {
+            composable(
+                route = ActiveScreen.ActiveSession.route
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("active/{sessionId}")
+                }
+                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
+                val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
+                viewModel.updateId(sessionId)
+                val activeState by viewModel.state.collectAsState()
+                ActiveSessionScaffold(
+                    navController = navController,
+                    state = activeState,
+                    onAction = viewModel::onAction,
+                )
+            }
+            composable(
+                route = ActiveScreen.EventFilter.route
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("active/{sessionId}")
+                }
+                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
+                val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
+                viewModel.updateId(sessionId)
+                val activeState by viewModel.state.collectAsState()
+                FilterScaffold(
+                    navController = navController,
+                    state = activeState,
+                    onAction = viewModel::onAction,
+                )
+            }
+            composable(
+                route = ActiveScreen.EventTrash.route
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("active/{sessionId}")
+                }
+                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
+                val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
+                viewModel.updateId(sessionId)
+                val activeState by viewModel.state.collectAsState()
+                TrashScaffold(
+                    navController = navController,
+                    state = activeState,
+                    onAction = viewModel::onAction,
+                )
+            }
+            composable(
+                route = ActiveScreen.LabelSelection.route
+            ) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("active/{sessionId}")
+                }
+                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
+                val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
+                viewModel.updateId(sessionId)
+                val activeState by viewModel.state.collectAsState()
+                SelectionScaffold(
+                    navController = navController,
+                    state = activeState,
+                    onAction = viewModel::onAction,
+                )
+            }
         }
     }
 }

@@ -90,22 +90,6 @@ class ActiveSessionViewModel @Inject constructor(
 
     fun onAction(action: ActiveSessionAction) {
         when(action) {
-            is ActiveSessionAction.UpdateSessionId -> {
-                _sessionId.update { action.id }
-                viewModelScope.launch {
-                    val cur = appDao.getSession(action.id)
-                    val s = cur.copy(
-                        lastAccessMillis = System.currentTimeMillis(),
-                        durationMillis = getSessionDuration()
-                    )
-                    _state.update {
-                        it.copy(currentSession = s)
-                    }
-                    appDao.upsertSession(s)
-                    if (state.value.events.isNotEmpty())
-                        _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
-                }
-            }
             is ActiveSessionAction.PlayPauseClicked -> {
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
             }
@@ -298,6 +282,23 @@ class ActiveSessionViewModel @Inject constructor(
     private fun getSessionDuration(): Long {
         return state.value.events
             .maxOfOrNull { it.elapsedTimeMillis } ?: 0
+    }
+
+    fun updateId(id: Int) {
+        _sessionId.update { id }
+        viewModelScope.launch {
+            val cur = appDao.getSession(id)
+            val s = cur.copy(
+                lastAccessMillis = System.currentTimeMillis(),
+                durationMillis = getSessionDuration()
+            )
+            _state.update {
+                it.copy(currentSession = s)
+            }
+            appDao.upsertSession(s)
+            if (state.value.events.isNotEmpty())
+                _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
+        }
     }
 
     private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(

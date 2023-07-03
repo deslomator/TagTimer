@@ -30,7 +30,6 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.navigation.screen.RootScreen
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.toDateTime
 import com.deslomator.tagtimer.toElapsedTime
@@ -84,9 +83,7 @@ fun SessionsTabContent(
                     },
                     trailingIcon = R.drawable.start,
                     onTrailingClick = {
-                        outerNavHostController.navigate(
-                            RootScreen.Active.routeWithArg(session.id)
-                        )
+                        outerNavHostController.navigate("active/${session.id}")
                     },
                 ) { item ->
                     Spacer(modifier = Modifier.width(10.dp))

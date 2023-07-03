@@ -9,17 +9,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.navigation.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
-import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
-import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
-import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
-import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
@@ -43,36 +36,14 @@ class MainActivity : ComponentActivity() {
                     withContext(Dispatchers.IO) { cleanOrphans(appDao) }
 //                    populateDb(appDao)
                 }
-                val sessionsTabViewModel = viewModel<SessionsTabViewModel>()
-                val labelsTabViewModel = viewModel<LabelsTabViewModel>()
-                val trashTabViewModel = viewModel<TrashTabViewModel>()
-                val activeSessionViewModel = viewModel<ActiveSessionViewModel>()
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val sessionsScreenState by sessionsTabViewModel.state.collectAsState()
-                    val tagsScreenState by labelsTabViewModel.state.collectAsState()
-                    val sessionsTrashState by trashTabViewModel.state.collectAsState()
-                    val activeSessionState by activeSessionViewModel.state.collectAsState()
-                    AppNavHost(
-                        sessionsTabState = sessionsScreenState,
-                        onSessionsAction = sessionsTabViewModel::onAction,
-                        labelsTabState = tagsScreenState,
-                        onTagsAction = labelsTabViewModel::onAction,
-                        trashTabState = sessionsTrashState,
-                        onSessionsTrashAction = trashTabViewModel::onAction,
-                        activeSessionState = activeSessionState,
-                        onActiveSessionAction = activeSessionViewModel::onAction,
-                    )
+                    AppNavHost()
                 }
             }
         }
-    }
-
-    companion object {
-        private const val TAG = "MainActivity"
     }
 }
 
