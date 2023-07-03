@@ -6,7 +6,7 @@ import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.LabelScreen
 
-data class ActiveSessionState(
+data class EventTrashState(
     val events: List<Event> = emptyList(),
     val trashedEvents: List<Event> = emptyList(),
     val preSelectedPersons: List<Preselected.Person> = emptyList(),

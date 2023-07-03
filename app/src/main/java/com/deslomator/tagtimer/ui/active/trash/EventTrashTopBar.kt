@@ -14,7 +14,7 @@ import com.deslomator.tagtimer.state.ActiveSessionState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventTrashTopBar(
-    state: ActiveSessionState,
+    title: String,
     onBackClicked: () -> Unit,
 ) {
     TopAppBar(
@@ -29,7 +29,7 @@ fun EventTrashTopBar(
             }
         },
         title = { Text(
-            text = state.currentSession.name,
+            text = title,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         ) },

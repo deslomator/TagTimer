@@ -7,15 +7,14 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.model.Lbl
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
 fun PreSelectedPersonsList(
-    persons: List<Lbl.Person>,
+    persons: List<Label.Person>,
     currentPerson: String,
-    onAction: (ActiveSessionAction) -> Unit
+    onItemClick: (String) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.padding(start = 5.dp, end = 5.dp),
@@ -27,7 +26,7 @@ fun PreSelectedPersonsList(
             LabelButton(
                 modifier = Modifier.width(100.dp),
                 item = person,
-                onItemClick = { onAction(ActiveSessionAction.PreSelectedPersonClicked(person.name)) },
+                onItemClick = { onItemClick(person.name) },
                 checked = currentPerson == person.name
             )
         }

@@ -6,7 +6,7 @@ import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.LabelScreen
 
-data class ActiveSessionState(
+data class EventFilterState(
     val events: List<Event> = emptyList(),
     val trashedEvents: List<Event> = emptyList(),
     val preSelectedPersons: List<Preselected.Person> = emptyList(),
@@ -24,7 +24,7 @@ data class ActiveSessionState(
     val showEventEditionDialog: Boolean = false,
     val showEventInTrashDialog: Boolean = false,
     val showTimeDialog: Boolean = false,
-    val exportData: Boolean = false,
+    val exportEvents: Boolean = false,
     val dataToExport: String = "",
     val currentLabel: LabelScreen = LabelScreen.Tag,
     val currentPersonName: String = "",

@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.session
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -36,6 +36,8 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.toElapsedTime
+import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
+import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
@@ -139,20 +141,24 @@ fun ActiveSessionContent(
             Divider()
             PreSelectedPersonsList(
                 persons = state.persons.filter { person ->
-                    state.preSelectedPersons.map { it.personId }.contains(person.id) &&
+                    state.preSelectedPersons.map { it.labelId }.contains(person.id) &&
                             person.name.isNotEmpty()
                 },
                 currentPerson = state.currentPersonName,
-                onAction = onAction
+                onItemClick = {
+                    onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
+                }
             )
             Divider()
             PreSelectedPlacesList(
                 places = state.places.filter { place ->
-                    state.preSelectedPlaces.map { it.placeId }.contains(place.id) &&
+                    state.preSelectedPlaces.map { it.labelId }.contains(place.id) &&
                             place.name.isNotEmpty()
                 },
                 currentPlace = state.currentPlaceName,
-                onAction = onAction
+                onItemClick = {
+                    onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))
+                }
             )
         }
         AnimatedVisibility(

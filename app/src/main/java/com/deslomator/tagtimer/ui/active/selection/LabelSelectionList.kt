@@ -14,14 +14,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun PersonSelectionList(
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit
+fun LabelSelectionList(
+    labels: List<Label>,
+    preSelected: List<Preselected>,
+    onCheckedChange: (Int, Boolean) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -31,20 +32,19 @@ fun PersonSelectionList(
         columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(
-            items = state.persons,
+            items = labels,
             key = { it.id }
-        ) { person ->
+        ) { label ->
             var checked by remember {
-                mutableStateOf(state.preSelectedPersons.map { it.personId }.contains(person.id))
-            }
-            val onCheckedChange: () -> Unit = {
-                checked = !checked
-                onAction(ActiveSessionAction.SelectPersonCheckedChange(person.id, checked))
+                mutableStateOf(preSelected.map { it.labelId }.contains(label.id))
             }
             LabelButton(
                 modifier = Modifier.alpha(if (checked) 1F else .4F),
-                item = person,
-                onItemClick = { onCheckedChange() },
+                item = label,
+                onItemClick = {
+                    checked = !checked
+                    onCheckedChange(label.id, checked)
+                },
                 checked = checked
             )
         }

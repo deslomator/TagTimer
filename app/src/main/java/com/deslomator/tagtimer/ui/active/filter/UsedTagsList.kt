@@ -6,19 +6,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import androidx.compose.foundation.lazy.grid.items
-import com.deslomator.tagtimer.model.Lbl
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
 fun UsedTagsList(
-    tags: List<Lbl.Tag>,
+    tags: List<Label.Tag>,
     currentTag: String,
-    onAction: (ActiveSessionAction) -> Unit
+    onItemClick: (String) -> Unit
 ) {
     Row(
         modifier = Modifier.padding(start = 5.dp, end = 5.dp)
@@ -35,7 +34,7 @@ fun UsedTagsList(
             ) { tag ->
                 LabelButton(
                     item = tag,
-                    onItemClick = { onAction(ActiveSessionAction.UsedTagClicked(tag.name)) },
+                    onItemClick = { onItemClick(tag.name) },
                     checked = currentTag == tag.name
                 )
             }

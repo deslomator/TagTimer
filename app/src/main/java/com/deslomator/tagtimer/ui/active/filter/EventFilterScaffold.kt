@@ -9,15 +9,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.action.EventFilterAction
+import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.active.ExportSession
 
 @Composable
-fun FilterScaffold(
+fun EventFilterScaffold(
     navController: NavHostController,
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    state: EventFilterState,
+    onAction: (EventFilterAction) -> Unit,
 ) {
     val context = LocalContext.current
     var fileName by remember {
@@ -41,18 +41,18 @@ fun FilterScaffold(
     val totalEvents by remember(filteredEvents) {
         derivedStateOf { filteredEvents.size }
     }
-    if (state.exportData) {
+    if (state.exportEvents) {
         ExportSession(
             context = context,
             fileName = fileName,
             data = state.dataToExport,
-            onAction
+            onSessionExported = { onAction(EventFilterAction.EventsExported) }
         )
     }
     Scaffold(
         topBar = {
-            FilterTopBar(
-                state = state,
+            EventFilterTopBar(
+                title = state.currentSession.name,
                 onBackClicked = {
                     navController.navigateUp()
                 },
@@ -65,7 +65,7 @@ fun FilterScaffold(
                     )
                         .filter { it.isNotEmpty() }
                         .joinToString(separator = ",")
-                    onAction(ActiveSessionAction.ExportFilteredEventsClicked(filteredEvents))
+                    onAction(EventFilterAction.ExportFilteredEventsClicked(filteredEvents))
                 },
                 totalEvents = totalEvents
             )

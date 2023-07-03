@@ -14,12 +14,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.state.ActiveSessionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterTopBar(
-    state: ActiveSessionState,
+fun EventFilterTopBar(
+    title: String,
     onBackClicked: () -> Unit,
     onShareFilteredEventsClick: () -> Unit,
     totalEvents: Int
@@ -36,7 +35,7 @@ fun FilterTopBar(
             }
         },
         title = { Text(
-            text = state.currentSession.name,
+            text = title,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         ) },

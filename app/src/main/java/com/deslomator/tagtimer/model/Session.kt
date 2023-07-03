@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
-@Entity
+@Entity(tableName = "sessions")
 data class Session(
     val lastAccessMillis: Long = System.currentTimeMillis(),
     val name: String = "",

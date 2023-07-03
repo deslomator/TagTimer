@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.session
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.Lbl
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.LabelButton
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -25,7 +25,7 @@ import com.deslomator.tagtimer.ui.showSnackbar
 fun PreSelectedTagsList(
     modifier: Modifier,
     state: ActiveSessionState,
-    onItemClicked: (Lbl.Tag) -> Unit,
+    onItemClicked: (Label.Tag) -> Unit,
     snackbarHostState: SnackbarHostState,
 ) {
     val scope = rememberCoroutineScope()
@@ -46,7 +46,7 @@ fun PreSelectedTagsList(
     ) {
         items(
             items = state.tags.filter { tag ->
-                state.preSelectedTags.map { it.tagId }.contains(tag.id)
+                state.preSelectedTags.map { it.labelId }.contains(tag.id)
             },
             key = { it.id }
         ) { tag ->

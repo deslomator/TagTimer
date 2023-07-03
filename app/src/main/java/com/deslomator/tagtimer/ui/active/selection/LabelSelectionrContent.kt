@@ -22,19 +22,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.model.type.Label
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.model.type.LabelScreen
+import com.deslomator.tagtimer.state.LabelPreselectionState
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabelSelectionContent(
     paddingValues: PaddingValues,
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    state: LabelPreselectionState,
+    onAction: (LabelPreselectionAction) -> Unit,
 ) {
     var currentPage by remember { mutableIntStateOf(0) }
-    val pages = listOf(Label.Tag, Label.Person, Label.Place)
+    val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
     val pagerState = rememberPagerState(initialPage = 0) { pages.size }
     LaunchedEffect(currentPage) {
         pagerState.animateScrollToPage(currentPage)
@@ -72,14 +72,32 @@ fun LabelSelectionContent(
                 beyondBoundsPageCount = 1
             ) { page ->
                 when (pages[page]) {
-                    Label.Tag -> {
-                        TagSelectionList(state, onAction)
+                    LabelScreen.Tag -> {
+                        LabelSelectionList(
+                            labels = state.tags,
+                            preSelected = state.preSelectedTags,
+                            onCheckedChange = { id, checked ->
+                                onAction(LabelPreselectionAction.SelectTagCheckedChange(id, checked))
+                            }
+                        )
                     }
-                    Label.Person -> {
-                        PersonSelectionList (state, onAction)
+                    LabelScreen.Person -> {
+                        LabelSelectionList(
+                            labels = state.persons,
+                            preSelected = state.preSelectedPersons,
+                            onCheckedChange = { id, checked ->
+                                onAction(LabelPreselectionAction.SelectPersonCheckedChange(id, checked))
+                            }
+                        )
                     }
-                    Label.Place -> {
-                        PlaceSelectionList(state, onAction)
+                    LabelScreen.Place -> {
+                        LabelSelectionList(
+                            labels = state.places,
+                            preSelected = state.preSelectedPlaces,
+                            onCheckedChange = { id, checked ->
+                                onAction(LabelPreselectionAction.SelectPlaceCheckedChange(id, checked))
+                            }
+                        )
                     }
                 }
             }

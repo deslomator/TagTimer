@@ -3,22 +3,20 @@ package com.deslomator.tagtimer.dao
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Lbl
-import com.deslomator.tagtimer.model.PreSelectedPerson
-import com.deslomator.tagtimer.model.PreSelectedPlace
-import com.deslomator.tagtimer.model.PreSelectedTag
+import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 
 @Database(
     entities = [
         Event::class,
         Session::class,
-        Lbl.Tag::class,
-        Lbl.Person::class,
-        Lbl.Place::class,
-        PreSelectedTag::class,
-        PreSelectedPerson::class,
-        PreSelectedPlace::class
+        Label.Tag::class,
+        Label.Person::class,
+        Label.Place::class,
+        Preselected.Person::class,
+        Preselected.Place::class,
+        Preselected.Tag::class,
     ],
     version = 1
 )

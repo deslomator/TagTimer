@@ -22,8 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.action.EventTrashAction
+import com.deslomator.tagtimer.state.EventTrashState
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -31,14 +31,14 @@ import com.deslomator.tagtimer.ui.showSnackbar
 @Composable
 fun EventTrashContent(
     paddingValues: PaddingValues,
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    state: EventTrashState,
+    onAction: (EventTrashAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     BackHandler(enabled = state.showEventInTrashDialog) {
-        onAction(ActiveSessionAction.DismissEventInTrashDialog)
+        onAction(EventTrashAction.DismissEventInTrashDialog)
     }
     Box(
         modifier = Modifier
@@ -73,7 +73,7 @@ fun EventTrashContent(
                             snackbarHostState,
                             context.getString(R.string.event_restored)
                         )
-                        onAction(ActiveSessionAction.RestoreEventClicked(event))
+                        onAction(EventTrashAction.RestoreEventClicked(event))
                     },
                     trailingIcon = R.drawable.delete_forever,
                     onTrailingClick = {
@@ -82,9 +82,9 @@ fun EventTrashContent(
                             snackbarHostState,
                             context.getString(R.string.event_deleted)
                         )
-                        onAction(ActiveSessionAction.DeleteEventClicked(event))
+                        onAction(EventTrashAction.DeleteEventClicked(event))
                     },
-                    onItemClick = { onAction(ActiveSessionAction.EventInTrashClicked(event)) },
+                    onItemClick = { onAction(EventTrashAction.EventInTrashClicked(event)) },
                 )
             }
         }
@@ -96,8 +96,8 @@ fun EventTrashContent(
     ) {
         EventEditionDialog(
             event = state.eventForDialog,
-            onAccept = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
-            onDismiss = { onAction(ActiveSessionAction.DismissEventInTrashDialog) },
+            onAccept = { onAction(EventTrashAction.DismissEventInTrashDialog) },
+            onDismiss = { onAction(EventTrashAction.DismissEventInTrashDialog) },
             enabled = false
         )
     }

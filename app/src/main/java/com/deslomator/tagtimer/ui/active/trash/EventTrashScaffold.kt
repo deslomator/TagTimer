@@ -6,22 +6,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.action.EventTrashAction
+import com.deslomator.tagtimer.state.EventTrashState
 
 @Composable
-fun TrashScaffold(
+fun EventTrashScaffold(
     navController: NavHostController,
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    state: EventTrashState,
+    onAction: (EventTrashAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
             EventTrashTopBar(
-                state = state,
+                title = state.currentSession.name,
                 onBackClicked = {
                     if (state.showEventInTrashDialog) {
-                        onAction(ActiveSessionAction.DismissEventInTrashDialog)
+                        onAction(EventTrashAction.DismissEventInTrashDialog)
                     } else {
                         navController.navigateUp()
                     }

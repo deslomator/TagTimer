@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.session
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon

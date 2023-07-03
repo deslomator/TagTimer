@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
-@Entity
+@Entity(tableName = "events")
 data class Event(
     val sessionId: Int = 0,
     val elapsedTimeMillis: Long = 0,

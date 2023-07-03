@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.session
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.ui.SwipeableListItem
+import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.Pink80
 

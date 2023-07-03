@@ -20,9 +20,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
@@ -31,8 +31,8 @@ import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 @Composable
 fun EventFilterContent(
     paddingValues: PaddingValues,
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    state: EventFilterState,
+    onAction: (EventFilterAction) -> Unit,
     filteredEvents: List<Event>
 ) {
 //    var active by rememberSaveable { mutableStateOf(false) }
@@ -74,7 +74,7 @@ fun EventFilterContent(
         }
     }
     BackHandler(enabled = state.showEventEditionDialog) {
-        onAction(ActiveSessionAction.DismissEventEditionDialog)
+        onAction(EventFilterAction.DismissEventEditionDialog)
     }
     Box(
         modifier = Modifier
@@ -85,19 +85,19 @@ fun EventFilterContent(
             PreSelectedPersonsList(
                 persons = persons,
                 currentPerson = state.currentPersonName,
-                onAction = onAction
+                onItemClick = { onAction(EventFilterAction.PreSelectedPersonClicked(it)) }
             )
             Divider()
             PreSelectedPlacesList(
                 places = places,
                 currentPlace = state.currentPlaceName,
-                onAction = onAction
+                onItemClick = { onAction(EventFilterAction.PreSelectedPlaceClicked(it)) }
             )
             Divider()
             UsedTagsList(
                 tags = tags,
                 currentTag = state.currentLabelName,
-                onAction = onAction
+                onItemClick = { onAction(EventFilterAction.UsedTagClicked(it)) }
             )
             Divider()
             LazyColumn(
@@ -112,8 +112,8 @@ fun EventFilterContent(
                     EventListItem(
                         event = event,
                         trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
-                        onTrailingClick = { onAction(ActiveSessionAction.EventClicked(event)) },
-                        onItemClick = { onAction(ActiveSessionAction.EventClicked(event)) },
+                        onTrailingClick = { onAction(EventFilterAction.EventClicked(event)) },
+                        onItemClick = { onAction(EventFilterAction.EventClicked(event)) },
                         persons = state.events.map { it.person }.distinct().sorted()
                     )
                 }
@@ -126,8 +126,8 @@ fun EventFilterContent(
         ) {
             EventEditionDialog(
                 event = state.eventForDialog,
-                onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
-                onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
+                onAccept = { onAction(EventFilterAction.AcceptEventEditionClicked(it)) },
+                onDismiss = { onAction(EventFilterAction.DismissEventEditionDialog) },
             )
         }
     }

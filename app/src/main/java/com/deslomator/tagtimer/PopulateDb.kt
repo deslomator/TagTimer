@@ -4,10 +4,8 @@ import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Lbl
-import com.deslomator.tagtimer.model.PreSelectedPerson
-import com.deslomator.tagtimer.model.PreSelectedPlace
-import com.deslomator.tagtimer.model.PreSelectedTag
+import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
@@ -26,7 +24,7 @@ suspend fun populateDb (dao: AppDao) {
             inTrash = true
         )
         dao.upsertSession(sessionT)
-        val tag = Lbl.Tag(
+        val tag = Label.Tag(
             id = i,
             color = it.toArgb(),
             name = "Tag $index",
@@ -37,7 +35,7 @@ suspend fun populateDb (dao: AppDao) {
             inTrash = true
         )
         dao.upsertTag(tagT)
-        val place = Lbl.Place(
+        val place = Label.Place(
             id = i,
             color = it.toArgb(),
             name = "Place $index",
@@ -48,7 +46,7 @@ suspend fun populateDb (dao: AppDao) {
             inTrash = true
         )
         dao.upsertPlace(placeT)
-        val person = Lbl.Person(
+        val person = Label.Person(
             id = i,
             color = it.toArgb(),
             name = "Person $index",
@@ -76,11 +74,11 @@ suspend fun populateDb (dao: AppDao) {
             )
             dao.upsertEvent(eventT)
 
-            val preselectedTag = PreSelectedTag(i, i + idx)
+            val preselectedTag = Preselected.Tag(i, i + idx)
             dao.upsertPreSelectedTag(preselectedTag)
-            val preselectedPlace = PreSelectedPlace(i, i + idx)
+            val preselectedPlace = Preselected.Place(i, i + idx)
             dao.upsertPreSelectedPlace(preselectedPlace)
-            val preselectedPerson = PreSelectedPerson(i, i + idx)
+            val preselectedPerson = Preselected.Person(i, i + idx)
             dao.upsertPreSelectedPerson(preselectedPerson)
         }
     }

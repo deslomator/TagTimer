@@ -2,13 +2,13 @@ package com.deslomator.tagtimer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ExportedEvent
 import com.deslomator.tagtimer.model.ExportedSession
 import com.deslomator.tagtimer.model.Preselected
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.state.LabelPreselectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -24,12 +24,12 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
-class ActiveSessionViewModel @Inject constructor(
+class LabelPreselectionViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0)
-    private val _state = MutableStateFlow(ActiveSessionState())
+    private val _state = MutableStateFlow(LabelPreselectionState())
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _events = _sessionId
         .flatMapLatest {
@@ -83,15 +83,15 @@ class ActiveSessionViewModel @Inject constructor(
             trashedEvents = trashedEvents,
         )
     }.stateIn(
-        viewModelScope, SharingStarted.WhileSubscribed(5000), ActiveSessionState()
+        viewModelScope, SharingStarted.WhileSubscribed(5000), LabelPreselectionState()
     )
 
-    fun onAction(action: ActiveSessionAction) {
+    fun onAction(action: LabelPreselectionAction) {
         when(action) {
-            is ActiveSessionAction.PlayPauseClicked -> {
+            is LabelPreselectionAction.PlayPauseClicked -> {
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
             }
-            is ActiveSessionAction.SelectTagCheckedChange -> {
+            is LabelPreselectionAction.SelectTagCheckedChange -> {
                 if (action.checked) {
                     val pst = Preselected.Tag (
                         sessionId = state.value.currentSession.id,
@@ -104,7 +104,7 @@ class ActiveSessionViewModel @Inject constructor(
                     psTag?.let { viewModelScope.launch { appDao.deletePreSelectedTag(it) } }
                 }
             }
-            is ActiveSessionAction.SelectPersonCheckedChange -> {
+            is LabelPreselectionAction.SelectPersonCheckedChange -> {
                 if (action.checked) {
                     val pst = Preselected.Person (
                         sessionId = state.value.currentSession.id,
@@ -117,7 +117,7 @@ class ActiveSessionViewModel @Inject constructor(
                     psPerson?.let { viewModelScope.launch { appDao.deletePreSelectedPerson(it) } }
                 }
             }
-            is ActiveSessionAction.SelectPlaceCheckedChange -> {
+            is LabelPreselectionAction.SelectPlaceCheckedChange -> {
                 if (action.checked) {
                     val psPlace = Preselected.Place (
                         sessionId = state.value.currentSession.id,
@@ -130,7 +130,7 @@ class ActiveSessionViewModel @Inject constructor(
                     pst?.let { viewModelScope.launch { appDao.deletePreSelectedPlace(it) } }
                 }
             }
-            is ActiveSessionAction.PreSelectedTagClicked -> {
+            is LabelPreselectionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
                     viewModelScope.launch {
                         val event = Event(
@@ -148,7 +148,7 @@ class ActiveSessionViewModel @Inject constructor(
                     }
                 }
             }
-            is ActiveSessionAction.StopSession -> {
+            is LabelPreselectionAction.StopSession -> {
                 _state.update { it.copy(isRunning = false) }
                 val session = state.value.currentSession.copy(
                     durationMillis = getSessionDuration(),
@@ -156,15 +156,15 @@ class ActiveSessionViewModel @Inject constructor(
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
             }
-            is ActiveSessionAction.DeleteEventClicked -> {
+            is LabelPreselectionAction.DeleteEventClicked -> {
                 viewModelScope.launch { appDao.deleteEvent(action.event) }
             }
-            is ActiveSessionAction.RestoreEventClicked -> {
+            is LabelPreselectionAction.RestoreEventClicked -> {
                 viewModelScope.launch {
                     val e = action.event.copy(inTrash = false)
                     appDao.upsertEvent(e) }
             }
-            is ActiveSessionAction.TrashEventSwiped -> {
+            is LabelPreselectionAction.TrashEventSwiped -> {
                 viewModelScope.launch {
                     // we don't want the Event that was retrieved
                     // in the action because it was stale
@@ -173,13 +173,13 @@ class ActiveSessionViewModel @Inject constructor(
                     val trashed = event.copy(inTrash = true)
                     appDao.upsertEvent(trashed) }
             }
-            is ActiveSessionAction.EventClicked -> {
+            is LabelPreselectionAction.EventClicked -> {
                 _state.update { it.copy(
                     eventForDialog = action.event,
                     showEventEditionDialog = true
                 ) }
             }
-            is ActiveSessionAction.AcceptEventEditionClicked -> {
+            is LabelPreselectionAction.AcceptEventEditionClicked -> {
                 viewModelScope.launch { appDao.upsertEvent(action.event) }
                 /*
                  state takes some time to update after upserting the event;
@@ -199,25 +199,25 @@ class ActiveSessionViewModel @Inject constructor(
                     )
                 }
             }
-            ActiveSessionAction.DismissEventEditionDialog -> {
+            LabelPreselectionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
-            is ActiveSessionAction.EventInTrashClicked -> {
+            is LabelPreselectionAction.EventInTrashClicked -> {
                 _state.update { it.copy(
                     eventForDialog = action.event,
                     showEventInTrashDialog = true
                 ) }
             }
-            ActiveSessionAction.DismissEventInTrashDialog -> {
+            LabelPreselectionAction.DismissEventInTrashDialog -> {
                 _state.update { it.copy(showEventInTrashDialog = false) }
             }
-            ActiveSessionAction.ExportSessionClicked -> {
+            LabelPreselectionAction.ExportSessionClicked -> {
                 exportSession()
             }
-            ActiveSessionAction.SessionExported -> {
+            LabelPreselectionAction.SessionExported -> {
                 _state.update { it.copy(exportData = false) }
             }
-            is ActiveSessionAction.TimeClicked -> {
+            is LabelPreselectionAction.TimeClicked -> {
                 val s = state.value.currentSession.copy(
                     durationMillis = getSessionDuration()
                 )
@@ -226,32 +226,32 @@ class ActiveSessionViewModel @Inject constructor(
                     showTimeDialog = true
                 ) }
             }
-            is ActiveSessionAction.SetCursor -> {
+            is LabelPreselectionAction.SetCursor -> {
                 _state.update { it.copy(cursor = action.time) }
             }
-            is ActiveSessionAction.IncreaseCursor -> {
+            is LabelPreselectionAction.IncreaseCursor -> {
                 val newTime = state.value.cursor + action.stepMillis
                 _state.update { it.copy(cursor = newTime) }
             }
-            is ActiveSessionAction.DismissTimeDialog -> {
+            is LabelPreselectionAction.DismissTimeDialog -> {
                 _state.update { it.copy(showTimeDialog = false) }
             }
-            is ActiveSessionAction.PreSelectedPersonClicked -> {
+            is LabelPreselectionAction.PreSelectedPersonClicked -> {
                 val person = if (action.personName == state.value.currentPersonName) ""
                 else action.personName
                 _state.update { it.copy(currentPersonName = person) }
             }
-            is ActiveSessionAction.PreSelectedPlaceClicked -> {
+            is LabelPreselectionAction.PreSelectedPlaceClicked -> {
                 val place = if (action.placeName == state.value.currentPlaceName) ""
                 else action.placeName
                 _state.update { it.copy(currentPlaceName = place) }
             }
-            is ActiveSessionAction.UsedTagClicked -> {
+            is LabelPreselectionAction.UsedTagClicked -> {
                 val tag = if (action.tagName == state.value.currentLabelName) ""
                 else action.tagName
                 _state.update { it.copy(currentLabelName = tag) }
             }
-            is ActiveSessionAction.ExportFilteredEventsClicked -> {
+            is LabelPreselectionAction.ExportFilteredEventsClicked -> {
                 exportFilteredEvents(action.filteredEvents)
             }
         }

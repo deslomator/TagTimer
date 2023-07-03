@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.Lbl
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.contrasted
@@ -25,30 +25,30 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 @Composable
 fun LabelButton(
     modifier: Modifier = Modifier,
-    item: Lbl,
+    item: Label,
     isTrash: Boolean = false,
     iconSize: Dp = 26.dp,
-    onLeadingClick: ((Lbl) -> Unit)? = null,
-    onItemClick: ((Lbl) -> Unit)? = null,
-    onTrailingClick: ((Lbl) -> Unit)? = null,
+    onLeadingClick: ((Label) -> Unit)? = null,
+    onItemClick: ((Label) -> Unit)? = null,
+    onTrailingClick: ((Label) -> Unit)? = null,
     checked: Boolean
 ) {
-    val borderWidth = if (item is Lbl.Person) 5.dp else 1.dp
-    val borderColor = if (item is Lbl.Person) {
+    val borderWidth = if (item is Label.Person) 5.dp else 1.dp
+    val borderColor = if (item is Label.Person) {
         if (Color(item.color).brightness() > .85F) VeryLightGray
         else Color(item.color)
     } else {
         Color.LightGray
     }
-    val containerColor = if (item is Lbl.Person) Color.White else Color(item.color)
+    val containerColor = if (item is Label.Person) Color.White else Color(item.color)
     val colors = ButtonDefaults.buttonColors(
         containerColor = containerColor,
         contentColor = containerColor.contrasted()
     )
     val icon = when (item) {
-        is Lbl.Tag -> R.drawable.tag
-        is Lbl.Place -> R.drawable.place
-        is Lbl.Person -> R.drawable.person
+        is Label.Tag -> R.drawable.tag
+        is Label.Place -> R.drawable.place
+        is Label.Person -> R.drawable.person
     }
     val leadingIcon = if (isTrash) R.drawable.restore_from_trash else icon
     val trailingIcon = if (isTrash) R.drawable.delete_forever else null

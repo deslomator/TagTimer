@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer.ui.active.session
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -13,6 +13,7 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.navigation.screen.ActiveScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.ui.active.ExportSession
 
 @Composable
 fun ActiveSessionScaffold(
@@ -30,7 +31,7 @@ fun ActiveSessionScaffold(
             context = context,
             fileName = fileName,
             data = state.dataToExport,
-            onAction
+            onSessionExported = { onAction(ActiveSessionAction.SessionExported) }
         )
     }
     Scaffold(

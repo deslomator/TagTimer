@@ -7,8 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
 import java.io.File
 
 @Composable
@@ -16,7 +14,7 @@ fun ExportSession(
     context: Context,
     fileName: String,
     data: String,
-    onAction: (ActiveSessionAction) -> Unit
+    onSessionExported: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         try {
@@ -36,7 +34,7 @@ fun ExportSession(
                 .putExtra(Intent.EXTRA_STREAM, uri)
             Intent.createChooser(intent, "Choose an App")
             ContextCompat.startActivity(context, intent, null)
-            onAction(ActiveSessionAction.SessionExported)
+            onSessionExported()
         } catch (error: Error) {
             Log.d(TAG, "ShareSession, error: $error")
         }

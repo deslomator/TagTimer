@@ -9,12 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.state.ActiveSessionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectionTopBar(
-    state: ActiveSessionState,
+    title: String,
     onBackClicked: () -> Unit,
 ) {
     TopAppBar(
@@ -29,7 +28,7 @@ fun SelectionTopBar(
             }
         },
         title = { Text(
-            text = state.currentSession.name,
+            text = title,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         ) },

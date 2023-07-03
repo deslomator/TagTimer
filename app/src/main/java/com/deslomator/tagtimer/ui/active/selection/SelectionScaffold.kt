@@ -3,19 +3,19 @@ package com.deslomator.tagtimer.ui.active.selection
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.state.LabelPreselectionState
 
 @Composable
 fun SelectionScaffold(
     navController: NavHostController,
-    state: ActiveSessionState,
-    onAction: (ActiveSessionAction) -> Unit,
+    state: LabelPreselectionState,
+    onAction: (LabelPreselectionAction) -> Unit,
 ) {
     Scaffold(
         topBar = {
             SelectionTopBar(
-                state = state,
+                title = state.currentSession.name,
                 onBackClicked = {
                     navController.navigateUp()
                 },

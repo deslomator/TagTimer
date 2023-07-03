@@ -26,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.LabelsTabAction
-import com.deslomator.tagtimer.model.type.Label
+import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.main.labels.dialog.PersonDialog
 import com.deslomator.tagtimer.ui.main.labels.dialog.PlaceDialog
@@ -42,7 +42,7 @@ fun LabelsTabContent(
 ) {
     val scope = rememberCoroutineScope()
     var currentPage by remember { mutableIntStateOf(0) }
-    val pages = listOf(Label.Tag, Label.Person, Label.Place)
+    val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
     val pagerState = rememberPagerState(initialPage = 0) { pages.size }
     BackHandler(
         enabled = state.showTagDialog
@@ -97,13 +97,13 @@ fun LabelsTabContent(
                 beyondBoundsPageCount = 1
             ) { page ->
                 when (pages[page]) {
-                    Label.Tag -> {
+                    LabelScreen.Tag -> {
                         TagLabel(state, onAction)
                     }
-                    Label.Person -> {
+                    LabelScreen.Person -> {
                         PersonLabel (state, onAction)
                     }
-                    Label.Place -> {
+                    LabelScreen.Place -> {
                         PlaceLabel(state, onAction)
                     }
                 }

@@ -8,11 +8,11 @@ import com.deslomator.tagtimer.R
  * Types of objects that can
  * be shown in labels screen
  */
-sealed class Label(
+sealed class LabelScreen(
     @StringRes val stringId: Int,
     @DrawableRes val icon: Int,
 ) {
-    object Tag: Label(R.string.tags, R.drawable.tag)
-    object Person: Label(R.string.persons, R.drawable.person)
-    object Place: Label(R.string.places, R.drawable.place)
+    object Tag: LabelScreen(R.string.tags, R.drawable.tag)
+    object Person: LabelScreen(R.string.persons, R.drawable.person)
+    object Place: LabelScreen(R.string.places, R.drawable.place)
 }
