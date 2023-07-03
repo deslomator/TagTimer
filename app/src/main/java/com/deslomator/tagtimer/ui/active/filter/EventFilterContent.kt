@@ -62,7 +62,7 @@ fun EventFilterContent(
     /*
     get tags that are actually used in an Event
      */
-    val tags by remember(state.tags) {
+    val tags by remember(state.events) {
         derivedStateOf {
             state.tags
                 .filter { tag ->
