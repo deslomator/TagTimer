@@ -144,7 +144,6 @@ class EventFilterViewModel @Inject constructor(
     }
 
     fun updateId(id: Int) {
-        Log.d(TAG, "updateId($id)")
         viewModelScope.launch {
             _state.update {
                 it.copy(currentSession = appDao.getSession(id))

@@ -12,7 +12,7 @@ data class ExportedEvent(
     @SerialName("elapsed_time_secs") val elapsedTimeSeconds: Int = 0,
 ) {
     constructor(event: Event): this(
-        label = event.label,
+        label = event.tag,
         note = event.note,
         person = event.person,
         place = event.place,

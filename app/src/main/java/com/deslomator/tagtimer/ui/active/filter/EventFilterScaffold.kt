@@ -34,7 +34,7 @@ fun EventFilterScaffold(
                 .filter { event ->
                     (if (state.currentPlaceName.isEmpty()) true else event.place == state.currentPlaceName) &&
                             (if (state.currentPersonName.isEmpty()) true else event.person == state.currentPersonName) &&
-                            (if (state.currentLabelName.isEmpty()) true else event.label.contains(state.currentLabelName))
+                            (if (state.currentLabelName.isEmpty()) true else event.tag.contains(state.currentLabelName))
                 }
         }
     }

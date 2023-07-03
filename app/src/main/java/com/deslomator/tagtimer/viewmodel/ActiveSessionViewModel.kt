@@ -90,7 +90,7 @@ class ActiveSessionViewModel @Inject constructor(
                         val event = Event(
                             sessionId = _sessionId.value,
                             elapsedTimeMillis = state.value.cursor,
-                            label = action.tag.name,
+                            tag = action.tag.name,
                             person = state.value.currentPersonName,
                             place = state.value.currentPlaceName,
                             color = action.tag.color,
@@ -108,11 +108,7 @@ class ActiveSessionViewModel @Inject constructor(
                     durationMillis = getSessionDuration(),
                     eventCount = state.value.events.size
                 )
-                Log.d(TAG, "StopSession events size: ${state.value.events.size}")
-                Log.d(TAG, "StopSession events size: ${session.eventCount}, id: ${session.id}")
-                viewModelScope.launch { appDao.upsertSession(session)
-                    Log.d(TAG, "StopSession session upserted")
-                }
+                viewModelScope.launch { appDao.upsertSession(session) }
             }
             is ActiveSessionAction.TrashEventSwiped -> {
                 viewModelScope.launch {

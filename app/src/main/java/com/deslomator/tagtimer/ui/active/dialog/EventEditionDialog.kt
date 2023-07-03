@@ -30,7 +30,7 @@ fun EventEditionDialog(
         mutableLongStateOf(event.elapsedTimeMillis)
     }
     var label by rememberSaveable {
-        mutableStateOf(event.label)
+        mutableStateOf(event.tag)
     }
     var note by rememberSaveable {
         mutableStateOf(event.note)
@@ -49,7 +49,7 @@ fun EventEditionDialog(
         onAccept = {
             val e = event.copy(
                 elapsedTimeMillis = elapsed,
-                label = label,
+                tag = label,
                 note = note,
                 person = person,
                 place = place,

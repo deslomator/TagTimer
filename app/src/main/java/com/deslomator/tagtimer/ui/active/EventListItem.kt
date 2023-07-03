@@ -68,7 +68,7 @@ fun EventListItem(
                     onTrailingClick = onTrailingClick
                 ) { item ->
                     Text(
-                        text = listOf(item.label, item.place,item.person)
+                        text = listOf(item.tag, item.place,item.person)
                             .filter { it.isNotEmpty() }.joinToString(separator = ","),
                         maxLines = 1,
                         overflow = TextOverflow.Clip
@@ -108,12 +108,12 @@ fun EventListItem(
 @Preview
 fun EventListItemPreview() {
     val event = Event(
-        label = "label",
+        tag = "label",
         note = "fff",
         elapsedTimeMillis = 25_000L,
     )
     val event2 = Event(
-        label = "label",
+        tag = "label",
         note = "",
         elapsedTimeMillis = 25_000L,
     )

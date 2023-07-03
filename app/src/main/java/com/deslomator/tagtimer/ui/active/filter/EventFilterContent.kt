@@ -67,7 +67,7 @@ fun EventFilterContent(
             state.tags
                 .filter { tag ->
                     tag.name.isNotEmpty() &&
-                            state.events.map { it.label }.distinct().contains(tag.name)
+                            state.events.map { it.tag }.distinct().contains(tag.name)
                 }
         }
     }

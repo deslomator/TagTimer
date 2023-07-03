@@ -10,7 +10,7 @@ data class Event(
     val sessionId: Int = 0,
     val elapsedTimeMillis: Long = 0,
     val note: String = "",
-    val label: String = "",
+    val tag: String = "",
     val person: String = "",
     val place: String = "",
     val color: Int = colorPickerColors[7].toArgb(),

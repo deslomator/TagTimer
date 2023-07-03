@@ -62,7 +62,7 @@ suspend fun populateDb (dao: AppDao) {
                 sessionId = i,
                 elapsedTimeMillis = (1000 * idx).toLong(),
                 note = "this is a note",
-                label = "Tag $idx",
+                tag = "Tag $idx",
                 place = "Place $idx",
                 color = it2.toArgb(),
                 person = "Person $idx",
