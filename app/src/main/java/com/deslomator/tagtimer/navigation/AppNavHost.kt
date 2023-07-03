@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,7 +20,7 @@ import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 import com.deslomator.tagtimer.navigation.screen.RootScreen
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
-import com.deslomator.tagtimer.ui.active.selection.SelectionScaffold
+import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.trash.EventTrashScaffold
 import com.deslomator.tagtimer.ui.main.MainNavigationBar
 import com.deslomator.tagtimer.ui.main.labels.LabelsScaffold
@@ -115,8 +116,8 @@ fun AppNavHost(
                 }
                 val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
-                viewModel.updateId(sessionId)
                 val state by viewModel.state.collectAsState()
+                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 ActiveSessionScaffold(
                     navController = navController,
                     state = state,
@@ -131,8 +132,8 @@ fun AppNavHost(
                 }
                 val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
-                viewModel.updateId(sessionId)
                 val state by viewModel.state.collectAsState()
+                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 EventFilterScaffold(
                     navController = navController,
                     state = state,
@@ -147,8 +148,8 @@ fun AppNavHost(
                 }
                 val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
-                viewModel.updateId(sessionId)
                 val state by viewModel.state.collectAsState()
+                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 EventTrashScaffold(
                     navController = navController,
                     state = state,
@@ -163,9 +164,9 @@ fun AppNavHost(
                 }
                 val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<LabelPreselectionViewModel>(backStackEntry)
-                viewModel.updateId(sessionId)
                 val state by viewModel.state.collectAsState()
-                SelectionScaffold(
+                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
+                LabelSelectionScaffold(
                     navController = navController,
                     state = state,
                     onAction = viewModel::onAction,
@@ -175,3 +176,4 @@ fun AppNavHost(
     }
 }
 
+private const val TAG = "AppNavHost"

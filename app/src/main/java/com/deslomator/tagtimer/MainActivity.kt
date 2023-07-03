@@ -50,9 +50,13 @@ class MainActivity : ComponentActivity() {
 private suspend fun cleanOrphans(dao: AppDao) {
     delay(4000)
     val oe = dao.clearOrphanEvents()
-    val out = dao.clearOrphanPreSelectedTags()
+    val out = dao.clearOrphanPreSelectedPersons()
+    val out2 = dao.clearOrphanPreSelectedPlaces()
+    val out3 = dao.clearOrphanPreSelectedTags()
     Log.d(TAG, "dao.clearOrphanEvents(): $oe")
-    Log.d(TAG, "dao.clearOrphanUsedTags(): $out")
+    Log.d(TAG, "dao.clearOrphanPreSelectedPersons(): $out")
+    Log.d(TAG, "dao.clearOrphanPreSelectedPlaces(): $out2")
+    Log.d(TAG, "dao.clearOrphanPreSelectedTags(): $out3")
 }
 
 private const val TAG = "MainActivity"

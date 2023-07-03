@@ -12,7 +12,7 @@ import com.deslomator.tagtimer.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectionTopBar(
+fun LabelSelectionTopBar(
     title: String,
     onBackClicked: () -> Unit,
 ) {

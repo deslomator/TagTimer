@@ -7,14 +7,14 @@ import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.state.LabelPreselectionState
 
 @Composable
-fun SelectionScaffold(
+fun LabelSelectionScaffold(
     navController: NavHostController,
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
 ) {
     Scaffold(
         topBar = {
-            SelectionTopBar(
+            LabelSelectionTopBar(
                 title = state.currentSession.name,
                 onBackClicked = {
                     navController.navigateUp()

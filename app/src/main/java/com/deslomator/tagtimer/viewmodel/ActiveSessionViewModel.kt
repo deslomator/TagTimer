@@ -1,13 +1,12 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.ExportedEvent
 import com.deslomator.tagtimer.model.ExportedSession
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.state.ActiveSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,12 +33,6 @@ class ActiveSessionViewModel @Inject constructor(
     private val _events = _sessionId
         .flatMapLatest {
             appDao.getActiveEventsForSession(_sessionId.value)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _trashedEvents = _sessionId
-        .flatMapLatest {
-            appDao.getTrashedEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
@@ -69,9 +62,9 @@ class ActiveSessionViewModel @Inject constructor(
 
     val state = combine(
         _state, _events, _preSelectedTags, _tags, _preSelectedPersons, _persons,
-        _preSelectedPlaces, _places, _trashedEvents
+        _preSelectedPlaces, _places
     ) { state, events, preSelectedTags, tags, preSelectedPersons, persons,
-        preSelectedPlaces, places, trashedEvents ->
+        preSelectedPlaces, places ->
         state.copy(
             events = events,
             preSelectedTags = preSelectedTags,
@@ -80,7 +73,6 @@ class ActiveSessionViewModel @Inject constructor(
             persons = persons,
             preSelectedPlaces = preSelectedPlaces,
             places = places,
-            trashedEvents = trashedEvents,
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), ActiveSessionState()
@@ -89,46 +81,8 @@ class ActiveSessionViewModel @Inject constructor(
     fun onAction(action: ActiveSessionAction) {
         when(action) {
             is ActiveSessionAction.PlayPauseClicked -> {
+                Log.d(TAG, "ActiveSessionAction.PlayPauseClicked")
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
-            }
-            is ActiveSessionAction.SelectTagCheckedChange -> {
-                if (action.checked) {
-                    val pst = Preselected.Tag (
-                        sessionId = state.value.currentSession.id,
-                        labelId = action.tagId
-                    )
-                    viewModelScope.launch { appDao.upsertPreSelectedTag(pst) }
-                } else {
-                    val psTag = state.value.preSelectedTags
-                        .firstOrNull { it.labelId == action.tagId }
-                    psTag?.let { viewModelScope.launch { appDao.deletePreSelectedTag(it) } }
-                }
-            }
-            is ActiveSessionAction.SelectPersonCheckedChange -> {
-                if (action.checked) {
-                    val pst = Preselected.Person (
-                        sessionId = state.value.currentSession.id,
-                        labelId = action.personId
-                    )
-                    viewModelScope.launch { appDao.upsertPreSelectedPerson(pst) }
-                } else {
-                    val psPerson = state.value.preSelectedPersons
-                        .firstOrNull { it.labelId == action.personId }
-                    psPerson?.let { viewModelScope.launch { appDao.deletePreSelectedPerson(it) } }
-                }
-            }
-            is ActiveSessionAction.SelectPlaceCheckedChange -> {
-                if (action.checked) {
-                    val psPlace = Preselected.Place (
-                        sessionId = state.value.currentSession.id,
-                        labelId = action.placeId
-                    )
-                    viewModelScope.launch { appDao.upsertPreSelectedPlace(psPlace) }
-                } else {
-                    val pst = state.value.preSelectedPlaces
-                        .firstOrNull { it.labelId == action.placeId }
-                    pst?.let { viewModelScope.launch { appDao.deletePreSelectedPlace(it) } }
-                }
             }
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 if (state.value.isRunning) {
@@ -154,15 +108,11 @@ class ActiveSessionViewModel @Inject constructor(
                     durationMillis = getSessionDuration(),
                     eventCount = state.value.events.size
                 )
-                viewModelScope.launch { appDao.upsertSession(session) }
-            }
-            is ActiveSessionAction.DeleteEventClicked -> {
-                viewModelScope.launch { appDao.deleteEvent(action.event) }
-            }
-            is ActiveSessionAction.RestoreEventClicked -> {
-                viewModelScope.launch {
-                    val e = action.event.copy(inTrash = false)
-                    appDao.upsertEvent(e) }
+                Log.d(TAG, "StopSession events size: ${state.value.events.size}")
+                Log.d(TAG, "StopSession events size: ${session.eventCount}, id: ${session.id}")
+                viewModelScope.launch { appDao.upsertSession(session)
+                    Log.d(TAG, "StopSession session upserted")
+                }
             }
             is ActiveSessionAction.TrashEventSwiped -> {
                 viewModelScope.launch {
@@ -202,15 +152,6 @@ class ActiveSessionViewModel @Inject constructor(
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
-            is ActiveSessionAction.EventInTrashClicked -> {
-                _state.update { it.copy(
-                    eventForDialog = action.event,
-                    showEventInTrashDialog = true
-                ) }
-            }
-            ActiveSessionAction.DismissEventInTrashDialog -> {
-                _state.update { it.copy(showEventInTrashDialog = false) }
-            }
             ActiveSessionAction.ExportSessionClicked -> {
                 exportSession()
             }
@@ -227,13 +168,16 @@ class ActiveSessionViewModel @Inject constructor(
                 ) }
             }
             is ActiveSessionAction.SetCursor -> {
+                Log.d(TAG, "ActiveSessionAction.SetCursor: ${action.time}")
                 _state.update { it.copy(cursor = action.time) }
             }
             is ActiveSessionAction.IncreaseCursor -> {
+                Log.d(TAG, "ActiveSessionAction.IncreaseCursor")
                 val newTime = state.value.cursor + action.stepMillis
                 _state.update { it.copy(cursor = newTime) }
             }
             is ActiveSessionAction.DismissTimeDialog -> {
+                Log.d(TAG, "ActiveSessionAction.DismissTimeDialog")
                 _state.update { it.copy(showTimeDialog = false) }
             }
             is ActiveSessionAction.PreSelectedPersonClicked -> {
@@ -245,14 +189,6 @@ class ActiveSessionViewModel @Inject constructor(
                 val place = if (action.placeName == state.value.currentPlaceName) ""
                 else action.placeName
                 _state.update { it.copy(currentPlaceName = place) }
-            }
-            is ActiveSessionAction.UsedTagClicked -> {
-                val tag = if (action.tagName == state.value.currentLabelName) ""
-                else action.tagName
-                _state.update { it.copy(currentLabelName = tag) }
-            }
-            is ActiveSessionAction.ExportFilteredEventsClicked -> {
-                exportFilteredEvents(action.filteredEvents)
             }
         }
     }
@@ -267,22 +203,13 @@ class ActiveSessionViewModel @Inject constructor(
         ) }
     }
 
-    private fun exportFilteredEvents(filteredEvents: List<Event> = emptyList()) {
-        val json = Json.encodeToString( filteredEvents.map { ExportedEvent(it) })
-        _state.update {
-            it.copy(
-                dataToExport = json,
-                exportData = true
-            )
-        }
-    }
-
     private fun getSessionDuration(): Long {
         return state.value.events
             .maxOfOrNull { it.elapsedTimeMillis } ?: 0
     }
 
     fun updateId(id: Int) {
+        Log.d(TAG, "updateId($id)")
         _sessionId.update { id }
         viewModelScope.launch {
             val cur = appDao.getSession(id)
@@ -299,8 +226,8 @@ class ActiveSessionViewModel @Inject constructor(
         }
     }
 
-    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
-        flow: Flow<T1>,
+    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
+        flow1: Flow<T1>,
         flow2: Flow<T2>,
         flow3: Flow<T3>,
         flow4: Flow<T4>,
@@ -308,10 +235,9 @@ class ActiveSessionViewModel @Inject constructor(
         flow6: Flow<T6>,
         flow7: Flow<T7>,
         flow8: Flow<T8>,
-        flow9: Flow<T9>,
-        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R
+        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8) -> R
     ): Flow<R> {
-        return combine(flow, flow2, flow3, flow4, flow5, flow6, flow7, flow8, flow9) { args: Array<*> ->
+        return combine(flow1, flow2, flow3, flow4, flow5, flow6, flow7, flow8) { args: Array<*> ->
             @Suppress("UNCHECKED_CAST")
             transform(
                 args[0] as T1,
@@ -322,7 +248,6 @@ class ActiveSessionViewModel @Inject constructor(
                 args[5] as T6,
                 args[6] as T7,
                 args[7] as T8,
-                args[8] as T9,
             )
         }
     }

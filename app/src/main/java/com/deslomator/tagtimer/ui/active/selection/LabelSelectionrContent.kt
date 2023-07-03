@@ -33,9 +33,9 @@ fun LabelSelectionContent(
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
 ) {
-    var currentPage by remember { mutableIntStateOf(0) }
+    var currentPage by remember { mutableIntStateOf(1) }
     val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
-    val pagerState = rememberPagerState(initialPage = 0) { pages.size }
+    val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     LaunchedEffect(currentPage) {
         pagerState.animateScrollToPage(currentPage)
     }
@@ -69,13 +69,13 @@ fun LabelSelectionContent(
             HorizontalPager(
                 modifier = Modifier.weight(1F),
                 state = pagerState,
-                beyondBoundsPageCount = 1
+                beyondBoundsPageCount = 0
             ) { page ->
                 when (pages[page]) {
                     LabelScreen.Tag -> {
                         LabelSelectionList(
                             labels = state.tags,
-                            preSelected = state.preSelectedTags,
+                            preSelected = state.preSelectedTags.map { it.labelId },
                             onCheckedChange = { id, checked ->
                                 onAction(LabelPreselectionAction.SelectTagCheckedChange(id, checked))
                             }
@@ -84,7 +84,7 @@ fun LabelSelectionContent(
                     LabelScreen.Person -> {
                         LabelSelectionList(
                             labels = state.persons,
-                            preSelected = state.preSelectedPersons,
+                            preSelected = state.preSelectedPersons.map { it.labelId },
                             onCheckedChange = { id, checked ->
                                 onAction(LabelPreselectionAction.SelectPersonCheckedChange(id, checked))
                             }
@@ -93,7 +93,7 @@ fun LabelSelectionContent(
                     LabelScreen.Place -> {
                         LabelSelectionList(
                             labels = state.places,
-                            preSelected = state.preSelectedPlaces,
+                            preSelected = state.preSelectedPlaces.map { it.labelId },
                             onCheckedChange = { id, checked ->
                                 onAction(LabelPreselectionAction.SelectPlaceCheckedChange(id, checked))
                             }

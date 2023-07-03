@@ -1,11 +1,11 @@
 package com.deslomator.tagtimer.ui.active.trash
 
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.action.EventTrashAction
 import com.deslomator.tagtimer.state.EventTrashState
 
@@ -29,6 +29,7 @@ fun EventTrashScaffold(
                 },
             )
         },
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->
         EventTrashContent(
             paddingValues = paddingValues,

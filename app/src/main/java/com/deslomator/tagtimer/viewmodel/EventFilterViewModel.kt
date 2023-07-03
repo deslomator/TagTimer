@@ -1,13 +1,12 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ExportedEvent
-import com.deslomator.tagtimer.model.ExportedSession
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.state.EventFilterState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -34,12 +33,6 @@ class EventFilterViewModel @Inject constructor(
     private val _events = _sessionId
         .flatMapLatest {
             appDao.getActiveEventsForSession(_sessionId.value)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _trashedEvents = _sessionId
-        .flatMapLatest {
-            appDao.getTrashedEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
@@ -69,9 +62,9 @@ class EventFilterViewModel @Inject constructor(
 
     val state = combine(
         _state, _events, _preSelectedTags, _tags, _preSelectedPersons, _persons,
-        _preSelectedPlaces, _places, _trashedEvents
+        _preSelectedPlaces, _places
     ) { state, events, preSelectedTags, tags, preSelectedPersons, persons,
-        preSelectedPlaces, places, trashedEvents ->
+        preSelectedPlaces, places ->
         state.copy(
             events = events,
             preSelectedTags = preSelectedTags,
@@ -80,7 +73,6 @@ class EventFilterViewModel @Inject constructor(
             persons = persons,
             preSelectedPlaces = preSelectedPlaces,
             places = places,
-            trashedEvents = trashedEvents,
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), EventFilterState()
@@ -88,91 +80,6 @@ class EventFilterViewModel @Inject constructor(
 
     fun onAction(action: EventFilterAction) {
         when(action) {
-            is EventFilterAction.PlayPauseClicked -> {
-                _state.update { it.copy(isRunning = !state.value.isRunning) }
-            }
-            is EventFilterAction.SelectTagCheckedChange -> {
-                if (action.checked) {
-                    val pst = Preselected.Tag (
-                        sessionId = state.value.currentSession.id,
-                        labelId = action.tagId
-                    )
-                    viewModelScope.launch { appDao.upsertPreSelectedTag(pst) }
-                } else {
-                    val psTag = state.value.preSelectedTags
-                        .firstOrNull { it.labelId == action.tagId }
-                    psTag?.let { viewModelScope.launch { appDao.deletePreSelectedTag(it) } }
-                }
-            }
-            is EventFilterAction.SelectPersonCheckedChange -> {
-                if (action.checked) {
-                    val pst = Preselected.Person (
-                        sessionId = state.value.currentSession.id,
-                        labelId = action.personId
-                    )
-                    viewModelScope.launch { appDao.upsertPreSelectedPerson(pst) }
-                } else {
-                    val psPerson = state.value.preSelectedPersons
-                        .firstOrNull { it.labelId == action.personId }
-                    psPerson?.let { viewModelScope.launch { appDao.deletePreSelectedPerson(it) } }
-                }
-            }
-            is EventFilterAction.SelectPlaceCheckedChange -> {
-                if (action.checked) {
-                    val psPlace = Preselected.Place (
-                        sessionId = state.value.currentSession.id,
-                        labelId = action.placeId
-                    )
-                    viewModelScope.launch { appDao.upsertPreSelectedPlace(psPlace) }
-                } else {
-                    val pst = state.value.preSelectedPlaces
-                        .firstOrNull { it.labelId == action.placeId }
-                    pst?.let { viewModelScope.launch { appDao.deletePreSelectedPlace(it) } }
-                }
-            }
-            is EventFilterAction.PreSelectedTagClicked -> {
-                if (state.value.isRunning) {
-                    viewModelScope.launch {
-                        val event = Event(
-                            sessionId = _sessionId.value,
-                            elapsedTimeMillis = state.value.cursor,
-                            label = action.tag.name,
-                            person = state.value.currentPersonName,
-                            place = state.value.currentPlaceName,
-                            color = action.tag.color,
-                        )
-                        val id = appDao.upsertEvent(event)
-                        _state.update {
-                            it.copy( eventForScrollTo = event.copy(id = id.toInt()))
-                        }
-                    }
-                }
-            }
-            is EventFilterAction.StopSession -> {
-                _state.update { it.copy(isRunning = false) }
-                val session = state.value.currentSession.copy(
-                    durationMillis = getSessionDuration(),
-                    eventCount = state.value.events.size
-                )
-                viewModelScope.launch { appDao.upsertSession(session) }
-            }
-            is EventFilterAction.DeleteEventClicked -> {
-                viewModelScope.launch { appDao.deleteEvent(action.event) }
-            }
-            is EventFilterAction.RestoreEventClicked -> {
-                viewModelScope.launch {
-                    val e = action.event.copy(inTrash = false)
-                    appDao.upsertEvent(e) }
-            }
-            is EventFilterAction.TrashEventSwiped -> {
-                viewModelScope.launch {
-                    // we don't want the Event that was retrieved
-                    // in the action because it was stale
-                    // get the updated one from the DB instead
-                    val event = appDao.getEvent(action.event.id)
-                    val trashed = event.copy(inTrash = true)
-                    appDao.upsertEvent(trashed) }
-            }
             is EventFilterAction.EventClicked -> {
                 _state.update { it.copy(
                     eventForDialog = action.event,
@@ -202,39 +109,8 @@ class EventFilterViewModel @Inject constructor(
             EventFilterAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
-            is EventFilterAction.EventInTrashClicked -> {
-                _state.update { it.copy(
-                    eventForDialog = action.event,
-                    showEventInTrashDialog = true
-                ) }
-            }
-            EventFilterAction.DismissEventInTrashDialog -> {
-                _state.update { it.copy(showEventInTrashDialog = false) }
-            }
-            EventFilterAction.ExportSessionClicked -> {
-                exportSession()
-            }
             EventFilterAction.EventsExported -> {
                 _state.update { it.copy(exportEvents = false) }
-            }
-            is EventFilterAction.TimeClicked -> {
-                val s = state.value.currentSession.copy(
-                    durationMillis = getSessionDuration()
-                )
-                _state.update { it.copy(
-                    currentSession = s,
-                    showTimeDialog = true
-                ) }
-            }
-            is EventFilterAction.SetCursor -> {
-                _state.update { it.copy(cursor = action.time) }
-            }
-            is EventFilterAction.IncreaseCursor -> {
-                val newTime = state.value.cursor + action.stepMillis
-                _state.update { it.copy(cursor = newTime) }
-            }
-            is EventFilterAction.DismissTimeDialog -> {
-                _state.update { it.copy(showTimeDialog = false) }
             }
             is EventFilterAction.PreSelectedPersonClicked -> {
                 val person = if (action.personName == state.value.currentPersonName) ""
@@ -257,16 +133,6 @@ class EventFilterViewModel @Inject constructor(
         }
     }
 
-    private fun exportSession() {
-        val json = Json.encodeToString(
-            ExportedSession(state.value.currentSession, state.value.events)
-        )
-        _state.update { it.copy(
-            dataToExport = json,
-            exportEvents = true
-        ) }
-    }
-
     private fun exportFilteredEvents(filteredEvents: List<Event> = emptyList()) {
         val json = Json.encodeToString( filteredEvents.map { ExportedEvent(it) })
         _state.update {
@@ -277,29 +143,17 @@ class EventFilterViewModel @Inject constructor(
         }
     }
 
-    private fun getSessionDuration(): Long {
-        return state.value.events
-            .maxOfOrNull { it.elapsedTimeMillis } ?: 0
-    }
-
     fun updateId(id: Int) {
-        _sessionId.update { id }
+        Log.d(TAG, "updateId($id)")
         viewModelScope.launch {
-            val cur = appDao.getSession(id)
-            val s = cur.copy(
-                lastAccessMillis = System.currentTimeMillis(),
-                durationMillis = getSessionDuration()
-            )
             _state.update {
-                it.copy(currentSession = s)
+                it.copy(currentSession = appDao.getSession(id))
             }
-            appDao.upsertSession(s)
-            if (state.value.events.isNotEmpty())
-                _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
+            _sessionId.update { id }
         }
     }
 
-    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
+    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
         flow3: Flow<T3>,
@@ -308,10 +162,9 @@ class EventFilterViewModel @Inject constructor(
         flow6: Flow<T6>,
         flow7: Flow<T7>,
         flow8: Flow<T8>,
-        flow9: Flow<T9>,
-        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R
+        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8) -> R
     ): Flow<R> {
-        return combine(flow, flow2, flow3, flow4, flow5, flow6, flow7, flow8, flow9) { args: Array<*> ->
+        return combine(flow, flow2, flow3, flow4, flow5, flow6, flow7, flow8) { args: Array<*> ->
             @Suppress("UNCHECKED_CAST")
             transform(
                 args[0] as T1,
@@ -322,7 +175,6 @@ class EventFilterViewModel @Inject constructor(
                 args[5] as T6,
                 args[6] as T7,
                 args[7] as T8,
-                args[8] as T9,
             )
         }
     }

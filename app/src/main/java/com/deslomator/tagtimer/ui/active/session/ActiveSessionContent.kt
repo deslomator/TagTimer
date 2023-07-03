@@ -1,6 +1,6 @@
 package com.deslomator.tagtimer.ui.active.session
 
-import androidx.activity.compose.BackHandler
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -51,13 +51,8 @@ fun ActiveSessionContent(
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
-    BackHandler(enabled = state.showTimeDialog) {
-        onAction(ActiveSessionAction.DismissTimeDialog)
-    }
-    BackHandler(enabled = state.showEventEditionDialog) {
-        onAction(ActiveSessionAction.DismissEventEditionDialog)
-    }
     LaunchedEffect(state.currentSession) {
+        Log.d(TAG, "LaunchedEffect(state.currentSession) set cursor")
         onAction(ActiveSessionAction.SetCursor(state.currentSession.durationMillis))
     }
     LaunchedEffect(state.isRunning) {
@@ -73,7 +68,6 @@ fun ActiveSessionContent(
      */
     LaunchedEffect(state.eventForScrollTo, state.events) {
         val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.id)
-//        Log.d(TAG, "events changed, current event index is: $index")
         if (index >= 0) {
             listState.animateScrollToItem(index, 0)
         }

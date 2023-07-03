@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.session
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -26,6 +27,20 @@ fun ActiveSessionScaffold(
     var fileName by remember {
         mutableStateOf("")
     }
+    BackHandler(enabled = state.showTimeDialog) {
+        onAction(ActiveSessionAction.DismissTimeDialog)
+    }
+    BackHandler(enabled = state.showEventEditionDialog) {
+        onAction(ActiveSessionAction.DismissEventEditionDialog)
+    }
+    BackHandler(enabled = !state.showEventEditionDialog && !state.showTimeDialog) {
+        onAction(ActiveSessionAction.StopSession)
+        navController.navigate("root") {
+            popUpTo("root") {
+                inclusive = false
+            }
+        }
+    }
     if (state.exportData) {
         ExportSession(
             context = context,
@@ -46,8 +61,8 @@ fun ActiveSessionScaffold(
                     } else {
                         onAction(ActiveSessionAction.StopSession)
                         navController.navigate("root") {
-                            popUpTo("active") {
-                                inclusive = true
+                            popUpTo("root") {
+                                inclusive = false
                             }
                         }
                     }
