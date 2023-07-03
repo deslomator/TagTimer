@@ -35,11 +35,9 @@ fun EventFilterContent(
     onAction: (EventFilterAction) -> Unit,
     filteredEvents: List<Event>
 ) {
-//    var active by rememberSaveable { mutableStateOf(false) }
-
     /*
-       get places that are actually used in and Event
-        */
+   get places that are actually used in and Event
+    */
     val places by remember(state.events) {
         derivedStateOf {
             state.places
@@ -95,13 +93,14 @@ fun EventFilterContent(
             )
             Divider()
             UsedTagsList(
+                modifier = Modifier.weight(.28F),
                 tags = tags,
                 currentTag = state.currentLabelName,
                 onItemClick = { onAction(EventFilterAction.UsedTagClicked(it)) }
             )
             Divider()
             LazyColumn(
-                modifier = Modifier.weight(1F),
+                modifier = Modifier.weight(.4F),
                 contentPadding = PaddingValues(6.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {

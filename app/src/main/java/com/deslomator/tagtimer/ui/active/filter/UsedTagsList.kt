@@ -15,12 +15,13 @@ import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
 fun UsedTagsList(
+    modifier: Modifier,
     tags: List<Label.Tag>,
     currentTag: String,
     onItemClick: (String) -> Unit
 ) {
     Row(
-        modifier = Modifier.padding(start = 5.dp, end = 5.dp)
+        modifier = modifier.padding(start = 5.dp, end = 5.dp)
     ) {
         LazyVerticalGrid(
             contentPadding = PaddingValues(6.dp),
