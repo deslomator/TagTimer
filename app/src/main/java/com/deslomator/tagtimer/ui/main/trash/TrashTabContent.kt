@@ -92,6 +92,7 @@ fun TrashTabContent(
             HorizontalPager(
                 modifier = Modifier.weight(1F),
                 state = pagerState,
+                beyondBoundsPageCount = 1
             ) { page ->
                 when (pages[page]) {
                     Trash.Session -> {
