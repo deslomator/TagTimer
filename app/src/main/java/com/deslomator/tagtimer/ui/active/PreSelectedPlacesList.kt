@@ -26,7 +26,7 @@ fun PreSelectedPlacesList(
             LabelButton(
                 modifier = Modifier.width(100.dp),
                 item = place,
-                onItemClick = { (place.name) },
+                onItemClick = { onItemClick(place.name) },
                 checked = currentPlace == place.name
             )
         }
