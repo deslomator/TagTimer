@@ -13,7 +13,7 @@ suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
         Log.d(TAG, "populateDb() creating sessions and tags")
         val i = index + 100
-        val session = Session(
+        /*val session = Session(
             id = i,
             color = it.toArgb(),
             name = "Session $index"
@@ -23,7 +23,7 @@ suspend fun populateDb (dao: AppDao) {
             id = i + 100,
             inTrash = true
         )
-        dao.upsertSession(sessionT)
+        dao.upsertSession(sessionT)*/
         val tag = Label.Tag(
             id = i,
             color = it.toArgb(),
@@ -57,7 +57,7 @@ suspend fun populateDb (dao: AppDao) {
             inTrash = true
         )
         dao.upsertPerson(personT)
-        colorPickerColors.forEachIndexed { idx, it2 ->
+        /*colorPickerColors.forEachIndexed { idx, it2 ->
             val event = Event(
                 sessionId = i,
                 elapsedTimeMillis = (1000 * idx).toLong(),
@@ -80,7 +80,7 @@ suspend fun populateDb (dao: AppDao) {
             dao.upsertPreSelectedPlace(preselectedPlace)
             val preselectedPerson = Preselected.Person(i, i + idx)
             dao.upsertPreSelectedPerson(preselectedPerson)
-        }
+        }*/
     }
 }
 
