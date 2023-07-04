@@ -34,7 +34,6 @@ class MainActivity : ComponentActivity() {
             TagTimerTheme {
                 LaunchedEffect(Unit) {
                     withContext(Dispatchers.IO) { cleanOrphans(appDao) }
-//                    populateDb(appDao)
                 }
                 Surface(
                     modifier = Modifier.fillMaxSize(),

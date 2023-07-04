@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -59,6 +61,10 @@ class SessionsTabViewModel @Inject constructor(
                     appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
+            }
+
+            SessionsTabAction.PopulateDbClicked -> {
+                viewModelScope.launch(Dispatchers.IO) { populateDb(appDao) }
             }
         }
     }
