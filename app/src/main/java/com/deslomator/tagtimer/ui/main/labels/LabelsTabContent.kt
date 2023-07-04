@@ -41,9 +41,9 @@ fun LabelsTabContent(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
-    var currentPage by remember { mutableIntStateOf(0) }
+    var currentPage by remember { mutableIntStateOf(1) }
     val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
-    val pagerState = rememberPagerState(initialPage = 0) { pages.size }
+    val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     BackHandler(
         enabled = state.showTagDialog
     ) {

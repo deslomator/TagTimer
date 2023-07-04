@@ -22,6 +22,7 @@ fun SessionsTabScaffold(
         topBar = {
             SessionsTabTopBar(
                 onNewSessionClick = { onAction(SessionsTabAction.AddNewSessionClicked) },
+                onPopulateDbClick = { onAction(SessionsTabAction.PopulateDbClicked) },
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

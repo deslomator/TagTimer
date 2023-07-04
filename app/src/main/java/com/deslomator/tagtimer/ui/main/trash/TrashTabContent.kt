@@ -56,9 +56,9 @@ fun TrashTabContent(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    var currentPage by remember { mutableIntStateOf(0) }
+    var currentPage by remember { mutableIntStateOf(1) }
     val pages = listOf(Trash.Session, Trash.Tag, Trash.Person, Trash.Place)
-    val pagerState = rememberPagerState(initialPage = 0) { pages.size }
+    val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     LaunchedEffect(currentPage) {
         pagerState.animateScrollToPage(currentPage)
     }
