@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelPreselectionAction
@@ -21,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LabelPreselectionViewModel @Inject constructor(
-    private val appDao: AppDao,
+    private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0)
@@ -122,16 +123,6 @@ class LabelPreselectionViewModel @Inject constructor(
         }
     }
 
-    fun updateId(id: Int) {
-        Log.d(TAG, "updateId($id)")
-        viewModelScope.launch {
-            _state.update {
-                it.copy(currentSession = appDao.getSession(id))
-            }
-            _sessionId.update { id }
-        }
-    }
-
     private inline fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
         flow1: Flow<T1>,
         flow2: Flow<T2>,
@@ -153,6 +144,16 @@ class LabelPreselectionViewModel @Inject constructor(
                 args[5] as T6,
                 args[6] as T7,
             )
+        }
+    }
+
+    init {
+        val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
+        _sessionId.update { sessionId }
+        viewModelScope.launch {
+            _state.update {
+                it.copy(currentSession = appDao.getSession(sessionId))
+            }
         }
     }
 

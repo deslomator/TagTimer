@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -24,7 +25,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ActiveSessionViewModel @Inject constructor(
-    private val appDao: AppDao,
+    private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0)
@@ -245,6 +246,24 @@ class ActiveSessionViewModel @Inject constructor(
                 args[6] as T7,
                 args[7] as T8,
             )
+        }
+    }
+
+    init {
+        val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
+        _sessionId.update { sessionId }
+        viewModelScope.launch {
+            val cur = appDao.getSession(sessionId)
+            val s = cur.copy(
+                lastAccessMillis = System.currentTimeMillis(),
+                durationMillis = getSessionDuration()
+            )
+            _state.update {
+                it.copy(currentSession = s)
+            }
+            appDao.upsertSession(s)
+            if (state.value.events.isNotEmpty())
+                _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
         }
     }
 

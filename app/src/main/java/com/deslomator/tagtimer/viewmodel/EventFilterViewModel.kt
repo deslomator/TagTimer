@@ -1,6 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.EventFilterAction
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventFilterViewModel @Inject constructor(
-    private val appDao: AppDao,
+    private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0)
@@ -143,15 +143,6 @@ class EventFilterViewModel @Inject constructor(
         }
     }
 
-    fun updateId(id: Int) {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(currentSession = appDao.getSession(id))
-            }
-            _sessionId.update { id }
-        }
-    }
-
     private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
@@ -175,6 +166,16 @@ class EventFilterViewModel @Inject constructor(
                 args[6] as T7,
                 args[7] as T8,
             )
+        }
+    }
+
+    init {
+        val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
+        _sessionId.update { sessionId }
+        viewModelScope.launch {
+            _state.update {
+                it.copy(currentSession = appDao.getSession(sessionId))
+            }
         }
     }
 

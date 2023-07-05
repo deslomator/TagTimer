@@ -109,15 +109,11 @@ fun AppNavHost(
             arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
         ) {
             composable(
-                route = ActiveScreen.ActiveSession.route
+                route = ActiveScreen.ActiveSession.route,
+                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
             ) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("active/{sessionId}")
-                }
-                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsState()
-                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 ActiveSessionScaffold(
                     navController = navController,
                     state = state,
@@ -125,15 +121,11 @@ fun AppNavHost(
                 )
             }
             composable(
-                route = ActiveScreen.EventFilter.route
+                route = ActiveScreen.EventFilter.route,
+                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
             ) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("active/{sessionId}")
-                }
-                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsState()
-                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 EventFilterScaffold(
                     navController = navController,
                     state = state,
@@ -141,15 +133,11 @@ fun AppNavHost(
                 )
             }
             composable(
-                route = ActiveScreen.EventTrash.route
+                route = ActiveScreen.EventTrash.route,
+                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
             ) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("active/{sessionId}")
-                }
-                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsState()
-                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 EventTrashScaffold(
                     navController = navController,
                     state = state,
@@ -157,15 +145,11 @@ fun AppNavHost(
                 )
             }
             composable(
-                route = ActiveScreen.LabelSelection.route
+                route = ActiveScreen.LabelSelection.route,
+                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
             ) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("active/{sessionId}")
-                }
-                val sessionId = parentEntry.arguments?.getInt("sessionId") ?: 0
                 val viewModel = hiltViewModel<LabelPreselectionViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsState()
-                LaunchedEffect(Unit) { viewModel.updateId(sessionId) }
                 LabelSelectionScaffold(
                     navController = navController,
                     state = state,

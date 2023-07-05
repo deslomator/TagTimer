@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.EventTrashAction
@@ -19,7 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EventTrashViewModel @Inject constructor(
-    private val appDao: AppDao,
+    private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0)
@@ -65,13 +66,13 @@ class EventTrashViewModel @Inject constructor(
         }
     }
 
-    fun updateId(id: Int) {
-        Log.d(TAG, "updateId($id)")
+    init {
+        val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
+        _sessionId.update { sessionId }
         viewModelScope.launch {
             _state.update {
-                it.copy(currentSession = appDao.getSession(id))
+                it.copy(currentSession = appDao.getSession(sessionId))
             }
-            _sessionId.update { id }
         }
     }
 
