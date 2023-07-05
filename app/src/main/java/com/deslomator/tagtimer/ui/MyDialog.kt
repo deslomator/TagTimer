@@ -103,14 +103,13 @@ fun MyDialog(
                     )
                 )
             }.first()
-            val listHeight = list.height
             layout(
                 width = constraints.maxWidth,
-                height = listHeight + header.height + footer.height
+                height = list.height + header.height + footer.height
             ) {
                 header.place(x = 0, y = 0)
                 list.place(x = 0, y = header.height)
-                footer.place(x = 0, y = header.height + listHeight)
+                footer.place(x = 0, y = header.height + list.height)
             }
         }
     }
