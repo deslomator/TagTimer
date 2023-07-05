@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +9,7 @@ import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -78,9 +78,13 @@ class LabelPreselectionViewModel @Inject constructor(
                         sessionId = state.value.currentSession.id,
                         labelId = action.tagId
                     )
-                    viewModelScope.launch { appDao.upsertPreSelectedTag(pst) }
+                    viewModelScope.launch {
+                        delay(UPSERT_DELAY_MS)
+                        appDao.upsertPreSelectedTag(pst)
+                    }
                 } else {
                     viewModelScope.launch {
+                        delay(UPSERT_DELAY_MS)
                         appDao.deletePreSelectedTagForSession(
                             state.value.currentSession.id,
                             action.tagId
@@ -94,9 +98,13 @@ class LabelPreselectionViewModel @Inject constructor(
                         sessionId = state.value.currentSession.id,
                         labelId = action.personId
                     )
-                    viewModelScope.launch { appDao.upsertPreSelectedPerson(pst) }
+                    viewModelScope.launch {
+                        delay(UPSERT_DELAY_MS)
+                        appDao.upsertPreSelectedPerson(pst)
+                    }
                 } else {
                     viewModelScope.launch {
+                        delay(UPSERT_DELAY_MS)
                         appDao.deletePreSelectedPersonForSession(
                             state.value.currentSession.id,
                             action.personId
@@ -110,9 +118,13 @@ class LabelPreselectionViewModel @Inject constructor(
                         sessionId = state.value.currentSession.id,
                         labelId = action.placeId
                     )
-                    viewModelScope.launch { appDao.upsertPreSelectedPlace(psPlace) }
+                    viewModelScope.launch {
+                        delay(UPSERT_DELAY_MS)
+                        appDao.upsertPreSelectedPlace(psPlace)
+                    }
                 } else {
                     viewModelScope.launch {
+                        delay(UPSERT_DELAY_MS)
                         appDao.deletePreSelectedPlaceForSession(
                             state.value.currentSession.id,
                             action.placeId
@@ -158,6 +170,7 @@ class LabelPreselectionViewModel @Inject constructor(
     }
 
     companion object {
+        private const val UPSERT_DELAY_MS = 300L
         private const val TAG = "LabelPreselectionViewModel"
     }
 }
