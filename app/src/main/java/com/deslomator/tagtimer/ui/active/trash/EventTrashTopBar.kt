@@ -33,5 +33,11 @@ fun EventTrashTopBar(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         ) },
+        actions = {
+            Icon(
+                painterResource(id = R.drawable.delete),
+                contentDescription = "event trash"
+            )
+        }
     )
 }
