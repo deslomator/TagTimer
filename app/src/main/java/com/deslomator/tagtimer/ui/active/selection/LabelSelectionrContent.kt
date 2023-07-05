@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.selection
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,12 +83,10 @@ fun LabelSelectionContent(
                         val checkedMessage = stringResource(R.string.tag_checked)
                         val unCheckedMessage = stringResource(R.string.tag_unchecked)
                         LaunchedEffect(Unit) {
-                            Log.d(TAG, "labels: ${state.tags}")
-                            Log.d(TAG, "preSelected: ${state.preSelectedTags}")
                         }
                         LabelSelectionList(
                             labels = state.tags,
-                            preSelected = state.preSelectedTags.map { it.labelId },
+                            preSelected = state.preSelectedTags,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
                                     scope,
@@ -102,12 +101,10 @@ fun LabelSelectionContent(
                         val checkedMessage = stringResource(R.string.person_checked)
                         val unCheckedMessage = stringResource(R.string.person_unchecked)
                         LaunchedEffect(Unit) {
-                            Log.d(TAG, "labels: ${state.persons}")
-                            Log.d(TAG, "preSelected: ${state.preSelectedPersons}")
                         }
                         LabelSelectionList(
                             labels = state.persons,
-                            preSelected = state.preSelectedPersons.map { it.labelId },
+                            preSelected = state.preSelectedPersons,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
                                     scope,
@@ -122,12 +119,10 @@ fun LabelSelectionContent(
                         val checkedMessage = stringResource(R.string.place_checked)
                         val unCheckedMessage = stringResource(R.string.place_unchecked)
                         LaunchedEffect(Unit) {
-                            Log.d(TAG, "labels: ${state.places}")
-                            Log.d(TAG, "preSelected: ${state.preSelectedPlaces}")
                         }
                         LabelSelectionList(
                             labels = state.places,
-                            preSelected = state.preSelectedPlaces.map { it.labelId },
+                            preSelected = state.preSelectedPlaces,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
                                     scope,
