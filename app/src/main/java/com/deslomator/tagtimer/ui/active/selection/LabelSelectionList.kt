@@ -27,7 +27,7 @@ fun LabelSelectionList(
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
