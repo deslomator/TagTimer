@@ -2,9 +2,11 @@ package com.deslomator.tagtimer.ui
 
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -27,6 +29,7 @@ import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.contrasted
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabelButton(
     modifier: Modifier = Modifier,
@@ -35,6 +38,7 @@ fun LabelButton(
     iconSize: Dp = 26.dp,
     onLeadingClick: ((Label) -> Unit)? = null,
     onItemClick: ((Label) -> Unit)? = null,
+    onLongClick: ((Label) -> Unit)? = null,
     onTrailingClick: ((Label) -> Unit)? = null,
     checked: Boolean,
     showCheck: Boolean = false,
@@ -62,11 +66,10 @@ fun LabelButton(
     Box {
         Row(
             modifier = modifier
-                .then(onItemClick?.let { Modifier.clickable(onClick = {
-//                    Log.d(TAG, "on item click()")
-                    onItemClick(item)
-                }) }
-                    ?: Modifier)
+                .then(onItemClick?.let { Modifier.combinedClickable(
+                    onClick = { onItemClick(item) },
+                    onLongClick = { onLongClick?.invoke(item) }
+                ) } ?: Modifier)
                 .clip(RoundedCornerShape(50))
                 .background(containerColor)
                 .border(borderWidth, borderColor, RoundedCornerShape(50))

@@ -104,6 +104,13 @@ class LabelPreselectionViewModel @Inject constructor(
                     isAddingNewTag = true
                 ) }
             }
+            is LabelPreselectionAction.EditTagClicked -> {
+                _state.update { it.copy(
+                    currentTag = action.tag,
+                    showTagDialog = true,
+                    isEditingTag = true,
+                ) }
+            }
             is LabelPreselectionAction.AcceptTagEditionClicked -> {
                 _state.update { it.copy(
                     showTagDialog = false,
@@ -156,6 +163,13 @@ class LabelPreselectionViewModel @Inject constructor(
                     isAddingNewPerson = true
                 ) }
             }
+            is LabelPreselectionAction.EditPersonClicked -> {
+                _state.update { it.copy(
+                    currentPerson = action.person,
+                    showPersonDialog = true,
+                    isEditingPerson = true,
+                ) }
+            }
             is LabelPreselectionAction.AcceptPersonEditionClicked -> {
                 _state.update { it.copy(
                     showPersonDialog = false,
@@ -205,6 +219,13 @@ class LabelPreselectionViewModel @Inject constructor(
                     currentPlace = Label.Place(),
                     showPlaceDialog = true,
                     isAddingNewPlace = true
+                ) }
+            }
+            is LabelPreselectionAction.EditPlaceClicked -> {
+                _state.update { it.copy(
+                    currentPlace = action.place,
+                    showPlaceDialog = true,
+                    isEditingPlace = true,
                 ) }
             }
             is LabelPreselectionAction.AcceptPlaceEditionClicked -> {

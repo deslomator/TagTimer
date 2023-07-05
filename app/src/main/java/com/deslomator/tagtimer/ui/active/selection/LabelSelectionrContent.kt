@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -24,9 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.ui.active.dialog.PersonDialog
@@ -102,6 +105,9 @@ fun LabelSelectionContent(
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
                                 onAction(LabelPreselectionAction.SelectTagCheckedChange(id, checked))
+                            },
+                            onLongClick = {
+                                onAction(LabelPreselectionAction.EditTagClicked(it as Label.Tag))
                             }
                         )
                     }
@@ -120,6 +126,9 @@ fun LabelSelectionContent(
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
                                 onAction(LabelPreselectionAction.SelectPersonCheckedChange(id, checked))
+                            },
+                            onLongClick = {
+                                onAction(LabelPreselectionAction.EditPersonClicked(it as Label.Person))
                             }
                         )
                     }
@@ -138,11 +147,19 @@ fun LabelSelectionContent(
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
                                 onAction(LabelPreselectionAction.SelectPlaceCheckedChange(id, checked))
+                            },
+                            onLongClick = {
+                                onAction(LabelPreselectionAction.EditPlaceClicked(it as Label.Place))
                             }
                         )
                     }
                 }
             }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = stringResource(R.string.long_press_to_edit_remove),
+                textAlign = TextAlign.Center,
+            )
         }
     }
     if (state.showTagDialog) {

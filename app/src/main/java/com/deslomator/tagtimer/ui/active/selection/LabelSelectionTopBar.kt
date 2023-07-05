@@ -20,6 +20,9 @@ fun LabelSelectionTopBar(
     onAddTagClick: () -> Unit,
     onAddPersonClick: () -> Unit,
     onAddPlaceClick: () -> Unit,
+    showTagDialog: Boolean,
+    showPersonDialog: Boolean,
+    showPlaceDialog: Boolean,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -38,35 +41,39 @@ fun LabelSelectionTopBar(
             overflow = TextOverflow.Ellipsis
         ) },
         actions = {
-            when (currentPage) {
-                0 -> {
-                    IconButton(
-                        onClick = onAddTagClick
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.add_tag),
-                            contentDescription = stringResource(id = R.string.add_tag)
-                        )
+            if (!showTagDialog && !showPersonDialog && !showPlaceDialog) {
+                when (currentPage) {
+                    0 -> {
+                        IconButton(
+                            onClick = onAddTagClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add_tag),
+                                contentDescription = stringResource(id = R.string.add_tag)
+                            )
+                        }
                     }
-                }
-                1 -> {
-                    IconButton(
-                        onClick = onAddPersonClick
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.add_person),
-                            contentDescription = stringResource(id = R.string.add_person)
-                        )
+
+                    1 -> {
+                        IconButton(
+                            onClick = onAddPersonClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add_person),
+                                contentDescription = stringResource(id = R.string.add_person)
+                            )
+                        }
                     }
-                }
-                else -> {
-                    IconButton(
-                        onClick = onAddPlaceClick
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.add_place),
-                            contentDescription = stringResource(id = R.string.add_place)
-                        )
+
+                    else -> {
+                        IconButton(
+                            onClick = onAddPlaceClick
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.add_place),
+                                contentDescription = stringResource(id = R.string.add_place)
+                            )
+                        }
                     }
                 }
             }

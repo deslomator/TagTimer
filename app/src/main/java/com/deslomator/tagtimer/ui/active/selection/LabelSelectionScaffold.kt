@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.active.selection
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -21,17 +22,33 @@ fun LabelSelectionScaffold(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var currentPage by remember { mutableIntStateOf(1) }
+    BackHandler(
+        enabled = state.showTagDialog || state.showPersonDialog || state.showPlaceDialog
+    ) {
+        onAction(LabelPreselectionAction.DismissTagDialog)
+        onAction(LabelPreselectionAction.DismissPersonDialog)
+        onAction(LabelPreselectionAction.DismissPlaceDialog)
+    }
     Scaffold(
         topBar = {
             LabelSelectionTopBar(
                 title = state.currentSession.name,
                 onBackClicked = {
-                    navController.navigateUp()
+                    if (state.showTagDialog || state.showPersonDialog || state.showPlaceDialog) {
+                        onAction(LabelPreselectionAction.DismissTagDialog)
+                        onAction(LabelPreselectionAction.DismissPersonDialog)
+                        onAction(LabelPreselectionAction.DismissPlaceDialog)
+                    } else {
+                        navController.navigateUp()
+                    }
                 },
                 currentPage = currentPage,
                 onAddTagClick = { onAction(LabelPreselectionAction.AddNewTagClicked) },
                 onAddPersonClick = { onAction(LabelPreselectionAction.AddNewPersonClicked) },
                 onAddPlaceClick = { onAction(LabelPreselectionAction.AddNewPlaceClicked) },
+                showTagDialog = state.showTagDialog,
+                showPersonDialog = state.showPersonDialog,
+                showPlaceDialog = state.showPlaceDialog,
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

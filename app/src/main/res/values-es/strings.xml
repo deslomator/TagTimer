@@ -66,4 +66,5 @@
     <string name="populate_db">datos de ejemplo</string>
     <string name="event_trash">Eventos eliminados</string>
     <string name="share_session">Compartir Sesión</string>
+    <string name="long_press_to_edit_remove">Pulsación larga para Editar o Eliminar</string>
 </resources>

@@ -22,7 +22,8 @@ import com.deslomator.tagtimer.ui.LabelButton
 fun LabelSelectionList(
     labels: List<Label>,
     preSelected: List<Preselected>,
-    onCheckedChange: (Int, Boolean) -> Unit
+    onCheckedChange: (Int, Boolean) -> Unit,
+    onLongClick: (Label) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -44,6 +45,7 @@ fun LabelSelectionList(
                     checked = !checked
                     onCheckedChange(label.id, checked)
                 },
+                onLongClick = { onLongClick(label) },
                 checked = checked,
                 showCheck = true
             )
