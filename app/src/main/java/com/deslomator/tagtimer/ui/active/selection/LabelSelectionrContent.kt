@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Divider
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -17,14 +18,17 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelPreselectionState
+import com.deslomator.tagtimer.ui.showSnackbar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -32,7 +36,9 @@ fun LabelSelectionContent(
     paddingValues: PaddingValues,
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
+    snackbarHostState: SnackbarHostState
 ) {
+    val scope = rememberCoroutineScope()
     var currentPage by remember { mutableIntStateOf(1) }
     val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
@@ -73,28 +79,61 @@ fun LabelSelectionContent(
             ) { page ->
                 when (pages[page]) {
                     LabelScreen.Tag -> {
+                        val checkedMessage = stringResource(R.string.tag_checked)
+                        val unCheckedMessage = stringResource(R.string.tag_unchecked)
+                        LaunchedEffect(Unit) {
+                            Log.d(TAG, "labels: ${state.tags}")
+                            Log.d(TAG, "preSelected: ${state.preSelectedTags}")
+                        }
                         LabelSelectionList(
                             labels = state.tags,
                             preSelected = state.preSelectedTags.map { it.labelId },
                             onCheckedChange = { id, checked ->
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    message = if (checked) checkedMessage else unCheckedMessage,
+                                )
                                 onAction(LabelPreselectionAction.SelectTagCheckedChange(id, checked))
                             }
                         )
                     }
                     LabelScreen.Person -> {
+                        val checkedMessage = stringResource(R.string.person_checked)
+                        val unCheckedMessage = stringResource(R.string.person_unchecked)
+                        LaunchedEffect(Unit) {
+                            Log.d(TAG, "labels: ${state.persons}")
+                            Log.d(TAG, "preSelected: ${state.preSelectedPersons}")
+                        }
                         LabelSelectionList(
                             labels = state.persons,
                             preSelected = state.preSelectedPersons.map { it.labelId },
                             onCheckedChange = { id, checked ->
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    message = if (checked) checkedMessage else unCheckedMessage,
+                                )
                                 onAction(LabelPreselectionAction.SelectPersonCheckedChange(id, checked))
                             }
                         )
                     }
                     LabelScreen.Place -> {
+                        val checkedMessage = stringResource(R.string.place_checked)
+                        val unCheckedMessage = stringResource(R.string.place_unchecked)
+                        LaunchedEffect(Unit) {
+                            Log.d(TAG, "labels: ${state.places}")
+                            Log.d(TAG, "preSelected: ${state.preSelectedPlaces}")
+                        }
                         LabelSelectionList(
                             labels = state.places,
                             preSelected = state.preSelectedPlaces.map { it.labelId },
                             onCheckedChange = { id, checked ->
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    message = if (checked) checkedMessage else unCheckedMessage,
+                                )
                                 onAction(LabelPreselectionAction.SelectPlaceCheckedChange(id, checked))
                             }
                         )

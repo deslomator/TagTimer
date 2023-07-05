@@ -1,10 +1,8 @@
 package com.deslomator.tagtimer.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -18,9 +16,9 @@ import androidx.navigation.navigation
 import com.deslomator.tagtimer.navigation.screen.ActiveScreen
 import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 import com.deslomator.tagtimer.navigation.screen.RootScreen
-import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
 import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
+import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.active.trash.EventTrashScaffold
 import com.deslomator.tagtimer.ui.main.MainNavigationBar
 import com.deslomator.tagtimer.ui.main.labels.LabelsScaffold

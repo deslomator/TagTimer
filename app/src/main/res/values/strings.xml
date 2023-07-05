@@ -57,4 +57,10 @@
     <string name="filter_events">Filter Events</string>
     <string name="search_for_tag">search for tag</string>
     <string name="total_events">Total: %1d</string>
+    <string name="tag_checked">Tag cheked</string>
+    <string name="tag_unchecked">Tag unchecked</string>
+    <string name="person_checked">Person checked</string>
+    <string name="person_unchecked">Person_unchecked</string>
+    <string name="place_checked">Place checked</string>
+    <string name="place_unchecked">Place unchecked</string>
 </resources>

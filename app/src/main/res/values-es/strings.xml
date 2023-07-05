@@ -57,4 +57,10 @@
     <string name="session">Sesión</string>
     <string name="search_for_tag">busca una etiqueta</string>
     <string name="total_events">Total: %1d</string>
+    <string name="tag_checked">Etiqueta seleccionada</string>
+    <string name="tag_unchecked">Etiqueta no seleccionada</string>
+    <string name="person_checked">Persona seleccionada</string>
+    <string name="person_unchecked">Persona no seleccionada</string>
+    <string name="place_checked">Lugar seleccionado</string>
+    <string name="place_unchecked">Lugar no seleccionado</string>
 </resources>
