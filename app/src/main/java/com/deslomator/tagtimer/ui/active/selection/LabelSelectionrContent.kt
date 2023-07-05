@@ -29,6 +29,9 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelPreselectionState
+import com.deslomator.tagtimer.ui.active.dialog.PersonDialog
+import com.deslomator.tagtimer.ui.active.dialog.PlaceDialog
+import com.deslomator.tagtimer.ui.active.dialog.TagDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -37,17 +40,20 @@ fun LabelSelectionContent(
     paddingValues: PaddingValues,
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
-    snackbarHostState: SnackbarHostState
+    onTabClick: (Int) -> Unit,
+    snackbarHostState: SnackbarHostState,
 ) {
     val scope = rememberCoroutineScope()
     var currentPage by remember { mutableIntStateOf(1) }
     val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     LaunchedEffect(currentPage) {
+//        Log.d(TAG, "target page changed")
         pagerState.animateScrollToPage(currentPage)
     }
     LaunchedEffect(pagerState.targetPage) {
         currentPage = pagerState.targetPage
+        onTabClick(currentPage)
     }
     Box(
         modifier = Modifier
@@ -62,7 +68,9 @@ fun LabelSelectionContent(
                 pages.forEachIndexed { index, page ->
                     Tab(
                         selected = currentPage == index,
-                        onClick = { currentPage = index }
+                        onClick = {
+                            currentPage = index
+                        }
                     ) {
                         Text(
                             modifier = Modifier.padding(bottom = 7.dp),
@@ -136,6 +144,30 @@ fun LabelSelectionContent(
                 }
             }
         }
+    }
+    if (state.showTagDialog) {
+        TagDialog(
+            state = state,
+            onAction = onAction,
+            scope = scope,
+            snackbarHostState = snackbarHostState
+        )
+    }
+    if (state.showPersonDialog) {
+        PersonDialog(
+            state = state,
+            onAction = onAction,
+            scope = scope,
+            snackbarHostState = snackbarHostState
+        )
+    }
+    if (state.showPlaceDialog) {
+        PlaceDialog(
+            state = state,
+            onAction = onAction,
+            scope = scope,
+            snackbarHostState = snackbarHostState
+        )
     }
 }
 

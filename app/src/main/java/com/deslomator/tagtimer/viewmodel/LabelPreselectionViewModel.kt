@@ -4,7 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -72,6 +74,9 @@ class LabelPreselectionViewModel @Inject constructor(
 
     fun onAction(action: LabelPreselectionAction) {
         when(action) {
+            /*
+            TAG
+             */
             is LabelPreselectionAction.SelectTagCheckedChange -> {
                 if (action.checked) {
                     val pst = Preselected.Tag (
@@ -92,6 +97,38 @@ class LabelPreselectionViewModel @Inject constructor(
                     }
                 }
             }
+            is LabelPreselectionAction.AddNewTagClicked -> {
+                _state.update { it.copy(
+                    currentTag = Label.Tag(),
+                    showTagDialog = true,
+                    isAddingNewTag = true
+                ) }
+            }
+            is LabelPreselectionAction.AcceptTagEditionClicked -> {
+                _state.update { it.copy(
+                    showTagDialog = false,
+                    isEditingTag = false,
+                ) }
+                viewModelScope.launch { appDao.upsertTag(action.tag) }
+            }
+            is LabelPreselectionAction.DismissTagDialog -> {
+                _state.update { it.copy(
+                    showTagDialog = false,
+                    isEditingTag = false,
+                    isAddingNewTag = false,
+                ) }
+            }
+            is LabelPreselectionAction.TrashTagSwiped -> {
+                _state.update { it.copy(showTagDialog = false) }
+                viewModelScope.launch {
+                    val trashed = action.tag.copy(inTrash = true)
+                    appDao.upsertTag(trashed)
+//                    Log.d(TAG, "TagsScreenAction.TrashTagSwiped $trashed")
+                }
+            }
+            /*
+            PERSON
+             */
             is LabelPreselectionAction.SelectPersonCheckedChange -> {
                 if (action.checked) {
                     val pst = Preselected.Person (
@@ -112,6 +149,37 @@ class LabelPreselectionViewModel @Inject constructor(
                     }
                 }
             }
+            is LabelPreselectionAction.AddNewPersonClicked -> {
+                _state.update { it.copy(
+                    currentPerson = Label.Person(),
+                    showPersonDialog = true,
+                    isAddingNewPerson = true
+                ) }
+            }
+            is LabelPreselectionAction.AcceptPersonEditionClicked -> {
+                _state.update { it.copy(
+                    showPersonDialog = false,
+                    isEditingPerson = false,
+                ) }
+                viewModelScope.launch { appDao.upsertPerson(action.person) }
+            }
+            is LabelPreselectionAction.DismissPersonDialog -> {
+                _state.update { it.copy(
+                    showPersonDialog = false,
+                    isEditingPerson = false,
+                    isAddingNewPerson = false,
+                ) }
+            }
+            is LabelPreselectionAction.TrashPersonSwiped -> {
+                _state.update { it.copy(showPersonDialog = false) }
+                viewModelScope.launch {
+                    val trashed = action.person.copy(inTrash = true)
+                    appDao.upsertPerson(trashed)
+                }
+            }
+            /*
+            PLACE
+             */
             is LabelPreselectionAction.SelectPlaceCheckedChange -> {
                 if (action.checked) {
                     val psPlace = Preselected.Place (
@@ -130,6 +198,34 @@ class LabelPreselectionViewModel @Inject constructor(
                             action.placeId
                         )
                     }
+                }
+            }
+            is LabelPreselectionAction.AddNewPlaceClicked -> {
+                _state.update { it.copy(
+                    currentPlace = Label.Place(),
+                    showPlaceDialog = true,
+                    isAddingNewPlace = true
+                ) }
+            }
+            is LabelPreselectionAction.AcceptPlaceEditionClicked -> {
+                _state.update { it.copy(
+                    showPlaceDialog = false,
+                    isEditingPlace = false,
+                ) }
+                viewModelScope.launch { appDao.upsertPlace(action.place) }
+            }
+            is LabelPreselectionAction.DismissPlaceDialog -> {
+                _state.update { it.copy(
+                    showPlaceDialog = false,
+                    isEditingPlace = false,
+                    isAddingNewPlace = false,
+                ) }
+            }
+            is LabelPreselectionAction.TrashPlaceSwiped -> {
+                _state.update { it.copy(showPlaceDialog = false) }
+                viewModelScope.launch {
+                    val trashed = action.place.copy(inTrash = true)
+                    appDao.upsertPlace(trashed)
                 }
             }
         }
