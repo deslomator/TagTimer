@@ -63,4 +63,7 @@
     <string name="person_unchecked">Person_unchecked</string>
     <string name="place_checked">Place checked</string>
     <string name="place_unchecked">Place unchecked</string>
+    <string name="populate_db">populate DB</string>
+    <string name="event_trash">Event Trash</string>
+    <string name="share_session">Share Session</string>
 </resources>

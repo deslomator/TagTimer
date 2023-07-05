@@ -63,4 +63,7 @@
     <string name="person_unchecked">Persona no seleccionada</string>
     <string name="place_checked">Lugar seleccionado</string>
     <string name="place_unchecked">Lugar no seleccionado</string>
+    <string name="populate_db">datos de ejemplo</string>
+    <string name="event_trash">Eventos eliminados</string>
+    <string name="share_session">Compartir Sesión</string>
 </resources>

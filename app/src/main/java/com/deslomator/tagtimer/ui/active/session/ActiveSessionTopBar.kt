@@ -1,11 +1,17 @@
 package com.deslomator.tagtimer.ui.active.session
 
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,6 +28,9 @@ fun ActiveSessionTopBar(
     onFilterClick: () -> Unit,
     onEventTrashClick: () -> Unit,
 ) {
+    var showMenu by remember {
+        mutableStateOf(false)
+    }
     TopAppBar(
         navigationIcon = {
             IconButton(
@@ -44,14 +53,6 @@ fun ActiveSessionTopBar(
                 !state.showTimeDialog
             ) {
                 IconButton(
-                    onClick = onShareSessionClick
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.share),
-                        contentDescription = "share Session"
-                    )
-                }
-                IconButton(
                     onClick = onAddLabelClick
                 ) {
                     Icon(
@@ -60,19 +61,46 @@ fun ActiveSessionTopBar(
                     )
                 }
                 IconButton(
-                    onClick = onFilterClick
+                    onClick = { showMenu = !showMenu }
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.filter),
-                        contentDescription = stringResource(id = R.string.filter_events)
+                        painter = painterResource(R.drawable.more_vert),
+                        contentDescription = stringResource(id = R.string.add_tag)
                     )
                 }
-                IconButton(
-                    onClick = onEventTrashClick
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false }
                 ) {
-                    Icon(
-                        painter = painterResource(R.drawable.delete),
-                        contentDescription = stringResource(id = R.string.trash)
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.share_session)) },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.share),
+                                contentDescription = "share Session"
+                            )
+                        },
+                        onClick = onShareSessionClick,
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.filter_events)) },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.filter),
+                                contentDescription = "filter events"
+                            )
+                        },
+                        onClick = onFilterClick,
+                    )
+                    DropdownMenuItem(
+                        text = { Text(text = stringResource(R.string.event_trash)) },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(R.drawable.delete),
+                                contentDescription = "event trash"
+                            )
+                        },
+                        onClick = onEventTrashClick,
                     )
                 }
             }
