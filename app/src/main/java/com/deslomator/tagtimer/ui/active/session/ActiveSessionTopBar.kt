@@ -56,7 +56,7 @@ fun ActiveSessionTopBar(
                     onClick = onAddLabelClick
                 ) {
                     Icon(
-                        painter = painterResource(R.drawable.add_tag),
+                        painter = painterResource(R.drawable.select_label),
                         contentDescription = stringResource(id = R.string.add_tag)
                     )
                 }
