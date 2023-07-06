@@ -1,6 +1,17 @@
 package com.deslomator.tagtimer.ui.theme
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
@@ -79,3 +90,54 @@ fun Color.contrasted() = if (this.brightness() > LIGHT_COLOR_THRESHOLD) OnLightB
 else OnDarkBackground
 
 private const val LIGHT_COLOR_THRESHOLD = 0.6f
+
+@Preview
+@Composable
+fun Colors() {
+    val colors = listOf(
+        "background" to MaterialTheme.colorScheme.background,
+        "error" to MaterialTheme.colorScheme.error,
+        "errorContainer" to MaterialTheme.colorScheme.errorContainer,
+        "inverseOnSurface" to MaterialTheme.colorScheme.inverseOnSurface,
+        "inversePrimary" to MaterialTheme.colorScheme.inversePrimary,
+        "inverseSurface" to MaterialTheme.colorScheme.inverseSurface,
+        "onBackground" to MaterialTheme.colorScheme.onBackground,
+        "onError" to MaterialTheme.colorScheme.onError,
+        "onErrorContainer" to MaterialTheme.colorScheme.onErrorContainer,
+        "onPrimary" to MaterialTheme.colorScheme.onPrimary,
+        "onPrimaryContainer" to MaterialTheme.colorScheme.onPrimaryContainer,
+        "onSecondary" to MaterialTheme.colorScheme.onSecondary,
+        "onSecondaryContainer" to MaterialTheme.colorScheme.onSecondaryContainer,
+        "onSurface" to MaterialTheme.colorScheme.onSurface,
+        "onSurfaceVariant" to MaterialTheme.colorScheme.onSurfaceVariant,
+        "onTertiary" to MaterialTheme.colorScheme.onTertiary,
+        "onTertiaryContainer" to MaterialTheme.colorScheme.onTertiaryContainer,
+        "outline" to MaterialTheme.colorScheme.outline,
+        "outlineVariant" to MaterialTheme.colorScheme.outlineVariant,
+        "primary" to MaterialTheme.colorScheme.primary,
+        "primaryContainer" to MaterialTheme.colorScheme.primaryContainer,
+        "scrim" to MaterialTheme.colorScheme.scrim,
+        "secondary" to MaterialTheme.colorScheme.secondary,
+        "secondaryContainer" to MaterialTheme.colorScheme.secondaryContainer,
+        "surface" to MaterialTheme.colorScheme.surface,
+        "surfaceTint" to MaterialTheme.colorScheme.surfaceTint,
+        "surfaceVariant" to MaterialTheme.colorScheme.surfaceVariant,
+        "tertiary" to MaterialTheme.colorScheme.tertiary,
+        "tertiaryContainer" to MaterialTheme.colorScheme.tertiaryContainer,
+    ).sortedBy { it.first }
+    Column {
+        colors.forEach {
+            Box(
+                modifier = Modifier
+                    .background(it.second)
+                    .width(150.dp)
+            ) {
+                Text(
+                    text = it.first,
+                    color = it.second.contrasted(),
+                    fontSize = 13.sp
+                )
+            }
+        }
+    }
+}

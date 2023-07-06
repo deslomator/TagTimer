@@ -36,6 +36,7 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
@@ -62,7 +63,10 @@ fun TrashTabContent(
         Column {
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
-                divider = { Divider() }
+                divider = { Divider() },
+                indicator = { tabPositions ->
+                    TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
+                }
             ) {
                 pages.forEachIndexed { index, page ->
                     Tab(
@@ -70,7 +74,7 @@ fun TrashTabContent(
                         onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
                     ) {
                         Text(
-                            modifier = Modifier.padding(bottom = 7.dp),
+                            modifier = Modifier.padding(bottom = 6.dp),
                             text = stringResource(id = page.stringId),
                             fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
                             else FontWeight.Normal
@@ -138,3 +142,4 @@ fun TrashTabContentPreview() {
         }
     }
 }
+

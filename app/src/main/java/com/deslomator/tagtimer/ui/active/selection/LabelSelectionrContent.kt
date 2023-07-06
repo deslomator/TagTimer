@@ -34,6 +34,7 @@ import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.state.SharedState
+import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.active.dialog.PersonDialog
 import com.deslomator.tagtimer.ui.active.dialog.PlaceDialog
 import com.deslomator.tagtimer.ui.active.dialog.TagDialog
@@ -70,7 +71,10 @@ fun LabelSelectionContent(
         Column {
             TabRow(
                 selectedTabIndex = currentPage,
-                divider = { Divider() }
+                divider = { Divider() },
+                indicator = { tabPositions ->
+                    TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
+                }
             ) {
                 pages.forEachIndexed { index, page ->
                     Tab(

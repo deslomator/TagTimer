@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelsTabState
+import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.main.labels.dialog.PersonDialog
 import com.deslomator.tagtimer.ui.main.labels.dialog.PlaceDialog
 import com.deslomator.tagtimer.ui.main.labels.dialog.TagDialog
@@ -62,7 +63,10 @@ fun LabelsTabContent(
         Column {
             TabRow(
                 selectedTabIndex = pagerState.currentPage,
-                divider = { Divider() }
+                divider = { Divider() },
+                indicator = { tabPositions ->
+                    TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
+                }
             ) {
                 pages.forEachIndexed { index, page ->
                     Tab(
