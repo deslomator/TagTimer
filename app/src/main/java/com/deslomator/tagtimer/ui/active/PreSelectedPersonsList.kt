@@ -5,9 +5,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
@@ -18,6 +20,7 @@ fun PreSelectedPersonsList(
 ) {
     LazyRow(
         modifier = Modifier.padding(start = 5.dp, end = 5.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         items(
             items = persons,
@@ -27,7 +30,8 @@ fun PreSelectedPersonsList(
                 modifier = Modifier.width(100.dp),
                 item = person,
                 onItemClick = { onItemClick(person.name) },
-                checked = currentPerson == person.name
+                checked = currentPerson == person.name,
+                checkType = Checked.LEADING,
             )
         }
     }

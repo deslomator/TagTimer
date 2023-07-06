@@ -8,9 +8,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
@@ -25,7 +27,7 @@ fun UsedTagsList(
     ) {
         LazyVerticalGrid(
             contentPadding = PaddingValues(6.dp),
-            verticalArrangement = Arrangement.spacedBy(1.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterVertically),
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             columns = GridCells.Adaptive(100.dp),
         ) {
@@ -36,7 +38,8 @@ fun UsedTagsList(
                 LabelButton(
                     item = tag,
                     onItemClick = { onItemClick(tag.name) },
-                    checked = currentTag == tag.name
+                    checked = currentTag == tag.name,
+                    checkType = Checked.LEADING,
                 )
             }
         }

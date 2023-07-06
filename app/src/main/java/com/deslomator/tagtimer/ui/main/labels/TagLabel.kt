@@ -32,7 +32,6 @@ fun TagLabel(
             LabelButton(
                 item = tag,
                 onItemClick = { onAction(LabelsTabAction.EditTagClicked(tag)) },
-                checked = true
             )
         }
     }

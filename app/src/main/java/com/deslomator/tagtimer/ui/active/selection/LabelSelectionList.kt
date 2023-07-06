@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active.selection
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preselected
+import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
@@ -47,7 +47,7 @@ fun LabelSelectionList(
                 },
                 onLongClick = { onLongClick(label) },
                 checked = checked,
-                showCheck = true
+                checkType = Checked.TRAILING,
             )
         }
     }

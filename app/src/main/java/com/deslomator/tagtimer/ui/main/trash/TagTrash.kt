@@ -55,7 +55,6 @@ fun TagTrash(
                         context.getString(R.string.tag_deleted)
                     )
                 },
-                checked = true
             )
         }
     }

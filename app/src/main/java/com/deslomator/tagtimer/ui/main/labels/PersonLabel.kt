@@ -32,7 +32,6 @@ fun PersonLabel(
             LabelButton(
                 item = person,
                 onItemClick = { onAction(LabelsTabAction.EditPersonClicked(person)) },
-                checked = true
             )
         }
 

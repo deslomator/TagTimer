@@ -54,7 +54,6 @@ fun PersonTrash(
                         context.getString(R.string.person_deleted)
                     )
                 },
-                checked = true
             )
         }
     }

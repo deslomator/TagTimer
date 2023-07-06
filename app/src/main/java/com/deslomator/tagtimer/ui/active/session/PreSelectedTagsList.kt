@@ -43,7 +43,6 @@ fun PreSelectedTagsList(
             LabelButton(
                 item = tag,
                 onItemClick = { onItemClicked(tag) },
-                checked = true
             )
         }
     }

@@ -54,7 +54,6 @@ fun PlaceTrash(
                         context.getString(R.string.place_deleted)
                     )
                 },
-                checked = true
             )
         }
     }

@@ -32,7 +32,6 @@ fun PlaceLabel(
             LabelButton(
                 item = place,
                 onItemClick = { onAction(LabelsTabAction.EditPlaceClicked(place)) },
-                checked = true
             )
         }
 
