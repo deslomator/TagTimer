@@ -26,6 +26,9 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,6 +70,42 @@ fun ActiveSessionContent(
     }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+    val tags by remember(sharedState.tagSort, state.tags) {
+        derivedStateOf {
+            state.tags.filter { tag ->
+                state.preSelectedTags.map { it.labelId }.contains(tag.id)
+            }.sortedWith(
+                when (sharedState.tagSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+        }
+    }
+    val persons by remember(sharedState.personSort, state.persons) {
+        derivedStateOf {
+            state.persons.filter { person ->
+                state.preSelectedPersons.map { it.labelId }.contains(person.id)
+            }.sortedWith(
+                when (sharedState.personSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+        }
+    }
+    val places by remember(sharedState.placeSort, state.places) {
+        derivedStateOf {
+            state.places.filter { place ->
+                state.preSelectedPlaces.map { it.labelId }.contains(place.id)
+            }.sortedWith(
+                when (sharedState.placeSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -123,14 +162,7 @@ fun ActiveSessionContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.6f),
-                tags = state.tags.filter { tag ->
-                        state.preSelectedTags.map { it.labelId }.contains(tag.id)
-                    }.sortedWith(
-                    when (sharedState.tagSort) {
-                        Sort.COLOR -> compareBy { Color(it.color).hue() }
-                        Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                    }
-                ),
+                tags = tags,
                 onItemClicked = {
                     if (!sharedState.isRunning) {
                         showSnackbar(
@@ -145,15 +177,7 @@ fun ActiveSessionContent(
             )
             Divider()
             PreSelectedPersonsList(
-                persons = state.persons.filter { person ->
-                    state.preSelectedPersons.map { it.labelId }.contains(person.id) &&
-                            person.name.isNotEmpty()
-                }.sortedWith(
-                    when (sharedState.personSort) {
-                        Sort.COLOR -> compareBy { Color(it.color).hue() }
-                        Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-                ),
+                persons = persons,
                 currentPerson = state.currentPersonName,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
@@ -161,15 +185,7 @@ fun ActiveSessionContent(
             )
             Divider()
             PreSelectedPlacesList(
-                places = state.places.filter { place ->
-                    state.preSelectedPlaces.map { it.labelId }.contains(place.id) &&
-                            place.name.isNotEmpty()
-                }.sortedWith(
-                    when (sharedState.placeSort) {
-                        Sort.COLOR -> compareBy { Color(it.color).hue() }
-                        Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                    }
-                ),
+                places = places,
                 currentPlace = state.currentPlaceName,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))

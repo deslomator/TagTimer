@@ -16,11 +16,10 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -40,6 +39,7 @@ import com.deslomator.tagtimer.ui.active.dialog.PlaceDialog
 import com.deslomator.tagtimer.ui.active.dialog.TagDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.hue
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -52,17 +52,39 @@ fun LabelSelectionContent(
     snackbarHostState: SnackbarHostState,
 ) {
     val scope = rememberCoroutineScope()
-    var currentPage by remember { mutableIntStateOf(1) }
-    val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
+    val pages = remember { listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place) }
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
-    LaunchedEffect(currentPage) {
-//        Log.d(TAG, "target page changed")
-        pagerState.animateScrollToPage(currentPage)
+    val tags by remember(sharedState.tagSort, state.tags) {
+        derivedStateOf {
+            state.tags.sortedWith(
+                when (sharedState.tagSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+        }
     }
-    LaunchedEffect(pagerState.targetPage) {
-        currentPage = pagerState.targetPage
-        onTabClick(currentPage)
+    val persons by remember(sharedState.personSort, state.persons) {
+        derivedStateOf {
+            state.persons.sortedWith(
+                when (sharedState.personSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+        }
     }
+    val places by remember(sharedState.placeSort, state.places) {
+        derivedStateOf {
+            state.places.sortedWith(
+                when (sharedState.placeSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+        }
+    }
+    LaunchedEffect(pagerState.currentPage) { onTabClick(pagerState.currentPage) }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -70,7 +92,7 @@ fun LabelSelectionContent(
     ) {
         Column {
             TabRow(
-                selectedTabIndex = currentPage,
+                selectedTabIndex = pagerState.currentPage,
                 divider = { Divider() },
                 indicator = { tabPositions ->
                     TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
@@ -78,15 +100,15 @@ fun LabelSelectionContent(
             ) {
                 pages.forEachIndexed { index, page ->
                     Tab(
-                        selected = currentPage == index,
+                        selected = pagerState.currentPage == index,
                         onClick = {
-                            currentPage = index
+                            scope.launch { pagerState.animateScrollToPage(index) }
                         }
                     ) {
                         Text(
                             modifier = Modifier.padding(bottom = 7.dp),
                             text = stringResource(id = page.stringId),
-                            fontWeight = if (currentPage == index) FontWeight.Bold
+                            fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
                             else FontWeight.Normal
                         )
                     }
@@ -101,15 +123,8 @@ fun LabelSelectionContent(
                     LabelScreen.Tag -> {
                         val checkedMessage = stringResource(R.string.tag_checked)
                         val unCheckedMessage = stringResource(R.string.tag_unchecked)
-                        LaunchedEffect(Unit) {
-                        }
                         LabelSelectionList(
-                            labels = state.tags.sortedWith(
-                                when (sharedState.tagSort) {
-                                    Sort.COLOR -> compareBy { Color(it.color).hue() }
-                                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                                }
-                            ),
+                            labels = tags,
                             preSelected = state.preSelectedTags,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
@@ -127,15 +142,8 @@ fun LabelSelectionContent(
                     LabelScreen.Person -> {
                         val checkedMessage = stringResource(R.string.person_checked)
                         val unCheckedMessage = stringResource(R.string.person_unchecked)
-                        LaunchedEffect(Unit) {
-                        }
                         LabelSelectionList(
-                            labels = state.persons.sortedWith(
-                                when (sharedState.personSort) {
-                                    Sort.COLOR -> compareBy { Color(it.color).hue() }
-                                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                                }
-                            ),
+                            labels = persons,
                             preSelected = state.preSelectedPersons,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
@@ -153,15 +161,8 @@ fun LabelSelectionContent(
                     LabelScreen.Place -> {
                         val checkedMessage = stringResource(R.string.place_checked)
                         val unCheckedMessage = stringResource(R.string.place_unchecked)
-                        LaunchedEffect(Unit) {
-                        }
                         LabelSelectionList(
-                            labels = state.places.sortedWith(
-                                when (sharedState.placeSort) {
-                                    Sort.COLOR -> compareBy { Color(it.color).hue() }
-                                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                                }
-                            ),
+                            labels = places,
                             preSelected = state.preSelectedPlaces,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
