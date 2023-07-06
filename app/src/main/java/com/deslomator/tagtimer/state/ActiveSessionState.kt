@@ -14,8 +14,6 @@ data class ActiveSessionState(
     val persons: List<Label.Person> = emptyList(),
     val places: List<Label.Place> = emptyList(),
     val currentSession: Session = Session(),
-    val isRunning: Boolean = false,
-    val cursor: Long = 0,
     val showSnackbar: Boolean = false,
     val eventForDialog: Event = Event(),
     val eventForScrollTo: Event = Event(),

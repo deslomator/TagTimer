@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active.selection
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -12,13 +11,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.state.LabelPreselectionState
+import com.deslomator.tagtimer.state.SharedState
 
 @Composable
 fun LabelSelectionScaffold(
     navController: NavHostController,
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
+    sharedState: SharedState,
+    onSharedAction: (SharedAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var currentPage by remember { mutableIntStateOf(1) }

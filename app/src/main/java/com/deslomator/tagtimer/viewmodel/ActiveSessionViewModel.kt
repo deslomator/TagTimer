@@ -81,30 +81,23 @@ class ActiveSessionViewModel @Inject constructor(
 
     fun onAction(action: ActiveSessionAction) {
         when(action) {
-            is ActiveSessionAction.PlayPauseClicked -> {
-                Log.d(TAG, "ActiveSessionAction.PlayPauseClicked")
-                _state.update { it.copy(isRunning = !state.value.isRunning) }
-            }
             is ActiveSessionAction.PreSelectedTagClicked -> {
-                if (state.value.isRunning) {
-                    viewModelScope.launch {
-                        val event = Event(
-                            sessionId = _sessionId.value,
-                            elapsedTimeMillis = state.value.cursor,
-                            tag = action.tag.name,
-                            person = state.value.currentPersonName,
-                            place = state.value.currentPlaceName,
-                            color = action.tag.color,
-                        )
-                        val id = appDao.upsertEvent(event)
-                        _state.update {
-                            it.copy( eventForScrollTo = event.copy(id = id.toInt()))
-                        }
+                viewModelScope.launch {
+                    val event = Event(
+                        sessionId = _sessionId.value,
+                        elapsedTimeMillis = action.cursor,
+                        tag = action.tag.name,
+                        person = state.value.currentPersonName,
+                        place = state.value.currentPlaceName,
+                        color = action.tag.color,
+                    )
+                    val id = appDao.upsertEvent(event)
+                    _state.update {
+                        it.copy( eventForScrollTo = event.copy(id = id.toInt()))
                     }
                 }
             }
-            is ActiveSessionAction.StopSession -> {
-                _state.update { it.copy(isRunning = false) }
+            is ActiveSessionAction.UpdateSession -> {
                 val session = state.value.currentSession.copy(
                     durationMillis = getSessionDuration(),
                     eventCount = state.value.events.size
@@ -163,15 +156,6 @@ class ActiveSessionViewModel @Inject constructor(
                     currentSession = s,
                     showTimeDialog = true
                 ) }
-            }
-            is ActiveSessionAction.SetCursor -> {
-                Log.d(TAG, "ActiveSessionAction.SetCursor: ${action.time}")
-                _state.update { it.copy(cursor = action.time) }
-            }
-            is ActiveSessionAction.IncreaseCursor -> {
-                Log.d(TAG, "ActiveSessionAction.IncreaseCursor")
-                val newTime = state.value.cursor + action.stepMillis
-                _state.update { it.copy(cursor = newTime) }
             }
             is ActiveSessionAction.DismissTimeDialog -> {
                 Log.d(TAG, "ActiveSessionAction.DismissTimeDialog")

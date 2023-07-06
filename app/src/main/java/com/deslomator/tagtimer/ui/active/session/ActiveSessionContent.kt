@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active.session
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -27,51 +26,44 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
+import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.toElapsedTime
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
+import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
-import kotlinx.coroutines.delay
 
 @Composable
 fun ActiveSessionContent(
     paddingValues: PaddingValues,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
+    sharedState: SharedState,
+    onSharedAction: (SharedAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
-    LaunchedEffect(state.currentSession) {
-        Log.d(TAG, "LaunchedEffect(state.currentSession) set cursor")
-        onAction(ActiveSessionAction.SetCursor(state.currentSession.durationMillis))
-    }
-    LaunchedEffect(state.isRunning) {
-        if (state.isRunning) {
-            while (true) {
-                delay(1000)
-                onAction(ActiveSessionAction.IncreaseCursor(1000))
-            }
-        }
-    }
-    /*
-    this effect launches twice as needed but at least it's not very frequent
-     */
     LaunchedEffect(state.eventForScrollTo, state.events) {
         val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.id)
         if (index >= 0) {
             listState.animateScrollToItem(index, 0)
         }
     }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -103,16 +95,18 @@ fun ActiveSessionContent(
                 Button(
                     onClick = { onAction(ActiveSessionAction.TimeClicked) }
                 ) {
-                    Text(text = state.cursor.toElapsedTime())
+                    Text(text = sharedState.cursor.toElapsedTime())
                 }
                 Spacer(modifier = Modifier.width(30.dp))
                 IconButton(
-                    onClick = { onAction(ActiveSessionAction.PlayPauseClicked) }
+                    onClick = {
+                        onSharedAction(SharedAction.PlayPauseClicked)
+                    }
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
                         painter = painterResource(
-                            if (state.isRunning) {
+                            if (sharedState.isRunning) {
                                 R.drawable.pause_circle_outline
                             } else {
                                 R.drawable.play_circle_outline
@@ -128,9 +122,16 @@ fun ActiveSessionContent(
                     .weight(0.6f),
                 state = state,
                 onItemClicked = {
-                    onAction(ActiveSessionAction.PreSelectedTagClicked(it))
+                    if (!sharedState.isRunning) {
+                        showSnackbar(
+                            scope,
+                            snackbarHostState,
+                            context.getString(R.string.tap_play_to_add_event)
+                        )
+                    } else {
+                        onAction(ActiveSessionAction.PreSelectedTagClicked(it, sharedState.cursor))
+                    }
                 },
-                snackbarHostState = snackbarHostState
             )
             Divider()
             PreSelectedPersonsList(
@@ -171,13 +172,13 @@ fun ActiveSessionContent(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            val max = maxOf(state.cursor, state.currentSession.durationMillis)
+            val max = maxOf(sharedState.cursor, state.currentSession.durationMillis)
             TimeDialog(
-                current = state.cursor.toFloat(),
+                current = sharedState.cursor.toFloat(),
                 maximum = max.toFloat(),
                 onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
                 onAccept = {
-                    onAction(ActiveSessionAction.SetCursor(it.toLong()))
+                    onSharedAction(SharedAction.SetCursor(it.toLong()))
                     onAction(ActiveSessionAction.DismissTimeDialog)
                 }
             )
