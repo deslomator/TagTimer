@@ -15,12 +15,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +26,7 @@ import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.main.labels.dialog.PersonDialog
 import com.deslomator.tagtimer.ui.main.labels.dialog.PlaceDialog
 import com.deslomator.tagtimer.ui.main.labels.dialog.TagDialog
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -41,7 +37,6 @@ fun LabelsTabContent(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
-    var currentPage by remember { mutableIntStateOf(1) }
     val pages = listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place)
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     BackHandler(
@@ -59,14 +54,6 @@ fun LabelsTabContent(
     ) {
         onAction(LabelsTabAction.DismissPlaceDialog)
     }
-    LaunchedEffect(currentPage) {
-//        Log.d(TAG, "navigating to page: $currentPage")
-        pagerState.animateScrollToPage(currentPage)
-    }
-    LaunchedEffect(pagerState.targetPage) {
-//        Log.d(TAG, "setting page: $currentPage")
-        currentPage = pagerState.targetPage
-    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -74,18 +61,18 @@ fun LabelsTabContent(
     ) {
         Column {
             TabRow(
-                selectedTabIndex = currentPage,
+                selectedTabIndex = pagerState.currentPage,
                 divider = { Divider() }
             ) {
                 pages.forEachIndexed { index, page ->
                     Tab(
-                        selected = currentPage == index,
-                        onClick = { currentPage = index }
+                        selected = pagerState.currentPage == index,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
                     ) {
                         Text(
                             modifier = Modifier.padding(bottom = 7.dp),
                             text = stringResource(id = page.stringId),
-                            fontWeight = if (currentPage == index) FontWeight.Bold
+                            fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
                             else FontWeight.Normal
                         )
                     }
