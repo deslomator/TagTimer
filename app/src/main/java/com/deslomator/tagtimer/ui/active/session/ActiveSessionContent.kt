@@ -128,7 +128,7 @@ fun ActiveSessionContent(
                     }.sortedWith(
                     when (sharedState.tagSort) {
                         Sort.COLOR -> compareBy { Color(it.color).hue() }
-                        Sort.NAME -> compareBy { it.name }
+                        Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                     }
                 ),
                 onItemClicked = {
@@ -151,7 +151,7 @@ fun ActiveSessionContent(
                 }.sortedWith(
                     when (sharedState.personSort) {
                         Sort.COLOR -> compareBy { Color(it.color).hue() }
-                        Sort.NAME -> compareBy { it.name }
+                        Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
                 ),
                 currentPerson = state.currentPersonName,
@@ -167,7 +167,7 @@ fun ActiveSessionContent(
                 }.sortedWith(
                     when (sharedState.placeSort) {
                         Sort.COLOR -> compareBy { Color(it.color).hue() }
-                        Sort.NAME -> compareBy { it.name }
+                        Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                     }
                 ),
                 currentPlace = state.currentPlaceName,

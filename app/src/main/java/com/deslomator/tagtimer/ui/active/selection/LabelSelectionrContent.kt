@@ -107,7 +107,7 @@ fun LabelSelectionContent(
                             labels = state.tags.sortedWith(
                                 when (sharedState.tagSort) {
                                     Sort.COLOR -> compareBy { Color(it.color).hue() }
-                                    Sort.NAME -> compareBy { it.name }
+                                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                                 }
                             ),
                             preSelected = state.preSelectedTags,
@@ -133,7 +133,7 @@ fun LabelSelectionContent(
                             labels = state.persons.sortedWith(
                                 when (sharedState.personSort) {
                                     Sort.COLOR -> compareBy { Color(it.color).hue() }
-                                    Sort.NAME -> compareBy { it.name }
+                                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                                 }
                             ),
                             preSelected = state.preSelectedPersons,
@@ -159,7 +159,7 @@ fun LabelSelectionContent(
                             labels = state.places.sortedWith(
                                 when (sharedState.placeSort) {
                                     Sort.COLOR -> compareBy { Color(it.color).hue() }
-                                    Sort.NAME -> compareBy { it.name }
+                                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                                 }
                             ),
                             preSelected = state.preSelectedPlaces,

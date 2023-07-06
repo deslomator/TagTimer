@@ -45,7 +45,7 @@ fun EventFilterContent(
         .sortedWith(
             when (sharedState.tagSort) {
                 Sort.COLOR -> compareBy { Color(it.color).hue() }
-                Sort.NAME -> compareBy { it.name }
+                Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
             }
         )
     val persons = state.persons
@@ -56,7 +56,7 @@ fun EventFilterContent(
         .sortedWith(
             when (sharedState.personSort) {
                 Sort.COLOR -> compareBy { Color(it.color).hue() }
-                Sort.NAME -> compareBy { it.name }
+                Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
             }
         )
     val places = state.places
@@ -67,7 +67,7 @@ fun EventFilterContent(
         .sortedWith(
             when (sharedState.placeSort) {
                 Sort.COLOR -> compareBy { Color(it.color).hue() }
-                Sort.NAME -> compareBy { it.name }
+                Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
             }
         )
     BackHandler(enabled = state.showEventEditionDialog) {
