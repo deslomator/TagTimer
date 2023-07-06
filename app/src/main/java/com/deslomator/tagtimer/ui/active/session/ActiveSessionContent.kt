@@ -70,7 +70,7 @@ fun ActiveSessionContent(
     }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val tags by remember(sharedState.tagSort, state.tags) {
+    val tags by remember(sharedState.tagSort, state.tags, state.preSelectedTags) {
         derivedStateOf {
             state.tags.filter { tag ->
                 state.preSelectedTags.map { it.labelId }.contains(tag.id)
@@ -82,7 +82,7 @@ fun ActiveSessionContent(
             )
         }
     }
-    val persons by remember(sharedState.personSort, state.persons) {
+    val persons by remember(sharedState.personSort, state.persons, state.preSelectedPersons) {
         derivedStateOf {
             state.persons.filter { person ->
                 state.preSelectedPersons.map { it.labelId }.contains(person.id)
@@ -94,7 +94,7 @@ fun ActiveSessionContent(
             )
         }
     }
-    val places by remember(sharedState.placeSort, state.places) {
+    val places by remember(sharedState.placeSort, state.places, state.preSelectedPlaces) {
         derivedStateOf {
             state.places.filter { place ->
                 state.preSelectedPlaces.map { it.labelId }.contains(place.id)

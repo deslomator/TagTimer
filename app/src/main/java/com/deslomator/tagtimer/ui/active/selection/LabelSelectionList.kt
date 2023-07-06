@@ -7,10 +7,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
@@ -36,14 +35,13 @@ fun LabelSelectionList(
             items = labels,
             key = { it.id }
         ) { label ->
-            var checked by remember {
-                mutableStateOf(preSelected.map { it.labelId }.contains(label.id))
+            val checked by remember(preSelected) {
+                derivedStateOf { preSelected.map { it.labelId }.contains(label.id) }
             }
             LabelButton(
                 item = label,
                 onItemClick = {
-                    checked = !checked
-                    onCheckedChange(label.id, checked)
+                    onCheckedChange(label.id, !checked)
                 },
                 onLongClick = { onLongClick(label) },
                 checked = checked,
