@@ -121,7 +121,7 @@ fun EventFilterContent(
             UsedTagsList(
                 modifier = Modifier.weight(.28F),
                 tags = tags,
-                currentTag = state.currentLabelName,
+                currentTag = state.currentTagName,
                 onItemClick = { onAction(EventFilterAction.UsedTagClicked(it)) }
             )
             Divider()

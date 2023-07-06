@@ -123,9 +123,9 @@ class EventFilterViewModel @Inject constructor(
                 _state.update { it.copy(currentPlaceName = place) }
             }
             is EventFilterAction.UsedTagClicked -> {
-                val tag = if (action.tagName == state.value.currentLabelName) ""
+                val tag = if (action.tagName == state.value.currentTagName) ""
                 else action.tagName
-                _state.update { it.copy(currentLabelName = tag) }
+                _state.update { it.copy(currentTagName = tag) }
             }
             is EventFilterAction.ExportFilteredEventsClicked -> {
                 exportFilteredEvents(action.filteredEvents)

@@ -21,5 +21,5 @@ data class EventFilterState(
     val dataToExport: String = "",
     val currentPersonName: String = "",
     val currentPlaceName: String = "",
-    val currentLabelName: String = "",
+    val currentTagName: String = "",
 )

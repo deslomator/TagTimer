@@ -28,7 +28,7 @@ fun EventFilterScaffold(
     val filteredEvents by remember(
         state.currentPlaceName,
         state.currentPersonName,
-        state.currentLabelName,
+        state.currentTagName,
         state.events
     ) {
         derivedStateOf {
@@ -36,7 +36,7 @@ fun EventFilterScaffold(
                 .filter { event ->
                     (if (state.currentPlaceName.isEmpty()) true else event.place == state.currentPlaceName) &&
                             (if (state.currentPersonName.isEmpty()) true else event.person == state.currentPersonName) &&
-                            (if (state.currentLabelName.isEmpty()) true else event.tag.contains(state.currentLabelName))
+                            (if (state.currentTagName.isEmpty()) true else event.tag.contains(state.currentTagName))
                 }
         }
     }
@@ -63,7 +63,7 @@ fun EventFilterScaffold(
                         state.currentSession.name,
                         state.currentPersonName,
                         state.currentPlaceName,
-                        state.currentLabelName,
+                        state.currentTagName,
                     )
                         .filter { it.isNotEmpty() }
                         .joinToString(separator = ",")
