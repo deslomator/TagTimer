@@ -100,10 +100,12 @@ fun LabelSelectionContent(
                         LaunchedEffect(Unit) {
                         }
                         LabelSelectionList(
-                            labels = when (sharedState.tagSort) {
-                                Sort.NAME -> state.tags.sortedBy { it.name }
-                                Sort.COLOR -> state.tags.sortedBy { Color(it.color).hue() }
-                            },
+                            labels = state.tags.sortedWith(
+                                when (sharedState.tagSort) {
+                                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                                    Sort.NAME -> compareBy { it.name }
+                                }
+                            ),
                             preSelected = state.preSelectedTags,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
@@ -124,10 +126,12 @@ fun LabelSelectionContent(
                         LaunchedEffect(Unit) {
                         }
                         LabelSelectionList(
-                            labels = when (sharedState.personSort) {
-                                Sort.NAME -> state.persons.sortedBy { it.name }
-                                Sort.COLOR -> state.persons.sortedBy { Color(it.color).hue() }
-                            },
+                            labels = state.persons.sortedWith(
+                                when (sharedState.personSort) {
+                                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                                    Sort.NAME -> compareBy { it.name }
+                                }
+                            ),
                             preSelected = state.preSelectedPersons,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
@@ -148,10 +152,12 @@ fun LabelSelectionContent(
                         LaunchedEffect(Unit) {
                         }
                         LabelSelectionList(
-                            labels = when (sharedState.placeSort) {
-                                Sort.NAME -> state.places.sortedBy { it.name }
-                                Sort.COLOR -> state.places.sortedBy { Color(it.color).hue() }
-                            },
+                            labels = state.places.sortedWith(
+                                when (sharedState.placeSort) {
+                                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                                    Sort.NAME -> compareBy { it.name }
+                                }
+                            ),
                             preSelected = state.preSelectedPlaces,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(

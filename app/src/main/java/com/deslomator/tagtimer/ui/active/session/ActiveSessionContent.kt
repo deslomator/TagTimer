@@ -30,12 +30,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.action.SharedAction
+import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.toElapsedTime
@@ -45,6 +47,7 @@ import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
+import com.deslomator.tagtimer.ui.theme.hue
 
 @Composable
 fun ActiveSessionContent(
@@ -120,7 +123,14 @@ fun ActiveSessionContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.6f),
-                state = state,
+                tags = state.tags.filter { tag ->
+                        state.preSelectedTags.map { it.labelId }.contains(tag.id)
+                    }.sortedWith(
+                    when (sharedState.tagSort) {
+                        Sort.COLOR -> compareBy { Color(it.color).hue() }
+                        Sort.NAME -> compareBy { it.name }
+                    }
+                ),
                 onItemClicked = {
                     if (!sharedState.isRunning) {
                         showSnackbar(
@@ -138,7 +148,12 @@ fun ActiveSessionContent(
                 persons = state.persons.filter { person ->
                     state.preSelectedPersons.map { it.labelId }.contains(person.id) &&
                             person.name.isNotEmpty()
-                },
+                }.sortedWith(
+                    when (sharedState.personSort) {
+                        Sort.COLOR -> compareBy { Color(it.color).hue() }
+                        Sort.NAME -> compareBy { it.name }
+                }
+                ),
                 currentPerson = state.currentPersonName,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
@@ -149,7 +164,12 @@ fun ActiveSessionContent(
                 places = state.places.filter { place ->
                     state.preSelectedPlaces.map { it.labelId }.contains(place.id) &&
                             place.name.isNotEmpty()
-                },
+                }.sortedWith(
+                    when (sharedState.placeSort) {
+                        Sort.COLOR -> compareBy { Color(it.color).hue() }
+                        Sort.NAME -> compareBy { it.name }
+                    }
+                ),
                 currentPlace = state.currentPlaceName,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))

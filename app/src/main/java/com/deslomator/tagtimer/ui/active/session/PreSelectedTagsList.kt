@@ -14,16 +14,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
 fun PreSelectedTagsList(
     modifier: Modifier,
-    state: ActiveSessionState,
+    tags: List<Label.Tag>,
     onItemClicked: (Label.Tag) -> Unit,
 ) {
-    if (state.preSelectedTags.isEmpty()) {
+    if (tags.isEmpty()) {
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = stringResource(id = R.string.tap_toolbar_icon_add_pst),
@@ -38,9 +37,7 @@ fun PreSelectedTagsList(
         columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(
-            items = state.tags.filter { tag ->
-                state.preSelectedTags.map { it.labelId }.contains(tag.id)
-            },
+            items = tags,
             key = { it.id }
         ) { tag ->
             LabelButton(

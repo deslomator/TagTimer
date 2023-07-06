@@ -11,12 +11,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.state.EventFilterState
+import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.active.ExportSession
 
 @Composable
 fun EventFilterScaffold(
     navController: NavHostController,
     state: EventFilterState,
+    sharedState: SharedState,
     onAction: (EventFilterAction) -> Unit,
 ) {
     val context = LocalContext.current
@@ -74,6 +76,7 @@ fun EventFilterScaffold(
         EventFilterContent(
             paddingValues = paddingValues,
             state = state,
+            sharedState = sharedState,
             onAction = onAction,
             filteredEvents = filteredEvents
         )

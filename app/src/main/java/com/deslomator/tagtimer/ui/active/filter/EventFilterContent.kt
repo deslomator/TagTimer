@@ -14,63 +14,62 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.EventFilterState
+import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
+import com.deslomator.tagtimer.ui.theme.hue
 
 @Composable
 fun EventFilterContent(
     paddingValues: PaddingValues,
     state: EventFilterState,
+    sharedState: SharedState,
     onAction: (EventFilterAction) -> Unit,
     filteredEvents: List<Event>
 ) {
-    /*
-   get places that are actually used in and Event
-    */
-    val places by remember(state.events) {
-        derivedStateOf {
-            state.places
-                .filter { place ->
-                    place.name.isNotEmpty() &&
-                            state.events.map { it.place }.distinct().contains(place.name)
-                }
-        }
-    }
-    /*
-    get places that are actually used in an Event
-     */
-    val persons by remember(state.events) {
-        derivedStateOf {
-            state.persons
-                .filter { person ->
-                    person.name.isNotEmpty() &&
-                            state.events.map { it.person }.distinct().contains(person.name)
-                }
-        }
-    }
-    /*
-    get tags that are actually used in an Event
-     */
-    val tags by remember(state.events) {
-        derivedStateOf {
-            state.tags
-                .filter { tag ->
-                    tag.name.isNotEmpty() &&
-                            state.events.map { it.tag }.distinct().contains(tag.name)
-                }
-        }
-    }
+    val tags = state.tags
+        .filter { tag ->
+            tag.name.isNotEmpty() &&
+                    state.events.map { it.tag }.contains(tag.name)
+        }.distinctBy { it.name }
+        .sortedWith(
+            when (sharedState.tagSort) {
+                Sort.COLOR -> compareBy { Color(it.color).hue() }
+                Sort.NAME -> compareBy { it.name }
+            }
+        )
+    val persons = state.persons
+        .filter { person ->
+            person.name.isNotEmpty() &&
+                    state.events.map { it.person }.contains(person.name)
+        }.distinctBy { it.name }
+        .sortedWith(
+            when (sharedState.personSort) {
+                Sort.COLOR -> compareBy { Color(it.color).hue() }
+                Sort.NAME -> compareBy { it.name }
+            }
+        )
+    val places = state.places
+        .filter { place ->
+            place.name.isNotEmpty() &&
+                    state.events.map { it.place }.contains(place.name)
+        }.distinctBy { it.name }
+        .sortedWith(
+            when (sharedState.placeSort) {
+                Sort.COLOR -> compareBy { Color(it.color).hue() }
+                Sort.NAME -> compareBy { it.name }
+            }
+        )
     BackHandler(enabled = state.showEventEditionDialog) {
         onAction(EventFilterAction.DismissEventEditionDialog)
     }

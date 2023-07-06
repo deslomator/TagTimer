@@ -133,11 +133,14 @@ fun AppNavHost(
                 route = ActiveScreen.EventFilter.route,
                 arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
             ) { backStackEntry ->
+                val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
+                val sharedState by sharedVm.state.collectAsStateWithLifecycle()
                 val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsStateWithLifecycle()
                 EventFilterScaffold(
                     navController = navController,
                     state = state,
+                    sharedState = sharedState,
                     onAction = viewModel::onAction,
                 )
             }
