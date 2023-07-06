@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,35 +36,39 @@ fun ColorPicker(
     enabled: Boolean = true
 ) {
     var showGrid by rememberSaveable { mutableStateOf(false) }
-
-    if (!showGrid) {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.TopCenter
-        ) {
-            ColorItem(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .border(1.dp, Color.Gray),
-                color = selectedColor,
-                onClick = { if (enabled) showGrid = true }
-            )
-        }
-    } else {
-        LazyVerticalGrid(
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            columns = GridCells.Adaptive(minSize = 40.dp)
-        ) {
-            items(colorPickerColors) { color ->
-                ColorItem(
-                    color = color,
-                    onClick = {
-                        showGrid = false
-                        onItemClick(it)
+    AnimatedContent(showGrid ) {
+        when (it) {
+            true -> {
+                LazyVerticalGrid(
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    columns = GridCells.Adaptive(minSize = 40.dp)
+                ) {
+                    items(colorPickerColors) { color ->
+                        ColorItem(
+                            color = color,
+                            onClick = {
+                                showGrid = false
+                                onItemClick(it)
+                            }
+                        )
                     }
-                )
+                }
+            }
+            false -> {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    ColorItem(
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .border(1.dp, Color.Gray),
+                        color = selectedColor,
+                        onClick = { if (enabled) showGrid = true }
+                    )
+                }
             }
         }
     }
