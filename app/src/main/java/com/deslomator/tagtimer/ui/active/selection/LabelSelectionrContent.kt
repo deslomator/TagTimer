@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,17 +31,21 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
+import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelPreselectionState
+import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.active.dialog.PersonDialog
 import com.deslomator.tagtimer.ui.active.dialog.PlaceDialog
 import com.deslomator.tagtimer.ui.active.dialog.TagDialog
 import com.deslomator.tagtimer.ui.showSnackbar
+import com.deslomator.tagtimer.ui.theme.hue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabelSelectionContent(
     paddingValues: PaddingValues,
     state: LabelPreselectionState,
+    sharedState: SharedState,
     onAction: (LabelPreselectionAction) -> Unit,
     onTabClick: (Int) -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -95,7 +100,10 @@ fun LabelSelectionContent(
                         LaunchedEffect(Unit) {
                         }
                         LabelSelectionList(
-                            labels = state.tags,
+                            labels = when (sharedState.tagSort) {
+                                Sort.NAME -> state.tags.sortedBy { it.name }
+                                Sort.COLOR -> state.tags.sortedBy { Color(it.color).hue() }
+                            },
                             preSelected = state.preSelectedTags,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
@@ -116,7 +124,10 @@ fun LabelSelectionContent(
                         LaunchedEffect(Unit) {
                         }
                         LabelSelectionList(
-                            labels = state.persons,
+                            labels = when (sharedState.personSort) {
+                                Sort.NAME -> state.persons.sortedBy { it.name }
+                                Sort.COLOR -> state.persons.sortedBy { Color(it.color).hue() }
+                            },
                             preSelected = state.preSelectedPersons,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(
@@ -137,7 +148,10 @@ fun LabelSelectionContent(
                         LaunchedEffect(Unit) {
                         }
                         LabelSelectionList(
-                            labels = state.places,
+                            labels = when (sharedState.placeSort) {
+                                Sort.NAME -> state.places.sortedBy { it.name }
+                                Sort.COLOR -> state.places.sortedBy { Color(it.color).hue() }
+                            },
                             preSelected = state.preSelectedPlaces,
                             onCheckedChange = { id, checked ->
                                 showSnackbar(

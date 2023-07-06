@@ -67,4 +67,6 @@
     <string name="event_trash">Eventos eliminados</string>
     <string name="share_session">Compartir Sesión</string>
     <string name="long_press_to_edit_remove">Pulsación larga para Editar o Eliminar</string>
+    <string name="sort_by_name">ordenar por nombre</string>
+    <string name="sort_by_color">ordenar por color</string>
 </resources>

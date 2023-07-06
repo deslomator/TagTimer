@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SharedAction
@@ -33,10 +34,10 @@ class SharedViewModel @Inject constructor() : ViewModel() {
                 _state.update { it.copy(tagSort = action.tagSort) }
             }
             is SharedAction.PersonSortClicked -> {
-                _state.update { it.copy(tagSort = action.personSort) }
+                _state.update { it.copy(personSort = action.personSort) }
             }
             is SharedAction.PlaceSortClicked -> {
-                _state.update { it.copy(tagSort = action.placeSort) }
+                _state.update { it.copy(placeSort = action.placeSort) }
             }
             is SharedAction.SetCursor -> {
                 _state.update { it.copy(cursor = action.cursor) }

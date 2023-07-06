@@ -52,6 +52,8 @@ fun LabelSelectionScaffold(
                 showTagDialog = state.showTagDialog,
                 showPersonDialog = state.showPersonDialog,
                 showPlaceDialog = state.showPlaceDialog,
+                sharedState = sharedState,
+                onSharedAction = onSharedAction,
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -59,6 +61,7 @@ fun LabelSelectionScaffold(
         LabelSelectionContent(
             paddingValues = paddingValues,
             state = state,
+            sharedState = sharedState,
             onAction = onAction,
             onTabClick = { currentPage = it },
             snackbarHostState = snackbarHostState,

@@ -50,7 +50,32 @@ fun Color.brightness(): Float {
     return (0.21f * this.red) + (0.72f * this.green) + (0.07f * this.blue)
 }
 
-fun Color.contrasted() = if (this.brightness() > LIGTH_COLOR_THRESHOLD) OnLightBackground
+ /*
+ hue from RGB formula
+if (R >= G >= B) { 60 * ((G - B) / (R - B)) }
+else if (G > R >= B ) { 60 * (2 - (R - B) / (G - B)) }
+else if (G >= B > R ) { 60 * (2 + (B - R) / (G - R)) }
+else if (B > G > R  ) { 60 * (4 - (G - R) / (B - R)) }
+else if (B > R >= G ) { 60 * (4 + (R - G) / (B - G)) }
+else (R >= B > G ) { 60 * (6 - (B - G) / (R - G) }
+ */
+
+fun Color.hue(): Float {
+    val r = this.red
+    val g = this.green
+    val b = this.blue
+    return if (g in b..r) { 60 * ((g - b) / (r - b)) }
+    else if (g > r && r >= b) { 60 * (2 - (r - b) / (g - b)) }
+//    else if (G >= B && B > R ) { 60 * (2 + (B - R) / (G - R)) } B > R is true at this point
+    else if (g >= b) { 60 * (2 + (b - r) / (g - r)) }
+//    else if (B > G && G > R) { 60 * (4 - (G - R) / (B - R)) } B > G is true at this point
+    else if (g > r) { 60 * (4 - (g - r) / (b - r)) }
+//    else if (B > R && R >= G) { 60 * (4 + (R - G) / (B - G)) } R >= G is true at this point
+    else if (b > r) { 60 * (4 + (r - g) / (b - g)) }
+    else { 60 * (6 - (b - g) / (r - g)) }
+}
+
+fun Color.contrasted() = if (this.brightness() > LIGHT_COLOR_THRESHOLD) OnLightBackground
 else OnDarkBackground
 
-private const val LIGTH_COLOR_THRESHOLD = 0.6f
+private const val LIGHT_COLOR_THRESHOLD = 0.6f

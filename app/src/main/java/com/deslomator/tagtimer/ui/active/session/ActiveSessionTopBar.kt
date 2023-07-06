@@ -28,9 +28,7 @@ fun ActiveSessionTopBar(
     onFilterClick: () -> Unit,
     onEventTrashClick: () -> Unit,
 ) {
-    var showMenu by remember {
-        mutableStateOf(false)
-    }
+    var showMenu by remember { mutableStateOf(false) }
     TopAppBar(
         navigationIcon = {
             IconButton(
@@ -65,7 +63,7 @@ fun ActiveSessionTopBar(
                 ) {
                     Icon(
                         painter = painterResource(R.drawable.more_vert),
-                        contentDescription = stringResource(id = R.string.add_tag)
+                        contentDescription = null
                     )
                 }
                 DropdownMenu(
