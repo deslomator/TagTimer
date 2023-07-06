@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -38,6 +39,7 @@ fun EventListItem(
     onItemClick: () -> Unit,
     persons: List<String> = emptyList()
 ) {
+//    Log.d(TAG, "recomposing event, id: ${event.id}")
     val borderColor =
         if (Color(event.color).brightness() > 0.9f) OnDarkBackground.toArgb()
         else event.color
