@@ -2,7 +2,6 @@ package com.deslomator.tagtimer
 
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,7 +15,6 @@ import com.deslomator.tagtimer.ui.theme.TagTimerTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -44,18 +42,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-private suspend fun cleanOrphans(dao: AppDao) {
-    delay(4000)
-    val oe = dao.clearOrphanEvents()
-    val out = dao.clearOrphanPreSelectedPersons()
-    val out2 = dao.clearOrphanPreSelectedPlaces()
-    val out3 = dao.clearOrphanPreSelectedTags()
-    Log.d(TAG, "dao.clearOrphanEvents(): $oe")
-    Log.d(TAG, "dao.clearOrphanPreSelectedPersons(): $out")
-    Log.d(TAG, "dao.clearOrphanPreSelectedPlaces(): $out2")
-    Log.d(TAG, "dao.clearOrphanPreSelectedTags(): $out3")
 }
 
 private const val TAG = "MainActivity"
