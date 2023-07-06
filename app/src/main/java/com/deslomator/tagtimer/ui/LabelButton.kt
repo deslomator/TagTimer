@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,25 +48,33 @@ fun LabelButton(
     checked: Boolean = true,
     checkType: Checked = Checked.NONE
 ) {
-    val borderWidth = if (item is Label.Person) 5.dp else 1.dp
-    val borderColor = if (item is Label.Person) {
-        if (Color(item.color).brightness() > .9F) VeryLightGray
-        else Color(item.color)
-    } else {
-        Color.LightGray
+    val borderWidth = remember { if (item is Label.Person) 5.dp else 1.dp }
+    val borderColor = remember {
+        if (item is Label.Person) {
+            if (Color(item.color).brightness() > .9F) VeryLightGray
+            else Color(item.color)
+        } else {
+            Color.LightGray
+        }
     }
-    val containerColor =
+    val containerColor = remember {
         if (item is Label.Person) Color.White
         else Color(item.color)
-    val contentColor = containerColor.contrasted()
-    val icon = when (item) {
-        is Label.Tag -> painterResource(id = R.drawable.tag)
-        is Label.Place -> painterResource(id = R.drawable.place)
-        is Label.Person -> painterResource(id = R.drawable.person)
     }
-    val leadingIcon = if (isTrash) painterResource(id = R.drawable.restore_from_trash) else icon
-    val trailingIcon = if (isTrash) painterResource(id = R.drawable.delete_forever) else null
-    val iconPadding = if (isTrash) 9.dp else 0.dp
+    val contentColor = remember { containerColor.contrasted() }
+    val leadingIcon = remember {
+        if (isTrash) {
+            R.drawable.restore_from_trash
+        } else {
+            when (item) {
+                is Label.Tag -> R.drawable.tag
+                is Label.Place -> R.drawable.place
+                is Label.Person -> R.drawable.person
+            }
+        }
+    }
+    val trailingIcon = remember { if (isTrash) R.drawable.delete_forever else null }
+    val iconPadding = remember { if (isTrash) 9.dp else 0.dp }
     val containerPadding by animateDpAsState(
         targetValue = if (checked && checkType == Checked.LEADING) 12.dp else 5.dp
     )
@@ -92,7 +101,7 @@ fun LabelButton(
                     } ?: Modifier)
                     .padding(iconPadding)
                     .size(iconSize),
-                painter = leadingIcon,
+                painter = painterResource(id = leadingIcon),
                 contentDescription = "restore",
                 tint = contentColor
             )
@@ -112,7 +121,7 @@ fun LabelButton(
                         )
                         .padding(iconPadding)
                         .size(iconSize),
-                    painter = it,
+                    painter = painterResource(id = it),
                     contentDescription = "delete forever",
                     tint = contentColor
                 )
@@ -130,4 +139,4 @@ fun LabelButton(
     }
 }
 
-    private const val TAG = "LabelButton"
+private const val TAG = "LabelButton"
