@@ -8,5 +8,6 @@ sealed interface SessionsTabAction {
     data class ItemClicked(val session: Session): SessionsTabAction
     data class DialogAcceptClicked(val session: Session): SessionsTabAction
     object DismissSessionDialog: SessionsTabAction
-    data class TrashSessionSwiped(val session: Session): SessionsTabAction
+    object TrashSessionClicked: SessionsTabAction
+    data class CopySessionClicked(val copyString: String): SessionsTabAction
 }

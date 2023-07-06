@@ -39,6 +39,7 @@ fun SessionDialog(
     var color by rememberSaveable {
         mutableIntStateOf(state.currentSession.color)
     }
+    val copy = stringResource(id = R.string.copy)
     MyDialog(
         onDismiss = {
             onAction(SessionsTabAction.DismissSessionDialog)
@@ -59,7 +60,11 @@ fun SessionDialog(
                 snackbarHostState,
                 message
             )
-            onAction(SessionsTabAction.TrashSessionSwiped(state.currentSession))
+            onAction(SessionsTabAction.TrashSessionClicked)
+        },
+        showCopy = state.isEditingSession,
+        onCopy = {
+            onAction(SessionsTabAction.CopySessionClicked(copy))
         },
         title = if (state.isEditingSession) R.string.edit_session else R.string.new_session
     ) {

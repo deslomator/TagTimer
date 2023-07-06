@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
@@ -54,18 +55,53 @@ class SessionsTabViewModel @Inject constructor(
             is SessionsTabAction.DismissSessionDialog -> {
                 _state.update { it.copy(showSessionDialog = false) }
             }
-            is SessionsTabAction.TrashSessionSwiped -> {
+            is SessionsTabAction.TrashSessionClicked -> {
                 viewModelScope.launch {
                     _state.update { it.copy(showSessionDialog = false) }
-                    val trashed = action.session.copy(inTrash = true)
+                    val trashed = state.value.currentSession.copy(inTrash = true)
                     appDao.upsertSession(trashed)
 //                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
             }
-
             SessionsTabAction.PopulateDbClicked -> {
                 viewModelScope.launch(Dispatchers.IO) { populateDb(appDao) }
             }
+            is SessionsTabAction.CopySessionClicked -> {
+                copySession(action.copyString)
+                _state.update { it.copy(showSessionDialog = false) }
+            }
+        }
+    }
+
+    private fun copySession(copyString: String) {
+        val s = state.value.currentSession
+        val newName = "${s.name} - ${copyString}"
+        viewModelScope.launch {
+            val newId = (appDao.getSessionsList().maxOfOrNull { it.id } ?: 0) + 1
+            val newSession = state.value.currentSession.copy(
+                id = newId,
+                name = newName,
+                lastAccessMillis = System.currentTimeMillis()
+            )
+            appDao.upsertSession(newSession)
+            appDao.getPreSelectedTagsListForSession(s.id)
+                .map{ it.copy(
+                    sessionId = newId,
+                    id = 0,
+                ) }
+                .forEach { psl -> appDao.upsertPreSelectedTag(psl) }
+            appDao.getPreSelectedPersonsListForSession(s.id)
+                .map{ it.copy(
+                    sessionId = newId,
+                    id = 0,
+                ) }
+                .forEach { psl -> appDao.upsertPreSelectedPerson(psl) }
+            appDao.getPreSelectedPlacesListForSession(s.id)
+                .map{ it.copy(
+                    sessionId = newId,
+                    id = 0,
+                ) }
+                .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
         }
     }
 

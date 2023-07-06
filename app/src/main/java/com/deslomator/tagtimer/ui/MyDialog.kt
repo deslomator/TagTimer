@@ -36,6 +36,8 @@ fun MyDialog(
     onAccept: () -> Unit,
     showTrash: Boolean = false,
     onTrash: (() -> Unit)? = null,
+    showCopy: Boolean = false,
+    onCopy: (() -> Unit)? = null,
     @StringRes title: Int? = null,
     content: @Composable () -> Unit
 ) {
@@ -66,6 +68,14 @@ fun MyDialog(
                             text = stringResource(id = it),
                             textAlign = TextAlign.Center
                         )
+                    }
+                    if (showCopy) {
+                        IconButton(onClick = { onCopy?.invoke() }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.copy),
+                                contentDescription = null
+                            )
+                        }
                     }
                     if (showTrash) {
                         IconButton(onClick = { onTrash?.invoke() }) {
