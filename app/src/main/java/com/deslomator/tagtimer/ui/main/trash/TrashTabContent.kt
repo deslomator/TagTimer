@@ -20,6 +20,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +54,7 @@ fun TrashTabContent(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val pages = listOf(Trash.Session, Trash.Tag, Trash.Person, Trash.Place)
+    val pages = remember { listOf(Trash.Session, Trash.Tag, Trash.Person, Trash.Place) }
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     Box(
         modifier = Modifier
