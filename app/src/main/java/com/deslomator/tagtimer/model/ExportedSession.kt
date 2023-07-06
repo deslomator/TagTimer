@@ -1,9 +1,11 @@
 package com.deslomator.tagtimer.model
 
+import androidx.annotation.Keep
 import com.deslomator.tagtimer.toDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Keep
 @Serializable
 data class ExportedSession(
     val date: String = "",
