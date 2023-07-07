@@ -19,13 +19,13 @@ fun LabelsTopBar(
     onNewTagClick: () -> Unit,
     onNewPersonClick: () -> Unit,
     onNewPlaceClick: () -> Unit,
-    pagerState: PagerState,
+    currentPage: Int,
 
     ) {
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
         actions = {
-            AnimatedContent(pagerState.currentPage) {
+            AnimatedContent(currentPage) {
                 when (it) {
                     0 -> {
                         IconButton(

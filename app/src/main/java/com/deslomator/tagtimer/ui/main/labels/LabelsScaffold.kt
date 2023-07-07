@@ -27,7 +27,7 @@ fun LabelsScaffold(
                 onNewTagClick = { onAction(LabelsTabAction.AddNewTagClicked) },
                 onNewPersonClick = { onAction(LabelsTabAction.AddNewPersonClicked) },
                 onNewPlaceClick = { onAction(LabelsTabAction.AddNewPlaceClicked) },
-                pagerState = pagerState,
+                currentPage = pagerState.currentPage,
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
