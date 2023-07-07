@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.selection
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -56,64 +57,71 @@ fun LabelSelectionTopBar(
         ) },
         actions = {
             if (!showTagDialog && !showPersonDialog && !showPlaceDialog) {
-                when (currentPage) {
-                    0 -> {
-                        IconButton(
-                            onClick = onAddTagClick
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.add_tag),
-                                contentDescription = stringResource(id = R.string.add_tag)
-                            )
-                        }
-                        SortMenu(
-                            currentSort = sharedState.tagSort,
-                            onNameSortClick = {
-                                onSharedAction(SharedAction.TagSortClicked(Sort.NAME))
-                            },
-                            onColorSortClick = {
-                                onSharedAction(SharedAction.TagSortClicked(Sort.COLOR))
+                AnimatedContent(currentPage) {
+                    when (it) {
+                        0 -> {
+                            Row {
+                                IconButton(
+                                    onClick = onAddTagClick
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.add_tag),
+                                        contentDescription = stringResource(id = R.string.add_tag)
+                                    )
+                                }
+                                SortMenu(
+                                    currentSort = sharedState.tagSort,
+                                    onNameSortClick = {
+                                        onSharedAction(SharedAction.TagSortClicked(Sort.NAME))
+                                    },
+                                    onColorSortClick = {
+                                        onSharedAction(SharedAction.TagSortClicked(Sort.COLOR))
+                                    }
+                                )
                             }
-                        )
-                    }
-                    1 -> {
-                        IconButton(
-                            onClick = onAddPersonClick
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.add_person),
-                                contentDescription = stringResource(id = R.string.add_person)
-                            )
                         }
-                        SortMenu(
-                            currentSort = sharedState.personSort,
-                            onNameSortClick = {
-                                onSharedAction(SharedAction.PersonSortClicked(Sort.NAME))
-                            },
-                            onColorSortClick = {
-                                onSharedAction(SharedAction.PersonSortClicked(Sort.COLOR))
+                        1 -> {
+                            Row {
+                                IconButton(
+                                    onClick = onAddPersonClick
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.add_person),
+                                        contentDescription = stringResource(id = R.string.add_person)
+                                    )
+                                }
+                                SortMenu(
+                                    currentSort = sharedState.personSort,
+                                    onNameSortClick = {
+                                        onSharedAction(SharedAction.PersonSortClicked(Sort.NAME))
+                                    },
+                                    onColorSortClick = {
+                                        onSharedAction(SharedAction.PersonSortClicked(Sort.COLOR))
+                                    }
+                                )
                             }
-                        )
-                    }
-
-                    else -> {
-                        IconButton(
-                            onClick = onAddPlaceClick
-                        ) {
-                            Icon(
-                                painter = painterResource(R.drawable.add_place),
-                                contentDescription = stringResource(id = R.string.add_place)
-                            )
                         }
-                        SortMenu(
-                            currentSort = sharedState.placeSort,
-                            onNameSortClick = {
-                                onSharedAction(SharedAction.PlaceSortClicked(Sort.NAME))
-                            },
-                            onColorSortClick = {
-                                onSharedAction(SharedAction.PlaceSortClicked(Sort.COLOR))
+                        else -> {
+                            Row {
+                                IconButton(
+                                    onClick = onAddPlaceClick
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.add_place),
+                                        contentDescription = stringResource(id = R.string.add_place)
+                                    )
+                                }
+                                SortMenu(
+                                    currentSort = sharedState.placeSort,
+                                    onNameSortClick = {
+                                        onSharedAction(SharedAction.PlaceSortClicked(Sort.NAME))
+                                    },
+                                    onColorSortClick = {
+                                        onSharedAction(SharedAction.PlaceSortClicked(Sort.COLOR))
+                                    }
+                                )
                             }
-                        )
+                        }
                     }
                 }
             }
