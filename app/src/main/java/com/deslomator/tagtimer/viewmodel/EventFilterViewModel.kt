@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +8,9 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ExportedEvent
+import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.EventFilterState
+import com.deslomator.tagtimer.ui.theme.hue
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -28,51 +31,107 @@ class EventFilterViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0)
+    private val _currentTag = MutableStateFlow("")
+    private val _currentPerson = MutableStateFlow("")
+    private val _currentPlace = MutableStateFlow("")
+    private val _tagSort = MutableStateFlow(Sort.COLOR)
+    private val _personSort = MutableStateFlow(Sort.NAME)
+    private val _placeSort = MutableStateFlow(Sort.NAME)
     private val _state = MutableStateFlow(EventFilterState())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _events = _sessionId
         .flatMapLatest {
             appDao.getActiveEventsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _preSelectedTags = _sessionId
-        .flatMapLatest {
-            appDao.getPreSelectedTagsForSession(_sessionId.value)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     private val _persons = appDao.getActivePersons()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _preSelectedPersons = _sessionId
-        .flatMapLatest {
-            appDao.getPreSelectedPersonsForSession(_sessionId.value)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     private val _places = appDao.getActivePlaces()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _preSelectedPlaces = _sessionId
-        .flatMapLatest {
-            appDao.getPreSelectedPlacesForSession(_sessionId.value)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val _filteredEvents = combine(
+        _events, _currentPerson, _currentPlace, _currentTag
+    ) { events, person, place, tag ->
+        events
+            .filter { event ->
+                (if (place.isEmpty()) true else event.place == place) &&
+                        (if (person.isEmpty()) true else event.person == person) &&
+                        (if (tag.isEmpty()) true else event.tag == tag)
+            }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val _usedPersons = combine(
+        _persons, _events, _personSort
+    ) { persons, events, personSort ->
+        persons
+            .filter { person ->
+                person.name.isNotEmpty() &&
+                        events.map { it.person }.contains(person.name)
+            }.distinctBy { it.name }
+            .sortedWith(
+                when (personSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val _usedPlaces = combine(
+        _places, _events, _placeSort
+    ) { places, events, placeSort ->
+        places
+            .filter { place ->
+                place.name.isNotEmpty() &&
+                        events.map { it.place }.contains(place.name)
+            }.distinctBy { it.name }
+            .sortedWith(
+                when (placeSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val _usedTags = combine(
+        _tags, _events, _tagSort
+    ) { tags, events, tagSort ->
+        tags
+            .filter { tag ->
+                tag.name.isNotEmpty() &&
+                        events.map { it.tag }.contains(tag.name)
+            }.distinctBy { it.name }
+            .sortedWith(
+                when (tagSort) {
+                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                }
+            )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    private val _query = combine(
+        _currentPerson, _currentPlace, _currentTag
+    ) { person, place, tag ->
+        listOf(person, place, tag).filter { it.isNotEmpty() }.joinToString(", ")
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     val state = combine(
-        _state, _events, _preSelectedTags, _tags, _preSelectedPersons, _persons,
-        _preSelectedPlaces, _places
-    ) { state, events, preSelectedTags, tags, preSelectedPersons, persons,
-        preSelectedPlaces, places ->
+        _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTag
+    ) { state, events, tags, persons, places, query, currentPerson, currentPlace, currentTag ->
         state.copy(
             events = events,
-            preSelectedTags = preSelectedTags,
             tags = tags,
-            preSelectedPersons = preSelectedPersons,
             persons = persons,
-            preSelectedPlaces = preSelectedPlaces,
             places = places,
+            query = query,
+            currentPerson = currentPerson,
+            currentPlace = currentPlace,
+            currentTag = currentTag
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), EventFilterState()
@@ -112,37 +171,37 @@ class EventFilterViewModel @Inject constructor(
             EventFilterAction.EventsExported -> {
                 _state.update { it.copy(exportEvents = false) }
             }
-            is EventFilterAction.PreSelectedPersonClicked -> {
-                val person = if (action.personName == state.value.currentPersonName) ""
+            is EventFilterAction.usedPersonClicked -> {
+                val person = if (action.personName == state.value.currentPerson) ""
                 else action.personName
-                _state.update { it.copy(currentPersonName = person) }
+                _currentPerson.update { person }
             }
-            is EventFilterAction.PreSelectedPlaceClicked -> {
-                val place = if (action.placeName == state.value.currentPlaceName) ""
+            is EventFilterAction.usedPlaceClicked -> {
+                val place = if (action.placeName == state.value.currentPlace) ""
                 else action.placeName
-                _state.update { it.copy(currentPlaceName = place) }
+                _currentPlace.update { place }
             }
             is EventFilterAction.UsedTagClicked -> {
-                val tag = if (action.tagName == state.value.currentTagName) ""
+                val tag = if (action.tagName == state.value.currentTag) ""
                 else action.tagName
-                _state.update { it.copy(currentTagName = tag) }
+                _currentTag.update { tag }
             }
             is EventFilterAction.ExportFilteredEventsClicked -> {
-                exportFilteredEvents(action.filteredEvents)
+                setEventsToExport(action.filteredEvents)
             }
             is EventFilterAction.SetPersonSort -> {
-                _state.update { it.copy(personSort = action.personSort) }
+                _personSort.update { action.personSort }
             }
             is EventFilterAction.SetPlaceSort -> {
-                _state.update { it.copy(placeSort = action.placeSort) }
+                _placeSort.update { action.placeSort }
             }
             is EventFilterAction.SetTagSort -> {
-                _state.update { it.copy(tagSort = action.tagSort) }
+                _tagSort.update { action.tagSort }
             }
         }
     }
 
-    private fun exportFilteredEvents(filteredEvents: List<Event> = emptyList()) {
+    private fun setEventsToExport(filteredEvents: List<Event> = emptyList()) {
         val json = Json.encodeToString( filteredEvents.map { ExportedEvent(it) })
         _state.update {
             it.copy(
@@ -152,7 +211,7 @@ class EventFilterViewModel @Inject constructor(
         }
     }
 
-    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
+    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, R> combine(
         flow: Flow<T1>,
         flow2: Flow<T2>,
         flow3: Flow<T3>,
@@ -161,9 +220,10 @@ class EventFilterViewModel @Inject constructor(
         flow6: Flow<T6>,
         flow7: Flow<T7>,
         flow8: Flow<T8>,
-        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8) -> R
+        flow9: Flow<T9>,
+        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8, T9) -> R
     ): Flow<R> {
-        return combine(flow, flow2, flow3, flow4, flow5, flow6, flow7, flow8) { args: Array<*> ->
+        return combine(flow, flow2, flow3, flow4, flow5, flow6, flow7, flow8, flow9) { args: Array<*> ->
             @Suppress("UNCHECKED_CAST")
             transform(
                 args[0] as T1,
@@ -174,6 +234,7 @@ class EventFilterViewModel @Inject constructor(
                 args[5] as T6,
                 args[6] as T7,
                 args[7] as T8,
+                args[8] as T9,
             )
         }
     }

@@ -3,11 +3,6 @@ package com.deslomator.tagtimer.ui.active.filter
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.EventFilterAction
@@ -23,28 +18,13 @@ fun EventFilterScaffold(
     onAction: (EventFilterAction) -> Unit,
 ) {
     val context = LocalContext.current
-    var fileName by remember {
-        mutableStateOf("")
-    }
-    val filteredEvents by remember(
-        state.currentPlaceName,
-        state.currentPersonName,
-        state.currentTagName,
-        state.events
-    ) {
-        derivedStateOf {
-            state.events
-                .filter { event ->
-                    (if (state.currentPlaceName.isEmpty()) true else event.place == state.currentPlaceName) &&
-                            (if (state.currentPersonName.isEmpty()) true else event.person == state.currentPersonName) &&
-                            (if (state.currentTagName.isEmpty()) true else event.tag.contains(state.currentTagName))
-                }
-        }
-    }
-    val totalEvents by remember(filteredEvents) {
-        derivedStateOf { filteredEvents.size }
-    }
     if (state.exportEvents) {
+        val fileName = listOf(
+            state.currentSession.name,
+            state.query,
+        )
+            .filter { it.isNotEmpty() }
+            .joinToString(separator = ",")
         ExportSession(
             context = context,
             fileName = fileName,
@@ -69,26 +49,17 @@ fun EventFilterScaffold(
                     navController.navigateUp()
                 },
                 onShareFilteredEventsClick = {
-                    fileName = listOf(
-                        state.currentSession.name,
-                        state.currentPersonName,
-                        state.currentPlaceName,
-                        state.currentTagName,
-                    )
-                        .filter { it.isNotEmpty() }
-                        .joinToString(separator = ",")
-                    onAction(EventFilterAction.ExportFilteredEventsClicked(filteredEvents))
+                    onAction(EventFilterAction.ExportFilteredEventsClicked(state.events))
                 },
-                totalEvents = totalEvents
+                totalEvents = state.events.size
             )
         },
     ) { paddingValues ->
         EventFilterContent(
             paddingValues = paddingValues,
             state = state,
-            sharedState = sharedState,
             onAction = onAction,
-            filteredEvents = filteredEvents
+            filteredEvents = state.events
         )
     }
 }

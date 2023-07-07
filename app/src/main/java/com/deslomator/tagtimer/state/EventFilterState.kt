@@ -2,15 +2,10 @@ package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.type.Sort
 
 data class EventFilterState(
     val events: List<Event> = emptyList(),
-    val preSelectedPersons: List<Preselected.Person> = emptyList(),
-    val preSelectedPlaces: List<Preselected.Place> = emptyList(),
-    val preSelectedTags: List<Preselected.Tag> = emptyList(),
     val tags: List<Label.Tag> = emptyList(),
     val persons: List<Label.Person> = emptyList(),
     val places: List<Label.Place> = emptyList(),
@@ -20,10 +15,8 @@ data class EventFilterState(
     val showEventEditionDialog: Boolean = false,
     val exportEvents: Boolean = false,
     val dataToExport: String = "",
-    val currentPersonName: String = "",
-    val currentPlaceName: String = "",
-    val currentTagName: String = "",
-    val tagSort: Sort = Sort.COLOR,
-    val personSort: Sort = Sort.NAME,
-    val placeSort: Sort = Sort.NAME,
+    val query: String = "",
+    val currentPerson: String = "",
+    val currentPlace: String = "",
+    val currentTag: String = "",
 )

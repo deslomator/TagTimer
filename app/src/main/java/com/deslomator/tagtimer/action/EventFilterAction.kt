@@ -9,8 +9,8 @@ sealed interface EventFilterAction {
     class AcceptEventEditionClicked(val event: Event) : EventFilterAction
     object DismissEventEditionDialog: EventFilterAction
     class UsedTagClicked(val tagName: String) : EventFilterAction
-    class PreSelectedPersonClicked(val personName: String) : EventFilterAction
-    class PreSelectedPlaceClicked(val placeName: String) : EventFilterAction
+    class usedPersonClicked(val personName: String) : EventFilterAction
+    class usedPlaceClicked(val placeName: String) : EventFilterAction
     data class ExportFilteredEventsClicked(val filteredEvents: List<Event>): EventFilterAction
     data class SetTagSort(val tagSort: Sort): EventFilterAction
     data class SetPersonSort(val personSort: Sort): EventFilterAction
