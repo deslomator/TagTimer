@@ -2,7 +2,9 @@ package com.deslomator.tagtimer.ui
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -27,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.toDateTime
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun <T> MyListItem(
     modifier: Modifier = Modifier,
@@ -38,14 +41,20 @@ fun <T> MyListItem(
     @DrawableRes leadingIcon: Int? = null,
     onLeadingClick: ((T) -> Unit)? = null,
     onItemClick: ((T) -> Unit)? = null,
+    onLongClick: ((T) -> Unit)? = null,
     @DrawableRes trailingIcon: Int? = null,
     onTrailingClick: ((T) -> Unit)? = null,
     centralContent: @Composable RowScope.(T) -> Unit,
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .clickable { onItemClick?.invoke(item) },
+            .then(onItemClick?.let {
+                Modifier.combinedClickable(
+                    onClick = { onItemClick(item) },
+                    onLongClick = { onLongClick?.invoke(item) }
+                )
+            } ?: Modifier)
+            .fillMaxWidth(),
         shape = shape,
         colors = colors,
         border = border,
@@ -56,16 +65,15 @@ fun <T> MyListItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             leadingIcon?.let {
-                IconButton(
-                    modifier = Modifier.size(iconSize + 2.dp),
-                    onClick = { onLeadingClick?.invoke(item) },
-                ) {
-                    Icon(
-                        modifier = Modifier.size(iconSize),
-                        painter = painterResource(id = it),
-                        contentDescription = "Edit",
-                    )
-                }
+                Icon(
+                    modifier = Modifier
+                        .then(onLeadingClick?.let {
+                            Modifier.clickable(onClick = { onLeadingClick(item) })
+                        } ?: Modifier)
+                        .size(iconSize),
+                    painter = painterResource(id = it),
+                    contentDescription = "Edit",
+                )
             }
             Row(
                 modifier = Modifier.weight(1.0f),
@@ -74,16 +82,15 @@ fun <T> MyListItem(
                 centralContent(item)
             }
             trailingIcon?.let {
-                IconButton(
-                    modifier = Modifier.size(iconSize + 2.dp),
-                    onClick = { onTrailingClick?.invoke(item) },
-                ) {
-                    Icon(
-                        modifier = Modifier.size(iconSize),
-                        painter = painterResource(id = it),
-                        contentDescription = "Edit",
-                    )
-                }
+                Icon(
+                    modifier = Modifier
+                        .then(onTrailingClick?.let {
+                            Modifier.clickable(onClick = { onTrailingClick(item) })
+                        } ?: Modifier)
+                        .size(iconSize),
+                    painter = painterResource(id = it),
+                    contentDescription = "Edit",
+                )
             }
         }
     }
