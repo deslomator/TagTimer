@@ -8,6 +8,7 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ExportedSession
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.state.ActiveSessionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -138,6 +139,7 @@ class ActiveSessionViewModel @Inject constructor(
                         eventForScrollTo = action.event
                     )
                 }
+                createNewLabels(action.event)
             }
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
@@ -189,22 +191,37 @@ class ActiveSessionViewModel @Inject constructor(
             .maxOfOrNull { it.elapsedTimeMillis } ?: 0
     }
 
-    fun updateId(id: Int) {
-        Log.d(TAG, "updateId($id)")
-        _sessionId.update { id }
-        viewModelScope.launch {
-            val cur = appDao.getSession(id)
-            val s = cur.copy(
-                lastAccessMillis = System.currentTimeMillis(),
-                durationMillis = getSessionDuration()
-            )
-            _state.update {
-                it.copy(currentSession = s)
+    /**
+    create new Labels if an Event edition resulted in non existent label names
+     */
+    private fun createNewLabels(event: Event) {
+        if (!_persons.value.map { it.name }.contains(event.person))
+            viewModelScope.launch {
+                appDao.upsertPerson(
+                    Label.Person(
+                        name = event.person,
+                        color = event.color
+                    )
+                )
             }
-            appDao.upsertSession(s)
-            if (state.value.events.isNotEmpty())
-                _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
-        }
+        if (!_places.value.map { it.name }.contains(event.place))
+            viewModelScope.launch {
+                appDao.upsertPlace(
+                    Label.Place(
+                        name = event.place,
+                        color = event.color
+                    )
+                )
+            }
+        if (!_tags.value.map { it.name }.contains(event.tag))
+            viewModelScope.launch {
+                appDao.upsertTag(
+                    Label.Tag(
+                        name = event.tag,
+                        color = event.color
+                    )
+                )
+            }
     }
 
     private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(

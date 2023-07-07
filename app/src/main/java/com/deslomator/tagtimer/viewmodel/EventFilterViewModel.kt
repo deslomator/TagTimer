@@ -8,6 +8,7 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ExportedEvent
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
@@ -164,6 +165,7 @@ class EventFilterViewModel @Inject constructor(
                         eventForScrollTo = action.event
                     )
                 }
+                createNewLabels(action.event)
             }
             EventFilterAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
@@ -199,6 +201,39 @@ class EventFilterViewModel @Inject constructor(
                 _tagSort.update { action.tagSort }
             }
         }
+    }
+
+    /**
+    create new Labels if an Event edition resulted in non existent label names
+     */
+    private fun createNewLabels(action: Event) {
+        if (!_persons.value.map { it.name }.contains(action.person))
+            viewModelScope.launch {
+                appDao.upsertPerson(
+                    Label.Person(
+                        name = action.person,
+                        color = action.color
+                    )
+                )
+            }
+        if (!_places.value.map { it.name }.contains(action.place))
+            viewModelScope.launch {
+                appDao.upsertPlace(
+                    Label.Place(
+                        name = action.place,
+                        color = action.color
+                    )
+                )
+            }
+        if (!_tags.value.map { it.name }.contains(action.tag))
+            viewModelScope.launch {
+                appDao.upsertTag(
+                    Label.Tag(
+                        name = action.tag,
+                        color = action.color
+                    )
+                )
+            }
     }
 
     private fun setEventsToExport(filteredEvents: List<Event> = emptyList()) {
