@@ -130,6 +130,15 @@ class EventFilterViewModel @Inject constructor(
             is EventFilterAction.ExportFilteredEventsClicked -> {
                 exportFilteredEvents(action.filteredEvents)
             }
+            is EventFilterAction.SetPersonSort -> {
+                _state.update { it.copy(personSort = action.personSort) }
+            }
+            is EventFilterAction.SetPlaceSort -> {
+                _state.update { it.copy(placeSort = action.placeSort) }
+            }
+            is EventFilterAction.SetTagSort -> {
+                _state.update { it.copy(tagSort = action.tagSort) }
+            }
         }
     }
 

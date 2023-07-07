@@ -4,6 +4,7 @@ import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.type.Sort
 
 data class EventFilterState(
     val events: List<Event> = emptyList(),
@@ -22,4 +23,7 @@ data class EventFilterState(
     val currentPersonName: String = "",
     val currentPlaceName: String = "",
     val currentTagName: String = "",
+    val tagSort: Sort = Sort.COLOR,
+    val personSort: Sort = Sort.NAME,
+    val placeSort: Sort = Sort.NAME,
 )

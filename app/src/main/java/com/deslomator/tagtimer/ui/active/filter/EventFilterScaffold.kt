@@ -2,6 +2,7 @@ package com.deslomator.tagtimer.ui.active.filter
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +51,15 @@ fun EventFilterScaffold(
             data = state.dataToExport,
             onSessionExported = { onAction(EventFilterAction.EventsExported) }
         )
+    }
+    LaunchedEffect(sharedState.tagSort) {
+        onAction(EventFilterAction.SetTagSort(sharedState.tagSort))
+    }
+    LaunchedEffect(sharedState.personSort) {
+        onAction(EventFilterAction.SetPersonSort(sharedState.personSort))
+    }
+    LaunchedEffect(sharedState.placeSort) {
+        onAction(EventFilterAction.SetPlaceSort(sharedState.placeSort))
     }
     Scaffold(
         topBar = {
