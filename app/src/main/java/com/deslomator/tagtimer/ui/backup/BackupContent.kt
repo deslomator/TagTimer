@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.state.BackupState
-import com.deslomator.tagtimer.state.Result
+import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.ui.showSnackbar
 
 @Composable

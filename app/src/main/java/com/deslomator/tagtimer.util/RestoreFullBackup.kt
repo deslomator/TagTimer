@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.core.net.toFile
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.FullBackup
-import com.deslomator.tagtimer.state.Result
+import com.deslomator.tagtimer.model.type.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json

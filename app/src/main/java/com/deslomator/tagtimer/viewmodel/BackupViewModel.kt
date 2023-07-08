@@ -11,9 +11,9 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.dao.SessionsDatabase
 import com.deslomator.tagtimer.model.BackedLabels
 import com.deslomator.tagtimer.model.FullBackup
-import com.deslomator.tagtimer.state.Backup
+import com.deslomator.tagtimer.model.type.Backup
 import com.deslomator.tagtimer.state.BackupState
-import com.deslomator.tagtimer.state.Result
+import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.util.restoreFullBackup
 import com.deslomator.tagtimer.util.restoreLabelsBackup
 import dagger.hilt.android.lifecycle.HiltViewModel
