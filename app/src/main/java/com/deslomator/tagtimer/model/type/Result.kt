@@ -11,5 +11,6 @@ enum class Result {
     BACKUP_FAILED,
     NOTHING_TO_BACKUP,
     NOTHING_TO_RESTORE,
-    RESTORE_FAILED
+    RESTORE_FAILED,
+    SAVED
 }

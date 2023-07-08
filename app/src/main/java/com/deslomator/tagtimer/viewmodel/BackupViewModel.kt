@@ -44,6 +44,7 @@ class BackupViewModel @Inject constructor(
 ): ViewModel() {
 
     private val backupDir = File(context.filesDir, "backup")
+    private val contentResolver = context.contentResolver
     private val _state = MutableStateFlow(BackupState())
 
     val state = _state
@@ -89,6 +90,25 @@ class BackupViewModel @Inject constructor(
             }
             BackupAction.BackupExported -> {
                 _state.update { it.copy(shareFile = false) }
+            }
+            is BackupAction.SaveBackupClicked -> {
+                _state.update { it.copy(currentFile = action.file) }
+            }
+            is BackupAction.UriReceived -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val reader = BufferedReader(FileReader(state.value.currentFile))
+                    contentResolver.openOutputStream(action.uri)?.apply {
+                        writer().write(reader.readText())
+                        flush()
+                        close()
+                    }
+//                Log.d(TAG, "UriReceived: saved file: ${action.uri}")
+                    reader.close()
+                }
+                _state.update { it.copy(
+                    result = Result.SAVED,
+                    showSnackBar = true
+                ) }
             }
         }
     }

@@ -1,6 +1,10 @@
 package com.deslomator.tagtimer.ui.backup
 
 import android.content.Context
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,7 +23,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -41,6 +49,18 @@ fun BackupContent(
     context: Context
 ) {
     val scope = rememberCoroutineScope()
+    var result by remember { mutableStateOf<Uri?>(null) }
+    val launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/json")) {
+        result = it
+    }
+    result?.let {
+        Log.d(TAG,"CreateDocument, Uri: $it")
+        Log.d(TAG,"CreateDocument, Uri.path: ${it.path}")
+        Log.d(TAG,"CreateDocument, Uri.path: ${it.path}")
+        onAction(BackupAction.UriReceived(it))
+        result = null
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -111,6 +131,10 @@ fun BackupContent(
                         },
                         onShareClick = { onAction(BackupAction.ShareBackupClicked(file)) },
                         onRestoreClick = { onAction(BackupAction.RestoreBackupClicked(file)) },
+                        onSaveClick = {
+                            onAction(BackupAction.SaveBackupClicked(file))
+                            launcher.launch(file.name)
+                        },
                     )
                 }
             }
@@ -127,7 +151,7 @@ fun BackupContent(
     LaunchedEffect(state.showSnackBar) {
         if (state.showSnackBar) {
             snackbarHostState.currentSnackbarData?.dismiss()
-            val result = snackbarHostState.showSnackbar(
+            val res = snackbarHostState.showSnackbar(
                 message = when (state.result) {
                     Result.BAD_FILE -> context.getString(R.string.bad_backup_file)
                     Result.RESTORED -> context.getString(R.string.backup_restored)
@@ -137,6 +161,7 @@ fun BackupContent(
                     Result.NOTHING_TO_BACKUP -> context.getString(R.string.nothing_to_backup)
                     Result.RESTORE_FAILED -> context.getString(R.string.restore_failed)
                     Result.NOTHING_TO_RESTORE -> context.getString(R.string.nothing_to_restore)
+                    Result.SAVED -> context.getString(R.string.backup_saved)
                 },
                 duration = SnackbarDuration.Short
             )

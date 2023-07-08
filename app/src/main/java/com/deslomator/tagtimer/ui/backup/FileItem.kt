@@ -33,6 +33,7 @@ fun FileItem(
     onDeleteClick: () -> Unit,
     onShareClick: () -> Unit,
     onRestoreClick: () -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(
@@ -78,6 +79,14 @@ fun FileItem(
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.restore),
+                        contentDescription = null
+                    )
+                }
+                IconButton(
+                    onClick = onSaveClick
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.save),
                         contentDescription = null
                     )
                 }
