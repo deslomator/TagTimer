@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.model
 
 import androidx.annotation.Keep
-import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.util.toDateTime
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

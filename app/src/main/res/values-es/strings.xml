@@ -70,4 +70,16 @@
     <string name="sort_by_name">ordenar por nombre</string>
     <string name="sort_by_color">ordenar por color</string>
     <string name="copy">Copia</string>
+    <string name="full_backup">Copia Completa</string>
+    <string name="backup_deleted">Copia eliminada</string>
+    <string name="backup_restored">Copia restaurada</string>
+    <string name="backup_restore">Copiar y Restaurar</string>
+    <string name="backup_labels">Guardar Marcadores</string>
+    <string name="tap_file_for_actions">Pulsa un archivo para Restaurar o Compartir</string>
+    <string name="bad_backup_file">Archivo incorrecto, no restaurado</string>
+    <string name="backup_saved">Copia guardada</string>
+    <string name="backup_failed">La copia falló</string>
+    <string name="nothing_to_backup">No hay etiquetas que guardar</string>
+    <string name="restore_failed">No se pudo restaurar esta copia</string>
+    <string name="nothing_to_restore">No hay nada nuevo que restaurar</string>
 </resources>

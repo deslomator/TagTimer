@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.SessionsTabAction
+import com.deslomator.tagtimer.navigation.screen.RootScreen
 import com.deslomator.tagtimer.state.SessionsTabState
 
 @Composable
@@ -23,6 +24,7 @@ fun SessionsTabScaffold(
             SessionsTabTopBar(
                 onNewSessionClick = { onAction(SessionsTabAction.AddNewSessionClicked) },
                 onPopulateDbClick = { onAction(SessionsTabAction.PopulateDbClicked) },
+                onBackupClick = { navController.navigate(RootScreen.Backup.route) }
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

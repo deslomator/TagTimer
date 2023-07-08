@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.toElapsedTime
+import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.OnDarkBackground
 import com.deslomator.tagtimer.ui.theme.OnLightBackground

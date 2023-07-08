@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer
+package com.deslomator.tagtimer.util
 
 import android.icu.text.SimpleDateFormat
 import java.util.Locale

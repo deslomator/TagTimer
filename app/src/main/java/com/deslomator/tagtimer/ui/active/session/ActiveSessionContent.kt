@@ -43,7 +43,7 @@ import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.toElapsedTime
+import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
 import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog

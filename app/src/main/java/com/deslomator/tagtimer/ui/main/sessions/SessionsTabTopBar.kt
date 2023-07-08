@@ -21,6 +21,7 @@ import com.deslomator.tagtimer.R
 fun SessionsTabTopBar(
     onNewSessionClick: () -> Unit,
     onPopulateDbClick: () -> Unit,
+    onBackupClick: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
     TopAppBar(
@@ -46,6 +47,16 @@ fun SessionsTabTopBar(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false }
             ) {
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(R.string.backup_restore)) },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(R.drawable.backup),
+                            contentDescription = "backup DB"
+                        )
+                    },
+                    onClick = onBackupClick,
+                )
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.populate_db)) },
                     leadingIcon = {

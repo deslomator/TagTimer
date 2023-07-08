@@ -8,4 +8,5 @@ sealed class RootScreen(
     @StringRes val stringId: Int,
 ) {
     object Main : RootScreen("main", R.string.app_name)
+    object Backup : RootScreen("backup_screen", R.string.full_backup)
 }

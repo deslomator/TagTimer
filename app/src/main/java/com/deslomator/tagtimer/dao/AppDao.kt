@@ -145,6 +145,32 @@ interface AppDao {
             "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_tags.sessionId = sessions.id)")
     suspend fun clearOrphanPreSelectedTags(): Int
 
+    /*
+    BACKUP AND RESTORE
+     */
+    @Query("SELECT * FROM persons WHERE inTrash = 0")
+    suspend fun getActivePersonsList(): List<Label.Person>
+    @Query("SELECT * FROM places WHERE inTrash = 0")
+    suspend fun getActivePlacesList(): List<Label.Place>
+    @Query("SELECT * FROM tags WHERE inTrash = 0")
+    suspend fun getActiveTagsList(): List<Label.Tag>
+
+    @Query("SELECT * FROM persons")
+    suspend fun getAllPersonsList(): List<Label.Person>
+    @Query("SELECT * FROM places")
+    suspend fun getAllPlacesList(): List<Label.Place>
+    @Query("SELECT * FROM tags")
+    suspend fun getAllTagsList(): List<Label.Tag>
+    @Query("SELECT * FROM ps_persons")
+    suspend fun getAllPreselectedPersonsList(): List<Preselected.Person>
+    @Query("SELECT * FROM ps_places")
+    suspend fun getAllPreselectedPlacesList(): List<Preselected.Place>
+    @Query("SELECT * FROM ps_tags")
+    suspend fun getAllPreselectedTagsList(): List<Preselected.Tag>
+    @Query("SELECT * FROM sessions")
+    suspend fun getAllSessionsList(): List<Session>
+    @Query("SELECT * FROM events")
+    suspend fun getAllEventsList(): List<Event>
 }
 
 private const val TAG ="AppDao"

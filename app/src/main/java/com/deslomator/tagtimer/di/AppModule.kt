@@ -1,12 +1,9 @@
 package com.deslomator.tagtimer.di
 
 import android.content.Context
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.room.Room
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.dao.SessionsDatabase
-import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +24,15 @@ object AppModule {
             DATABASE_NAME
         ).build().appDao
 
+    @Singleton
+    @Provides
+    fun provideDatabase(@ApplicationContext appContext: Context): SessionsDatabase =
+        Room.databaseBuilder(
+            appContext,
+            SessionsDatabase::class.java,
+            DATABASE_NAME
+        ).build()
+
     /*@Singleton
     @Provides
     fun provideActiveSessionViewModel(dao: AppDao) :ActiveSessionViewModel {
@@ -39,4 +45,4 @@ object AppModule {
     }*/
 }
 
-private const val DATABASE_NAME = "sessions.db"
+const val DATABASE_NAME = "sessions.db"

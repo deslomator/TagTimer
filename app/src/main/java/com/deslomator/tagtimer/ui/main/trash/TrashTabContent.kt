@@ -36,7 +36,7 @@ import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.toDateTime
+import com.deslomator.tagtimer.util.toDateTime
 import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.brightness

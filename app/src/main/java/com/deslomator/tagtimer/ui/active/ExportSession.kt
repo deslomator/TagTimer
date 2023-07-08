@@ -43,4 +43,4 @@ fun ExportSession(
 
 private const val TAG = "ExportSession"
 private const val JSON_EXTENSION = "json"
-private const val FILE_PROVIDER = "com.deslomator.tagtimer.fileprovider"
+const val FILE_PROVIDER = "com.deslomator.tagtimer.fileprovider"

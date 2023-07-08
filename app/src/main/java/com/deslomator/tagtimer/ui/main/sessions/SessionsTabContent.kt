@@ -31,8 +31,8 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.SessionsTabState
-import com.deslomator.tagtimer.toDateTime
-import com.deslomator.tagtimer.toElapsedTime
+import com.deslomator.tagtimer.util.toDateTime
+import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80

@@ -26,11 +26,13 @@ import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
 import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.active.trash.EventTrashScaffold
+import com.deslomator.tagtimer.ui.backup.BackupScaffold
 import com.deslomator.tagtimer.ui.main.MainNavigationBar
 import com.deslomator.tagtimer.ui.main.labels.LabelsScaffold
 import com.deslomator.tagtimer.ui.main.sessions.SessionsTabScaffold
 import com.deslomator.tagtimer.ui.main.trash.TrashTabScaffold
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
+import com.deslomator.tagtimer.viewmodel.BackupViewModel
 import com.deslomator.tagtimer.viewmodel.EventFilterViewModel
 import com.deslomator.tagtimer.viewmodel.EventTrashViewModel
 import com.deslomator.tagtimer.viewmodel.SharedViewModel
@@ -170,6 +172,22 @@ fun AppNavHost(
                     onAction = viewModel::onAction,
                     sharedState = sharedState,
                     onSharedAction = sharedVm::onAction,
+                )
+            }
+        }
+        navigation(
+            route = "backup",
+            startDestination = RootScreen.Backup.route
+        ) {
+            composable(
+                route = RootScreen.Backup.route,
+            ) {backStackEntry ->
+                val viewModel = hiltViewModel<BackupViewModel>(backStackEntry)
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                BackupScaffold(
+                    navController = navController,
+                    state = state,
+                    onAction = viewModel::onAction,
                 )
             }
         }
