@@ -27,8 +27,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
+import java.io.FileReader
 import java.io.FileWriter
 import java.util.Date
 import java.util.Locale
@@ -53,7 +55,17 @@ class BackupViewModel @Inject constructor(
             is BackupAction.DeleteBackupClicked -> {
                 deleteFile(action.file)
             }
-            is BackupAction.ShareBackupClicked -> TODO()
+            is BackupAction.ShareBackupClicked -> {
+                val reader = BufferedReader(FileReader(action.file))
+                val string = reader.readText()
+                _state.update {
+                    it.copy(
+                        currentString = string,
+                        currentFile = action.file,
+                        shareFile = true
+                    )
+                }
+            }
             is BackupAction.BackupLabelsClicked -> {
                 labelsBackup()
             }
@@ -74,6 +86,9 @@ class BackupViewModel @Inject constructor(
             }
             is BackupAction.SnackbarShown -> {
                 _state.update { it.copy(showSnackBar = false) }
+            }
+            BackupAction.BackupExported -> {
+                _state.update { it.copy(shareFile = false) }
             }
         }
     }

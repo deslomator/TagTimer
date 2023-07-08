@@ -10,11 +10,11 @@ import androidx.core.content.FileProvider
 import java.io.File
 
 @Composable
-fun ExportSession(
+fun ExportData(
     context: Context,
     fileName: String,
     data: String,
-    onSessionExported: () -> Unit
+    onDataExported: () -> Unit
 ) {
     LaunchedEffect(Unit) {
         try {
@@ -34,7 +34,7 @@ fun ExportSession(
                 .putExtra(Intent.EXTRA_STREAM, uri)
             Intent.createChooser(intent, "Choose an App")
             ContextCompat.startActivity(context, intent, null)
-            onSessionExported()
+            onDataExported()
         } catch (error: Error) {
             Log.d(TAG, "ShareSession, error: $error")
         }

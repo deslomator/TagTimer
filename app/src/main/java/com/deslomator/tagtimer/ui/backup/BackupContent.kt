@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.backup
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,15 +22,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.BackupAction
-import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.model.type.Result
+import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.ui.showSnackbar
 
 @Composable
@@ -37,10 +37,10 @@ fun BackupContent(
     paddingValues: PaddingValues,
     state: BackupState,
     onAction: (BackupAction) -> Unit,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    context: Context
 ) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxSize()

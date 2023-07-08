@@ -9,4 +9,5 @@ sealed interface BackupAction {
     data class ShareBackupClicked(val file: File): BackupAction
     data class RestoreBackupClicked(val file: File): BackupAction
     object SnackbarShown: BackupAction
+    object BackupExported: BackupAction
 }
