@@ -105,10 +105,8 @@ class MainActivity : ComponentActivity() {
                      */
                     var showImportDialog by rememberSaveable { mutableStateOf(false) }
                     var loadBackup by remember { mutableStateOf(false) }
-                    var currentUri by remember { mutableStateOf("") }
                     LaunchedEffect(intentState) {
                         intentState?.data?.let {
-                            currentUri = it.toString()
                             showImportDialog = true
                             auxiliarUri = it
                             intentState = null // only OnNewIntentListener can update it now
@@ -119,7 +117,7 @@ class MainActivity : ComponentActivity() {
                             onDismissRequest = { showImportDialog = false }
                         ) {
                             var filename by remember { mutableStateOf("") }
-                            val documentFile = DocumentFile.fromSingleUri(this, currentUri.toUri())
+                            val documentFile = DocumentFile.fromSingleUri(this, auxiliarUri!!)
                             filename = documentFile?.name.toString()
                             Card {
                                 Column(modifier = Modifier.padding(15.dp)) {
