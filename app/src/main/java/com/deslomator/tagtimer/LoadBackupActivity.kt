@@ -92,14 +92,14 @@ class LoadBackupActivity : ComponentActivity() {
                                         horizontalArrangement = Arrangement.End
                                     ) {
                                         TextButton(
-                                            onClick = { loadBackup = true }
-                                        ) {
-                                            Text(text = stringResource(id = R.string.accept))
-                                        }
-                                        TextButton(
                                             onClick = endActivity
                                         ) {
                                             Text(text = stringResource(id = R.string.cancel))
+                                        }
+                                        TextButton(
+                                            onClick = { loadBackup = true }
+                                        ) {
+                                            Text(text = stringResource(id = R.string.accept))
                                         }
                                     }
                                 }
