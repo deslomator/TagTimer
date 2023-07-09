@@ -22,16 +22,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.FileReader
-import java.io.OutputStream
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -67,7 +66,7 @@ class BackupViewModel @Inject constructor(
             }
             is BackupAction.BackupLabelsClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val result = backup(
+                    val result = backupInternally(
                         labelsOnly = true,
                         appDao = appDao,
                         backupDir = backupDir,
@@ -84,7 +83,7 @@ class BackupViewModel @Inject constructor(
             }
             is BackupAction.FullBackupClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val result = backup(
+                    val result = backupInternally(
                         labelsOnly = false,
                         appDao = appDao,
                         backupDir = backupDir,
@@ -120,11 +119,13 @@ class BackupViewModel @Inject constructor(
                 _state.update { it.copy(currentFile = action.file) }
             }
             is BackupAction.UriReceived -> {
-                val result = saveToStorage(action.uri)
-                _state.update { it.copy(
-                    result = result,
-                    showSnackBar = true
-                ) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    val result = saveToStorage(action.uri)
+                    _state.update { it.copy(
+                        result = result,
+                        showSnackBar = true
+                    ) }
+                }
             }
         }
     }
@@ -145,29 +146,28 @@ class BackupViewModel @Inject constructor(
      * the file to storage without it being truncated
      */
     private fun saveToStorage(uri: Uri): Result {
-        var result = Result.SAVED
-        viewModelScope.launch(Dispatchers.IO) {
-            var fis: FileInputStream? = null
-            var fos: OutputStream? = null
-            try {
-                fis = FileInputStream(state.value.currentFile)
-                fos = contentResolver.openOutputStream(uri, "wt")
-                val bis = fis.buffered()
-                val bos = fos?.buffered()
-                val length = fis.available()
-                val buf = ByteArray(length)
-                bis.read(buf)
-                do {
-                    bos?.write(buf)
-                } while (bis.read(buf) != -1)
-            } catch (error: Error) {
-                Log.d(TAG, "UriReceived. $error")
-                result = Result.SAVE_FAILED
-            } finally {
-                fos?.flush()
-                fos?.close()
-                fis?.close()
+        var result = Result.SAVE_FAILED
+        try {
+            val outStream = contentResolver.openOutputStream(uri)
+            if (outStream != null) {
+                outStream.use { fos ->
+                    FileInputStream(state.value.currentFile).use { inputStream ->
+                        inputStream.readBytes()
+                    }.inputStream().use { bis ->
+                        val buf = ByteArray(bis.available())
+                        bis.read(buf)
+                        do {
+                            fos.write(buf)
+                        } while (bis.read(buf) != -1)
+                    }
+                }
+                Log.i(TAG, "saveToStorage(). Save success")
+                result = Result.SAVED
+            } else {
+                Log.e(TAG, "saveToStorage(). Unable to open Output Stream")
             }
+        } catch (error: Error) {
+            Log.e(TAG, "UriReceived. $error")
         }
         return result
     }
@@ -186,50 +186,48 @@ class BackupViewModel @Inject constructor(
     }
 }
 
-private suspend fun backup(
+private suspend fun backupInternally(
     labelsOnly: Boolean = false,
     appDao: AppDao,
     backupDir: File,
     file: File? = null
 ): Result {
-    var result = Result.BACKED
-    withContext(Dispatchers.IO) {
-        val timestamp = SimpleDateFormat(
-            "yyyyMMdd_HHmmss", Locale.getDefault()
-        ).format(Date())
-        val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
-        val fileName = "${prefix}_${timestamp}.json"
-        val new = file ?: File(backupDir, fileName)
-        if (new.createNewFile()) {
-            val full = getDbBackup(appDao, labelsOnly)
-            if (full.isEmpty()) {
-                result = Result.NOTHING_TO_BACKUP
-            } else {
-                var fis: ByteArrayInputStream? = null
-                var fos: FileOutputStream? = null
-                try {
-                    val json = Json.encodeToString(full).encodeToByteArray()
-                    fis = ByteArrayInputStream(json)
-                    fos = FileOutputStream(new)
-                    val bis = fis.buffered()
-                    val bos = fos.buffered()
-                    val length = fis.available()
-                    val buf = ByteArray(length)
-                    bis.read(buf)
-                    do {
-                        bos.write(buf)
-                    } while (bis.read(buf) != -1)
-                } catch (error: Error) {
-                    Log.d("fullBackup()", error.message.toString())
-                    result = Result.BACKUP_FAILED
-                } finally {
-                    fis?.close()
-                    fos?.flush()
-                    fos?.close()
+    var result = Result.BACKUP_FAILED
+    runBlocking {
+        withContext(Dispatchers.IO) {
+            val timestamp = SimpleDateFormat(
+                "yyyyMMdd_HHmmss", Locale.getDefault()
+            ).format(Date())
+            val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
+            val fileName = "${prefix}_${timestamp}.json"
+            val new = file ?: File(backupDir, fileName)
+            if (new.createNewFile()) {
+                val dbBackup = getDbBackup(appDao, labelsOnly)
+                if (dbBackup.isEmpty()) {
+                    Log.e("backupInternally()", "Failed, backup class is empty")
+                    result = Result.NOTHING_TO_BACKUP
+                } else {
+                    try {
+                        Json.encodeToString(dbBackup)
+                            .encodeToByteArray()
+                            .inputStream().use { bis ->
+                                FileOutputStream(new).use { fos ->
+                                    val buf = ByteArray(bis.available())
+                                    bis.read(buf)
+                                    do {
+                                        fos.write(buf)
+                                    } while (bis.read(buf) != -1)
+                                }
+                            }
+                        result = Result.BACKED
+                        Log.i("backupInternally()", "Backup success")
+                    } catch (error: Error) {
+                        Log.e("backupInternally()", error.message.toString())
+                    }
                 }
+            } else {
+                Log.e("backupInternally()", "Failed, backup file already exists")
             }
-        } else {
-            result = Result.BACKUP_FAILED
         }
     }
     return result

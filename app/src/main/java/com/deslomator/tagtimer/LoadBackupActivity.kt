@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -40,9 +39,6 @@ import com.deslomator.tagtimer.util.restoreBackup
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
-import java.io.FileOutputStream
-import java.io.InputStream
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -63,18 +59,17 @@ class LoadBackupActivity : ComponentActivity() {
                     var filename by remember { mutableStateOf("") }
                     var loadBackup by remember { mutableStateOf(false) }
                     val endActivity: () -> Unit = {
-                        intent.data = null
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     }
-                    intent.data?.let {
-                        val documentFile = DocumentFile.fromSingleUri(this, it)
+                    intent.data?.let { intentUri ->
+                        val documentFile = DocumentFile.fromSingleUri(this, intentUri)
                         filename = documentFile?.name.toString()
                         AlertDialog(
                             onDismissRequest = endActivity
                         ) {
                             Card {
-                                Column(modifier =  Modifier.padding(15.dp)) {
+                                Column(modifier = Modifier.padding(15.dp)) {
                                     Text(
                                         text = stringResource(id = R.string.import_data),
                                         textAlign = TextAlign.Center,
@@ -105,44 +100,29 @@ class LoadBackupActivity : ComponentActivity() {
                                 }
                             }
                         }
-                        LaunchedEffect(loadBackup) {
-//                            Log.d(TAG, "LaunchedEffect fired, loadBackup is $loadBackup")
-                            var result = Result.RESTORED
-                            if (loadBackup) {
+                    }
+                    if (loadBackup) {
+                        LaunchedEffect(Unit) {
+                            var result = Result.RESTORE_FAILED
+                            intent.data?.let { intentUri ->
                                 withContext(Dispatchers.IO) {
-                                    // read the file that contentResolver
-                                    // gets from the Uri to a temporary file
-                                    var fis: InputStream? = null
-                                    var fos: FileOutputStream? = null
-                                    val tempFile = File(cacheDir, "temp_backup")
                                     try {
-                                        fis = contentResolver.openInputStream(it)
-                                        fos = FileOutputStream(tempFile)
-                                        fis?.let {
-                                            val bis = fis.buffered()
-                                            val bos = fos.buffered()
-                                            val buf = ByteArray(fis.available())
-                                            bis.read(buf)
-                                            do {
-                                                bos.write(buf)
-                                            } while (bis.read(buf) != -1)
+                                        val inStream = contentResolver.openInputStream(intentUri)
+                                        if (inStream != null) {
+                                            val json = inStream.use {
+                                                it.readBytes().decodeToString()
+                                            }
+                                            result = restoreBackup(appDao, json)
+                                        } else {
+                                            Log.e(TAG, "LaunchedEffect. Unable to open Input Stream")
                                         }
-                                        // try to restore the backup from the temp file
-                                        val uri = Uri.fromFile(tempFile)
-                                        result = restoreBackup(appDao, uri)
-                                        tempFile.delete()
-                                    } catch(error: Error) {
+                                    } catch (error: Error) {
                                         Log.e(TAG, "loadBackup: $error")
-                                        result = Result.RESTORE_FAILED
-                                    } finally {
-                                        fis?.close()
-                                        fos?.flush()
-                                        fos?.close()
                                     }
                                 }
-                                endActivity()
                             }
                         }
+                        endActivity()
                     }
                 }
             }
