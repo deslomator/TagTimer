@@ -28,6 +28,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // this avoids multiple instances of the app
+        //TODO see why SingleTask in the manifest does not achieve this
+        if (!isTaskRoot) {
+            // return to main activity
+            finish()
+        }
         setContent {
             TagTimerTheme {
                 LaunchedEffect(Unit) {

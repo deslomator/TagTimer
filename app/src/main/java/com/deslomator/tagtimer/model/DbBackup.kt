@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-data class FullBackup(
+data class DbBackup(
     @Embedded val persons: List<Label.Person> = emptyList(),
     @Embedded val places: List<Label.Place> = emptyList(),
     @Embedded val tags: List<Label.Tag> = emptyList(),

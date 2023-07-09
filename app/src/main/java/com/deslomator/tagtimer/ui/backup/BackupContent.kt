@@ -51,13 +51,10 @@ fun BackupContent(
     val scope = rememberCoroutineScope()
     var result by remember { mutableStateOf<Uri?>(null) }
     val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/json")) {
-        result = it
+        contract = ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        result = uri
     }
     result?.let {
-        Log.d(TAG,"CreateDocument, Uri: $it")
-        Log.d(TAG,"CreateDocument, Uri.path: ${it.path}")
-        Log.d(TAG,"CreateDocument, Uri.path: ${it.path}")
         onAction(BackupAction.UriReceived(it))
         result = null
     }
@@ -162,6 +159,7 @@ fun BackupContent(
                     Result.RESTORE_FAILED -> context.getString(R.string.restore_failed)
                     Result.NOTHING_TO_RESTORE -> context.getString(R.string.nothing_to_restore)
                     Result.SAVED -> context.getString(R.string.backup_saved)
+                    Result.SAVE_FAILED -> context.getString(R.string.save_failed)
                 },
                 duration = SnackbarDuration.Short
             )

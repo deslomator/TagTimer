@@ -80,6 +80,9 @@ dependencies {
     // room
     implementation("androidx.room:room-ktx:2.5.2")
     kapt("androidx.room:room-compiler:2.5.2")
+    // DocumentFile
+    implementation("androidx.documentfile:documentfile:1.0.1")
+
 
 
     testImplementation("junit:junit:4.13.2")

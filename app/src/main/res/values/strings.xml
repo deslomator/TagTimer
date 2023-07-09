@@ -51,7 +51,8 @@
     <string name="new_place">New Place</string>
     <string name="edit_place">Edit Place</string>
     <string name="timestamp">Timestamp</string>
-    <string name="events">Events: %1d</string>
+    <string name="events_count">Events: %1d</string>
+    <string name="load_backup">Load Backup file:\n%1s</string>
     <string name="person">Person</string>
     <string name="place">Place</string>
     <string name="filter_events">Filter Events</string>
@@ -82,4 +83,6 @@
     <string name="nothing_to_backup">There are no labels to backup</string>
     <string name="restore_failed">Restore backup failed</string>
     <string name="nothing_to_restore">There was nothing new to restore</string>
+    <string name="import_data">Import data</string>
+    <string name="save_failed">Could not save the file</string>
 </resources>

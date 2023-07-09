@@ -8,17 +8,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.dao.SessionsDatabase
-import com.deslomator.tagtimer.model.BackedLabels
-import com.deslomator.tagtimer.model.FullBackup
+import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.type.Backup
-import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.model.type.Result
-import com.deslomator.tagtimer.util.restoreFullBackup
-import com.deslomator.tagtimer.util.restoreLabelsBackup
+import com.deslomator.tagtimer.state.BackupState
+import com.deslomator.tagtimer.util.restoreBackup
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -28,10 +26,12 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
-import java.io.BufferedWriter
+import java.io.ByteArrayInputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.io.FileReader
-import java.io.FileWriter
+import java.io.OutputStream
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -40,7 +40,6 @@ import javax.inject.Inject
 class BackupViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val appDao: AppDao,
-    private val database: SessionsDatabase
 ): ViewModel() {
 
     private val backupDir = File(context.filesDir, "backup")
@@ -49,7 +48,6 @@ class BackupViewModel @Inject constructor(
 
     val state = _state
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BackupState())
-
 
     fun onAction(action: BackupAction) {
         when(action) {
@@ -68,11 +66,30 @@ class BackupViewModel @Inject constructor(
                 }
             }
             is BackupAction.BackupLabelsClicked -> {
-                labelsBackup()
+                viewModelScope.launch(Dispatchers.IO) {
+                    val result = backup(
+                        labelsOnly = true,
+                        appDao = appDao,
+                        backupDir = backupDir,
+                        file = null,
+                    )
+                    _state.update {
+                        it.copy(
+                            result = result,
+                            showSnackBar = true
+                        )
+                    }
+                    reloadFiles()
+                }
             }
             is BackupAction.FullBackupClicked -> {
                 viewModelScope.launch(Dispatchers.IO) {
-                    val result = fullBackup(appDao, backupDir)
+                    val result = backup(
+                        labelsOnly = false,
+                        appDao = appDao,
+                        backupDir = backupDir,
+                        file = null,
+                    )
                     _state.update {
                         it.copy(
                             result = result,
@@ -83,7 +100,15 @@ class BackupViewModel @Inject constructor(
                 }
             }
             is BackupAction.RestoreBackupClicked -> {
-                restoreBackup(backupDir, action.file)
+                viewModelScope.launch(Dispatchers.IO) {
+                    val result = restoreBackup(appDao, Uri.fromFile(action.file))
+                    _state.update {
+                        it.copy(
+                            result = result,
+                            showSnackBar = true
+                        )
+                    }
+                }
             }
             is BackupAction.SnackbarShown -> {
                 _state.update { it.copy(showSnackBar = false) }
@@ -95,18 +120,9 @@ class BackupViewModel @Inject constructor(
                 _state.update { it.copy(currentFile = action.file) }
             }
             is BackupAction.UriReceived -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val reader = BufferedReader(FileReader(state.value.currentFile))
-                    contentResolver.openOutputStream(action.uri)?.apply {
-                        writer().write(reader.readText())
-                        flush()
-                        close()
-                    }
-//                Log.d(TAG, "UriReceived: saved file: ${action.uri}")
-                    reader.close()
-                }
+                val result = saveToStorage(action.uri)
                 _state.update { it.copy(
-                    result = Result.SAVED,
+                    result = result,
                     showSnackBar = true
                 ) }
             }
@@ -124,107 +140,36 @@ class BackupViewModel @Inject constructor(
         ) }
     }
 
-    private fun labelsBackup() {
-        val timestamp = SimpleDateFormat(
-            "yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val fileName = "${Backup.LABELS.type}__${timestamp}.json"
-        val new = File(backupDir, fileName)
-        val success = new.createNewFile()
-        if (success) {
-            viewModelScope.launch(Dispatchers.IO) {
-                val labels = BackedLabels(
-                    persons = appDao.getActivePersonsList().map { it.copy(
-                        name = it.name,
-                        color = it.color,
-                    ) },
-                    places = appDao.getActivePlacesList().map { it.copy(
-                        name = it.name,
-                        color = it.color
-                    ) },
-                    tags = appDao.getActiveTagsList().map { it.copy(
-                        name = it.name,
-                        color = it.color
-                    ) },
-                )
-                if (
-                    labels.persons.isNotEmpty() ||
-                    labels.places.isNotEmpty() ||
-                    labels.tags.isNotEmpty()
-                ) {
-                    val json = Json.encodeToString(labels)
-                    val writer = BufferedWriter(FileWriter(new))
-                    writer.write(json)
-                    writer.close()
-                    reloadFiles()
-                    _state.update {
-                        it.copy(
-                            result = Result.BACKED,
-                            showSnackBar = true
-                        )
-                    }
-                } else {
-                    _state.update {
-                        it.copy(
-                            result = Result.NOTHING_TO_BACKUP,
-                            showSnackBar = true
-                        )
-                    }
-                }
-            }
-        } else {
-            _state.update { it.copy(
-                result = Result.BACKUP_FAILED,
-                showSnackBar = true
-            ) }
-        }
-    }
-
-    private fun restoreBackup(backupDir: File, file: File) {
-        var result: Result
-        if (file.toString().contains(Backup.FULL.type)) {
-            viewModelScope.launch(Dispatchers.IO) {
-                // first backup current data in case file is bad
-                val temp = File(backupDir, "tmp.json")
-                result = fullBackup(appDao, backupDir, temp)
-                if (result == Result.BACKED) {
-                    //now that we have a backup, delete all records
-                    database.clearAllTables()
-                    result = restoreFullBackup(appDao, Uri.fromFile(file))
-                    if (result == Result.RESTORED) {
-                        _state.update {
-                            it.copy(
-                                result = result,
-                                showSnackBar = true
-                            )
-                        }
-                    } else { // restore the temporal backup in case of error
-                        restoreFullBackup(appDao, Uri.fromFile(temp))
-                        _state.update {
-                            it.copy(
-                                result = Result.RESTORE_FAILED,
-                                showSnackBar = true
-                            )
-                        }
-                    }
-                }
-                temp.delete()
-            }
-        } else if (file.toString().contains(Backup.LABELS.type)) {
-            viewModelScope.launch(Dispatchers.IO) {
-                result = restoreLabelsBackup(appDao, Uri.fromFile(file))
-                _state.update { it.copy(
-                    result = result,
-                    showSnackBar = true
-                ) }
-            }
-        } else {
-            _state.update {
-                it.copy(
-                    result = Result.RESTORE_FAILED,
-                    showSnackBar = true
-                )
+    /**
+     * using a byte array is a way of saving
+     * the file to storage without it being truncated
+     */
+    private fun saveToStorage(uri: Uri): Result {
+        var result = Result.SAVED
+        viewModelScope.launch(Dispatchers.IO) {
+            var fis: FileInputStream? = null
+            var fos: OutputStream? = null
+            try {
+                fis = FileInputStream(state.value.currentFile)
+                fos = contentResolver.openOutputStream(uri, "wt")
+                val bis = fis.buffered()
+                val bos = fos?.buffered()
+                val length = fis.available()
+                val buf = ByteArray(length)
+                bis.read(buf)
+                do {
+                    bos?.write(buf)
+                } while (bis.read(buf) != -1)
+            } catch (error: Error) {
+                Log.d(TAG, "UriReceived. $error")
+                result = Result.SAVE_FAILED
+            } finally {
+                fos?.flush()
+                fos?.close()
+                fis?.close()
             }
         }
+        return result
     }
 
     private fun reloadFiles() {
@@ -241,47 +186,47 @@ class BackupViewModel @Inject constructor(
     }
 }
 
-private suspend fun fullBackup(appDao: AppDao, backupDir: File, file: File? = null): Result {
+private suspend fun backup(
+    labelsOnly: Boolean = false,
+    appDao: AppDao,
+    backupDir: File,
+    file: File? = null
+): Result {
     var result = Result.BACKED
-
     withContext(Dispatchers.IO) {
         val timestamp = SimpleDateFormat(
             "yyyyMMdd_HHmmss", Locale.getDefault()
         ).format(Date())
-        val fileName = "${Backup.FULL.type}_${timestamp}.json"
+        val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
+        val fileName = "${prefix}_${timestamp}.json"
         val new = file ?: File(backupDir, fileName)
         if (new.createNewFile()) {
-            val full = FullBackup(
-                tags = appDao.getAllTagsList(),
-                places = appDao.getAllPlacesList(),
-                persons = appDao.getAllPersonsList(),
-                events = appDao.getAllEventsList(),
-                preselectedPersons = appDao.getAllPreselectedPersonsList(),
-                preselectedPlaces = appDao.getAllPreselectedPlacesList(),
-                preselectedTags = appDao.getAllPreselectedTagsList(),
-                sessions = appDao.getAllSessionsList(),
-            )
-            if (
-                full.tags.isNotEmpty() ||
-                full.places.isNotEmpty() ||
-                full.persons.isNotEmpty() ||
-                full.events.isNotEmpty() ||
-                full.preselectedPersons.isNotEmpty() ||
-                full.preselectedPlaces.isNotEmpty() ||
-                full.preselectedTags.isNotEmpty() ||
-                full.sessions.isNotEmpty()
-            ) {
+            val full = getDbBackup(appDao, labelsOnly)
+            if (full.isEmpty()) {
+                result = Result.NOTHING_TO_BACKUP
+            } else {
+                var fis: ByteArrayInputStream? = null
+                var fos: FileOutputStream? = null
                 try {
-                    val json = Json.encodeToString(full)
-                    val writer = BufferedWriter(FileWriter(new))
-                    writer.write(json)
-                    writer.close()
+                    val json = Json.encodeToString(full).encodeToByteArray()
+                    fis = ByteArrayInputStream(json)
+                    fos = FileOutputStream(new)
+                    val bis = fis.buffered()
+                    val bos = fos.buffered()
+                    val length = fis.available()
+                    val buf = ByteArray(length)
+                    bis.read(buf)
+                    do {
+                        bos.write(buf)
+                    } while (bis.read(buf) != -1)
                 } catch (error: Error) {
                     Log.d("fullBackup()", error.message.toString())
                     result = Result.BACKUP_FAILED
+                } finally {
+                    fis?.close()
+                    fos?.flush()
+                    fos?.close()
                 }
-            } else {
-                Result.NOTHING_TO_BACKUP
             }
         } else {
             result = Result.BACKUP_FAILED
@@ -290,5 +235,53 @@ private suspend fun fullBackup(appDao: AppDao, backupDir: File, file: File? = nu
     return result
 }
 
+private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
+    var dbBackup: DbBackup
+    withContext(Dispatchers.IO) {
+        when (labelsOnly) {
+            true -> {
+                val tags = async { appDao.getAllTagsList() }
+                val places = async { appDao.getAllPlacesList() }
+                val persons = async { appDao.getAllPersonsList() }
+                dbBackup = DbBackup(
+                    tags = tags.await(),
+                    places = places.await(),
+                    persons = persons.await(),
+                )
+            }
+            false -> {
+                val tags = async { appDao.getAllTagsList() }
+                val places = async { appDao.getAllPlacesList() }
+                val persons = async { appDao.getAllPersonsList() }
+                val events = async { appDao.getAllEventsList() }
+                val preselectedPersons = async { appDao.getAllPreselectedPersonsList() }
+                val preselectedPlaces = async { appDao.getAllPreselectedPlacesList() }
+                val preselectedTags = async { appDao.getAllPreselectedTagsList() }
+                val sessions = async { appDao.getAllSessionsList() }
+                dbBackup = DbBackup(
+                    tags = tags.await(),
+                    places = places.await(),
+                    persons = persons.await(),
+                    events = events.await(),
+                    preselectedPersons = preselectedPersons.await(),
+                    preselectedPlaces = preselectedPlaces.await(),
+                    preselectedTags = preselectedTags.await(),
+                    sessions = sessions.await(),
+                )
+            }
+        }
+    }
+    return dbBackup
+}
 
+fun DbBackup.isEmpty(): Boolean {
+    return this.tags.isEmpty() &&
+            this.places.isEmpty() &&
+            this.persons.isEmpty() &&
+            this.events.isEmpty() &&
+            this.preselectedPersons.isEmpty() &&
+            this.preselectedPlaces.isEmpty() &&
+            this.preselectedTags.isEmpty() &&
+            this.sessions.isEmpty()
+}
 

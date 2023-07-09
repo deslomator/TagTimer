@@ -12,5 +12,6 @@ enum class Result {
     NOTHING_TO_BACKUP,
     NOTHING_TO_RESTORE,
     RESTORE_FAILED,
-    SAVED
+    SAVED,
+    SAVE_FAILED
 }

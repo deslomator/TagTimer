@@ -96,7 +96,7 @@ fun SessionsTabContent(
                     Column(
                         modifier = Modifier.padding(end = 5.dp)
                     ) {
-                        Text(stringResource(R.string.events, item.eventCount))
+                        Text(stringResource(R.string.events_count, item.eventCount))
                         Text(item.durationMillis.toElapsedTime())
                     }
                     Spacer(modifier = Modifier.width(10.dp))
