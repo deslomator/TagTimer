@@ -63,6 +63,8 @@ fun ActiveSessionScaffold(
             val elapsed = System.currentTimeMillis() - state.currentSession.startTimestampMillis
             onSharedAction(SharedAction.SetCursor(elapsed))
             if (!sharedState.isRunning) onSharedAction(SharedAction.PlayPauseClicked)
+        } else {
+            onSharedAction(SharedAction.SetCursor(state.currentSession.durationMillis))
         }
     }
     Scaffold(
