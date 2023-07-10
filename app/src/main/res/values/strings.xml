@@ -84,5 +84,6 @@
     <string name="restore_failed">Restore backup failed</string>
     <string name="nothing_to_restore">There was nothing new to restore</string>
     <string name="import_data">Import data</string>
-    <string name="save_failed">Could not save the file</string>
+    <string name="save_failed">The file could not be saved</string>
+    <string name="warning_this_will_erase">WARNING: all current app data will be deleted</string>
 </resources>

@@ -48,13 +48,14 @@ fun IntentProcessor(
     activity: ComponentActivity,
     appDao: AppDao
 ) {
+    var result by rememberSaveable { mutableStateOf(Result.RESTORE_FAILED) }
     /*
-    showImportDialog survives configuration changes,
-    only interacting with the dialog makes it false.
-    It is true on cold boot: it the app was launched by
-    choosing a .json file from other app it will be ready.
-    Receiving a newIntent sets it to true again
-    */
+      showImportDialog survives configuration changes,
+      only interacting with the dialog makes it false.
+      It is true on cold boot: it the app was launched by
+      choosing a .json file from other app it will be ready.
+      Receiving a newIntent sets it to true again
+      */
     var showImportDialog by rememberSaveable { mutableStateOf(true) }
     /*
     intentState receives the intent on cold boot, once the
@@ -112,7 +113,12 @@ fun IntentProcessor(
                             filename
                         ),
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(25.dp))
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = R.string.warning_this_will_erase),
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.End
@@ -140,9 +146,6 @@ fun IntentProcessor(
         }
     }
     if (loadBackup) {
-        var result = Result.RESTORE_FAILED
-        val snackState = remember { SnackbarHostState() }
-        val snackScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
             intentState?.data?.let { intentUri ->
                 Log.d(TAG, "inside intentState?.data?.let")
@@ -160,7 +163,6 @@ fun IntentProcessor(
                         }
                     }
                 }
-                snackScope.launch { snackState.showSnackbar(result.name) }
             }
             Log.i(TAG, "Loading backup finished, result: ${result.name}")
             intentState = null
