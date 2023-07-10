@@ -31,6 +31,7 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                     Log.e("$TAG FromString()", "Failed, backup class is empty")
                     Result.NOTHING_TO_BACKUP
                 } else {
+                    appDao.deleteAllData()
                     runBlocking {
                         launch { dbBackup.persons.forEach { appDao.upsertPerson(it) } }
                         launch { dbBackup.places.forEach { appDao.upsertPlace(it) } }

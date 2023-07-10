@@ -8,7 +8,10 @@ import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Dao
 interface AppDao {
@@ -171,6 +174,37 @@ interface AppDao {
     suspend fun getAllSessionsList(): List<Session>
     @Query("SELECT * FROM events")
     suspend fun getAllEventsList(): List<Event>
+    /*
+    DELETE
+     */
+    @Query("DELETE FROM events")
+    suspend fun deleteAllEvents()
+    @Query("DELETE FROM persons")
+    suspend fun deleteAllPersons()
+    @Query("DELETE FROM places")
+    suspend fun deleteAllPlaces()
+    @Query("DELETE FROM tags")
+    suspend fun deleteAllTags()
+    @Query("DELETE FROM ps_persons")
+    suspend fun deleteAllPreselectedPersons()
+    @Query("DELETE FROM ps_places")
+    suspend fun deleteAllPreselectedPlaces()
+    @Query("DELETE FROM ps_tags")
+    suspend fun deleteAllPreselectedTags()
+    @Query("DELETE FROM sessions")
+    suspend fun deleteAllSessions()
+    suspend fun deleteAllData() {
+        withContext(Dispatchers.IO) {
+            launch { deleteAllEvents() }
+            launch { deleteAllPersons() }
+            launch { deleteAllPlaces() }
+            launch { deleteAllTags() }
+            launch { deleteAllPreselectedPersons() }
+            launch { deleteAllPreselectedPlaces() }
+            launch { deleteAllPreselectedTags() }
+            launch { deleteAllSessions() }
+        }
+    }
 }
 
 private const val TAG ="AppDao"
