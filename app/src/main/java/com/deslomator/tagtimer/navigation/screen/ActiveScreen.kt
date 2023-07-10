@@ -16,5 +16,5 @@ sealed class ActiveScreen(
     object EventTrash : ActiveScreen("EventTrash", R.string.trash, R.drawable.delete)
 
     val route = "$_route/$argumant"
-    fun routeWithArg(sessionId: Int) = "$_route/$sessionId"
+    fun routeWithArg(sessionId: Long) = "$_route/$sessionId"
 }

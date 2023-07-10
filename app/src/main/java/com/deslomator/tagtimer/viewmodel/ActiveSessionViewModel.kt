@@ -31,7 +31,7 @@ class ActiveSessionViewModel @Inject constructor(
     private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _sessionId = MutableStateFlow(0)
+    private val _sessionId = MutableStateFlow(0L)
     private val _state = MutableStateFlow(ActiveSessionState())
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _events = _sessionId
@@ -96,7 +96,7 @@ class ActiveSessionViewModel @Inject constructor(
                     )
                     val id = appDao.upsertEvent(event)
                     _state.update {
-                        it.copy( eventForScrollTo = event.copy(id = id.toInt()))
+                        it.copy( eventForScrollTo = event.copy(id = id))
                     }
                 }
             }
@@ -106,7 +106,7 @@ class ActiveSessionViewModel @Inject constructor(
                     lastAccessMillis = time,
                     durationMillis = getSessionDuration(),
                     eventCount = state.value.events.size,
-                    startTimestamp =
+                    startTimestampMillis =
                     if (action.isRunning) time - action.cursor else 0
                 )
                 viewModelScope.launch(Dispatchers.IO) { appDao.upsertSession(session) }
@@ -208,7 +208,7 @@ class ActiveSessionViewModel @Inject constructor(
                 appDao.upsertPreSelectedPerson(
                     Preselected.Person(
                         sessionId = state.value.currentSession.id,
-                        labelId = newId.toInt()
+                        labelId = newId
                     )
                 )
             }
@@ -224,7 +224,7 @@ class ActiveSessionViewModel @Inject constructor(
                 appDao.upsertPreSelectedPlace(
                     Preselected.Place(
                         sessionId = state.value.currentSession.id,
-                        labelId = newId.toInt()
+                        labelId = newId
                     )
                 )
             }
@@ -240,7 +240,7 @@ class ActiveSessionViewModel @Inject constructor(
                 appDao.upsertPreSelectedTag(
                     Preselected.Tag(
                         sessionId = state.value.currentSession.id,
-                        labelId = newId.toInt()
+                        labelId = newId
                     )
                 )
             }
@@ -248,7 +248,7 @@ class ActiveSessionViewModel @Inject constructor(
     }
 
     init {
-        val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
+        val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
         _sessionId.update { sessionId }
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {

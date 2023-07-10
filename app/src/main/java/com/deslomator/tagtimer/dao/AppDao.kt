@@ -25,16 +25,16 @@ interface AppDao {
     suspend fun deleteEvent(event: Event)
 
     @Query("DELETE FROM events WHERE sessionId = :sessionId")
-    suspend fun deleteEventsForSession(sessionId: Int)
+    suspend fun deleteEventsForSession(sessionId: Long)
 
     @Query("SELECT * FROM events WHERE id = :eventId")
-    suspend fun getEvent(eventId: Int): Event
+    suspend fun getEvent(eventId: Long): Event
 
     @Query("SELECT * FROM events WHERE sessionId = :sessionId AND inTrash = 0 ORDER BY elapsedTimeMillis ASC")
-    fun getActiveEventsForSession(sessionId: Int): Flow<List<Event>>
+    fun getActiveEventsForSession(sessionId: Long): Flow<List<Event>>
 
     @Query("SELECT * FROM events WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY elapsedTimeMillis ASC")
-    fun getTrashedEventsForSession(sessionId: Int): Flow<List<Event>>
+    fun getTrashedEventsForSession(sessionId: Long): Flow<List<Event>>
 
     /*
     SESSIONS
@@ -46,7 +46,7 @@ interface AppDao {
     suspend fun deleteSession(session: Session)
 
     @Query("SELECT * FROM sessions WHERE id = :id")
-    suspend fun getSession(id: Int): Session
+    suspend fun getSession(id: Long): Session
 
     @Query("SELECT * FROM sessions ORDER BY lastAccessMillis DESC")
     fun getSessions(): Flow<List<Session>>
@@ -102,11 +102,11 @@ interface AppDao {
     @Upsert
     suspend fun upsertPreSelectedTag(preSelectedTag: Preselected.Tag)
     @Query("DELETE FROM ps_tags WHERE sessionId = :sessionId AND labelId = :tagId")
-    suspend fun deletePreSelectedTagForSession(sessionId: Int, tagId: Int)
+    suspend fun deletePreSelectedTagForSession(sessionId: Long, tagId: Long)
     @Query("SELECT * FROM ps_tags WHERE sessionId = :sessionId")
-    fun getPreSelectedTagsForSession(sessionId: Int): Flow<List<Preselected.Tag>>
+    fun getPreSelectedTagsForSession(sessionId: Long): Flow<List<Preselected.Tag>>
     @Query("SELECT * FROM ps_tags WHERE sessionId = :sessionId")
-    suspend fun getPreSelectedTagsListForSession(sessionId: Int): List<Preselected.Tag>
+    suspend fun getPreSelectedTagsListForSession(sessionId: Long): List<Preselected.Tag>
     
     /*
     PRESELECTED PERSONS
@@ -114,11 +114,11 @@ interface AppDao {
     @Upsert
     suspend fun upsertPreSelectedPerson(preSelectedPerson: Preselected.Person)
     @Query("DELETE FROM ps_persons WHERE sessionId = :sessionId AND labelId = :tagId")
-    suspend fun deletePreSelectedPersonForSession(sessionId: Int, tagId: Int)
+    suspend fun deletePreSelectedPersonForSession(sessionId: Long, tagId: Long)
     @Query("SELECT * FROM ps_persons WHERE sessionId = :sessionId")
-    fun getPreSelectedPersonsForSession(sessionId: Int): Flow<List<Preselected.Person>>
+    fun getPreSelectedPersonsForSession(sessionId: Long): Flow<List<Preselected.Person>>
     @Query("SELECT * FROM ps_persons WHERE sessionId = :sessionId")
-    suspend fun getPreSelectedPersonsListForSession(sessionId: Int): List<Preselected.Person>
+    suspend fun getPreSelectedPersonsListForSession(sessionId: Long): List<Preselected.Person>
     
     /*
     PRESELECTED PLACES
@@ -126,11 +126,11 @@ interface AppDao {
     @Upsert
     suspend fun upsertPreSelectedPlace(preSelectedPlace: Preselected.Place)
     @Query("DELETE FROM ps_places WHERE sessionId = :sessionId AND labelId = :tagId")
-    suspend fun deletePreSelectedPlaceForSession(sessionId: Int, tagId: Int)
+    suspend fun deletePreSelectedPlaceForSession(sessionId: Long, tagId: Long)
     @Query("SELECT * FROM ps_places WHERE sessionId = :sessionId")
-    fun getPreSelectedPlacesForSession(sessionId: Int): Flow<List<Preselected.Place>>
+    fun getPreSelectedPlacesForSession(sessionId: Long): Flow<List<Preselected.Place>>
     @Query("SELECT * FROM ps_places WHERE sessionId = :sessionId")
-    suspend fun getPreSelectedPlacesListForSession(sessionId: Int): List<Preselected.Place>
+    suspend fun getPreSelectedPlacesListForSession(sessionId: Long): List<Preselected.Place>
     
     /*
     ORPHANS

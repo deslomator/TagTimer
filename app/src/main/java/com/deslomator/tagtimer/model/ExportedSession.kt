@@ -11,14 +11,14 @@ data class ExportedSession(
     val date: String = "",
     val name: String = "",
     val notes: String = "",
-    @SerialName("duration_secs") val durationSecs: Int = 0,
+    @SerialName("duration_millis") val durationMillis: Long = 0,
     val events: List<ExportedEvent> = emptyList()
 ) {
     constructor(session: Session, events: List<Event>): this(
         date = session.lastAccessMillis.toDateTime(),
         name = session.name,
         notes = session.notes,
-        durationSecs = (session.durationMillis / 1000).toInt(),
+        durationMillis = session.durationMillis,
         events = events.map { ExportedEvent(it) }
     )
 }

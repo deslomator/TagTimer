@@ -9,35 +9,35 @@ import kotlinx.serialization.Serializable
 @Keep
 @Serializable
 sealed class Preselected (
-    @SerialName("super_sessionId") open val sessionId: Int = 0,
-    @SerialName("super_labelId") open val labelId: Int = 0,
-    @SerialName("super_id") open  val id: Int = 0
+    @SerialName("super_sessionId") open val sessionId: Long = 0,
+    @SerialName("super_labelId") open val labelId: Long = 0,
+    @SerialName("super_id") open  val id: Long = 0
 ) {
     @Keep
     @Serializable
     @Entity(tableName = "ps_persons")
     data class Person(
-        override val sessionId: Int = 0,
-        override val labelId: Int = 0,
-        @PrimaryKey(autoGenerate = true) override val id: Int = 0
+        @SerialName("session_id") override val sessionId: Long = 0,
+        @SerialName("person_id") override val labelId: Long = 0,
+        @PrimaryKey(autoGenerate = true) override val id: Long = 0
     ) : Preselected(sessionId, labelId, id)
 
     @Keep
     @Serializable
     @Entity(tableName = "ps_places")
     data class Place(
-        override val sessionId: Int = 0,
-        override val labelId: Int = 0,
-        @PrimaryKey(autoGenerate = true) override val id: Int = 0
+        @SerialName("session_id") override val sessionId: Long = 0,
+        @SerialName("place_id") override val labelId: Long = 0,
+        @PrimaryKey(autoGenerate = true) override val id: Long = 0
     ) : Preselected(sessionId, labelId, id)
 
     @Keep
     @Serializable
     @Entity(tableName = "ps_tags")
     data class Tag(
-        override val sessionId: Int = 0,
-        override val labelId: Int = 0,
-        @PrimaryKey(autoGenerate = true) override val id: Int = 0
+        @SerialName("session_id") override val sessionId: Long = 0,
+        @SerialName("tag_id") override val labelId: Long = 0,
+        @PrimaryKey(autoGenerate = true) override val id: Long = 0
     ) : Preselected(sessionId, labelId, id)
 }
 

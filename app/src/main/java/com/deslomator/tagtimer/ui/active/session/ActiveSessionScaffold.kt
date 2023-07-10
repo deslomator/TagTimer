@@ -59,8 +59,8 @@ fun ActiveSessionScaffold(
     }
     LaunchedEffect(state.currentSession) {
         Log.d(TAG, "launched effect, current session name: ${state.currentSession.name}")
-        if (state.currentSession.startTimestamp > 0) {
-            val elapsed = System.currentTimeMillis() - state.currentSession.startTimestamp
+        if (state.currentSession.startTimestampMillis > 0) {
+            val elapsed = System.currentTimeMillis() - state.currentSession.startTimestampMillis
             onSharedAction(SharedAction.SetCursor(elapsed))
             if (!sharedState.isRunning) onSharedAction(SharedAction.PlayPauseClicked)
         }

@@ -113,11 +113,11 @@ fun AppNavHost(
         navigation(
             route = "active/{sessionId}",
             startDestination = ActiveScreen.ActiveSession.route,
-            arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+            arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
         ) {
             composable(
                 route = ActiveScreen.ActiveSession.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
             ) { backStackEntry ->
                 val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
                 val sharedState by sharedVm.state.collectAsStateWithLifecycle()
@@ -133,7 +133,7 @@ fun AppNavHost(
             }
             composable(
                 route = ActiveScreen.EventFilter.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
             ) { backStackEntry ->
                 val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
                 val sharedState by sharedVm.state.collectAsStateWithLifecycle()
@@ -148,7 +148,7 @@ fun AppNavHost(
             }
             composable(
                 route = ActiveScreen.EventTrash.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
             ) { backStackEntry ->
                 val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsStateWithLifecycle()
@@ -160,7 +160,7 @@ fun AppNavHost(
             }
             composable(
                 route = ActiveScreen.LabelSelection.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.IntType })
+                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
             ) { backStackEntry ->
                 val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
                 val sharedState by sharedVm.state.collectAsStateWithLifecycle()

@@ -3,16 +3,13 @@ package com.deslomator.tagtimer
 import android.util.Log
 import androidx.compose.ui.graphics.toArgb
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.Preselected
-import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 
 suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
         Log.d(TAG, "populateDb() creating sessions and tags")
-        val i = index + 100
+        val i = index + 100L
         /*val session = Session(
             id = i,
             color = it.toArgb(),

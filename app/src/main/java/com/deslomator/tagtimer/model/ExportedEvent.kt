@@ -11,13 +11,13 @@ data class ExportedEvent(
     val note: String = "",
     val person: String = "",
     val place: String = "",
-    @SerialName("elapsed_time_secs") val elapsedTimeSeconds: Int = 0,
+    @SerialName("elapsed_time_millis") val elapsedTimeMillis: Long = 0,
 ) {
     constructor(event: Event): this(
         label = event.tag,
         note = event.note,
         person = event.person,
         place = event.place,
-        elapsedTimeSeconds = (event.elapsedTimeMillis / 1000).toInt()
+        elapsedTimeMillis = event.elapsedTimeMillis
     )
 }

@@ -31,7 +31,7 @@ class EventFilterViewModel @Inject constructor(
     private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
-    private val _sessionId = MutableStateFlow(0)
+    private val _sessionId = MutableStateFlow(0L)
     private val _currentTag = MutableStateFlow("")
     private val _currentPerson = MutableStateFlow("")
     private val _currentPlace = MutableStateFlow("")
@@ -247,7 +247,7 @@ class EventFilterViewModel @Inject constructor(
     }
 
     init {
-        val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
+        val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
         _sessionId.update { sessionId }
         viewModelScope.launch {
             _state.update {

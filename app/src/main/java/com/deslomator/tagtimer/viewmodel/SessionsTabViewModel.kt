@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
@@ -75,7 +74,7 @@ class SessionsTabViewModel @Inject constructor(
 
     private fun copySession(copyString: String) {
         val s = state.value.currentSession
-        val newName = "${s.name} - ${copyString}"
+        val newName = "${s.name} - $copyString"
         viewModelScope.launch {
             val newId = (appDao.getSessionsList().maxOfOrNull { it.id } ?: 0) + 1
             val newSession = state.value.currentSession.copy(
