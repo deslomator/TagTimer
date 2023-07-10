@@ -104,7 +104,7 @@ class ActiveSessionViewModel @Inject constructor(
                 val time = System.currentTimeMillis()
                 val session = state.value.currentSession.copy(
                     lastAccessMillis = time,
-                    durationMillis = getSessionDuration(),
+                    durationMillis = getSessionDuration(action.cursor),
                     eventCount = state.value.events.size,
                     startTimestampMillis =
                     if (action.isRunning) time - action.cursor else 0
@@ -154,7 +154,7 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.TimeClicked -> {
                 val s = state.value.currentSession.copy(
-                    durationMillis = getSessionDuration()
+                    durationMillis = getSessionDuration(action.cursor)
                 )
                 _state.update { it.copy(
                     currentSession = s,
@@ -188,9 +188,11 @@ class ActiveSessionViewModel @Inject constructor(
         ) }
     }
 
-    private fun getSessionDuration(): Long {
-        return state.value.events
-            .maxOfOrNull { it.elapsedTimeMillis } ?: 0
+    private fun getSessionDuration(cursor: Long): Long {
+        return maxOf(
+            cursor,
+            state.value.events.maxOfOrNull { it.elapsedTimeMillis } ?: 0
+        )
     }
 
     /**

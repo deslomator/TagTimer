@@ -134,7 +134,7 @@ fun ActiveSessionContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { onAction(ActiveSessionAction.TimeClicked) }
+                    onClick = { onAction(ActiveSessionAction.TimeClicked(sharedState.cursor)) }
                 ) {
                     Text(text = sharedState.cursor.toElapsedTime())
                 }
