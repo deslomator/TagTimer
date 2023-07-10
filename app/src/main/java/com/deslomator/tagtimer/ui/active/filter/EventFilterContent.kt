@@ -49,13 +49,13 @@ fun EventFilterContent(
             PreSelectedLabelsList(
                 labels = state.persons,
                 currentLabel = state.currentPerson,
-                onItemClick = { onAction(EventFilterAction.usedPersonClicked(it)) }
+                onItemClick = { onAction(EventFilterAction.UsedPersonClicked(it)) }
             )
             Divider()
             PreSelectedLabelsList(
                 labels = state.places,
                 currentLabel = state.currentPlace,
-                onItemClick = { onAction(EventFilterAction.usedPlaceClicked(it)) }
+                onItemClick = { onAction(EventFilterAction.UsedPlaceClicked(it)) }
             )
             Divider()
             TagsList(

@@ -173,12 +173,12 @@ class EventFilterViewModel @Inject constructor(
             EventFilterAction.EventsExported -> {
                 _state.update { it.copy(exportEvents = false) }
             }
-            is EventFilterAction.usedPersonClicked -> {
+            is EventFilterAction.UsedPersonClicked -> {
                 val person = if (action.personName == state.value.currentPerson) ""
                 else action.personName
                 _currentPerson.update { person }
             }
-            is EventFilterAction.usedPlaceClicked -> {
+            is EventFilterAction.UsedPlaceClicked -> {
                 val place = if (action.placeName == state.value.currentPlace) ""
                 else action.placeName
                 _currentPlace.update { place }
