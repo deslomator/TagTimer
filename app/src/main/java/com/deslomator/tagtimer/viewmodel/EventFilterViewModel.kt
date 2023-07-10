@@ -184,8 +184,8 @@ class EventFilterViewModel @Inject constructor(
                 _currentPlace.update { place }
             }
             is EventFilterAction.UsedTagClicked -> {
-                val tag = if (action.tagName == state.value.currentTag) ""
-                else action.tagName
+                val tag = if (action.tag.name == state.value.currentTag) ""
+                else action.tag.name
                 _currentTag.update { tag }
             }
             is EventFilterAction.ExportFilteredEventsClicked -> {

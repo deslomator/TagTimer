@@ -43,9 +43,8 @@ import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
+import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
 import com.deslomator.tagtimer.util.toElapsedTime
-import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
-import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -158,7 +157,7 @@ fun ActiveSessionContent(
                     )
                 }
             }
-            PreSelectedTagsList(
+            TagsList(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.6f),
@@ -176,17 +175,17 @@ fun ActiveSessionContent(
                 },
             )
             Divider()
-            PreSelectedPersonsList(
-                persons = persons,
-                currentPerson = state.currentPersonName,
+            PreSelectedLabelsList(
+                labels = persons,
+                currentLabel = state.currentPersonName,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
                 }
             )
             Divider()
-            PreSelectedPlacesList(
-                places = places,
-                currentPlace = state.currentPlaceName,
+            PreSelectedLabelsList(
+                labels = places,
+                currentLabel = state.currentPlaceName,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))
                 }

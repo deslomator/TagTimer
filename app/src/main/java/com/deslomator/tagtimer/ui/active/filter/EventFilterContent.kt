@@ -26,9 +26,9 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.active.EventListItem
-import com.deslomator.tagtimer.ui.active.PreSelectedPersonsList
-import com.deslomator.tagtimer.ui.active.PreSelectedPlacesList
+import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
+import com.deslomator.tagtimer.ui.active.session.TagsList
 
 @Composable
 fun EventFilterContent(
@@ -46,23 +46,24 @@ fun EventFilterContent(
             .padding(paddingValues),
     ) {
         Column {
-            PreSelectedPersonsList(
-                persons = state.persons,
-                currentPerson = state.currentPerson,
+            PreSelectedLabelsList(
+                labels = state.persons,
+                currentLabel = state.currentPerson,
                 onItemClick = { onAction(EventFilterAction.usedPersonClicked(it)) }
             )
             Divider()
-            PreSelectedPlacesList(
-                places = state.places,
-                currentPlace = state.currentPlace,
+            PreSelectedLabelsList(
+                labels = state.places,
+                currentLabel = state.currentPlace,
                 onItemClick = { onAction(EventFilterAction.usedPlaceClicked(it)) }
             )
             Divider()
-            UsedTagsList(
+            TagsList(
                 modifier = Modifier.weight(.28F),
                 tags = state.tags,
                 currentTag = state.currentTag,
-                onItemClick = { onAction(EventFilterAction.UsedTagClicked(it)) }
+                onItemClicked = { onAction(EventFilterAction.UsedTagClicked(it)) },
+                showChecked = true
             )
             Divider()
             LazyColumn(
