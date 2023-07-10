@@ -197,27 +197,41 @@ class ActiveSessionViewModel @Inject constructor(
     create new Labels if an Event edition resulted in non existent label names
      */
     private fun createNewLabels(event: Event) {
-        if (!_persons.value.map { it.name }.contains(event.person))
+        if (!_persons.value.map { it.name }.contains(event.person)) {
             viewModelScope.launch {
-                appDao.upsertPerson(
+                val newId = appDao.upsertPerson(
                     Label.Person(
                         name = event.person,
                         color = event.color
                     )
                 )
+                appDao.upsertPreSelectedPerson(
+                    Preselected.Person(
+                        sessionId = state.value.currentSession.id,
+                        labelId = newId.toInt()
+                    )
+                )
             }
-        if (!_places.value.map { it.name }.contains(event.place))
+        }
+        if (!_places.value.map { it.name }.contains(event.place)) {
             viewModelScope.launch {
-                appDao.upsertPlace(
+                val newId = appDao.upsertPlace(
                     Label.Place(
                         name = event.place,
                         color = event.color
                     )
                 )
+                appDao.upsertPreSelectedPlace(
+                    Preselected.Place(
+                        sessionId = state.value.currentSession.id,
+                        labelId = newId.toInt()
+                    )
+                )
             }
-        if (!_tags.value.map { it.name }.contains(event.tag))
+        }
+        if (!_tags.value.map { it.name }.contains(event.tag)) {
             viewModelScope.launch {
-                appDao.upsertTag(
+                val newId = appDao.upsertTag(
                     Label.Tag(
                         name = event.tag,
                         color = event.color
