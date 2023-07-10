@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SharedAction
@@ -54,7 +53,7 @@ class SharedViewModel @Inject constructor() : ViewModel() {
                 }
                 _state.update { it.copy(isRunning = !state.value.isRunning) }
             }
-            SharedAction.StopSession -> {
+            SharedAction.StopTimer -> {
                 _state.update { it.copy(isRunning = false) }
                 with(timerJob) {
                     this?.cancel()

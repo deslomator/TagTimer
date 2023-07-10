@@ -9,17 +9,19 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ExportedSession
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -83,7 +85,7 @@ class ActiveSessionViewModel @Inject constructor(
     fun onAction(action: ActiveSessionAction) {
         when(action) {
             is ActiveSessionAction.PreSelectedTagClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val event = Event(
                         sessionId = _sessionId.value,
                         elapsedTimeMillis = action.cursor,
@@ -98,15 +100,19 @@ class ActiveSessionViewModel @Inject constructor(
                     }
                 }
             }
-            is ActiveSessionAction.UpdateSession -> {
+            is ActiveSessionAction.ExitSession -> {
+                val time = System.currentTimeMillis()
                 val session = state.value.currentSession.copy(
+                    lastAccessMillis = time,
                     durationMillis = getSessionDuration(),
-                    eventCount = state.value.events.size
+                    eventCount = state.value.events.size,
+                    startTimestamp =
+                    if (action.isRunning) time - action.cursor else 0
                 )
-                viewModelScope.launch { appDao.upsertSession(session) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertSession(session) }
             }
             is ActiveSessionAction.TrashEventSwiped -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     // we don't want the Event that was retrieved
                     // in the action because it was stale
                     // get the updated one from the DB instead
@@ -121,14 +127,10 @@ class ActiveSessionViewModel @Inject constructor(
                 ) }
             }
             is ActiveSessionAction.AcceptEventEditionClicked -> {
-                viewModelScope.launch { appDao.upsertEvent(action.event) }
-                /*
-                 state takes some time to update after upserting the event;
-                 workaround: we take the updated event out of the list and
-                 compare it with the rest of the list to set the new duration
-                */
+                runBlocking {
+                    viewModelScope.launch(Dispatchers.IO) { appDao.upsertEvent(action.event) }
+                }
                 val maxInList = state.value.events
-                    .filter { it.id != action.event.id }
                     .maxOfOrNull { it.elapsedTimeMillis } ?: 0
                 val duration = maxOf(maxInList, action.event.elapsedTimeMillis)
                 val session = state.value.currentSession.copy(durationMillis = duration)
@@ -221,48 +223,23 @@ class ActiveSessionViewModel @Inject constructor(
                         color = event.color
                     )
                 )
+                appDao.upsertPreSelectedTag(
+                    Preselected.Tag(
+                        sessionId = state.value.currentSession.id,
+                        labelId = newId.toInt()
+                    )
+                )
             }
-    }
-
-    private inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
-        flow1: Flow<T1>,
-        flow2: Flow<T2>,
-        flow3: Flow<T3>,
-        flow4: Flow<T4>,
-        flow5: Flow<T5>,
-        flow6: Flow<T6>,
-        flow7: Flow<T7>,
-        flow8: Flow<T8>,
-        crossinline transform: suspend (T1, T2, T3, T4, T5, T6, T7, T8) -> R
-    ): Flow<R> {
-        return combine(flow1, flow2, flow3, flow4, flow5, flow6, flow7, flow8) { args: Array<*> ->
-            @Suppress("UNCHECKED_CAST")
-            transform(
-                args[0] as T1,
-                args[1] as T2,
-                args[2] as T3,
-                args[3] as T4,
-                args[4] as T5,
-                args[5] as T6,
-                args[6] as T7,
-                args[7] as T8,
-            )
         }
     }
 
     init {
         val sessionId = savedStateHandle.get<Int>("sessionId") ?: 0
         _sessionId.update { sessionId }
-        viewModelScope.launch {
-            val cur = appDao.getSession(sessionId)
-            val s = cur.copy(
-                lastAccessMillis = System.currentTimeMillis(),
-                durationMillis = getSessionDuration()
-            )
+        viewModelScope.launch(Dispatchers.IO) {
             _state.update {
-                it.copy(currentSession = s)
+                it.copy(currentSession = appDao.getSession(sessionId))
             }
-            appDao.upsertSession(s)
             if (state.value.events.isNotEmpty())
                 _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
         }

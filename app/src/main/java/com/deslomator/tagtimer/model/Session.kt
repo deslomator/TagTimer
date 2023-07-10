@@ -17,6 +17,7 @@ data class Session(
     val color: Int = colorPickerColors[7].toArgb(),
     val durationMillis: Long = 0,
     val eventCount: Int = 0,
+    val startTimestamp: Long = 0,
     val inTrash: Boolean = false,
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 )

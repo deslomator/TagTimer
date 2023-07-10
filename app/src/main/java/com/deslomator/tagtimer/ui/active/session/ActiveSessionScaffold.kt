@@ -1,10 +1,12 @@
 package com.deslomator.tagtimer.ui.active.session
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,8 +38,11 @@ fun ActiveSessionScaffold(
         onAction(ActiveSessionAction.DismissEventEditionDialog)
     }
     BackHandler(enabled = !state.showEventEditionDialog && !state.showTimeDialog) {
-        onAction(ActiveSessionAction.UpdateSession)
-        onSharedAction(SharedAction.StopSession)
+        onAction(ActiveSessionAction.ExitSession(
+            sharedState.isRunning,
+            sharedState.cursor
+        ))
+        onSharedAction(SharedAction.StopTimer)
         navController.navigate("root") {
             popUpTo("root") {
                 inclusive = false
@@ -52,6 +57,14 @@ fun ActiveSessionScaffold(
             onDataExported = { onAction(ActiveSessionAction.SessionExported) }
         )
     }
+    LaunchedEffect(state.currentSession) {
+        Log.d(TAG, "launched effect, current session name: ${state.currentSession.name}")
+        if (state.currentSession.startTimestamp > 0) {
+            val elapsed = System.currentTimeMillis() - state.currentSession.startTimestamp
+            onSharedAction(SharedAction.SetCursor(elapsed))
+            if (!sharedState.isRunning) onSharedAction(SharedAction.PlayPauseClicked)
+        }
+    }
     Scaffold(
         topBar = {
             ActiveSessionTopBar(
@@ -62,8 +75,11 @@ fun ActiveSessionScaffold(
                     } else if (state.showTimeDialog) {
                         onAction(ActiveSessionAction.DismissTimeDialog)
                     } else {
-                        onAction(ActiveSessionAction.UpdateSession)
-                        onSharedAction(SharedAction.StopSession)
+                        onAction(ActiveSessionAction.ExitSession(
+                            sharedState.isRunning,
+                            sharedState.cursor
+                        ))
+                        onSharedAction(SharedAction.StopTimer)
                         navController.navigate("root") {
                             popUpTo("root") {
                                 inclusive = false
@@ -76,19 +92,16 @@ fun ActiveSessionScaffold(
                     onAction(ActiveSessionAction.ExportSessionClicked)
                 },
                 onAddLabelClick = {
-                    onAction(ActiveSessionAction.UpdateSession)
                     navController.navigate(
                         ActiveScreen.LabelSelection.routeWithArg(state.currentSession.id)
                     )
                 },
                 onEventTrashClick = {
-                    onAction(ActiveSessionAction.UpdateSession)
                     navController.navigate(
                         ActiveScreen.EventTrash.routeWithArg(state.currentSession.id)
-                        )
+                    )
                 },
                 onFilterClick = {
-                    onAction(ActiveSessionAction.UpdateSession)
                     navController.navigate(
                         ActiveScreen.EventFilter.routeWithArg(state.currentSession.id)
                     )

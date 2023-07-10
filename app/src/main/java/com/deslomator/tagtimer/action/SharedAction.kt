@@ -8,5 +8,5 @@ sealed interface SharedAction {
     data class PlaceSortClicked(val placeSort: Sort): SharedAction
     data class SetCursor(val cursor: Long): SharedAction
     object PlayPauseClicked: SharedAction
-    object StopSession: SharedAction
+    object StopTimer: SharedAction
 }

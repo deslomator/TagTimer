@@ -64,7 +64,7 @@ interface AppDao {
     TAGS
      */
     @Upsert
-    suspend fun upsertTag(tag: Label.Tag)
+    suspend fun upsertTag(tag: Label.Tag): Long
     @Delete
     suspend fun deleteTag(tag: Label.Tag)
     @Query("SELECT * FROM tags WHERE inTrash = 0 ORDER BY name ASC")
@@ -76,7 +76,7 @@ interface AppDao {
     PERSONS
      */
     @Upsert
-    suspend fun upsertPerson(person: Label.Person)
+    suspend fun upsertPerson(person: Label.Person): Long
     @Delete
     suspend fun deletePerson(person: Label.Person)
     @Query("SELECT * FROM persons WHERE inTrash = 0 ORDER BY name ASC")
@@ -88,7 +88,7 @@ interface AppDao {
     PLACES
      */
     @Upsert
-    suspend fun upsertPlace(place: Label.Place)
+    suspend fun upsertPlace(place: Label.Place): Long
     @Delete
     suspend fun deletePlace(place: Label.Place)
     @Query("SELECT * FROM places WHERE inTrash = 0 ORDER BY name ASC")
