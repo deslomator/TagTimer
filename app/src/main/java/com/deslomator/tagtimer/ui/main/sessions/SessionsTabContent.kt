@@ -19,7 +19,12 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -31,14 +36,15 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.state.SessionsTabState
-import com.deslomator.tagtimer.util.toDateTime
-import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.theme.Pink80
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.contrasted
+import com.deslomator.tagtimer.util.toDateTime
+import com.deslomator.tagtimer.util.toElapsedTime
+import kotlinx.coroutines.delay
 
 @Composable
 fun SessionsTabContent(
@@ -48,6 +54,17 @@ fun SessionsTabContent(
     onAction: (SessionsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
+    var time by rememberSaveable {
+        mutableLongStateOf(System.currentTimeMillis())
+    }
+    if (state.sessions.any { it.startTimestampMillis > 0 }) {
+        LaunchedEffect(Unit) {
+            while (true) {
+                delay(1000)
+                time += 1000
+            }
+        }
+    }
     val scope = rememberCoroutineScope()
     BackHandler(enabled = state.showSessionDialog) {
         onAction(SessionsTabAction.DismissSessionDialog)
@@ -86,6 +103,11 @@ fun SessionsTabContent(
                         outerNavHostController.navigate("active/${session.id}")
                     },
                 ) { item ->
+                    val elapsed = if (item.startTimestampMillis > 0) {
+                        time - item.startTimestampMillis
+                    } else {
+                        item.durationMillis
+                    }
                     Spacer(modifier = Modifier.width(10.dp))
                     Column(
                         modifier = Modifier.weight(1F)
@@ -97,7 +119,7 @@ fun SessionsTabContent(
                         modifier = Modifier.padding(end = 5.dp)
                     ) {
                         Text(stringResource(R.string.events_count, item.eventCount))
-                        Text(item.durationMillis.toElapsedTime())
+                        Text(elapsed.toElapsedTime())
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                 }
