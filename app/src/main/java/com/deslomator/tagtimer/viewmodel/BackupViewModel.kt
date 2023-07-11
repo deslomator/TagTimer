@@ -270,14 +270,3 @@ private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
     return dbBackup
 }
 
-fun DbBackup.isEmpty(): Boolean {
-    return this.tags.isEmpty() &&
-            this.places.isEmpty() &&
-            this.persons.isEmpty() &&
-            this.events.isEmpty() &&
-            this.preselectedPersons.isEmpty() &&
-            this.preselectedPlaces.isEmpty() &&
-            this.preselectedTags.isEmpty() &&
-            this.sessions.isEmpty()
-}
-
