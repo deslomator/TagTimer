@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -119,7 +120,11 @@ fun SessionsTabContent(
                         modifier = Modifier.padding(end = 5.dp)
                     ) {
                         Text(stringResource(R.string.events_count, item.eventCount))
-                        Text(elapsed.toElapsedTime())
+                        Text(
+                            text = elapsed.toElapsedTime(),
+                            fontWeight = if (item.startTimestampMillis > 0) FontWeight.Bold
+                            else FontWeight.Normal
+                        )
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                 }
