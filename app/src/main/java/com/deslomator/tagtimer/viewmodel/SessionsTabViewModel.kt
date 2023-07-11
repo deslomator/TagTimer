@@ -75,32 +75,28 @@ class SessionsTabViewModel @Inject constructor(
     private fun copySession(copyString: String) {
         val s = state.value.currentSession
         val newName = "${s.name} - $copyString"
-        viewModelScope.launch {
-            val newId = (appDao.getSessionsList().maxOfOrNull { it.id } ?: 0) + 1
-            val newSession = state.value.currentSession.copy(
-                id = newId,
+        viewModelScope.launch(Dispatchers.IO) {
+            val newSession = s.copy(
+                id = null,
                 name = newName,
                 lastAccessMillis = System.currentTimeMillis()
             )
-            appDao.upsertSession(newSession)
-            appDao.getPreSelectedTagsListForSession(s.id)
-                .map{ it.copy(
-                    sessionId = newId,
-                    id = 0,
-                ) }
-                .forEach { psl -> appDao.upsertPreSelectedTag(psl) }
-            appDao.getPreSelectedPersonsListForSession(s.id)
-                .map{ it.copy(
-                    sessionId = newId,
-                    id = 0,
-                ) }
-                .forEach { psl -> appDao.upsertPreSelectedPerson(psl) }
-            appDao.getPreSelectedPlacesListForSession(s.id)
-                .map{ it.copy(
-                    sessionId = newId,
-                    id = 0,
-                ) }
-                .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
+            val newId = appDao.upsertSession(newSession)
+            launch {
+                appDao.getPreSelectedTagsListForSession(s.id!!)
+                    .map { it.copy(sessionId = newId,) }
+                    .forEach { psl -> appDao.upsertPreSelectedTag(psl) }
+            }
+            launch {
+                appDao.getPreSelectedPersonsListForSession(s.id!!)
+                    .map { it.copy(sessionId = newId,) }
+                    .forEach { psl -> appDao.upsertPreSelectedPerson(psl) }
+            }
+            launch {
+                appDao.getPreSelectedPlacesListForSession(s.id!!)
+                    .map { it.copy(sessionId = newId,) }
+                    .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
+            }
         }
     }
 
