@@ -63,7 +63,7 @@ class SessionsTabViewModel @Inject constructor(
                 }
             }
             SessionsTabAction.PopulateDbClicked -> {
-                viewModelScope.launch(Dispatchers.IO) { populateDb(appDao) }
+                viewModelScope.launch { populateDb(appDao) }
             }
             is SessionsTabAction.CopySessionClicked -> {
                 copySession(action.copyString)
@@ -75,7 +75,7 @@ class SessionsTabViewModel @Inject constructor(
     private fun copySession(copyString: String) {
         val s = state.value.currentSession
         val newName = "${s.name} - $copyString"
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             val newSession = s.copy(
                 id = null,
                 name = newName,

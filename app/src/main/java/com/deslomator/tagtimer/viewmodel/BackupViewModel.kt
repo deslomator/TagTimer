@@ -65,7 +65,7 @@ class BackupViewModel @Inject constructor(
                 }
             }
             is BackupAction.BackupLabelsClicked -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     val result = backupInternally(
                         labelsOnly = true,
                         appDao = appDao,
@@ -82,7 +82,7 @@ class BackupViewModel @Inject constructor(
                 }
             }
             is BackupAction.FullBackupClicked -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     val result = backupInternally(
                         labelsOnly = false,
                         appDao = appDao,
@@ -99,7 +99,7 @@ class BackupViewModel @Inject constructor(
                 }
             }
             is BackupAction.RestoreBackupClicked -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     val result = restoreBackup(appDao, Uri.fromFile(action.file))
                     _state.update {
                         it.copy(

@@ -85,7 +85,7 @@ class ActiveSessionViewModel @Inject constructor(
     fun onAction(action: ActiveSessionAction) {
         when(action) {
             is ActiveSessionAction.PreSelectedTagClicked -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     val event = Event(
                         sessionId = _sessionId.value,
                         elapsedTimeMillis = action.cursor,
@@ -109,10 +109,10 @@ class ActiveSessionViewModel @Inject constructor(
                     startTimestampMillis =
                     if (action.isRunning) time - action.cursor else 0
                 )
-                viewModelScope.launch(Dispatchers.IO) { appDao.upsertSession(session) }
+                viewModelScope.launch { appDao.upsertSession(session) }
             }
             is ActiveSessionAction.TrashEventSwiped -> {
-                viewModelScope.launch(Dispatchers.IO) {
+                viewModelScope.launch {
                     // we don't want the Event that was retrieved
                     // in the action because it was stale
                     // get the updated one from the DB instead
@@ -128,7 +128,7 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 runBlocking {
-                    viewModelScope.launch(Dispatchers.IO) { appDao.upsertEvent(action.event) }
+                    viewModelScope.launch { appDao.upsertEvent(action.event) }
                 }
                 val maxInList = state.value.events
                     .maxOfOrNull { it.elapsedTimeMillis } ?: 0
@@ -252,7 +252,7 @@ class ActiveSessionViewModel @Inject constructor(
     init {
         val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
         _sessionId.update { sessionId }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))
             }
