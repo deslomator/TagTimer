@@ -10,10 +10,11 @@ import com.deslomator.tagtimer.viewmodel.isEmpty
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
-import java.io.ByteArrayOutputStream
+import org.json.JSONException
 import java.io.FileInputStream
+import java.lang.IllegalArgumentException
 
 /**
  * [json] is a string previously decoded from an Uri
@@ -22,13 +23,13 @@ import java.io.FileInputStream
  * It also can receive the string from its own overload below
  */
 fun restoreBackup(appDao: AppDao, json: String): Result {
-    var result = Result.RESTORE_FAILED
+    var result: Result = Result.RestoreFailed
     runBlocking(Dispatchers.IO) {
         try {
             val dbBackup = Json.decodeFromString<DbBackup>(json)
             result = if (dbBackup.isEmpty()) {
                 Log.e("$TAG FromString()", "Failed, backup class is empty")
-                Result.NOTHING_TO_BACKUP
+                Result.NothingToBackup
             } else {
                 appDao.deleteAllData()
                 runBlocking {
@@ -41,11 +42,17 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                     launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
                     launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
                 }
-                Log.i("$TAG FromString()", "Restore success")
-                Result.RESTORED
+                Log.i(TAG, "FromString() Restore success")
+                Result.Restored
             }
+        } catch (e: SerializationException) {
+            result = Result.BadFile
+            Log.e(TAG, "FromString() SerializationException: $e")
+        } catch (e: IllegalArgumentException) {
+            result = Result.BadFile
+            Log.e(TAG, "FromString() IllegalArgumentException: $e")
         } catch (e: Exception) {
-            Log.e("$TAG FromString()", e.message.toString())
+            Log.e(TAG, "FromString() Exception: $e")
         }
     }
     return result
@@ -58,7 +65,7 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
  * and converted into a string
  */
 fun restoreBackup(appDao: AppDao, uri: Uri): Result {
-    var result = Result.RESTORE_FAILED
+    var result: Result = Result.RestoreFailed
     runBlocking(Dispatchers.IO) {
         try {
             val json = FileInputStream(uri.toFile()).use { fis ->

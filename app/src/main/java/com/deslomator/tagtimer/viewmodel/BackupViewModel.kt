@@ -136,7 +136,7 @@ class BackupViewModel @Inject constructor(
             reloadFiles()
         }
         _state.update { it.copy(
-            result = Result.DELETED,
+            result = Result.Deleted,
             showSnackBar = true
         ) }
     }
@@ -146,7 +146,7 @@ class BackupViewModel @Inject constructor(
      * the file to storage without it being truncated
      */
     private fun saveToStorage(uri: Uri): Result {
-        var result = Result.SAVE_FAILED
+        var result: Result = Result.SaveFailed
         try {
             val outStream = contentResolver.openOutputStream(uri)
             if (outStream != null) {
@@ -162,7 +162,7 @@ class BackupViewModel @Inject constructor(
                     }
                 }
                 Log.i(TAG, "saveToStorage(). Save success")
-                result = Result.SAVED
+                result = Result.Saved
             } else {
                 Log.e(TAG, "saveToStorage(). Unable to open Output Stream")
             }
@@ -192,7 +192,7 @@ private suspend fun backupInternally(
     backupDir: File,
     file: File? = null
 ): Result {
-    var result = Result.BACKUP_FAILED
+    var result: Result = Result.BackupFailed
     runBlocking(Dispatchers.IO) {
         val timestamp = SimpleDateFormat(
             "yyyyMMdd_HHmmss", Locale.getDefault()
@@ -204,7 +204,7 @@ private suspend fun backupInternally(
             val dbBackup = getDbBackup(appDao, labelsOnly)
             if (dbBackup.isEmpty()) {
                 Log.e("backupInternally()", "Failed, backup class is empty")
-                result = Result.NOTHING_TO_BACKUP
+                result = Result.NothingToBackup
             } else {
                 try {
                     Json.encodeToString(dbBackup)
@@ -218,7 +218,7 @@ private suspend fun backupInternally(
                                 } while (bis.read(buf) != -1)
                             }
                         }
-                    result = Result.BACKED
+                    result = Result.Backed
                     Log.i("backupInternally()", "Backup success")
                 } catch (e: Exception) {
                     Log.e("backupInternally()", e.message.toString())

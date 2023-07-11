@@ -36,6 +36,7 @@ import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.util.restoreBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import java.io.FileNotFoundException
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,7 +45,8 @@ fun IntentProcessor(
     activity: ComponentActivity,
     appDao: AppDao
 ) {
-    var result by rememberSaveable { mutableStateOf(Result.RESTORE_FAILED) }
+    var result: Result by remember { mutableStateOf(Result.RestoreFailed) }
+    var showResultDialog by rememberSaveable { mutableStateOf(false) }
     /*
       showImportDialog survives configuration changes,
       only interacting with the dialog makes it false.
@@ -152,15 +154,44 @@ fun IntentProcessor(
                         }?.let {
                             result = restoreBackup(appDao, it)
                         }
-                        Log.d(TAG, "loadBackup: $result")
+                        Log.d(TAG, "loadBackup(): ${result.name}")
+                    } catch (e: FileNotFoundException) {
+                        result = Result.FileOpenError
+                        Log.e(TAG, "loadBackup() FileNotFoundException: $e")
                     } catch (e: Exception) {
-                        Log.e(TAG, "loadBackup: $e")
+                        Log.e(TAG, "loadBackup() Exception: $e")
                     }
                 }
             }
             Log.i(TAG, "Loading backup finished, result: ${result.name}")
             intentState = null
             loadBackup = false
+            showResultDialog = true
+        }
+    }
+    if (showResultDialog) {
+        AlertDialog(
+            onDismissRequest = { showResultDialog = false }
+        ) {
+            Card {
+                Column(modifier = Modifier.padding(15.dp)) {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(id = result.stringId),
+                    )
+                    Spacer(modifier = Modifier.height(25.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        TextButton(
+                            onClick = { showResultDialog = false }
+                        ) {
+                            Text(text = stringResource(id = R.string.accept))
+                        }
+                    }
+                }
+            }
         }
     }
 }

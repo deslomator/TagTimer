@@ -36,7 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.BackupAction
-import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.ui.showSnackbar
 
@@ -149,18 +148,7 @@ fun BackupContent(
         if (state.showSnackBar) {
             snackbarHostState.currentSnackbarData?.dismiss()
             val res = snackbarHostState.showSnackbar(
-                message = when (state.result) {
-                    Result.BAD_FILE -> context.getString(R.string.bad_backup_file)
-                    Result.RESTORED -> context.getString(R.string.backup_restored)
-                    Result.DELETED -> context.getString(R.string.backup_deleted)
-                    Result.BACKED -> context.getString(R.string.backup_saved)
-                    Result.BACKUP_FAILED -> context.getString(R.string.backup_failed)
-                    Result.NOTHING_TO_BACKUP -> context.getString(R.string.nothing_to_backup)
-                    Result.RESTORE_FAILED -> context.getString(R.string.restore_failed)
-                    Result.NOTHING_TO_RESTORE -> context.getString(R.string.nothing_to_restore)
-                    Result.SAVED -> context.getString(R.string.backup_saved)
-                    Result.SAVE_FAILED -> context.getString(R.string.save_failed)
-                },
+                message = context.getString(state.result.stringId),
                 duration = SnackbarDuration.Short
             )
         }

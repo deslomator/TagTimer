@@ -77,7 +77,7 @@
     <string name="backup_restore">Backup and Restore</string>
     <string name="backup_labels">Backup Labels</string>
     <string name="tap_file_for_actions">Tap a file to Restore or Share it</string>
-    <string name="bad_backup_file">Bad backup file, not restored</string>
+    <string name="bad_backup_file">Invalid backup file, not restored</string>
     <string name="backup_saved">Backup saved</string>
     <string name="backup_failed">Backup failed</string>
     <string name="nothing_to_backup">There are no labels to backup</string>
@@ -85,5 +85,6 @@
     <string name="nothing_to_restore">There was nothing new to restore</string>
     <string name="import_data">Import data</string>
     <string name="save_failed">The file could not be saved</string>
+    <string name="open_file_error">The file could not be opened</string>
     <string name="warning_this_will_erase">WARNING: all current app data will be deleted</string>
 </resources>
