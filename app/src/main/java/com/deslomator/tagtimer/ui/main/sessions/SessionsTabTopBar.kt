@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -23,7 +24,7 @@ fun SessionsTabTopBar(
     onPopulateDbClick: () -> Unit,
     onBackupClick: () -> Unit,
 ) {
-    var showMenu by remember { mutableStateOf(false) }
+    var showMenu by rememberSaveable { mutableStateOf(false) }
     TopAppBar(
         title = { Text(stringResource(id = R.string.app_name)) },
         actions = {
@@ -55,7 +56,10 @@ fun SessionsTabTopBar(
                             contentDescription = "backup DB"
                         )
                     },
-                    onClick = onBackupClick,
+                    onClick = {
+                        onBackupClick()
+                        showMenu = false
+                    },
                 )
                 DropdownMenuItem(
                     text = { Text(text = stringResource(R.string.populate_db)) },
@@ -65,7 +69,10 @@ fun SessionsTabTopBar(
                             contentDescription = "populate DB"
                         )
                     },
-                    onClick = onPopulateDbClick,
+                    onClick = {
+                        onPopulateDbClick()
+                        showMenu = false
+                    },
                 )
             }
         }
