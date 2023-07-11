@@ -27,29 +27,54 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
             if (dbBackup.isEmpty()) {
                 Log.e(TAG, "FromString(). Failed, backup class is empty")
                 result = Result.NothingToBackup
-            } else if (dbBackup.isLabelsOnly()) { // do not erase anything if it's a labels only backup
-                Log.e(TAG, "FromString(). Inserting labels, nothing is deleted")
+            } else  { // do not erase anything if it's a labels only backup
+                Log.i(TAG, "FromString(). Inserting labels, nothing is deleted")
                 runBlocking {
-                    launch { dbBackup.persons.forEach { appDao.upsertPerson(it) } }
-                    launch { dbBackup.places.forEach { appDao.upsertPlace(it) } }
-                    launch { dbBackup.tags.forEach { appDao.upsertTag(it) } }
+                    // only insert tags that do not exist already, as in
+                    // they have the same name and color regardless of id
+                    if (dbBackup.persons.isNotEmpty()) launch {
+                        val persons = appDao.getActivePersonsList().map { Pair(it.name, it.color) }
+                        dbBackup.persons.forEach {
+                            val alreadyExists = persons.contains(Pair(it.name, it.color))
+                            if (!alreadyExists) appDao.upsertPerson(it)
+                        }
+                    }
+                    if (dbBackup.places.isNotEmpty()) launch {
+                        val places = appDao.getActivePlacesList().map { Pair(it.name, it.color) }
+                        dbBackup.places.forEach {
+                            val alreadyExists = places.contains(Pair(it.name, it.color))
+                            if (!alreadyExists) appDao.upsertPlace(it)
+                        }
+                    }
+                    if (dbBackup.tags.isNotEmpty()) launch {
+                        val tags = appDao.getActiveTagsList().map { Pair(it.name, it.color) }
+                        dbBackup.tags.forEach {
+                            val alreadyExists = tags.contains(Pair(it.name, it.color))
+                            if (!alreadyExists) appDao.upsertTag(it)
+                        }
+                    }
                 }
                 Log.i(TAG, "FromString() Restore of labels success")
-                result = Result.Restored
-            } else {
-                Log.i(TAG, "FromString() Deleting current data")
-                appDao.deleteAllData()
-                runBlocking {
-                    launch { dbBackup.persons.forEach { appDao.upsertPerson(it) } }
-                    launch { dbBackup.places.forEach { appDao.upsertPlace(it) } }
-                    launch { dbBackup.tags.forEach { appDao.upsertTag(it) } }
-                    launch { dbBackup.preselectedPersons.forEach { appDao.upsertPreSelectedPerson(it) } }
-                    launch { dbBackup.preselectedPlaces.forEach { appDao.upsertPreSelectedPlace(it) } }
-                    launch { dbBackup.preselectedTags.forEach { appDao.upsertPreSelectedTag(it) } }
-                    launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
-                    launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
+                if (!dbBackup.isLabelsOnly()) {
+                    runBlocking {
+                        Log.i(TAG, "FromString() Deleting current data")
+                        appDao.deleteAllData()
+                        launch { dbBackup.preselectedPersons.forEach {
+                            appDao.upsertPreSelectedPerson(it)
+                        }
+                        }
+                        launch { dbBackup.preselectedPlaces.forEach {
+                            appDao.upsertPreSelectedPlace(it)
+                        }
+                        }
+                        launch { dbBackup.preselectedTags.forEach {
+                            appDao.upsertPreSelectedTag(it) }
+                        }
+                        launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
+                        launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
+                    }
+                    Log.i(TAG, "FromString() Restore of full backup success")
                 }
-                Log.i(TAG, "FromString() Restore of full backup success")
                 result = Result.Restored
             }
         } catch (e: SerializationException) {
