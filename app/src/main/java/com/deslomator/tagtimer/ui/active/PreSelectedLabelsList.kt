@@ -47,7 +47,7 @@ fun <T: Label>PreSelectedLabelsList(
         ) {
             items(
                 items = labels,
-                key = { it.id }
+                key = { it.id!! }
             ) { person ->
                 val checked by remember(currentLabel) {
                     derivedStateOf { currentLabel == person.name }

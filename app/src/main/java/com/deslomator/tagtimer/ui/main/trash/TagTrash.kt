@@ -32,7 +32,7 @@ fun TagTrash(
     ) {
         items(
             items = state.tags,
-            key = { it.id }
+            key = { it.id!! }
         ) { tag ->
             LabelButton(
                 item = tag,

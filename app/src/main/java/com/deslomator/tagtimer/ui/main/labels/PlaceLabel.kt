@@ -27,7 +27,7 @@ fun PlaceLabel(
     ) {
         items(
             items = state.places,
-            key = { it.id }
+            key = { it.id!! }
         ) { place ->
             LabelButton(
                 item = place,

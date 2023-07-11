@@ -95,17 +95,17 @@ fun ActiveSessionScaffold(
                 },
                 onAddLabelClick = {
                     navController.navigate(
-                        ActiveScreen.LabelSelection.routeWithArg(state.currentSession.id)
+                        ActiveScreen.LabelSelection.routeWithArg(state.currentSession.id!!)
                     )
                 },
                 onEventTrashClick = {
                     navController.navigate(
-                        ActiveScreen.EventTrash.routeWithArg(state.currentSession.id)
+                        ActiveScreen.EventTrash.routeWithArg(state.currentSession.id!!)
                     )
                 },
                 onFilterClick = {
                     navController.navigate(
-                        ActiveScreen.EventFilter.routeWithArg(state.currentSession.id)
+                        ActiveScreen.EventFilter.routeWithArg(state.currentSession.id!!)
                     )
                 },
             )

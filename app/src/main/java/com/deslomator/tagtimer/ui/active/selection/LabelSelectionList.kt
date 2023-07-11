@@ -33,7 +33,7 @@ fun LabelSelectionList(
     ) {
         items(
             items = labels,
-            key = { it.id }
+            key = { it.id!! }
         ) { label ->
             val checked by remember(preSelected) {
                 derivedStateOf { preSelected.map { it.labelId }.contains(label.id) }
@@ -41,7 +41,7 @@ fun LabelSelectionList(
             LabelButton(
                 item = label,
                 onItemClick = {
-                    onCheckedChange(label.id, !checked)
+                    onCheckedChange(label.id!!, !checked)
                 },
                 onLongClick = { onLongClick(label) },
                 checked = checked,

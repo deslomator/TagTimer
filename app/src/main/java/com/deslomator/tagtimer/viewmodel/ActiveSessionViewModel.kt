@@ -116,7 +116,7 @@ class ActiveSessionViewModel @Inject constructor(
                     // we don't want the Event that was retrieved
                     // in the action because it was stale
                     // get the updated one from the DB instead
-                    val event = appDao.getEvent(action.event.id)
+                    val event = appDao.getEvent(action.event.id!!)
                     val trashed = event.copy(inTrash = true)
                     appDao.upsertEvent(trashed) }
             }
@@ -209,7 +209,7 @@ class ActiveSessionViewModel @Inject constructor(
                 )
                 appDao.upsertPreSelectedPerson(
                     Preselected.Person(
-                        sessionId = state.value.currentSession.id,
+                        sessionId = state.value.currentSession.id!!,
                         labelId = newId
                     )
                 )
@@ -225,7 +225,7 @@ class ActiveSessionViewModel @Inject constructor(
                 )
                 appDao.upsertPreSelectedPlace(
                     Preselected.Place(
-                        sessionId = state.value.currentSession.id,
+                        sessionId = state.value.currentSession.id!!,
                         labelId = newId
                     )
                 )
@@ -241,7 +241,7 @@ class ActiveSessionViewModel @Inject constructor(
                 )
                 appDao.upsertPreSelectedTag(
                     Preselected.Tag(
-                        sessionId = state.value.currentSession.id,
+                        sessionId = state.value.currentSession.id!!,
                         labelId = newId
                     )
                 )

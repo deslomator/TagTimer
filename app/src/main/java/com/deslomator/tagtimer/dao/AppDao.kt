@@ -24,23 +24,23 @@ interface AppDao {
     @Delete
     suspend fun deleteEvent(event: Event)
 
-    @Query("DELETE FROM events WHERE sessionId = :sessionId")
+    @Query("DELETE FROM events WHERE session_id = :sessionId")
     suspend fun deleteEventsForSession(sessionId: Long)
 
     @Query("SELECT * FROM events WHERE id = :eventId")
     suspend fun getEvent(eventId: Long): Event
 
-    @Query("SELECT * FROM events WHERE sessionId = :sessionId AND inTrash = 0 ORDER BY elapsedTimeMillis ASC")
+    @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 0 ORDER BY elapsed_time_millis ASC")
     fun getActiveEventsForSession(sessionId: Long): Flow<List<Event>>
 
-    @Query("SELECT * FROM events WHERE sessionId = :sessionId AND inTrash = 1 ORDER BY elapsedTimeMillis ASC")
+    @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 1 ORDER BY elapsed_time_millis ASC")
     fun getTrashedEventsForSession(sessionId: Long): Flow<List<Event>>
 
     /*
     SESSIONS
      */
     @Upsert
-    suspend fun upsertSession(session: Session)
+    suspend fun upsertSession(session: Session): Long
 
     @Delete
     suspend fun deleteSession(session: Session)
@@ -48,16 +48,16 @@ interface AppDao {
     @Query("SELECT * FROM sessions WHERE id = :id")
     suspend fun getSession(id: Long): Session
 
-    @Query("SELECT * FROM sessions ORDER BY lastAccessMillis DESC")
+    @Query("SELECT * FROM sessions ORDER BY last_access_millis DESC")
     fun getSessions(): Flow<List<Session>>
 
-    @Query("SELECT * FROM sessions ORDER BY lastAccessMillis DESC")
+    @Query("SELECT * FROM sessions ORDER BY last_access_millis DESC")
     suspend fun getSessionsList(): List<Session>
 
-    @Query("SELECT * FROM sessions WHERE inTrash = 0 ORDER BY lastAccessMillis DESC")
+    @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY last_access_millis DESC")
     fun getActiveSessions(): Flow<List<Session>>
 
-    @Query("SELECT * FROM sessions WHERE inTrash = 1 ORDER BY lastAccessMillis DESC")
+    @Query("SELECT * FROM sessions WHERE in_trash = 1 ORDER BY last_access_millis DESC")
     fun getTrashedSessions(): Flow<List<Session>>
     
     /*
@@ -67,9 +67,9 @@ interface AppDao {
     suspend fun upsertTag(tag: Label.Tag): Long
     @Delete
     suspend fun deleteTag(tag: Label.Tag)
-    @Query("SELECT * FROM tags WHERE inTrash = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM tags WHERE in_trash = 0 ORDER BY name ASC")
     fun getActiveTags(): Flow<List<Label.Tag>>
-    @Query("SELECT * FROM tags WHERE inTrash = 1 ORDER BY name ASC")
+    @Query("SELECT * FROM tags WHERE in_trash = 1 ORDER BY name ASC")
     fun getTrashedTags(): Flow<List<Label.Tag>>
     
     /*
@@ -79,9 +79,9 @@ interface AppDao {
     suspend fun upsertPerson(person: Label.Person): Long
     @Delete
     suspend fun deletePerson(person: Label.Person)
-    @Query("SELECT * FROM persons WHERE inTrash = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM persons WHERE in_trash = 0 ORDER BY name ASC")
     fun getActivePersons(): Flow<List<Label.Person>>
-    @Query("SELECT * FROM persons WHERE inTrash = 1 ORDER BY name ASC")
+    @Query("SELECT * FROM persons WHERE in_trash = 1 ORDER BY name ASC")
     fun getTrashedPersons(): Flow<List<Label.Person>>
     
     /*
@@ -91,9 +91,9 @@ interface AppDao {
     suspend fun upsertPlace(place: Label.Place): Long
     @Delete
     suspend fun deletePlace(place: Label.Place)
-    @Query("SELECT * FROM places WHERE inTrash = 0 ORDER BY name ASC")
+    @Query("SELECT * FROM places WHERE in_trash = 0 ORDER BY name ASC")
     fun getActivePlaces(): Flow<List<Label.Place>>
-    @Query("SELECT * FROM places WHERE inTrash = 1 ORDER BY name ASC")
+    @Query("SELECT * FROM places WHERE in_trash = 1 ORDER BY name ASC")
     fun getTrashedPlaces(): Flow<List<Label.Place>>
     
     /*
@@ -101,11 +101,11 @@ interface AppDao {
      */
     @Upsert
     suspend fun upsertPreSelectedTag(preSelectedTag: Preselected.Tag)
-    @Query("DELETE FROM ps_tags WHERE sessionId = :sessionId AND labelId = :tagId")
+    @Query("DELETE FROM ps_tags WHERE session_id = :sessionId AND tag_id = :tagId")
     suspend fun deletePreSelectedTagForSession(sessionId: Long, tagId: Long)
-    @Query("SELECT * FROM ps_tags WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM ps_tags WHERE session_id = :sessionId")
     fun getPreSelectedTagsForSession(sessionId: Long): Flow<List<Preselected.Tag>>
-    @Query("SELECT * FROM ps_tags WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM ps_tags WHERE session_id = :sessionId")
     suspend fun getPreSelectedTagsListForSession(sessionId: Long): List<Preselected.Tag>
     
     /*
@@ -113,11 +113,11 @@ interface AppDao {
      */
     @Upsert
     suspend fun upsertPreSelectedPerson(preSelectedPerson: Preselected.Person)
-    @Query("DELETE FROM ps_persons WHERE sessionId = :sessionId AND labelId = :tagId")
+    @Query("DELETE FROM ps_persons WHERE session_id = :sessionId AND person_id = :tagId")
     suspend fun deletePreSelectedPersonForSession(sessionId: Long, tagId: Long)
-    @Query("SELECT * FROM ps_persons WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM ps_persons WHERE session_id = :sessionId")
     fun getPreSelectedPersonsForSession(sessionId: Long): Flow<List<Preselected.Person>>
-    @Query("SELECT * FROM ps_persons WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM ps_persons WHERE session_id = :sessionId")
     suspend fun getPreSelectedPersonsListForSession(sessionId: Long): List<Preselected.Person>
     
     /*
@@ -125,37 +125,37 @@ interface AppDao {
      */
     @Upsert
     suspend fun upsertPreSelectedPlace(preSelectedPlace: Preselected.Place)
-    @Query("DELETE FROM ps_places WHERE sessionId = :sessionId AND labelId = :tagId")
+    @Query("DELETE FROM ps_places WHERE session_id = :sessionId AND place_id = :tagId")
     suspend fun deletePreSelectedPlaceForSession(sessionId: Long, tagId: Long)
-    @Query("SELECT * FROM ps_places WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM ps_places WHERE session_id = :sessionId")
     fun getPreSelectedPlacesForSession(sessionId: Long): Flow<List<Preselected.Place>>
-    @Query("SELECT * FROM ps_places WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM ps_places WHERE session_id = :sessionId")
     suspend fun getPreSelectedPlacesListForSession(sessionId: Long): List<Preselected.Place>
     
     /*
     ORPHANS
      */
     @Query("DELETE FROM events " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE events.sessionId = sessions.id)")
+            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE events.session_id = sessions.id)")
     suspend fun clearOrphanEvents(): Int
     @Query("DELETE FROM ps_persons " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_persons.sessionId = sessions.id)")
+            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_persons.session_id = sessions.id)")
     suspend fun clearOrphanPreSelectedPersons(): Int
     @Query("DELETE FROM ps_places " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_places.sessionId = sessions.id)")
+            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_places.session_id = sessions.id)")
     suspend fun clearOrphanPreSelectedPlaces(): Int
     @Query("DELETE FROM ps_tags " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_tags.sessionId = sessions.id)")
+            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_tags.session_id = sessions.id)")
     suspend fun clearOrphanPreSelectedTags(): Int
 
     /*
     BACKUP AND RESTORE
      */
-    @Query("SELECT * FROM persons WHERE inTrash = 0")
+    @Query("SELECT * FROM persons WHERE in_trash = 0")
     suspend fun getActivePersonsList(): List<Label.Person>
-    @Query("SELECT * FROM places WHERE inTrash = 0")
+    @Query("SELECT * FROM places WHERE in_trash = 0")
     suspend fun getActivePlacesList(): List<Label.Place>
-    @Query("SELECT * FROM tags WHERE inTrash = 0")
+    @Query("SELECT * FROM tags WHERE in_trash = 0")
     suspend fun getActiveTagsList(): List<Label.Tag>
 
     @Query("SELECT * FROM persons")

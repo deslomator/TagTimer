@@ -32,7 +32,7 @@ fun PersonTrash(
     ) {
         items(
             items = state.persons,
-            key = { it.id }
+            key = { it.id!! }
         ) { person ->
             LabelButton(
                 item = person,

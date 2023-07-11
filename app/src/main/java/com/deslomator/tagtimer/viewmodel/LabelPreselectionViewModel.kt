@@ -78,7 +78,7 @@ class LabelPreselectionViewModel @Inject constructor(
             is LabelPreselectionAction.SelectTagCheckedChange -> {
                 if (action.checked) {
                     val pst = Preselected.Tag (
-                        sessionId = state.value.currentSession.id,
+                        sessionId = state.value.currentSession.id!!,
                         labelId = action.tagId
                     )
                     viewModelScope.launch {
@@ -89,7 +89,7 @@ class LabelPreselectionViewModel @Inject constructor(
                     viewModelScope.launch {
                         delay(UPSERT_DELAY_MS)
                         appDao.deletePreSelectedTagForSession(
-                            state.value.currentSession.id,
+                            state.value.currentSession.id!!,
                             action.tagId
                         )
                     }
@@ -137,7 +137,7 @@ class LabelPreselectionViewModel @Inject constructor(
             is LabelPreselectionAction.SelectPersonCheckedChange -> {
                 if (action.checked) {
                     val pst = Preselected.Person (
-                        sessionId = state.value.currentSession.id,
+                        sessionId = state.value.currentSession.id!!,
                         labelId = action.personId
                     )
                     viewModelScope.launch {
@@ -148,7 +148,7 @@ class LabelPreselectionViewModel @Inject constructor(
                     viewModelScope.launch {
                         delay(UPSERT_DELAY_MS)
                         appDao.deletePreSelectedPersonForSession(
-                            state.value.currentSession.id,
+                            state.value.currentSession.id!!,
                             action.personId
                         )
                     }
@@ -195,7 +195,7 @@ class LabelPreselectionViewModel @Inject constructor(
             is LabelPreselectionAction.SelectPlaceCheckedChange -> {
                 if (action.checked) {
                     val psPlace = Preselected.Place (
-                        sessionId = state.value.currentSession.id,
+                        sessionId = state.value.currentSession.id!!,
                         labelId = action.placeId
                     )
                     viewModelScope.launch {
@@ -206,7 +206,7 @@ class LabelPreselectionViewModel @Inject constructor(
                     viewModelScope.launch {
                         delay(UPSERT_DELAY_MS)
                         appDao.deletePreSelectedPlaceForSession(
-                            state.value.currentSession.id,
+                            state.value.currentSession.id!!,
                             action.placeId
                         )
                     }

@@ -40,7 +40,7 @@ fun SessionTrash(
     ) {
         items(
             items = state.sessions,
-            key = { it.id }
+            key = { it.id!! }
         ) { session ->
             MyListItem(
                 colors = CardDefaults.cardColors(

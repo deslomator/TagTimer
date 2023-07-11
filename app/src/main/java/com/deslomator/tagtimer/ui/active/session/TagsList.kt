@@ -44,7 +44,7 @@ fun TagsList(
     ) {
         items(
             items = tags,
-            key = { it.id }
+            key = { it.id!! }
         ) { tag ->
             val checked by remember(currentTag) {
                 derivedStateOf { currentTag == tag.name }

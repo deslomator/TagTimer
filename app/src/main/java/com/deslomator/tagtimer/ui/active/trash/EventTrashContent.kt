@@ -62,7 +62,7 @@ fun EventTrashContent(
             }
             items(
                 items = state.trashedEvents,
-                key = { it.id }
+                key = { it.id!! }
             ) { event ->
                 EventListItem(
                     event = event,

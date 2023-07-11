@@ -41,7 +41,7 @@ class TrashTabViewModel @Inject constructor(
             is TrashTabAction.DeleteSessionClicked -> {
                 viewModelScope.launch {
                     appDao.deleteSession(action.session)
-                    appDao.deleteEventsForSession(action.session.id)
+                    appDao.deleteEventsForSession(action.session.id!!)
                 }
             }
             is TrashTabAction.RestoreSessionClicked -> {

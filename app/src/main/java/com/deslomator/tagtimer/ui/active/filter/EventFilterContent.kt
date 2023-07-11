@@ -73,7 +73,7 @@ fun EventFilterContent(
             ) {
                 items(
                     items = filteredEvents,
-                    key = { it.id }
+                    key = { it.id!! }
                 ) { event ->
                     EventListItem(
                         event = event,

@@ -57,7 +57,7 @@ fun EventList(
         }
         items(
             items = events,
-            key = { it.id }
+            key = { it.id!! }
         ) { event ->
             SwipeableListItem(
                 dismissDirection = DismissDirection.StartToEnd,
