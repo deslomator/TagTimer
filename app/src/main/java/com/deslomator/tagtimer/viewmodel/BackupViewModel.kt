@@ -166,8 +166,8 @@ class BackupViewModel @Inject constructor(
             } else {
                 Log.e(TAG, "saveToStorage(). Unable to open Output Stream")
             }
-        } catch (error: Error) {
-            Log.e(TAG, "UriReceived. $error")
+        } catch (e: Exception) {
+            Log.e(TAG, "UriReceived. $e")
         }
         return result
     }
@@ -220,8 +220,8 @@ private suspend fun backupInternally(
                         }
                     result = Result.BACKED
                     Log.i("backupInternally()", "Backup success")
-                } catch (error: Error) {
-                    Log.e("backupInternally()", error.message.toString())
+                } catch (e: Exception) {
+                    Log.e("backupInternally()", e.message.toString())
                 }
             }
         } else {

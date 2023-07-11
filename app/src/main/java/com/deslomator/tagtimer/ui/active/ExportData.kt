@@ -35,8 +35,8 @@ fun ExportData(
             Intent.createChooser(intent, "Choose an App")
             ContextCompat.startActivity(context, intent, null)
             onDataExported()
-        } catch (error: Error) {
-            Log.d(TAG, "ShareSession, error: $error")
+        } catch (e: Exception) {
+            Log.d(TAG, "ShareSession, error: $e")
         }
     }
 }

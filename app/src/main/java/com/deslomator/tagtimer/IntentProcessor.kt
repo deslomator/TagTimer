@@ -36,7 +36,6 @@ import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.util.restoreBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -154,8 +153,8 @@ fun IntentProcessor(
                             result = restoreBackup(appDao, it)
                         }
                         Log.d(TAG, "loadBackup: $result")
-                    } catch (error: Error) {
-                        Log.e(TAG, "loadBackup: $error")
+                    } catch (e: Exception) {
+                        Log.e(TAG, "loadBackup: $e")
                     }
                 }
             }

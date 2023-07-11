@@ -44,8 +44,8 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                 Log.i("$TAG FromString()", "Restore success")
                 Result.RESTORED
             }
-        } catch (error: Error) {
-            Log.e("$TAG FromString()", error.message.toString())
+        } catch (e: Exception) {
+            Log.e("$TAG FromString()", e.message.toString())
         }
     }
     return result
@@ -65,8 +65,8 @@ fun restoreBackup(appDao: AppDao, uri: Uri): Result {
                 fis.readBytes()
             }.decodeToString()
             result = restoreBackup(appDao, json)
-        } catch (error: Error) {
-            Log.e("$TAG FromUri()", error.message.toString())
+        } catch (e: Exception) {
+            Log.e("$TAG FromUri()", e.message.toString())
         }
     }
     return result
