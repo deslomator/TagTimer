@@ -11,21 +11,19 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-sealed class Label (
-    @SerialName("super_name")
-    open val name: String = "",
-    @SerialName("super_color")
-    open val color: Int = 0,
-    @SerialName("super_inTrash")
-    open val inTrash: Boolean = false,
-    @SerialName("super_id")
-    open val id: Long? = null
-) {
+sealed class Label {
+    abstract val name: String
+    abstract val color: Int
+    abstract val inTrash: Boolean
+    abstract val id: Long?
+
     @Keep
     @Serializable
     @Entity(tableName = "tags")
     data class Tag(
+        @SerialName("tag_name")
         override val name: String = "",
+
         override val color: Int = colorPickerColors[7].toArgb(),
 
         @SerialName("in_trash")
@@ -34,13 +32,15 @@ sealed class Label (
 
         @PrimaryKey(autoGenerate = true)
         override val id: Long? = null
-    ) : Label(name, color, inTrash, id)
+    ) : Label()
 
     @Keep
     @Serializable
     @Entity(tableName = "places")
     data class Place(
+        @SerialName("place_name")
         override val name: String = "",
+
         override val color: Int = colorPickerColors[7].toArgb(),
 
         @SerialName("in_trash")
@@ -49,13 +49,15 @@ sealed class Label (
 
         @PrimaryKey(autoGenerate = true)
         override val id: Long? = null
-    ) : Label(name, color, inTrash, id)
+    ) : Label()
 
     @Keep
     @Serializable
     @Entity(tableName = "persons")
     data class Person(
+        @SerialName("person_name")
         override val name: String = "",
+
         override val color: Int = colorPickerColors[7].toArgb(),
 
         @SerialName("in_trash")
@@ -64,6 +66,6 @@ sealed class Label (
 
         @PrimaryKey(autoGenerate = true)
         override val id: Long? = null
-    ) : Label(name, color, inTrash, id)
+    ) : Label()
 }
 

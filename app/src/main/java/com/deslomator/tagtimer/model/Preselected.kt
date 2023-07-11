@@ -3,16 +3,15 @@ package com.deslomator.tagtimer.model
 import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-sealed class Preselected (
-    open val sessionId: Long = 0,
-    open val labelId: Long = 0,
-) {
+sealed class Preselected {
+    abstract val sessionId: Long
+    abstract val labelId: Long
+
     @Keep
     @Serializable
     @Entity(
@@ -27,7 +26,7 @@ sealed class Preselected (
         @SerialName("person_id")
         @ColumnInfo(name = "person_id")
         override val labelId: Long = 0,
-    ) : Preselected(sessionId, labelId)
+    ) : Preselected()
 
     @Keep
     @Serializable
@@ -43,7 +42,7 @@ sealed class Preselected (
         @SerialName("place_id")
         @ColumnInfo(name = "place_id")
         override val labelId: Long = 0,
-    ) : Preselected(sessionId, labelId)
+    ) : Preselected()
 
     @Keep
     @Serializable
@@ -59,6 +58,6 @@ sealed class Preselected (
         @SerialName("tag_id")
         @ColumnInfo(name = "tag_id")
         override val labelId: Long = 0,
-    ) : Preselected(sessionId, labelId)
+    ) : Preselected()
 }
 
