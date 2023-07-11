@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.navigation.AppNavHost
@@ -30,9 +34,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            var orphansCleared by rememberSaveable { mutableStateOf(false) }
             TagTimerTheme {
                 LaunchedEffect(Unit) {
-                    withContext(Dispatchers.IO) { cleanOrphans(appDao) }
+                    if (!orphansCleared) {
+                        withContext(Dispatchers.IO) { cleanOrphans(appDao) }
+                    }
+                    orphansCleared = true
                 }
                 Surface(
                     modifier = Modifier.fillMaxSize(),
