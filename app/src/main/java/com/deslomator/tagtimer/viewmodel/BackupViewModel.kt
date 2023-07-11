@@ -193,41 +193,39 @@ private suspend fun backupInternally(
     file: File? = null
 ): Result {
     var result = Result.BACKUP_FAILED
-    runBlocking {
-        withContext(Dispatchers.IO) {
-            val timestamp = SimpleDateFormat(
-                "yyyyMMdd_HHmmss", Locale.getDefault()
-            ).format(Date())
-            val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
-            val fileName = "${prefix}_${timestamp}.json"
-            val new = file ?: File(backupDir, fileName)
-            if (new.createNewFile()) {
-                val dbBackup = getDbBackup(appDao, labelsOnly)
-                if (dbBackup.isEmpty()) {
-                    Log.e("backupInternally()", "Failed, backup class is empty")
-                    result = Result.NOTHING_TO_BACKUP
-                } else {
-                    try {
-                        Json.encodeToString(dbBackup)
-                            .encodeToByteArray()
-                            .inputStream().use { bis ->
-                                FileOutputStream(new).use { fos ->
-                                    val buf = ByteArray(bis.available())
-                                    bis.read(buf)
-                                    do {
-                                        fos.write(buf)
-                                    } while (bis.read(buf) != -1)
-                                }
-                            }
-                        result = Result.BACKED
-                        Log.i("backupInternally()", "Backup success")
-                    } catch (error: Error) {
-                        Log.e("backupInternally()", error.message.toString())
-                    }
-                }
+    runBlocking(Dispatchers.IO) {
+        val timestamp = SimpleDateFormat(
+            "yyyyMMdd_HHmmss", Locale.getDefault()
+        ).format(Date())
+        val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
+        val fileName = "${prefix}_${timestamp}.json"
+        val new = file ?: File(backupDir, fileName)
+        if (new.createNewFile()) {
+            val dbBackup = getDbBackup(appDao, labelsOnly)
+            if (dbBackup.isEmpty()) {
+                Log.e("backupInternally()", "Failed, backup class is empty")
+                result = Result.NOTHING_TO_BACKUP
             } else {
-                Log.e("backupInternally()", "Failed, backup file already exists")
+                try {
+                    Json.encodeToString(dbBackup)
+                        .encodeToByteArray()
+                        .inputStream().use { bis ->
+                            FileOutputStream(new).use { fos ->
+                                val buf = ByteArray(bis.available())
+                                bis.read(buf)
+                                do {
+                                    fos.write(buf)
+                                } while (bis.read(buf) != -1)
+                            }
+                        }
+                    result = Result.BACKED
+                    Log.i("backupInternally()", "Backup success")
+                } catch (error: Error) {
+                    Log.e("backupInternally()", error.message.toString())
+                }
             }
+        } else {
+            Log.e("backupInternally()", "Failed, backup file already exists")
         }
     }
     return result

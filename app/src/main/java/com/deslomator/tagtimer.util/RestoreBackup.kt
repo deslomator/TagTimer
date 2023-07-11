@@ -23,31 +23,29 @@ import java.io.FileInputStream
  */
 fun restoreBackup(appDao: AppDao, json: String): Result {
     var result = Result.RESTORE_FAILED
-    runBlocking {
-        withContext(Dispatchers.IO) {
-            try {
-                val dbBackup = Json.decodeFromString<DbBackup>(json)
-                result = if (dbBackup.isEmpty()) {
-                    Log.e("$TAG FromString()", "Failed, backup class is empty")
-                    Result.NOTHING_TO_BACKUP
-                } else {
-                    appDao.deleteAllData()
-                    runBlocking {
-                        launch { dbBackup.persons.forEach { appDao.upsertPerson(it) } }
-                        launch { dbBackup.places.forEach { appDao.upsertPlace(it) } }
-                        launch { dbBackup.tags.forEach { appDao.upsertTag(it) } }
-                        launch { dbBackup.preselectedPersons.forEach { appDao.upsertPreSelectedPerson(it) } }
-                        launch { dbBackup.preselectedPlaces.forEach { appDao.upsertPreSelectedPlace(it) } }
-                        launch { dbBackup.preselectedTags.forEach { appDao.upsertPreSelectedTag(it) } }
-                        launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
-                        launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
-                    }
-                    Log.i("$TAG FromString()", "Restore success")
-                    Result.RESTORED
+    runBlocking(Dispatchers.IO) {
+        try {
+            val dbBackup = Json.decodeFromString<DbBackup>(json)
+            result = if (dbBackup.isEmpty()) {
+                Log.e("$TAG FromString()", "Failed, backup class is empty")
+                Result.NOTHING_TO_BACKUP
+            } else {
+                appDao.deleteAllData()
+                runBlocking {
+                    launch { dbBackup.persons.forEach { appDao.upsertPerson(it) } }
+                    launch { dbBackup.places.forEach { appDao.upsertPlace(it) } }
+                    launch { dbBackup.tags.forEach { appDao.upsertTag(it) } }
+                    launch { dbBackup.preselectedPersons.forEach { appDao.upsertPreSelectedPerson(it) } }
+                    launch { dbBackup.preselectedPlaces.forEach { appDao.upsertPreSelectedPlace(it) } }
+                    launch { dbBackup.preselectedTags.forEach { appDao.upsertPreSelectedTag(it) } }
+                    launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
+                    launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
                 }
-            } catch (error: Error) {
-                Log.e("$TAG FromString()", error.message.toString())
+                Log.i("$TAG FromString()", "Restore success")
+                Result.RESTORED
             }
+        } catch (error: Error) {
+            Log.e("$TAG FromString()", error.message.toString())
         }
     }
     return result
@@ -61,16 +59,14 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
  */
 fun restoreBackup(appDao: AppDao, uri: Uri): Result {
     var result = Result.RESTORE_FAILED
-    runBlocking {
-        withContext(Dispatchers.IO) {
-            try {
-                val json = FileInputStream(uri.toFile()).use { fis ->
-                    fis.readBytes()
-                }.decodeToString()
-                result = restoreBackup(appDao, json)
-            } catch (error: Error) {
-                Log.e("$TAG FromUri()", error.message.toString())
-            }
+    runBlocking(Dispatchers.IO) {
+        try {
+            val json = FileInputStream(uri.toFile()).use { fis ->
+                fis.readBytes()
+            }.decodeToString()
+            result = restoreBackup(appDao, json)
+        } catch (error: Error) {
+            Log.e("$TAG FromUri()", error.message.toString())
         }
     }
     return result

@@ -146,18 +146,16 @@ fun IntentProcessor(
         LaunchedEffect(Unit) {
             intentState?.data?.let { intentUri ->
                 Log.d(TAG, "inside intentState?.data?.let")
-                runBlocking {
-                    withContext(Dispatchers.IO) {
-                        try {
-                            activity.contentResolver.openInputStream(intentUri).use {
-                                it?.readBytes()?.decodeToString()
-                            }?.let {
-                                result = restoreBackup(appDao, it)
-                            }
-                            Log.d(TAG, "loadBackup: $result")
-                        } catch (error: Error) {
-                            Log.e(TAG, "loadBackup: $error")
+                runBlocking(Dispatchers.IO) {
+                    try {
+                        activity.contentResolver.openInputStream(intentUri).use {
+                            it?.readBytes()?.decodeToString()
+                        }?.let {
+                            result = restoreBackup(appDao, it)
                         }
+                        Log.d(TAG, "loadBackup: $result")
+                    } catch (error: Error) {
+                        Log.e(TAG, "loadBackup: $error")
                     }
                 }
             }
