@@ -107,40 +107,4 @@ fun TrashTabContent(
     }
 }
 
-@Composable
-@Preview
-fun TrashTabContentPreview() {
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(6.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(colorPickerColors) { background ->
-            val session = Session(
-                name = "background: ${background.brightness()}",
-                lastAccessMillis = 333445666,
-                color = background.toArgb()
-            )
-            MyListItem(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(25.dp))
-                    .border(1.dp, Color.LightGray, RoundedCornerShape(25.dp)),
-                colors = CardDefaults.cardColors(
-                    contentColor = Color(session.color).contrasted(),
-                    containerColor = Color(session.color),
-                ),
-                item = session,
-                leadingIcon = R.drawable.restore_from_trash,
-                onLeadingClick = {  },
-                trailingIcon = R.drawable.delete_forever,
-                onTrailingClick = {  },
-            ) { item ->
-                Column {
-                    Text(item.name)
-                    Text(item.lastAccessMillis.toDateTime())
-                }
-            }
-        }
-    }
-}
 
