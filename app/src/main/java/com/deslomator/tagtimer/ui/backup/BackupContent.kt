@@ -20,10 +20,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,14 +47,25 @@ fun BackupContent(
     context: Context
 ) {
     val scope = rememberCoroutineScope()
-    var result by remember { mutableStateOf<Uri?>(null) }
+    var activityResult by remember { mutableStateOf<Uri?>(null) }
+    var showSnackbar by rememberSaveable { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")) { uri ->
-        result = uri
+        activityResult = uri
     }
-    result?.let {
+    activityResult?.let {
         onAction(BackupAction.UriReceived(it))
-        result = null
+        activityResult = null
+    }
+    LaunchedEffect(state.result, showSnackbar) {
+        if (showSnackbar){
+            val r = showSnackbar(
+                scope = scope,
+                snackbarHostState = snackbarHostState,
+                message = context.getString(state.result.stringId)
+            )
+        }
+        showSnackbar = false
     }
     Box(
         modifier = Modifier
@@ -68,12 +81,8 @@ fun BackupContent(
             ) {
                 Button(
                     onClick = {
+                        showSnackbar = true
                         onAction(BackupAction.FullBackupClicked)
-                        showSnackbar(
-                            scope = scope,
-                            snackbarHostState = snackbarHostState,
-                            message = context.getString(state.result.stringId)
-                        )
                     }
                 ) {
                     Column(
@@ -88,12 +97,8 @@ fun BackupContent(
                 }
                 Button(
                     onClick = {
+                        showSnackbar = true
                         onAction(BackupAction.BackupLabelsClicked)
-                        showSnackbar(
-                            scope = scope,
-                            snackbarHostState = snackbarHostState,
-                            message = context.getString(state.result.stringId)
-                        )
                     }
                 ) {
                     Column(
@@ -138,12 +143,8 @@ fun BackupContent(
                         },
                         onShareClick = { onAction(BackupAction.ShareBackupClicked(file)) },
                         onRestoreClick = {
+                            showSnackbar = true
                             onAction(BackupAction.RestoreBackupClicked(file))
-                            showSnackbar(
-                                scope = scope,
-                                snackbarHostState = snackbarHostState,
-                                message = context.getString(state.result.stringId)
-                            )
                         },
                         onSaveClick = {
                             onAction(BackupAction.SaveBackupClicked(file))
