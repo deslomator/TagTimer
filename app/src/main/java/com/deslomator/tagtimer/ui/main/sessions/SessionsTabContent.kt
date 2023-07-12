@@ -34,6 +34,7 @@ import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.contrasted
+import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toDateTime
 import com.deslomator.tagtimer.util.toElapsedTime
 import kotlinx.coroutines.delay
@@ -77,8 +78,8 @@ fun SessionsTabContent(
             ) { session ->
                 MyListItem(
                     colors = CardDefaults.cardColors(
-                        contentColor = Color(session.color).contrasted(),
-                        containerColor = Color(session.color),
+                        contentColor = session.color.toColor().contrasted(),
+                        containerColor = session.color.toColor(),
                     ),
                     shape = RoundedCornerShape(25.dp),
                     border = BorderStroke(1.dp, Color.LightGray),

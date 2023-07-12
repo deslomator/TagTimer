@@ -10,4 +10,5 @@ sealed interface SessionsTabAction {
     object DismissSessionDialog: SessionsTabAction
     object TrashSessionClicked: SessionsTabAction
     data class CopySessionClicked(val copyString: String): SessionsTabAction
+    object LeaveSessionsTab: SessionsTabAction
 }

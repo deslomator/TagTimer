@@ -118,7 +118,7 @@ fun SwipeableListItemPreview() {
         MyListItem(
             item = Session(
                 name = "Session in Gym",
-                color = -33929,
+                color = "FFE450D1",
                 lastAccessMillis = 287539475785793
             ),
             onItemClick = {},
