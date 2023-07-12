@@ -48,7 +48,7 @@ fun PlaceDialog(
                 snackbarHostState,
                 message
             )
-            onAction(LabelsTabAction.TrashPlaceSwiped(state.currentPlace))
+            onAction(LabelsTabAction.DeletePlaceClicked(state.currentPlace))
         },
         title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place
     ) {

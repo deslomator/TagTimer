@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.state.LabelPreselectionState
-import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -49,7 +48,7 @@ fun TagDialog(
                 snackbarHostState,
                 message
             )
-            onAction(LabelPreselectionAction.TrashTagSwiped(state.currentTag))
+            onAction(LabelPreselectionAction.DeleteTagClicked(state.currentTag))
         },
         title = if (state.isEditingTag) R.string.edit_tag else R.string.new_tag
     ) {

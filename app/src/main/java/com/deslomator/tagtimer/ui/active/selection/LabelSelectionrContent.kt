@@ -28,7 +28,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
-import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelPreselectionState
@@ -126,16 +125,16 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = tags,
                             preSelected = state.preSelectedTags,
-                            onCheckedChange = { id, checked ->
+                            onCheckedChange = { tag, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
-                                onAction(LabelPreselectionAction.SelectTagCheckedChange(id, checked))
+                                onAction(LabelPreselectionAction.SelectTagCheckedChange(tag, checked))
                             },
                             onLongClick = {
-                                onAction(LabelPreselectionAction.EditTagClicked(it as Label.Tag))
+                                onAction(LabelPreselectionAction.EditTagClicked(it))
                             }
                         )
                     }
@@ -145,16 +144,16 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = persons,
                             preSelected = state.preSelectedPersons,
-                            onCheckedChange = { id, checked ->
+                            onCheckedChange = { person, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
-                                onAction(LabelPreselectionAction.SelectPersonCheckedChange(id, checked))
+                                onAction(LabelPreselectionAction.SelectPersonCheckedChange(person, checked))
                             },
                             onLongClick = {
-                                onAction(LabelPreselectionAction.EditPersonClicked(it as Label.Person))
+                                onAction(LabelPreselectionAction.EditPersonClicked(it))
                             }
                         )
                     }
@@ -164,16 +163,16 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = places,
                             preSelected = state.preSelectedPlaces,
-                            onCheckedChange = { id, checked ->
+                            onCheckedChange = { place, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
-                                onAction(LabelPreselectionAction.SelectPlaceCheckedChange(id, checked))
+                                onAction(LabelPreselectionAction.SelectPlaceCheckedChange(place, checked))
                             },
                             onLongClick = {
-                                onAction(LabelPreselectionAction.EditPlaceClicked(it as Label.Place))
+                                onAction(LabelPreselectionAction.EditPlaceClicked(it))
                             }
                         )
                     }

@@ -30,6 +30,27 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
             } else  { // do not erase anything if it's a labels only backup
                 Log.i(TAG, "FromString(). Inserting labels, nothing is deleted")
                 runBlocking {
+                    Log.i(TAG, "FromString() Restore of labels success")
+                    if (!dbBackup.isLabelsOnly()) {
+                        runBlocking {
+                            Log.i(TAG, "FromString() Deleting current data")
+                            appDao.deleteAllData()
+                            launch { dbBackup.preselectedPersons.forEach {
+                                appDao.upsertPreSelectedPerson(it)
+                            }
+                            }
+                            launch { dbBackup.preselectedPlaces.forEach {
+                                appDao.upsertPreSelectedPlace(it)
+                            }
+                            }
+                            launch { dbBackup.preselectedTags.forEach {
+                                appDao.upsertPreSelectedTag(it) }
+                            }
+                            launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
+                            launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
+                        }
+                        Log.i(TAG, "FromString() Restore of full backup success")
+                    }
                     // only insert tags that do not exist already, as in
                     // they have the same name and color regardless of id
                     if (dbBackup.persons.isNotEmpty()) launch {
@@ -53,27 +74,6 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                             if (!alreadyExists) appDao.upsertTag(it)
                         }
                     }
-                }
-                Log.i(TAG, "FromString() Restore of labels success")
-                if (!dbBackup.isLabelsOnly()) {
-                    runBlocking {
-                        Log.i(TAG, "FromString() Deleting current data")
-                        appDao.deleteAllData()
-                        launch { dbBackup.preselectedPersons.forEach {
-                            appDao.upsertPreSelectedPerson(it)
-                        }
-                        }
-                        launch { dbBackup.preselectedPlaces.forEach {
-                            appDao.upsertPreSelectedPlace(it)
-                        }
-                        }
-                        launch { dbBackup.preselectedTags.forEach {
-                            appDao.upsertPreSelectedTag(it) }
-                        }
-                        launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
-                        launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
-                    }
-                    Log.i(TAG, "FromString() Restore of full backup success")
                 }
                 result = Result.Restored
             }

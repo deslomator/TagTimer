@@ -75,7 +75,6 @@ class BackupViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             result = result,
-                            showSnackBar = true
                         )
                     }
                     reloadFiles()
@@ -92,7 +91,6 @@ class BackupViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             result = result,
-                            showSnackBar = true
                         )
                     }
                     reloadFiles()
@@ -104,13 +102,9 @@ class BackupViewModel @Inject constructor(
                     _state.update {
                         it.copy(
                             result = result,
-                            showSnackBar = true
                         )
                     }
                 }
-            }
-            is BackupAction.SnackbarShown -> {
-                _state.update { it.copy(showSnackBar = false) }
             }
             BackupAction.BackupExported -> {
                 _state.update { it.copy(shareFile = false) }
@@ -123,7 +117,6 @@ class BackupViewModel @Inject constructor(
                     val result = saveToStorage(action.uri)
                     _state.update { it.copy(
                         result = result,
-                        showSnackBar = true
                     ) }
                 }
             }
@@ -137,7 +130,6 @@ class BackupViewModel @Inject constructor(
         }
         _state.update { it.copy(
             result = Result.Deleted,
-            showSnackBar = true
         ) }
     }
 

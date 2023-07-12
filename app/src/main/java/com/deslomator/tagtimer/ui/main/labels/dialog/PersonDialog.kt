@@ -48,7 +48,7 @@ fun PersonDialog(
                 snackbarHostState,
                 message
             )
-            onAction(LabelsTabAction.TrashPersonSwiped(state.currentPerson))
+            onAction(LabelsTabAction.DeletePersonClicked(state.currentPerson))
         },
         title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person
     ) {

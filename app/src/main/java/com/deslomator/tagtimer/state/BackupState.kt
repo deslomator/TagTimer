@@ -5,7 +5,6 @@ import java.io.File
 
 data class BackupState(
     val files: List<File> = emptyList(),
-    val showSnackBar: Boolean = false,
     val shareFile: Boolean = false,
     val result: Result = Result.Restored,
     val currentString: String = "",

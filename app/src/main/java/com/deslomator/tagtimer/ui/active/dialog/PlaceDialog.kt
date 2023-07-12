@@ -16,7 +16,6 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.state.LabelPreselectionState
-import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -49,7 +48,7 @@ fun PlaceDialog(
                 snackbarHostState,
                 message
             )
-            onAction(LabelPreselectionAction.TrashPlaceSwiped(state.currentPlace))
+            onAction(LabelPreselectionAction.DeletePlaceClicked(state.currentPlace))
         },
         title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place
     ) {

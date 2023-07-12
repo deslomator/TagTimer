@@ -9,7 +9,6 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
         Log.d(TAG, "populateDb() creating sessions and tags")
-        val i = index + 100L
         /*val session = Session(
             id = i,
             color = it.toArgb(),
@@ -22,38 +21,20 @@ suspend fun populateDb (dao: AppDao) {
         )
         dao.upsertSession(sessionT)*/
         val tag = Label.Tag(
-            id = i,
             color = it.toArgb(),
             name = "Tag $index",
         )
         dao.upsertTag(tag)
-        val tagT = tag.copy(
-            id = i + 100,
-            inTrash = true
-        )
-        dao.upsertTag(tagT)
         val place = Label.Place(
-            id = i,
             color = it.toArgb(),
             name = "Place $index",
         )
         dao.upsertPlace(place)
-        val placeT = place.copy(
-            id = i + 100,
-            inTrash = true
-        )
-        dao.upsertPlace(placeT)
         val person = Label.Person(
-            id = i,
             color = it.toArgb(),
             name = "Person $index",
         )
         dao.upsertPerson(person)
-        val personT = person.copy(
-            id = i + 100,
-            inTrash = true
-        )
-        dao.upsertPerson(personT)
         /*colorPickerColors.forEachIndexed { idx, it2 ->
             val event = Event(
                 sessionId = i,

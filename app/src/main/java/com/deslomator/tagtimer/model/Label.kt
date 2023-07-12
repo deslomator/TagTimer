@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import androidx.compose.ui.graphics.toArgb
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Ignore
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -15,11 +15,13 @@ sealed class Label {
     abstract val name: String
     abstract val color: Int
     abstract val inTrash: Boolean
-    abstract val id: Long?
 
     @Keep
     @Serializable
-    @Entity(tableName = "tags")
+    @Entity(
+        tableName = "tags",
+        primaryKeys = ["name", "color"]
+    )
     data class Tag(
         @SerialName("tag_name")
         override val name: String = "",
@@ -28,15 +30,15 @@ sealed class Label {
 
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
-        override val inTrash: Boolean = false,
-
-        @PrimaryKey(autoGenerate = true)
-        override val id: Long? = null
+        override val inTrash: Boolean = false
     ) : Label()
 
     @Keep
     @Serializable
-    @Entity(tableName = "places")
+    @Entity(
+        tableName = "places",
+        primaryKeys = ["name", "color"]
+    )
     data class Place(
         @SerialName("place_name")
         override val name: String = "",
@@ -45,15 +47,15 @@ sealed class Label {
 
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
-        override val inTrash: Boolean = false,
-
-        @PrimaryKey(autoGenerate = true)
-        override val id: Long? = null
+        override val inTrash: Boolean = false
     ) : Label()
 
     @Keep
     @Serializable
-    @Entity(tableName = "persons")
+    @Entity(
+        tableName = "persons",
+        primaryKeys = ["name", "color"]
+    )
     data class Person(
         @SerialName("person_name")
         override val name: String = "",
@@ -62,10 +64,10 @@ sealed class Label {
 
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
-        override val inTrash: Boolean = false,
-
-        @PrimaryKey(autoGenerate = true)
-        override val id: Long? = null
+        override val inTrash: Boolean = false
     ) : Label()
+
+    @delegate:Ignore
+    val id: String by lazy { name + color.toString() }
 }
 

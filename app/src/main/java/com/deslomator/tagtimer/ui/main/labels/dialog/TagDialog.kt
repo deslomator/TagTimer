@@ -48,7 +48,7 @@ fun TagDialog(
                 snackbarHostState,
                 message
             )
-            onAction(LabelsTabAction.TrashTagSwiped(state.currentTag))
+            onAction(LabelsTabAction.DeleteTagClicked(state.currentTag))
         },
         title = if (state.isEditingTag) R.string.edit_tag else R.string.new_tag
     ) {

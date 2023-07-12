@@ -37,6 +37,9 @@ class LabelsTabViewModel @Inject constructor(
 
     fun onAction(action: LabelsTabAction) {
         when(action) {
+            /*
+            TAG
+             */
             is LabelsTabAction.AddNewTagClicked -> {
                 _state.update { it.copy(
                     currentTag = Label.Tag(),
@@ -56,7 +59,10 @@ class LabelsTabViewModel @Inject constructor(
                     showTagDialog = false,
                     isEditingTag = false,
                 ) }
-                viewModelScope.launch { appDao.upsertTag(action.tag) }
+                viewModelScope.launch {
+                    appDao.deleteTag(state.value.currentTag)
+                    appDao.upsertTag(action.tag)
+                }
             }
             is LabelsTabAction.DismissTagDialog -> {
                 _state.update { it.copy(
@@ -65,7 +71,7 @@ class LabelsTabViewModel @Inject constructor(
                     isAddingNewTag = false,
                 ) }
             }
-            is LabelsTabAction.TrashTagSwiped -> {
+            is LabelsTabAction.DeleteTagClicked -> {
                 _state.update { it.copy(showTagDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = true)
@@ -95,7 +101,10 @@ class LabelsTabViewModel @Inject constructor(
                     showPersonDialog = false,
                     isEditingPerson = false,
                 ) }
-                viewModelScope.launch { appDao.upsertPerson(action.person) }
+                viewModelScope.launch {
+                    appDao.deletePerson(state.value.currentPerson)
+                    appDao.upsertPerson(action.person)
+                }
             }
             is LabelsTabAction.DismissPersonDialog -> {
                 _state.update { it.copy(
@@ -104,7 +113,7 @@ class LabelsTabViewModel @Inject constructor(
                     isAddingNewPerson = false,
                 ) }
             }
-            is LabelsTabAction.TrashPersonSwiped -> {
+            is LabelsTabAction.DeletePersonClicked -> {
                 _state.update { it.copy(showPersonDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.person.copy(inTrash = true)
@@ -133,7 +142,10 @@ class LabelsTabViewModel @Inject constructor(
                     showPlaceDialog = false,
                     isEditingPlace = false,
                 ) }
-                viewModelScope.launch { appDao.upsertPlace(action.place) }
+                viewModelScope.launch {
+                    appDao.deletePlace(state.value.currentPlace)
+                    appDao.upsertPlace(action.place)
+                }
             }
             is LabelsTabAction.DismissPlaceDialog -> {
                 _state.update { it.copy(
@@ -142,7 +154,7 @@ class LabelsTabViewModel @Inject constructor(
                     isAddingNewPlace = false,
                 ) }
             }
-            is LabelsTabAction.TrashPlaceSwiped -> {
+            is LabelsTabAction.DeletePlaceClicked -> {
                 _state.update { it.copy(showPlaceDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.place.copy(inTrash = true)

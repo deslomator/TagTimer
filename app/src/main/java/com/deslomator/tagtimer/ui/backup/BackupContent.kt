@@ -2,7 +2,6 @@ package com.deslomator.tagtimer.ui.backup
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +17,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,7 +67,14 @@ fun BackupContent(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = { onAction(BackupAction.FullBackupClicked) }
+                    onClick = {
+                        onAction(BackupAction.FullBackupClicked)
+                        showSnackbar(
+                            scope = scope,
+                            snackbarHostState = snackbarHostState,
+                            message = context.getString(state.result.stringId)
+                        )
+                    }
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -83,7 +87,14 @@ fun BackupContent(
                     }
                 }
                 Button(
-                    onClick = { onAction(BackupAction.BackupLabelsClicked) }
+                    onClick = {
+                        onAction(BackupAction.BackupLabelsClicked)
+                        showSnackbar(
+                            scope = scope,
+                            snackbarHostState = snackbarHostState,
+                            message = context.getString(state.result.stringId)
+                        )
+                    }
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -126,7 +137,14 @@ fun BackupContent(
                             onAction(BackupAction.DeleteBackupClicked(file))
                         },
                         onShareClick = { onAction(BackupAction.ShareBackupClicked(file)) },
-                        onRestoreClick = { onAction(BackupAction.RestoreBackupClicked(file)) },
+                        onRestoreClick = {
+                            onAction(BackupAction.RestoreBackupClicked(file))
+                            showSnackbar(
+                                scope = scope,
+                                snackbarHostState = snackbarHostState,
+                                message = context.getString(state.result.stringId)
+                            )
+                        },
                         onSaveClick = {
                             onAction(BackupAction.SaveBackupClicked(file))
                             launcher.launch(file.name)
@@ -143,16 +161,6 @@ fun BackupContent(
                 textAlign = TextAlign.Center
             )
         }
-    }
-    LaunchedEffect(state.showSnackBar) {
-        if (state.showSnackBar) {
-            snackbarHostState.currentSnackbarData?.dismiss()
-            val res = snackbarHostState.showSnackbar(
-                message = context.getString(state.result.stringId),
-                duration = SnackbarDuration.Short
-            )
-        }
-        onAction(BackupAction.SnackbarShown)
     }
 }
 
