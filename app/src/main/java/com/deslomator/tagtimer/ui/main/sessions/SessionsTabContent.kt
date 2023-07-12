@@ -20,8 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,7 +47,7 @@ fun SessionsTabContent(
     onAction: (SessionsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    var time by rememberSaveable {
+    var time by remember {
         mutableLongStateOf(System.currentTimeMillis())
     }
     if (state.sessions.any { it.startTimestampMillis > 0 }) {
