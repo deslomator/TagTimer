@@ -1,22 +1,7 @@
 package com.deslomator.tagtimer.model.type
 
-import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import com.deslomator.tagtimer.R
-
-@Keep
-enum class Result2 {
-    BAD_FILE,
-    RESTORED,
-    DELETED,
-    BACKED,
-    BACKUP_FAILED,
-    NOTHING_TO_BACKUP,
-    NOTHING_TO_RESTORE,
-    RESTORE_FAILED,
-    SAVED,
-    SAVE_FAILED
-}
 
 sealed class Result(
     val name: String,
