@@ -1,19 +1,13 @@
 package com.deslomator.tagtimer.ui.main.trash
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
@@ -23,25 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.util.toDateTime
 import com.deslomator.tagtimer.ui.TabIndicator
-import com.deslomator.tagtimer.ui.MyListItem
-import com.deslomator.tagtimer.ui.theme.brightness
-import com.deslomator.tagtimer.ui.theme.colorPickerColors
-import com.deslomator.tagtimer.ui.theme.contrasted
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)

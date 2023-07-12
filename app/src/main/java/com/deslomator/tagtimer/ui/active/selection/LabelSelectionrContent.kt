@@ -21,7 +21,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +37,7 @@ import com.deslomator.tagtimer.ui.active.dialog.PlaceDialog
 import com.deslomator.tagtimer.ui.active.dialog.TagDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.hue
+import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -57,7 +57,7 @@ fun LabelSelectionContent(
         derivedStateOf {
             state.tags.sortedWith(
                 when (sharedState.tagSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
@@ -67,7 +67,7 @@ fun LabelSelectionContent(
         derivedStateOf {
             state.persons.sortedWith(
                 when (sharedState.personSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
@@ -77,7 +77,7 @@ fun LabelSelectionContent(
         derivedStateOf {
             state.places.sortedWith(
                 when (sharedState.placeSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )

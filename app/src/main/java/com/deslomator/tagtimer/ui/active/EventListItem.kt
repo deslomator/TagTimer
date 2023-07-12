@@ -40,8 +40,8 @@ fun EventListItem(
 ) {
 //    Log.d(TAG, "recomposing event, id: ${event.id}")
     val borderColor =
-        if (Color(event.color).brightness() > 0.9f) OnDarkBackground.toArgb()
-        else event.color
+        if (Color(event.longColor).brightness() > 0.9f) OnDarkBackground.toArgb().toLong()
+        else event.longColor
     val index by remember {
         derivedStateOf {
             maxOf(persons.indexOf(event.person), 0)

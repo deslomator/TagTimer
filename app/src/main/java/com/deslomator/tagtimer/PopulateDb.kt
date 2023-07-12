@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
+import com.deslomator.tagtimer.ui.theme.toHex
 
 suspend fun populateDb (dao: AppDao) {
     colorPickerColors.forEachIndexed { index, it ->
@@ -21,17 +22,17 @@ suspend fun populateDb (dao: AppDao) {
         )
         dao.upsertSession(sessionT)*/
         val tag = Label.Tag(
-            color = it.toArgb(),
+            color = it.toHex(),
             name = "Tag $index",
         )
         dao.upsertTag(tag)
         val place = Label.Place(
-            color = it.toArgb(),
+            color = it.toHex(),
             name = "Place $index",
         )
         dao.upsertPlace(place)
         val person = Label.Person(
-            color = it.toArgb(),
+            color = it.toHex(),
             name = "Person $index",
         )
         dao.upsertPerson(person)

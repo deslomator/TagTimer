@@ -1,11 +1,11 @@
 package com.deslomator.tagtimer.model
 
 import androidx.annotation.Keep
-import androidx.compose.ui.graphics.toArgb
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
+import com.deslomator.tagtimer.ui.theme.toHex
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -13,7 +13,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Label {
     abstract val name: String
-    abstract val color: Int
+    abstract val color: String
     abstract val inTrash: Boolean
 
     @Keep
@@ -26,7 +26,7 @@ sealed class Label {
         @SerialName("tag_name")
         override val name: String = "",
 
-        override val color: Int = colorPickerColors[7].toArgb(),
+        override val color: String = colorPickerColors[7].toHex(),
 
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
@@ -43,7 +43,7 @@ sealed class Label {
         @SerialName("place_name")
         override val name: String = "",
 
-        override val color: Int = colorPickerColors[7].toArgb(),
+        override val color: String = colorPickerColors[7].toHex(),
 
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
@@ -60,7 +60,7 @@ sealed class Label {
         @SerialName("person_name")
         override val name: String = "",
 
-        override val color: Int = colorPickerColors[7].toArgb(),
+        override val color: String = colorPickerColors[7].toHex(),
 
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
@@ -68,6 +68,9 @@ sealed class Label {
     ) : Label()
 
     @delegate:Ignore
-    val id: String by lazy { name + color.toString() }
+    val id: String by lazy { name + color }
+
+    @delegate:Ignore
+    val longColor: Long by lazy { color.toLong(16) }
 }
 

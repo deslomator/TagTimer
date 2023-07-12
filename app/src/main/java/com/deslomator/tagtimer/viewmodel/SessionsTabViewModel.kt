@@ -8,7 +8,6 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

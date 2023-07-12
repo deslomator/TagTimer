@@ -4,13 +4,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
@@ -18,6 +16,8 @@ import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.TimeNumberPicker
+import com.deslomator.tagtimer.ui.theme.toHex
+import com.deslomator.tagtimer.util.toColor
 
 @Composable
 fun EventEditionDialog(
@@ -42,7 +42,7 @@ fun EventEditionDialog(
         mutableStateOf(event.place)
     }
     var color by rememberSaveable {
-        mutableIntStateOf(event.color)
+        mutableStateOf(event.color)
     }
     MyDialog(
         onDismiss = onDismiss,
@@ -92,8 +92,8 @@ fun EventEditionDialog(
         )
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
-            selectedColor = Color(color),
-            onItemClick = { color = it },
+            selectedColor = color.toColor(),
+            onItemClick = { color = it.toHex() },
             enabled = enabled
         )
     }

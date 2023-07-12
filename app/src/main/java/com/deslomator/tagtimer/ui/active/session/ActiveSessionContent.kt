@@ -33,7 +33,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -44,12 +43,13 @@ import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
-import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import com.deslomator.tagtimer.ui.theme.hue
+import com.deslomator.tagtimer.util.toColor
+import com.deslomator.tagtimer.util.toElapsedTime
 
 @Composable
 fun ActiveSessionContent(
@@ -75,7 +75,7 @@ fun ActiveSessionContent(
                 state.preSelectedTags.map { it.labelId }.contains(tag.id)
             }.sortedWith(
                 when (sharedState.tagSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
@@ -87,7 +87,7 @@ fun ActiveSessionContent(
                 state.preSelectedPersons.map { it.labelId }.contains(person.id)
             }.sortedWith(
                 when (sharedState.personSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
@@ -99,7 +99,7 @@ fun ActiveSessionContent(
                 state.preSelectedPlaces.map { it.labelId }.contains(place.id)
             }.sortedWith(
                 when (sharedState.placeSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -20,6 +19,7 @@ import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.showSnackbar
+import com.deslomator.tagtimer.ui.theme.toHex
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -31,7 +31,7 @@ fun TagDialog(
 ) {
     val message = stringResource(id = R.string.tag_sent_to_trash)
     var name by rememberSaveable { mutableStateOf(state.currentTag.name) }
-    var color by rememberSaveable { mutableIntStateOf(state.currentTag.color) }
+    var color by rememberSaveable { mutableStateOf(state.currentTag.color) }
     MyDialog(
         onDismiss = { onAction(LabelPreselectionAction.DismissTagDialog) },
         onAccept = {
@@ -60,8 +60,8 @@ fun TagDialog(
         )
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
-            selectedColor = Color(color),
-            onItemClick = { color = it }
+            selectedColor = Color(color.toInt(16)),
+            onItemClick = { color = it.toHex() }
         )
     }
 }

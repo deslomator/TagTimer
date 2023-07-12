@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -51,15 +50,15 @@ fun LabelButton(
     val borderWidth = remember { if (item is Label.Person) 5.dp else 1.dp }
     val borderColor = remember {
         if (item is Label.Person) {
-            if (Color(item.color).brightness() > .9F) VeryLightGray
-            else Color(item.color)
+            if (Color(item.longColor).brightness() > .9F) VeryLightGray
+            else Color(item.longColor)
         } else {
             Color.LightGray
         }
     }
     val containerColor = remember {
         if (item is Label.Person) Color.White
-        else Color(item.color)
+        else Color(item.longColor)
     }
     val contentColor = remember { containerColor.contrasted() }
     val leadingIcon = remember {

@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -20,6 +18,8 @@ import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.showSnackbar
+import com.deslomator.tagtimer.ui.theme.toHex
+import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -31,7 +31,7 @@ fun TagDialog(
 ) {
     val message = stringResource(id = R.string.tag_sent_to_trash)
     var name by rememberSaveable { mutableStateOf(state.currentTag.name) }
-    var color by rememberSaveable { mutableIntStateOf(state.currentTag.color) }
+    var color by rememberSaveable { mutableStateOf(state.currentTag.color) }
     MyDialog(
         onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
         onAccept = {
@@ -60,8 +60,8 @@ fun TagDialog(
         )
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
-            selectedColor = Color(color),
-            onItemClick = { color = it }
+            selectedColor = color.toColor(),
+            onItemClick = { color = it.toHex() }
         )
     }
 }

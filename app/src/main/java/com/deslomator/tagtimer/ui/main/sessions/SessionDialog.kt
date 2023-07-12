@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -83,7 +84,7 @@ fun SessionDialog(
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
             selectedColor = Color(color),
-            onItemClick = { color = it }
+            onItemClick = { color = it.toArgb() }
         )
     }
 }
