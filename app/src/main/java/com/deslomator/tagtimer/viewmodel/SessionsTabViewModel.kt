@@ -68,9 +68,6 @@ class SessionsTabViewModel @Inject constructor(
                 copySession(action.copyString)
                 _state.update { it.copy(showSessionDialog = false) }
             }
-            is SessionsTabAction.LeaveSessionsTab -> {
-                // TODO update running sessions duration
-            }
         }
     }
 
