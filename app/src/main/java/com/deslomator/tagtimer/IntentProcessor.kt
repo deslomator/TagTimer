@@ -32,10 +32,14 @@ import androidx.compose.ui.unit.sp
 import androidx.core.util.Consumer
 import androidx.documentfile.provider.DocumentFile
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.type.Result
-import com.deslomator.tagtimer.util.restoreBackup
+import com.deslomator.tagtimer.util.EmptyDatabaseException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -45,56 +49,81 @@ fun IntentProcessor(
     activity: ComponentActivity,
     appDao: AppDao
 ) {
-    var result: Result by remember { mutableStateOf(Result.RestoreFailed) }
-    var showResultDialog by rememberSaveable { mutableStateOf(false) }
-    /*
-      showImportDialog survives configuration changes,
-      only interacting with the dialog makes it false.
-      It is true on cold boot: it the app was launched by
-      choosing a .json file from other app it will be ready.
-      Receiving a newIntent sets it to true again
-      */
-    var showImportDialog by rememberSaveable { mutableStateOf(true) }
-    /*
-    intentState receives the intent on cold boot, once the
-    dialog is dismissed or the backup completed it's set to null
-    and only OnNewIntent sets it tho a different value.
-    It survives configuration changes.
-     */
+    var dbBackup: DbBackup? by rememberSaveable { mutableStateOf(null) }
     var intentState: Intent? by rememberSaveable { mutableStateOf(intent) }
-    /*
-    loadBackup is false on every configuration change as it should be
-     */
-    var loadBackup by remember { mutableStateOf(false) }
-    /*
-    MainActivity is SingleInstance, so it always receives the launch
-    intent in onCreate, and successive ones in OnNewIntent.
-    This DisposableEffect is the simplest way to get them.
-     */
+    var filename by rememberSaveable { mutableStateOf("") }
+    var result: Result by remember { mutableStateOf(Result.RestoreFailed) }
+    // openUri true on cold launch in case there's an Uri
+    var openUri by rememberSaveable { mutableStateOf(true) }
+    var showPreImportErrorDialog by rememberSaveable { mutableStateOf(false) }
+    var showImportDialog by rememberSaveable { mutableStateOf(false) }
+    var insertBackupIntoDb by rememberSaveable { mutableStateOf(false) }
+    var showSuccessDialog by rememberSaveable { mutableStateOf(false) }
+    // check new intent because MainActivity is SingleInstance
     DisposableEffect(Unit) {
+        Log.d(TAG, "loadBackup() registering new intent listener")
         val listener = Consumer<Intent> {
             intentState = it
-            showImportDialog = true
+            openUri = true
         }
         activity.addOnNewIntentListener(listener)
         onDispose { activity.removeOnNewIntentListener(listener) }
     }
-    /*
-    AlertDialog needs both showImportDialog && intentState
-    or it would show on every cold launch regardless or
-    a valid intent being present.
-     */
-    if (showImportDialog && (intentState?.data != null)) {
+    LaunchedEffect(intentState) {
+        if (openUri) {
+            intentState?.data?.let { uri ->
+                Log.d(TAG, "loadBackup() opening Uri")
+                try {
+                    var bytes: String?
+                    runBlocking(Dispatchers.IO) {
+                        bytes = activity.contentResolver.openInputStream(uri).use { fis ->
+                            fis?.readBytes()!!.decodeToString()
+                        }
+                    }
+                    dbBackup = Json.decodeFromString<DbBackup>(bytes!!)
+                    if (dbBackup!!.isEmpty()) throw EmptyDatabaseException()
+                    val documentFile = DocumentFile.fromSingleUri(activity, uri)
+                    filename = documentFile?.name.toString()
+                    Log.i(TAG, "loadBackup() Backup file is ready to be restored")
+                    showImportDialog = true
+                } catch (e: FileNotFoundException) {
+                    Log.e(TAG, "loadBackup() Error opening file: $e")
+                    result = Result.FileOpenError
+                    showPreImportErrorDialog = true
+                } catch (e: IllegalArgumentException) {
+                    Log.e(TAG, "loadBackup() Error decoding file: $e")
+                    result = Result.BadFile
+                    showPreImportErrorDialog = true
+                } catch (e: SerializationException) {
+                    Log.e(TAG, "loadBackup() Error decoding file: $e")
+                    result = Result.BadFile
+                    showPreImportErrorDialog = true
+                } catch (e: EmptyDatabaseException) {
+                    Log.e(TAG, "loadBackup() $e")
+                    result = Result.NothingToRestore
+                    showPreImportErrorDialog = true
+                } catch (e: Exception) {
+                    Log.e(TAG, "loadBackup() Error opening file: $e")
+                    result = Result.FileOpenError
+                    showPreImportErrorDialog = true
+                } finally {
+                    intentState = null
+                    openUri = false
+                }
+            }
+        }
+    }
+
+    if (showPreImportErrorDialog) {
+        Log.d(TAG, "loadBackup() Showing error dialog")
         AlertDialog(
             onDismissRequest = {
-                showImportDialog = false
+                openUri = false
                 intentState = null
-                loadBackup = false
+                dbBackup = null
+                showPreImportErrorDialog = false
             }
         ) {
-            var filename by remember { mutableStateOf("") }
-            val documentFile = DocumentFile.fromSingleUri(activity, intentState!!.data!!)
-            filename = documentFile?.name.toString()
             Card {
                 Column(modifier = Modifier.padding(15.dp)) {
                     Text(
@@ -107,14 +136,10 @@ fun IntentProcessor(
                     Text(
                         modifier = Modifier.fillMaxWidth(),
                         text = stringResource(
-                            id = R.string.load_backup,
-                            filename
+                            id = R.string.error_loading_backup,
+                            filename,
+                            stringResource(result.stringId)
                         ),
-                    )
-                    Spacer(modifier = Modifier.height(25.dp))
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.warning_this_will_erase),
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     Row(
@@ -123,17 +148,10 @@ fun IntentProcessor(
                     ) {
                         TextButton(
                             onClick = {
-                                showImportDialog = false
+                                openUri = false
                                 intentState = null
-                                loadBackup = false
-                            }
-                        ) {
-                            Text(text = stringResource(id = R.string.cancel))
-                        }
-                        TextButton(
-                            onClick = {
-                                showImportDialog = false
-                                loadBackup = true
+                                dbBackup = null
+                                showPreImportErrorDialog = false
                             }
                         ) {
                             Text(text = stringResource(id = R.string.accept))
@@ -143,41 +161,147 @@ fun IntentProcessor(
             }
         }
     }
-    if (loadBackup) {
-        LaunchedEffect(Unit) {
-            intentState?.data?.let { intentUri ->
-                Log.d(TAG, "inside intentState?.data?.let")
-                runBlocking(Dispatchers.IO) {
-                    try {
-                        activity.contentResolver.openInputStream(intentUri).use {
-                            it?.readBytes()?.decodeToString()
-                        }?.let {
-                            result = restoreBackup(appDao, it)
+
+    if (showImportDialog) {
+        Log.d(TAG, "loadBackup() Showing import dialog, $dbBackup")
+        dbBackup?.let { backupDb ->
+            AlertDialog(
+                onDismissRequest = {
+                    openUri = false
+                    intentState = null
+                    dbBackup = null
+                    showImportDialog = false
+                }
+            ) {
+                val warning = stringResource(
+                    id = if (backupDb.isLabelsOnly()) {
+                        R.string.this_will_keep_current_data
+                    } else {
+                        R.string.warning_this_will_erase
+                    }
+                )
+                Card {
+                    Column(modifier = Modifier.padding(15.dp)) {
+                        Text(
+                            text = stringResource(id = R.string.import_data),
+                            textAlign = TextAlign.Center,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = stringResource(
+                                id = R.string.load_backup,
+                                filename
+                            ),
+                        )
+                        Spacer(modifier = Modifier.height(25.dp))
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = warning,
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            TextButton(
+                                onClick = {
+                                    openUri = false
+                                    intentState = null
+                                    dbBackup = null
+                                    showImportDialog = false
+                                }
+                            ) {
+                                Text(text = stringResource(id = R.string.cancel))
+                            }
+                            TextButton(
+                                onClick = {
+                                    openUri = false
+                                    intentState = null
+                                    insertBackupIntoDb = true
+                                    showImportDialog = false
+                                }
+                            ) {
+                                Text(text = stringResource(id = R.string.accept))
+                            }
                         }
-                        Log.d(TAG, "loadBackup(): ${result.name}")
-                    } catch (e: FileNotFoundException) {
-                        result = Result.FileOpenError
-                        Log.e(TAG, "loadBackup() FileNotFoundException: $e")
-                    } catch (e: Exception) {
-                        Log.e(TAG, "loadBackup() Exception: $e")
                     }
                 }
             }
-            Log.i(TAG, "Loading backup finished, result: ${result.name}")
-            intentState = null
-            loadBackup = false
-            showResultDialog = true
         }
     }
-    if (showResultDialog) {
+
+    if (insertBackupIntoDb) {
+        Log.e(TAG, "loadBackup() Inserting backup into DB")
+        dbBackup?.let { backup ->
+            runBlocking {
+                // only insert tags that do not exist already, as in
+                // they have the same name and color regardless of id
+                if (backup.persons.isNotEmpty()) launch {
+                    val persons = appDao.getActivePersonsList().map { Pair(it.name, it.color) }
+                    backup.persons.forEach {
+                        val alreadyExists = persons.contains(Pair(it.name, it.color))
+                        if (!alreadyExists) appDao.upsertPerson(it)
+                    }
+                }
+                if (backup.places.isNotEmpty()) launch {
+                    val places = appDao.getActivePlacesList().map { Pair(it.name, it.color) }
+                    backup.places.forEach {
+                        val alreadyExists = places.contains(Pair(it.name, it.color))
+                        if (!alreadyExists) appDao.upsertPlace(it)
+                    }
+                }
+                if (backup.tags.isNotEmpty()) launch {
+                    val tags = appDao.getActiveTagsList().map { Pair(it.name, it.color) }
+                    backup.tags.forEach {
+                        val alreadyExists = tags.contains(Pair(it.name, it.color))
+                        if (!alreadyExists) appDao.upsertTag(it)
+                    }
+                }
+            }
+            Log.i(TAG, "FromString() Restore of labels success")
+            if (!backup.isLabelsOnly()) {
+                runBlocking {
+                    Log.i(TAG, "FromString() Deleting current data")
+                    appDao.deleteAllData()
+                    launch {
+                        backup.preselectedPersons.forEach {
+                            appDao.upsertPreSelectedPerson(it)
+                        }
+                    }
+                    launch {
+                        backup.preselectedPlaces.forEach {
+                            appDao.upsertPreSelectedPlace(it)
+                        }
+                    }
+                    launch {
+                        backup.preselectedTags.forEach {
+                            appDao.upsertPreSelectedTag(it)
+                        }
+                    }
+                    launch { backup.events.forEach { appDao.upsertEvent(it) } }
+                    launch { backup.sessions.forEach { appDao.upsertSession(it) } }
+                }
+                Log.i(TAG, "FromString() Restore of full backup success")
+            }
+            dbBackup = null
+            showSuccessDialog = true
+            insertBackupIntoDb = false
+        }
+    }
+
+    if (showSuccessDialog) {
+        Log.d(TAG, "loadBackup() Showing success dialog")
         AlertDialog(
-            onDismissRequest = { showResultDialog = false }
+            onDismissRequest = { showSuccessDialog = false }
         ) {
             Card {
                 Column(modifier = Modifier.padding(15.dp)) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = result.stringId),
+                        text = stringResource(id = Result.Restored.stringId),
                     )
                     Spacer(modifier = Modifier.height(25.dp))
                     Row(
@@ -185,7 +309,7 @@ fun IntentProcessor(
                         horizontalArrangement = Arrangement.End
                     ) {
                         TextButton(
-                            onClick = { showResultDialog = false }
+                            onClick = { showSuccessDialog = false }
                         ) {
                             Text(text = stringResource(id = R.string.accept))
                         }

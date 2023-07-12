@@ -32,7 +32,7 @@ sealed class Result(
     object RestoreFailed: Result("Restore Failed", R.string.restore_failed)
     object Saved: Result("Saved", R.string.backup_saved)
     object SaveFailed: Result("Save Failed", R.string.save_failed)
-    object FileOpenError: Result("File Open Error", R.string.save_failed)
+    object FileOpenError: Result("File Open Error", R.string.open_file_error)
 }
 
 

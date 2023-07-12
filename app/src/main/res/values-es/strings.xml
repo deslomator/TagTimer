@@ -77,7 +77,7 @@
     <string name="backup_restore">Copiar y Restaurar</string>
     <string name="backup_labels">Guardar Marcadores</string>
     <string name="tap_file_for_actions">Pulsa un archivo para Restaurar o Compartir</string>
-    <string name="bad_backup_file">Archivo incorrecto, no restaurado</string>
+    <string name="bad_backup_file">Archivo incorrecto, no puede restaurarse</string>
     <string name="backup_saved">Copia guardada</string>
     <string name="backup_failed">La copia falló</string>
     <string name="nothing_to_backup">No hay etiquetas que guardar</string>
@@ -87,4 +87,6 @@
     <string name="save_failed">No se pudo guardar el fichero</string>
     <string name="open_file_error">No se pudo abrir el fichero</string>
     <string name="warning_this_will_erase">ATENCIÓN: se borrarán todos los datos actuales</string>
+    <string name="error_loading_backup">Error al cargar el archivo \n%1s\n%2s</string>
+    <string name="this_will_keep_current_data">Se conservarán los datos actuales</string>
 </resources>
