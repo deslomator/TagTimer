@@ -24,11 +24,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.FileReader
 import java.util.Date
@@ -159,7 +161,7 @@ class BackupViewModel @Inject constructor(
                 Log.e(TAG, "saveToStorage(). Unable to open Output Stream")
             }
         } catch (e: Exception) {
-            Log.e(TAG, "UriReceived. $e")
+            Log.e(TAG, "saveToStorage(). $e")
         }
         return result
     }
@@ -195,7 +197,7 @@ private suspend fun backupInternally(
         if (new.createNewFile()) {
             val dbBackup = getDbBackup(appDao, labelsOnly)
             if (dbBackup.isEmpty()) {
-                Log.e("backupInternally()", "Failed, backup class is empty")
+                Log.e("backupInternally()", "Nothing to backup, database is empty")
                 result = Result.NothingToBackup
             } else {
                 try {
@@ -212,6 +214,13 @@ private suspend fun backupInternally(
                         }
                     result = Result.Backed
                     Log.i("backupInternally()", "Backup success")
+                } catch (e: SerializationException) {
+                    Log.e("backupInternally()", "Serialization failed: $e")
+                } catch (e: IllegalArgumentException) {
+                    Log.e("backupInternally()", "Serialization failed: $e")
+                } catch (e: FileNotFoundException) {
+                    Log.e("backupInternally()", "Could not save backup file: $e")
+                    result = Result.SaveFailed
                 } catch (e: Exception) {
                     Log.e("backupInternally()", e.message.toString())
                 }
