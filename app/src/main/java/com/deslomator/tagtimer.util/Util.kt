@@ -4,12 +4,19 @@ import android.icu.text.SimpleDateFormat
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
 import kotlinx.coroutines.flow.Flow
-import java.util.Date
 import java.util.Locale
 
 
 fun Long.toDateTime(): String {
     val simpleDate = SimpleDateFormat("yyyy-MM-dd  HH:mm", Locale.getDefault())
+    return simpleDate.format(this)
+}
+fun Long.toDate(): String {
+    val simpleDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    return simpleDate.format(this)
+}
+fun Long.toTime(): String {
+    val simpleDate = SimpleDateFormat("HH:mm", Locale.getDefault())
     return simpleDate.format(this)
 }
 

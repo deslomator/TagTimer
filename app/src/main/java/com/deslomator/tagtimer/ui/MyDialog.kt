@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,7 +40,7 @@ fun MyDialog(
     showCopy: Boolean = false,
     onCopy: (() -> Unit)? = null,
     @StringRes title: Int? = null,
-    content: @Composable () -> Unit
+    content: @Composable ColumnScope.() -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -103,7 +104,7 @@ fun MyDialog(
             }.map { it.measure(constraints) }.first()
             val list = subcompose(0) {
                 Column {
-                    content()
+                    this.content()
                 }
             }.map {
                 it.measure(

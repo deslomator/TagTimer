@@ -87,4 +87,5 @@
     <string name="save_failed">The file could not be saved</string>
     <string name="open_file_error">The file could not be opened</string>
     <string name="warning_this_will_erase">WARNING: all current app data will be deleted</string>
+    <string name="select_time">Select time</string>
 </resources>

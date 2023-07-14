@@ -87,4 +87,5 @@
     <string name="save_failed">No se pudo guardar el fichero</string>
     <string name="open_file_error">No se pudo abrir el fichero</string>
     <string name="warning_this_will_erase">ATENCIÓN: se borrarán todos los datos actuales</string>
+    <string name="select_time">Seleccionar hora</string>
 </resources>
