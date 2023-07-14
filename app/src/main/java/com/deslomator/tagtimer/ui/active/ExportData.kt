@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import com.deslomator.tagtimer.model.type.Shared
 import java.io.File
 
 @Composable
@@ -14,13 +15,14 @@ fun ExportData(
     context: Context,
     fileName: String,
     data: String,
-    onDataExported: () -> Unit
+    onDataExported: () -> Unit,
+    type: Shared = Shared.Csv
 ) {
     LaunchedEffect(Unit) {
         try {
             val file = File(
                 context.cacheDir,
-                "$fileName.$JSON_EXTENSION"
+                "$fileName.${type.extension}"
             )
             file.writeBytes(data.encodeToByteArray())
             val uri = FileProvider.getUriForFile(
@@ -30,7 +32,7 @@ fun ExportData(
             )
             val intent = Intent(Intent.ACTION_SEND)
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                .setType("application/json")
+                .setType(type.mime)
                 .putExtra(Intent.EXTRA_STREAM, uri)
             Intent.createChooser(intent, "Choose an App")
             ContextCompat.startActivity(context, intent, null)
@@ -42,5 +44,4 @@ fun ExportData(
 }
 
 private const val TAG = "ExportSession"
-private const val JSON_EXTENSION = "json"
 const val FILE_PROVIDER = "com.deslomator.tagtimer.fileprovider"

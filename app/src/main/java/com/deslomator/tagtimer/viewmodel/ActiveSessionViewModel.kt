@@ -7,13 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.ExportedSession
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.util.combine
+import com.deslomator.tagtimer.util.toCsv
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -22,8 +21,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -147,7 +144,10 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
             ActiveSessionAction.ExportSessionClicked -> {
-                exportSession()
+                _state.update { it.copy(
+                    dataToExport = state.value.events.toCsv(state.value.currentSession),
+                    exportData = true
+                ) }
             }
             ActiveSessionAction.SessionExported -> {
                 _state.update { it.copy(exportData = false) }
@@ -183,16 +183,6 @@ class ActiveSessionViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun exportSession() {
-        val json = Json.encodeToString(
-            ExportedSession(state.value.currentSession, state.value.events)
-        )
-        _state.update { it.copy(
-            dataToExport = json,
-            exportData = true
-        ) }
     }
 
     private fun getSessionDuration(cursor: Long): Long {

@@ -7,12 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.ExportedEvent
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
+import com.deslomator.tagtimer.util.toCsv
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +22,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 @HiltViewModel
@@ -189,7 +187,13 @@ class EventFilterViewModel @Inject constructor(
                 _currentTag.update { tag }
             }
             is EventFilterAction.ExportFilteredEventsClicked -> {
-                setEventsToExport(action.filteredEvents)
+                _state.update { it.copy(
+                    dataToExport = action.filteredEvents.toCsv(
+                        session = state.value.currentSession,
+                        filtered = true
+                    ),
+                    exportEvents = true
+                ) }
             }
             is EventFilterAction.SetPersonSort -> {
                 _personSort.update { action.personSort }
@@ -234,16 +238,6 @@ class EventFilterViewModel @Inject constructor(
                     )
                 )
             }
-    }
-
-    private fun setEventsToExport(filteredEvents: List<Event> = emptyList()) {
-        val json = Json.encodeToString( filteredEvents.map { ExportedEvent(it) })
-        _state.update {
-            it.copy(
-                dataToExport = json,
-                exportEvents = true
-            )
-        }
     }
 
     init {

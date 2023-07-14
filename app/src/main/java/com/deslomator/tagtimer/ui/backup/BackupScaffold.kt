@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.BackupAction
+import com.deslomator.tagtimer.model.type.Shared
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.ui.active.ExportData
 
@@ -24,7 +25,8 @@ fun BackupScaffold(
             context = context,
             fileName = state.currentFile.nameWithoutExtension,
             data = state.currentString,
-            onDataExported = { onAction(BackupAction.BackupExported) }
+            onDataExported = { onAction(BackupAction.BackupExported) },
+            type = Shared.Json
         )
     }
     Scaffold(

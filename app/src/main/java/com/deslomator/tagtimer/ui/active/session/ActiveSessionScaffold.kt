@@ -54,7 +54,7 @@ fun ActiveSessionScaffold(
             context = context,
             fileName = fileName,
             data = state.dataToExport,
-            onDataExported = { onAction(ActiveSessionAction.SessionExported) }
+            onDataExported = { onAction(ActiveSessionAction.SessionExported) },
         )
     }
     LaunchedEffect(state.currentSession) {
