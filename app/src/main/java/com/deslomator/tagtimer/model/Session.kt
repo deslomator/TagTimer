@@ -17,6 +17,10 @@ data class Session(
     @ColumnInfo(name = "last_access_millis")
     val lastAccessMillis: Long = System.currentTimeMillis(),
 
+    @SerialName("session_date_millis")
+    @ColumnInfo(name = "session_date_millis")
+    val sessionDateMillis: Long = 0,
+
     val name: String = "",
     val notes: String = "",
     val color: Int = colorPickerColors[7].toArgb(),

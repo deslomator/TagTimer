@@ -142,6 +142,7 @@ fun ActiveSessionContent(
                 IconButton(
                     onClick = {
                         onSharedAction(SharedAction.PlayPauseClicked)
+                        onAction(ActiveSessionAction.PlayPauseClicked)
                     }
                 ) {
                     Icon(

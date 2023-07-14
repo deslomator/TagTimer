@@ -6,6 +6,7 @@ import com.deslomator.tagtimer.model.Label
 sealed interface ActiveSessionAction {
     data class ExitSession(val isRunning: Boolean, val cursor: Long): ActiveSessionAction
     object ExportSessionClicked: ActiveSessionAction
+    object PlayPauseClicked: ActiveSessionAction
     object SessionExported: ActiveSessionAction
     data class EventClicked(val event: Event): ActiveSessionAction
     data class AcceptEventEditionClicked(val event: Event) : ActiveSessionAction

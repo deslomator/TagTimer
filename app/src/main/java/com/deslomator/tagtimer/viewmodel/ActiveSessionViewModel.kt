@@ -175,6 +175,13 @@ class ActiveSessionViewModel @Inject constructor(
                 else action.placeName
                 _state.update { it.copy(currentPlaceName = place) }
             }
+            is ActiveSessionAction.PlayPauseClicked -> {
+                val s =state.value.currentSession
+                if (s.sessionDateMillis == 0L) {
+                    val updated = s.copy(sessionDateMillis = System.currentTimeMillis())
+                    _state.update { it.copy(currentSession = updated) }
+                }
+            }
         }
     }
 
