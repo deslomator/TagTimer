@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer
 
 import android.util.Log
-import androidx.compose.ui.graphics.toArgb
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
