@@ -9,7 +9,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.state.ActiveSessionState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

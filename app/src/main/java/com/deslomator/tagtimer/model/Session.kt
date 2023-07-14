@@ -1,11 +1,12 @@
 package com.deslomator.tagtimer.model
 
 import androidx.annotation.Keep
-import androidx.compose.ui.graphics.toArgb
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
+import com.deslomator.tagtimer.ui.theme.toHex
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -23,7 +24,7 @@ data class Session(
 
     val name: String = "",
     val notes: String = "",
-    val color: Int = colorPickerColors[7].toArgb(),
+    val color: String = colorPickerColors[7].toHex(),
 
     @SerialName("duration_millis")
     @ColumnInfo(name = "duration_millis")
@@ -43,4 +44,7 @@ data class Session(
 
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,
-)
+) {
+    @delegate:Ignore
+    val longColor: Long by lazy { color.toLong(16) }
+}

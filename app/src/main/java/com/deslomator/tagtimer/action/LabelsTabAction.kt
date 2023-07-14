@@ -10,7 +10,7 @@ sealed interface LabelsTabAction {
     data class AcceptTagEditionClicked(val tag: Label.Tag): LabelsTabAction
     object AddNewTagClicked: LabelsTabAction
     object DismissTagDialog: LabelsTabAction
-    data class TrashTagSwiped(val tag: Label.Tag): LabelsTabAction
+    data class DeleteTagClicked(val tag: Label.Tag): LabelsTabAction
     /*
     PERSON
      */
@@ -18,7 +18,7 @@ sealed interface LabelsTabAction {
     data class AcceptPersonEditionClicked(val person: Label.Person): LabelsTabAction
     object AddNewPersonClicked: LabelsTabAction
     object DismissPersonDialog: LabelsTabAction
-    data class TrashPersonSwiped(val person: Label.Person): LabelsTabAction
+    data class DeletePersonClicked(val person: Label.Person): LabelsTabAction
     /*
     PLACE
      */
@@ -26,5 +26,5 @@ sealed interface LabelsTabAction {
     data class AcceptPlaceEditionClicked(val place: Label.Place): LabelsTabAction
     object AddNewPlaceClicked: LabelsTabAction
     object DismissPlaceDialog: LabelsTabAction
-    data class TrashPlaceSwiped(val place: Label.Place): LabelsTabAction
+    data class DeletePlaceClicked(val place: Label.Place): LabelsTabAction
 }

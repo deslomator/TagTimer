@@ -198,48 +198,45 @@ class ActiveSessionViewModel @Inject constructor(
     private fun createNewLabels(event: Event) {
         if (!_persons.value.map { it.name }.contains(event.person)) {
             viewModelScope.launch {
-                val newId = appDao.upsertPerson(
-                    Label.Person(
-                        name = event.person,
-                        color = event.color
-                    )
+                val newPerson = Label.Person(
+                    name = event.person,
+                    color = event.color
                 )
+                appDao.upsertPerson(newPerson)
                 appDao.upsertPreSelectedPerson(
                     Preselected.Person(
                         sessionId = state.value.currentSession.id!!,
-                        labelId = newId
+                        labelId = newPerson.id
                     )
                 )
             }
         }
         if (!_places.value.map { it.name }.contains(event.place)) {
             viewModelScope.launch {
-                val newId = appDao.upsertPlace(
-                    Label.Place(
-                        name = event.place,
-                        color = event.color
-                    )
+                val newPlace = Label.Place(
+                    name = event.place,
+                    color = event.color
                 )
+                appDao.upsertPlace(newPlace)
                 appDao.upsertPreSelectedPlace(
                     Preselected.Place(
                         sessionId = state.value.currentSession.id!!,
-                        labelId = newId
+                        labelId = newPlace.id
                     )
                 )
             }
         }
         if (!_tags.value.map { it.name }.contains(event.tag)) {
             viewModelScope.launch {
-                val newId = appDao.upsertTag(
-                    Label.Tag(
-                        name = event.tag,
-                        color = event.color
-                    )
+                val newTag = Label.Tag(
+                    name = event.tag,
+                    color = event.color
                 )
+                appDao.upsertTag(newTag)
                 appDao.upsertPreSelectedTag(
                     Preselected.Tag(
                         sessionId = state.value.currentSession.id!!,
-                        labelId = newId
+                        labelId = newTag.id
                     )
                 )
             }

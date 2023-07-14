@@ -18,11 +18,11 @@ import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun LabelSelectionList(
-    labels: List<Label>,
+fun <T: Label>LabelSelectionList(
+    labels: List<T>,
     preSelected: List<Preselected>,
-    onCheckedChange: (Long, Boolean) -> Unit,
-    onLongClick: (Label) -> Unit
+    onCheckedChange: (T, Boolean) -> Unit,
+    onLongClick: (T) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -33,7 +33,7 @@ fun LabelSelectionList(
     ) {
         items(
             items = labels,
-            key = { it.id!! }
+            key = { it.id }
         ) { label ->
             val checked by remember(preSelected) {
                 derivedStateOf { preSelected.map { it.labelId }.contains(label.id) }
@@ -41,7 +41,7 @@ fun LabelSelectionList(
             LabelButton(
                 item = label,
                 onItemClick = {
-                    onCheckedChange(label.id!!, !checked)
+                    onCheckedChange(label, !checked)
                 },
                 onLongClick = { onLongClick(label) },
                 checked = checked,

@@ -1,22 +1,7 @@
 package com.deslomator.tagtimer.model.type
 
-import androidx.annotation.Keep
 import androidx.annotation.StringRes
 import com.deslomator.tagtimer.R
-
-@Keep
-enum class Result2 {
-    BAD_FILE,
-    RESTORED,
-    DELETED,
-    BACKED,
-    BACKUP_FAILED,
-    NOTHING_TO_BACKUP,
-    NOTHING_TO_RESTORE,
-    RESTORE_FAILED,
-    SAVED,
-    SAVE_FAILED
-}
 
 sealed class Result(
     val name: String,
@@ -32,7 +17,7 @@ sealed class Result(
     object RestoreFailed: Result("Restore Failed", R.string.restore_failed)
     object Saved: Result("Saved", R.string.backup_saved)
     object SaveFailed: Result("Save Failed", R.string.save_failed)
-    object FileOpenError: Result("File Open Error", R.string.save_failed)
+    object FileOpenError: Result("File Open Error", R.string.open_file_error)
 }
 
 

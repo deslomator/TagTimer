@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Preselected {
     abstract val sessionId: Long
-    abstract val labelId: Long
+    abstract val labelId: String
 
     @Keep
     @Serializable
@@ -25,7 +25,7 @@ sealed class Preselected {
 
         @SerialName("person_id")
         @ColumnInfo(name = "person_id")
-        override val labelId: Long = 0,
+        override val labelId: String = "",
     ) : Preselected()
 
     @Keep
@@ -41,7 +41,7 @@ sealed class Preselected {
 
         @SerialName("place_id")
         @ColumnInfo(name = "place_id")
-        override val labelId: Long = 0,
+        override val labelId: String = ""
     ) : Preselected()
 
     @Keep
@@ -57,7 +57,7 @@ sealed class Preselected {
 
         @SerialName("tag_id")
         @ColumnInfo(name = "tag_id")
-        override val labelId: Long = 0,
+        override val labelId: String = ""
     ) : Preselected()
 }
 

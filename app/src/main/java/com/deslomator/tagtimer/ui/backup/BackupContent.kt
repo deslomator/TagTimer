@@ -2,7 +2,6 @@ package com.deslomator.tagtimer.ui.backup
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,14 +47,25 @@ fun BackupContent(
     context: Context
 ) {
     val scope = rememberCoroutineScope()
-    var result by remember { mutableStateOf<Uri?>(null) }
+    var activityResult by remember { mutableStateOf<Uri?>(null) }
+    var showSnackbar by rememberSaveable { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")) { uri ->
-        result = uri
+        activityResult = uri
     }
-    result?.let {
+    activityResult?.let {
         onAction(BackupAction.UriReceived(it))
-        result = null
+        activityResult = null
+    }
+    LaunchedEffect(state.result, showSnackbar) {
+        if (showSnackbar){
+            val r = showSnackbar(
+                scope = scope,
+                snackbarHostState = snackbarHostState,
+                message = context.getString(state.result.stringId)
+            )
+        }
+        showSnackbar = false
     }
     Box(
         modifier = Modifier
@@ -70,7 +80,10 @@ fun BackupContent(
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 Button(
-                    onClick = { onAction(BackupAction.FullBackupClicked) }
+                    onClick = {
+                        showSnackbar = true
+                        onAction(BackupAction.FullBackupClicked)
+                    }
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -83,7 +96,10 @@ fun BackupContent(
                     }
                 }
                 Button(
-                    onClick = { onAction(BackupAction.BackupLabelsClicked) }
+                    onClick = {
+                        showSnackbar = true
+                        onAction(BackupAction.BackupLabelsClicked)
+                    }
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -126,7 +142,10 @@ fun BackupContent(
                             onAction(BackupAction.DeleteBackupClicked(file))
                         },
                         onShareClick = { onAction(BackupAction.ShareBackupClicked(file)) },
-                        onRestoreClick = { onAction(BackupAction.RestoreBackupClicked(file)) },
+                        onRestoreClick = {
+                            showSnackbar = true
+                            onAction(BackupAction.RestoreBackupClicked(file))
+                        },
                         onSaveClick = {
                             onAction(BackupAction.SaveBackupClicked(file))
                             launcher.launch(file.name)
@@ -143,16 +162,6 @@ fun BackupContent(
                 textAlign = TextAlign.Center
             )
         }
-    }
-    LaunchedEffect(state.showSnackBar) {
-        if (state.showSnackBar) {
-            snackbarHostState.currentSnackbarData?.dismiss()
-            val res = snackbarHostState.showSnackbar(
-                message = context.getString(state.result.stringId),
-                duration = SnackbarDuration.Short
-            )
-        }
-        onAction(BackupAction.SnackbarShown)
     }
 }
 

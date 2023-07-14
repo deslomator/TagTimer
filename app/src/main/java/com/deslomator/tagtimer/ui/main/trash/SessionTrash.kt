@@ -23,6 +23,7 @@ import com.deslomator.tagtimer.util.toDateTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.contrasted
+import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
@@ -44,8 +45,8 @@ fun SessionTrash(
         ) { session ->
             MyListItem(
                 colors = CardDefaults.cardColors(
-                    contentColor = Color(session.color).contrasted(),
-                    containerColor = Color(session.color),
+                    contentColor = session.color.toColor().contrasted(),
+                    containerColor = session.color.toColor(),
                 ),
                 item = session,
                 shape = RoundedCornerShape(25.dp),

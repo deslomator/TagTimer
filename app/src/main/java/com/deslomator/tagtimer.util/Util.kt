@@ -3,6 +3,7 @@ package com.deslomator.tagtimer.util
 import android.icu.text.SimpleDateFormat
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Session
+import androidx.compose.ui.graphics.Color
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
 
@@ -146,3 +147,7 @@ fun List<Event>.toCsv(session: Session, filtered: Boolean = false): String {
     ev.add(0, headers)
     return ev.joinToString("\n")
 }
+
+class EmptyDatabaseException : Exception("Nothing to process, empty Database")
+
+fun String.toColor(): Color = Color(this.toLong(16))

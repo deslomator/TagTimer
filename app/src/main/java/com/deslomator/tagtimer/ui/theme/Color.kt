@@ -94,6 +94,14 @@ else OnDarkBackground
 
 private const val LIGHT_COLOR_THRESHOLD = 0.6f
 
+fun Color.toHex(): String {
+    val a = (this.alpha * 255).toInt()
+    val r = (this.red * 255).toInt()
+    val g = (this.green * 255).toInt()
+    val b = (this.blue * 255).toInt()
+    return String.format("%02x%02x%02x%02x", a, r, g, b).uppercase()
+}
+
 @Preview
 @Composable
 fun Colors() {

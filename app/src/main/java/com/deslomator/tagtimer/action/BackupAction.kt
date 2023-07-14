@@ -11,6 +11,5 @@ sealed interface BackupAction {
     data class SaveBackupClicked(val file: File): BackupAction
     data class RestoreBackupClicked(val file: File): BackupAction
     data class UriReceived(val uri: Uri): BackupAction
-    object SnackbarShown: BackupAction
     object BackupExported: BackupAction
 }

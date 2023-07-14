@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +12,7 @@ import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toCsv
+import com.deslomator.tagtimer.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,7 +75,7 @@ class EventFilterViewModel @Inject constructor(
             }.distinctBy { it.name }
             .sortedWith(
                 when (personSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
@@ -91,7 +91,7 @@ class EventFilterViewModel @Inject constructor(
             }.distinctBy { it.name }
             .sortedWith(
                 when (placeSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
@@ -107,7 +107,7 @@ class EventFilterViewModel @Inject constructor(
             }.distinctBy { it.name }
             .sortedWith(
                 when (tagSort) {
-                    Sort.COLOR -> compareBy { Color(it.color).hue() }
+                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
                     Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
