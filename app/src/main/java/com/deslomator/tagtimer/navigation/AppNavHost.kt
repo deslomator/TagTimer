@@ -201,7 +201,7 @@ inline fun <reified T: ViewModel> NavBackStackEntry.sharedViewModel(
     val parentEntry = remember(this) {
         navHost.getBackStackEntry(route)
     }
-    return viewModel(parentEntry)
+    return hiltViewModel(parentEntry)
 }
 
 private const val TAG = "AppNavHost"
