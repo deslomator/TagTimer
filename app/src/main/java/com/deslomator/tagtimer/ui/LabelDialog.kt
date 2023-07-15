@@ -28,7 +28,7 @@ fun <T: Label>LabelDialog(
     var color by rememberSaveable { mutableStateOf(currentLabel.color) }
     MyDialog(
         onDismiss = onDismiss,
-        onAccept = { onAccept(name, color) },
+        onAccept = { onAccept(name.trim(), color) },
         showTrash = showTrash,
         onTrash = { onTrash(currentLabel) },
         title = title

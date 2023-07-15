@@ -74,8 +74,8 @@ fun SessionDialog(
             val s = state.currentSession.copy(
                 sessionDateMillis = sessionDate,
                 lastAccessMillis = System.currentTimeMillis(),
-                name = name,
-                notes = notes,
+                name = name.trim(),
+                notes = notes.trim(),
                 color = color
             )
             onAction(SessionsTabAction.DialogAcceptClicked(s))

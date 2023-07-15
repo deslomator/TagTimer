@@ -49,10 +49,10 @@ fun EventEditionDialog(
         onAccept = {
             val e = event.copy(
                 elapsedTimeMillis = elapsed,
-                tag = label,
-                note = note,
-                person = person,
-                place = place,
+                tag = label.trim(),
+                note = note.trim(),
+                person = person.trim(),
+                place = place.trim(),
                 color = color
             )
             onAccept(e)
