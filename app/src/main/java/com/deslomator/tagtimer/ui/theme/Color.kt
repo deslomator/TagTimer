@@ -102,6 +102,29 @@ fun Color.toHex(): String {
     return String.format("%02x%02x%02x%02x", a, r, g, b).uppercase()
 }
 
+
+
+@Preview
+@Composable
+fun PickerColors() {
+    Column {
+    colorPickerColors.forEach {
+            Box(
+                modifier = Modifier
+                    .background(it)
+                    .width(150.dp)
+                    .padding(6.dp)
+            ) {
+                Text(
+                    text = it.toHex(),
+                    color = it.contrasted(),
+                    fontSize = 13.sp
+                )
+            }
+        }
+    }
+}
+
 @Preview
 @Composable
 fun Colors() {
