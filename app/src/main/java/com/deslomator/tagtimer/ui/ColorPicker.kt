@@ -17,8 +17,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -36,22 +38,26 @@ fun ColorPicker(
     enabled: Boolean = true
 ) {
     var showGrid by rememberSaveable { mutableStateOf(false) }
-    AnimatedContent(showGrid ) {
-        when (it) {
+    AnimatedContent(showGrid ) { showG ->
+        when (showG) {
             true -> {
                 LazyVerticalGrid(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    columns = GridCells.Adaptive(minSize = 40.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    columns = GridCells.Adaptive(minSize = 45.dp)
                 ) {
                     items(colorPickerColors) { color ->
+                        val selected by remember(selectedColor) {
+                            derivedStateOf { color == selectedColor }
+                        }
                         ColorItem(
                             color = color,
                             onClick = {
                                 showGrid = false
                                 onItemClick(it)
-                            }
+                            },
+                            selected = selected
                         )
                     }
                 }
@@ -61,18 +67,12 @@ fun ColorPicker(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.TopCenter
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(60.dp)
-                            .border(1.dp, Color.Gray, RoundedCornerShape(30))
-                            .padding(4.dp),
-                    ) {
-                        ColorItem(
-                            modifier = Modifier.fillMaxSize(),
-                            color = selectedColor,
-                            onClick = { if (enabled) showGrid = true }
-                        )
-                    }
+                    ColorItem(
+                        modifier = Modifier.size(60.dp),
+                        color = selectedColor,
+                        onClick = { if (enabled) showGrid = true },
+                        selected = true
+                    )
                 }
             }
         }
@@ -83,17 +83,30 @@ fun ColorPicker(
 fun ColorItem(
     modifier: Modifier = Modifier,
     color: Color,
-    onClick: (Color) -> Unit
+    onClick: (Color) -> Unit,
+    selected: Boolean = false
 ) {
-    Card(
+    val border by remember(selected) {
+        derivedStateOf {
+            if (selected) Color.Gray else Color.Transparent
+        }
+    }
+    Box(
         modifier = modifier
-            .size(40.dp)
-            .clickable { onClick(color) },
-        shape = RoundedCornerShape(30),
-        colors = CardDefaults.cardColors(
-            containerColor = color,
-        ),
-    ) { }
+            .size(45.dp)
+            .border(1.dp, border, RoundedCornerShape(30))
+            .padding(4.dp),
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { onClick(color) },
+            shape = RoundedCornerShape(30),
+            colors = CardDefaults.cardColors(
+                containerColor = color,
+            ),
+        ) { }
+    }
 }
 
 @Composable
