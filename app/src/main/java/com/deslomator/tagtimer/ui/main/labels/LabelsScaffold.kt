@@ -26,7 +26,7 @@ fun LabelsScaffold(
         topBar = {
             LabelsTopBar(
                 title = "",
-                onBackClicked = { /*TODO*/ },
+                onBackClicked = null,
                 currentPage = pagerState.currentPage,
                 onAddTagClick = { onAction(LabelsTabAction.AddNewTagClicked) },
                 onAddPersonClick = { onAction(LabelsTabAction.AddNewPersonClicked) },
@@ -41,12 +41,6 @@ fun LabelsScaffold(
                 onPersonSort = { onAction(LabelsTabAction.PersonSortClicked(it)) },
                 onPlaceSort = { onAction(LabelsTabAction.PlaceSortClicked(it)) }
             )
-            /*LabelsTopBar(
-                onNewTagClick = { onAction(LabelsTabAction.AddNewTagClicked) },
-                onNewPersonClick = { onAction(LabelsTabAction.AddNewPersonClicked) },
-                onNewPlaceClick = { onAction(LabelsTabAction.AddNewPlaceClicked) },
-                currentPage = pagerState.currentPage,
-            )*/
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
