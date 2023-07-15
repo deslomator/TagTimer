@@ -9,14 +9,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.action.LabelsTabAction
-import com.deslomator.tagtimer.state.LabelsTabState
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun TagLabel(
-    state: LabelsTabState,
-    onAction: (LabelsTabAction) -> Unit
+fun <T: Label>LabelList(
+    labels: List<T>,
+    onItemClick: (T) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -26,13 +25,14 @@ fun TagLabel(
         columns = GridCells.Adaptive(minSize = 150.dp)
     ) {
         items(
-            items = state.tags,
+            items = labels,
             key = { it.id }
-        ) { tag ->
+        ) { label ->
             LabelButton(
-                item = tag,
-                onItemClick = { onAction(LabelsTabAction.EditTagClicked(tag)) },
+                item = label,
+                onItemClick = { onItemClick(label) },
             )
         }
+
     }
 }

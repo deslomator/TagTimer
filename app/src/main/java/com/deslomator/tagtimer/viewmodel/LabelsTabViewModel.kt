@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preference
+import com.deslomator.tagtimer.model.type.PrefKey
+import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,17 +24,24 @@ class LabelsTabViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LabelsTabState())
+    private val _prefs = appDao.getPreferences()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _persons = appDao.getActivePersons()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _places = appDao.getActivePlaces()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_state, _tags, _persons, _places) { state, tags, persons, places ->
+    val state = combine(
+        _state, _tags, _persons, _places, _prefs
+    ) { state, tags, persons, places, prefs ->
         state.copy(
             tags = tags,
             persons = persons,
             places = places,
+            tagSort = prefs.firstOrNull { it.sKey == PrefKey.TAG_SORT.name }?.getSort() ?: Sort.COLOR,
+            personSort = prefs.firstOrNull { it.sKey == PrefKey.PERSON_SORT.name }?.getSort() ?: Sort.NAME,
+            placeSort = prefs.firstOrNull { it.sKey == PrefKey.PLACE_SORT.name }?.getSort() ?: Sort.NAME,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelsTabState())
 
@@ -79,6 +89,13 @@ class LabelsTabViewModel @Inject constructor(
 //                    Log.d(TAG, "TagsScreenAction.TrashTagSwiped $trashed")
                 }
             }
+            is LabelsTabAction.TagSortClicked -> {
+                val pref = Preference(
+                    value = action.tagSort.name,
+                    sKey = PrefKey.TAG_SORT.name
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
             /*
             PERSON
              */
@@ -120,6 +137,13 @@ class LabelsTabViewModel @Inject constructor(
                     appDao.upsertPerson(trashed)
                 }
             }
+            is LabelsTabAction.PersonSortClicked -> {
+                val pref = Preference(
+                    value = action.personSort.name,
+                    sKey = PrefKey.PERSON_SORT.name
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
             /*
             PLACE
              */
@@ -160,6 +184,13 @@ class LabelsTabViewModel @Inject constructor(
                     val trashed = action.place.copy(inTrash = true)
                     appDao.upsertPlace(trashed)
                 }
+            }
+            is LabelsTabAction.PlaceSortClicked -> {
+                val pref = Preference(
+                    value = action.placeSort.name,
+                    sKey = PrefKey.PLACE_SORT.name
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
             }
         }
     }

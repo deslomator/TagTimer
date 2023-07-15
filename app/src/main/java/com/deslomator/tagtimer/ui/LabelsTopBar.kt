@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active.selection
+package com.deslomator.tagtimer.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Row
@@ -20,15 +20,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.model.type.Sort
-import com.deslomator.tagtimer.state.SharedState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LabelSelectionTopBar(
+fun LabelsTopBar(
     title: String,
-    onBackClicked: () -> Unit,
+    onBackClicked: (() -> Unit)?,
     currentPage: Int,
     onAddTagClick: () -> Unit,
     onAddPersonClick: () -> Unit,
@@ -36,18 +34,24 @@ fun LabelSelectionTopBar(
     showTagDialog: Boolean,
     showPersonDialog: Boolean,
     showPlaceDialog: Boolean,
-    sharedState: SharedState,
-    onSharedAction: (SharedAction) -> Unit,
+    tagSort: Sort,
+    personSort: Sort,
+    placeSort: Sort,
+    onTagSort: (Sort) -> Unit,
+    onPersonSort: (Sort) -> Unit,
+    onPlaceSort: (Sort) -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
-            IconButton(
-                onClick = onBackClicked
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.arrow_back),
-                    contentDescription = "navigate back"
-                )
+            onBackClicked?.let {
+                IconButton(
+                    onClick = it
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.arrow_back),
+                        contentDescription = "navigate back"
+                    )
+                }
             }
         },
         title = { Text(
@@ -70,12 +74,12 @@ fun LabelSelectionTopBar(
                                     )
                                 }
                                 SortMenu(
-                                    currentSort = sharedState.tagSort,
+                                    currentSort = tagSort,
                                     onNameSortClick = {
-                                        onSharedAction(SharedAction.TagSortClicked(Sort.NAME))
+                                        onTagSort(Sort.NAME)
                                     },
                                     onColorSortClick = {
-                                        onSharedAction(SharedAction.TagSortClicked(Sort.COLOR))
+                                        onTagSort(Sort.COLOR)
                                     }
                                 )
                             }
@@ -91,12 +95,12 @@ fun LabelSelectionTopBar(
                                     )
                                 }
                                 SortMenu(
-                                    currentSort = sharedState.personSort,
+                                    currentSort = personSort,
                                     onNameSortClick = {
-                                        onSharedAction(SharedAction.PersonSortClicked(Sort.NAME))
+                                        onPersonSort(Sort.NAME)
                                     },
                                     onColorSortClick = {
-                                        onSharedAction(SharedAction.PersonSortClicked(Sort.COLOR))
+                                        onPersonSort(Sort.COLOR)
                                     }
                                 )
                             }
@@ -112,12 +116,12 @@ fun LabelSelectionTopBar(
                                     )
                                 }
                                 SortMenu(
-                                    currentSort = sharedState.placeSort,
+                                    currentSort = placeSort,
                                     onNameSortClick = {
-                                        onSharedAction(SharedAction.PlaceSortClicked(Sort.NAME))
+                                        onPlaceSort(Sort.NAME)
                                     },
                                     onColorSortClick = {
-                                        onSharedAction(SharedAction.PlaceSortClicked(Sort.COLOR))
+                                        onPlaceSort(Sort.COLOR)
                                     }
                                 )
                             }

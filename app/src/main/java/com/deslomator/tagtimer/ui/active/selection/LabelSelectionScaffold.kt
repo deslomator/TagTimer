@@ -14,6 +14,7 @@ import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.state.SharedState
+import com.deslomator.tagtimer.ui.LabelsTopBar
 
 @Composable
 fun LabelSelectionScaffold(
@@ -34,7 +35,7 @@ fun LabelSelectionScaffold(
     }
     Scaffold(
         topBar = {
-            LabelSelectionTopBar(
+            LabelsTopBar(
                 title = state.currentSession.name,
                 onBackClicked = {
                     if (state.showTagDialog || state.showPersonDialog || state.showPlaceDialog) {
@@ -52,8 +53,12 @@ fun LabelSelectionScaffold(
                 showTagDialog = state.showTagDialog,
                 showPersonDialog = state.showPersonDialog,
                 showPlaceDialog = state.showPlaceDialog,
-                sharedState = sharedState,
-                onSharedAction = onSharedAction,
+                tagSort = sharedState.tagSort,
+                personSort = sharedState.personSort,
+                placeSort = sharedState.placeSort,
+                onTagSort = { onSharedAction(SharedAction.TagSortClicked(it)) },
+                onPersonSort = { onSharedAction(SharedAction.PersonSortClicked(it)) },
+                onPlaceSort = { onSharedAction(SharedAction.PlaceSortClicked(it)) },
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

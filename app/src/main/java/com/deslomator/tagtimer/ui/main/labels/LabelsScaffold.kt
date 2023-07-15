@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelsTabState
+import com.deslomator.tagtimer.ui.LabelsTopBar
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -24,11 +25,28 @@ fun LabelsScaffold(
     Scaffold(
         topBar = {
             LabelsTopBar(
+                title = "",
+                onBackClicked = { /*TODO*/ },
+                currentPage = pagerState.currentPage,
+                onAddTagClick = { onAction(LabelsTabAction.AddNewTagClicked) },
+                onAddPersonClick = { onAction(LabelsTabAction.AddNewPersonClicked) },
+                onAddPlaceClick = { onAction(LabelsTabAction.AddNewPlaceClicked) },
+                showTagDialog = state.showTagDialog,
+                showPersonDialog = state.showPersonDialog,
+                showPlaceDialog = state.showPlaceDialog,
+                tagSort = state.tagSort,
+                personSort = state.personSort,
+                placeSort = state.placeSort,
+                onTagSort = { onAction(LabelsTabAction.TagSortClicked(it)) },
+                onPersonSort = { onAction(LabelsTabAction.PersonSortClicked(it)) },
+                onPlaceSort = { onAction(LabelsTabAction.PlaceSortClicked(it)) }
+            )
+            /*LabelsTopBar(
                 onNewTagClick = { onAction(LabelsTabAction.AddNewTagClicked) },
                 onNewPersonClick = { onAction(LabelsTabAction.AddNewPersonClicked) },
                 onNewPlaceClick = { onAction(LabelsTabAction.AddNewPlaceClicked) },
                 currentPage = pagerState.currentPage,
-            )
+            )*/
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
