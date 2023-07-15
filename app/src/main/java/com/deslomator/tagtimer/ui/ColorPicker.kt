@@ -6,7 +6,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -59,13 +61,18 @@ fun ColorPicker(
                     modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.TopCenter
                 ) {
-                    ColorItem(
+                    Box(
                         modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .border(1.dp, Color.Gray),
-                        color = selectedColor,
-                        onClick = { if (enabled) showGrid = true }
-                    )
+                            .size(60.dp)
+                            .border(1.dp, Color.Gray, RoundedCornerShape(30))
+                            .padding(4.dp),
+                    ) {
+                        ColorItem(
+                            modifier = Modifier.fillMaxSize(),
+                            color = selectedColor,
+                            onClick = { if (enabled) showGrid = true }
+                        )
+                    }
                 }
             }
         }
@@ -82,7 +89,7 @@ fun ColorItem(
         modifier = modifier
             .size(40.dp)
             .clickable { onClick(color) },
-        shape = RoundedCornerShape(4.dp),
+        shape = RoundedCornerShape(30),
         colors = CardDefaults.cardColors(
             containerColor = color,
         ),
