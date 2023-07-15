@@ -78,7 +78,7 @@ class LabelPreselectionViewModel @Inject constructor(
             is LabelPreselectionAction.SelectTagCheckedChange -> {
                 viewModelScope.launch {
                     val pst = Preselected.Tag(
-                        sessionId = state.value.currentSession.id!!,
+                        sessionId = _sessionId.value,
                         labelId = action.tag.id
                     )
                     delay(UPSERT_DELAY_MS)
@@ -108,9 +108,27 @@ class LabelPreselectionViewModel @Inject constructor(
                     showTagDialog = false,
                     isEditingTag = false,
                 ) }
+                val edited = Label.Tag(
+                    name = action.name,
+                    color = action.color
+                )
                 viewModelScope.launch {
                     appDao.deleteTag(state.value.currentTag)
-                    appDao.upsertTag(action.tag)
+                    appDao.upsertTag(edited)
+                }
+                viewModelScope.launch { // restore [or remove orphaned] preselection state
+                    val psToDelete = Preselected.Tag(
+                        sessionId = _sessionId.value,
+                        labelId = state.value.currentTag.id
+                    )
+                    if (state.value.preSelectedTags.contains(psToDelete)) {
+                        appDao.deletePreSelectedTag(psToDelete)
+                        val psToInsert = Preselected.Tag(
+                            sessionId = _sessionId.value,
+                            labelId = edited.id
+                        )
+                        appDao.upsertPreSelectedTag(psToInsert)
+                    }
                 }
             }
             is LabelPreselectionAction.DismissTagDialog -> {
@@ -168,9 +186,27 @@ class LabelPreselectionViewModel @Inject constructor(
                     showPersonDialog = false,
                     isEditingPerson = false,
                 ) }
+                val edited = Label.Person(
+                    name = action.name,
+                    color = action.color
+                )
                 viewModelScope.launch {
                     appDao.deletePerson(state.value.currentPerson)
-                    appDao.upsertPerson(action.person)
+                    appDao.upsertPerson(edited)
+                }
+                viewModelScope.launch { // restore [or remove orphaned] preselection state
+                    val psToDelete = Preselected.Person(
+                        sessionId = _sessionId.value,
+                        labelId = state.value.currentPerson.id
+                    )
+                    if (state.value.preSelectedPersons.contains(psToDelete)) {
+                        appDao.deletePreSelectedPerson(psToDelete)
+                        val psToInsert = Preselected.Person(
+                            sessionId = _sessionId.value,
+                            labelId = edited.id
+                        )
+                        appDao.upsertPreSelectedPerson(psToInsert)
+                    }
                 }
             }
             is LabelPreselectionAction.DismissPersonDialog -> {
@@ -228,9 +264,27 @@ class LabelPreselectionViewModel @Inject constructor(
                     showPlaceDialog = false,
                     isEditingPlace = false,
                 ) }
+                val edited = Label.Place(
+                    name = action.name,
+                    color = action.color
+                )
                 viewModelScope.launch {
                     appDao.deletePlace(state.value.currentPlace)
-                    appDao.upsertPlace(action.place)
+                    appDao.upsertPlace(edited)
+                }
+                viewModelScope.launch { // restore [or remove orphaned] preselection state
+                    val psToDelete = Preselected.Place(
+                        sessionId = _sessionId.value,
+                        labelId = state.value.currentPlace.id
+                    )
+                    if (state.value.preSelectedPlaces.contains(psToDelete)) {
+                        appDao.deletePreSelectedPlace(psToDelete)
+                        val psToInsert = Preselected.Place(
+                            sessionId = _sessionId.value,
+                            labelId = edited.id
+                        )
+                        appDao.upsertPreSelectedPlace(psToInsert)
+                    }
                 }
             }
             is LabelPreselectionAction.DismissPlaceDialog -> {

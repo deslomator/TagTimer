@@ -8,7 +8,7 @@ sealed interface LabelPreselectionAction {
      */
     data class SelectTagCheckedChange(val tag: Label.Tag, val checked: Boolean): LabelPreselectionAction
     data class EditTagClicked(val tag: Label.Tag): LabelPreselectionAction
-    data class AcceptTagEditionClicked(val tag: Label.Tag): LabelPreselectionAction
+    data class AcceptTagEditionClicked(val name: String, val color: String): LabelPreselectionAction
     object AddNewTagClicked: LabelPreselectionAction
     object DismissTagDialog: LabelPreselectionAction
     data class DeleteTagClicked(val tag: Label.Tag): LabelPreselectionAction
@@ -17,7 +17,7 @@ sealed interface LabelPreselectionAction {
      */
     data class SelectPersonCheckedChange(val person: Label.Person, val checked: Boolean): LabelPreselectionAction
     data class EditPersonClicked(val person: Label.Person): LabelPreselectionAction
-    data class AcceptPersonEditionClicked(val person: Label.Person): LabelPreselectionAction
+    data class AcceptPersonEditionClicked(val name: String, val color: String): LabelPreselectionAction
     object AddNewPersonClicked: LabelPreselectionAction
     object DismissPersonDialog: LabelPreselectionAction
     data class DeletePersonClicked(val person: Label.Person): LabelPreselectionAction
@@ -26,7 +26,7 @@ sealed interface LabelPreselectionAction {
      */
     data class SelectPlaceCheckedChange(val place: Label.Place, val checked: Boolean): LabelPreselectionAction
     data class EditPlaceClicked(val place: Label.Place): LabelPreselectionAction
-    data class AcceptPlaceEditionClicked(val place: Label.Place): LabelPreselectionAction
+    data class AcceptPlaceEditionClicked(val name: String, val color: String): LabelPreselectionAction
     object AddNewPlaceClicked: LabelPreselectionAction
     object DismissPlaceDialog: LabelPreselectionAction
     data class DeletePlaceClicked(val place: Label.Place): LabelPreselectionAction

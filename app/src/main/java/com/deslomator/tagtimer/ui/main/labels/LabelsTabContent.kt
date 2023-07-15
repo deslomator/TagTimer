@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelsTabState
@@ -151,10 +152,10 @@ fun LabelsTabContent(
         LabelDialog(
             currentLabel = state.currentTag,
             onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
-            onAccept = {
-                val t = state.currentTag.copy(
-                    name = it.name,
-                    color = it.color
+            onAccept = { name, color ->
+                val t = Label.Tag(
+                    name = name,
+                    color = color
                 )
                 onAction(LabelsTabAction.AcceptTagEditionClicked(t))
             },
@@ -175,10 +176,10 @@ fun LabelsTabContent(
         LabelDialog(
             currentLabel = state.currentPerson,
             onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
-            onAccept = {
-                val t = state.currentPerson.copy(
-                    name = it.name,
-                    color = it.color
+            onAccept = { name, color ->
+                val t = Label.Person(
+                    name = name,
+                    color = color
                 )
                 onAction(LabelsTabAction.AcceptPersonEditionClicked(t))
             },
@@ -199,10 +200,10 @@ fun LabelsTabContent(
         LabelDialog(
             currentLabel = state.currentPlace,
             onDismiss = { onAction(LabelsTabAction.DismissPlaceDialog) },
-            onAccept = {
-                val t = state.currentPlace.copy(
-                    name = it.name,
-                    color = it.color
+            onAccept = { name, color ->
+                val t = Label.Place(
+                    name = name,
+                    color = color
                 )
                 onAction(LabelsTabAction.AcceptPlaceEditionClicked(t))
             },

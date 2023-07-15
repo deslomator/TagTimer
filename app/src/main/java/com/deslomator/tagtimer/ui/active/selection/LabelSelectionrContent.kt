@@ -31,8 +31,8 @@ import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.LabelDialog
+import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.toColor
@@ -123,7 +123,7 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = tags,
                             preSelected = state.preSelectedTags,
-                            onCheckedChange = { tag, checked ->
+                            onLongClick = { tag, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -131,7 +131,7 @@ fun LabelSelectionContent(
                                 )
                                 onAction(LabelPreselectionAction.SelectTagCheckedChange(tag, checked))
                             },
-                            onLongClick = {
+                            onItemClick = {
                                 onAction(LabelPreselectionAction.EditTagClicked(it))
                             }
                         )
@@ -142,7 +142,7 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = persons,
                             preSelected = state.preSelectedPersons,
-                            onCheckedChange = { person, checked ->
+                            onLongClick = { person, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -150,7 +150,7 @@ fun LabelSelectionContent(
                                 )
                                 onAction(LabelPreselectionAction.SelectPersonCheckedChange(person, checked))
                             },
-                            onLongClick = {
+                            onItemClick = {
                                 onAction(LabelPreselectionAction.EditPersonClicked(it))
                             }
                         )
@@ -161,7 +161,7 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = places,
                             preSelected = state.preSelectedPlaces,
-                            onCheckedChange = { place, checked ->
+                            onLongClick = { place, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -169,7 +169,7 @@ fun LabelSelectionContent(
                                 )
                                 onAction(LabelPreselectionAction.SelectPlaceCheckedChange(place, checked))
                             },
-                            onLongClick = {
+                            onItemClick = {
                                 onAction(LabelPreselectionAction.EditPlaceClicked(it))
                             }
                         )
@@ -178,7 +178,7 @@ fun LabelSelectionContent(
             }
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.long_press_to_edit_remove),
+                text = stringResource(R.string.long_press_to_select_unselect),
                 textAlign = TextAlign.Center,
             )
         }
@@ -188,12 +188,8 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentTag,
             onDismiss = { onAction(LabelPreselectionAction.DismissTagDialog) },
-            onAccept = {
-                val t = state.currentTag.copy(
-                    name = it.name,
-                    color = it.color
-                )
-                onAction(LabelPreselectionAction.AcceptTagEditionClicked(t))
+            onAccept = { name, color ->
+                onAction(LabelPreselectionAction.AcceptTagEditionClicked(name, color))
             },
             showTrash = state.isEditingTag,
             onTrash = {
@@ -212,12 +208,8 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentPerson,
             onDismiss = { onAction(LabelPreselectionAction.DismissPersonDialog) },
-            onAccept = {
-                val t = state.currentPerson.copy(
-                    name = it.name,
-                    color = it.color
-                )
-                onAction(LabelPreselectionAction.AcceptPersonEditionClicked(t))
+            onAccept = { name, color ->
+                onAction(LabelPreselectionAction.AcceptPersonEditionClicked(name, color))
             },
             showTrash = state.isEditingPerson,
             onTrash = {
@@ -236,12 +228,8 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentPlace,
             onDismiss = { onAction(LabelPreselectionAction.DismissPlaceDialog) },
-            onAccept = {
-                val t = state.currentPlace.copy(
-                    name = it.name,
-                    color = it.color
-                )
-                onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(t))
+            onAccept = { name, color ->
+                onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(name, color))
             },
             showTrash = state.isEditingPlace,
             onTrash = {

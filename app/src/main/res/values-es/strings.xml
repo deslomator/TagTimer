@@ -67,7 +67,7 @@
     <string name="populate_db">datos de ejemplo</string>
     <string name="event_trash">Eventos eliminados</string>
     <string name="share_session">Compartir Sesión</string>
-    <string name="long_press_to_edit_remove">Pulsación larga para Editar o Eliminar</string>
+    <string name="long_press_to_select_unselect">Pulsación larga para Preseleccionar Marcador</string>
     <string name="sort_by_name">ordenar por nombre</string>
     <string name="sort_by_color">ordenar por color</string>
     <string name="copy">Copia</string>

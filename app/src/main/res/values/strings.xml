@@ -68,7 +68,7 @@
     <string name="populate_db">populate DB</string>
     <string name="event_trash">Event Trash</string>
     <string name="share_session">Share Session</string>
-    <string name="long_press_to_edit_remove">Long press to Edit or Delete label</string>
+    <string name="long_press_to_select_unselect">Long press to Select or Unselect label</string>
     <string name="sort_by_name">sort by name</string>
     <string name="sort_by_color">sort by color</string>
     <string name="copy">Copy</string>
