@@ -23,14 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelsTabState
+import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
-import com.deslomator.tagtimer.ui.main.labels.dialog.PersonDialog
-import com.deslomator.tagtimer.ui.main.labels.dialog.PlaceDialog
-import com.deslomator.tagtimer.ui.main.labels.dialog.TagDialog
+import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.launch
@@ -147,27 +147,75 @@ fun LabelsTabContent(
         }
     }
     if (state.showTagDialog) {
-        TagDialog(
-            state = state,
-            onAction = onAction,
-            scope = scope,
-            snackbarHostState = snackbarHostState
+        val message = stringResource(id = R.string.tag_sent_to_trash)
+        LabelDialog(
+            currentLabel = state.currentTag,
+            onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
+            onAccept = {
+                val t = state.currentTag.copy(
+                    name = it.name,
+                    color = it.color
+                )
+                onAction(LabelsTabAction.AcceptTagEditionClicked(t))
+            },
+            showTrash = state.isEditingTag,
+            onTrash = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    message
+                )
+                onAction(LabelsTabAction.DeleteTagClicked(state.currentTag))
+            },
+            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag
         )
     }
     if (state.showPersonDialog) {
-        PersonDialog(
-            state = state,
-            onAction = onAction,
-            scope = scope,
-            snackbarHostState = snackbarHostState
+        val message = stringResource(id = R.string.person_sent_to_trash)
+        LabelDialog(
+            currentLabel = state.currentPerson,
+            onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
+            onAccept = {
+                val t = state.currentPerson.copy(
+                    name = it.name,
+                    color = it.color
+                )
+                onAction(LabelsTabAction.AcceptPersonEditionClicked(t))
+            },
+            showTrash = state.isEditingPerson,
+            onTrash = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    message
+                )
+                onAction(LabelsTabAction.DeletePersonClicked(state.currentPerson))
+            },
+            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person
         )
     }
     if (state.showPlaceDialog) {
-        PlaceDialog(
-            state = state,
-            onAction = onAction,
-            scope = scope,
-            snackbarHostState = snackbarHostState
+        val message = stringResource(id = R.string.place_sent_to_trash)
+        LabelDialog(
+            currentLabel = state.currentPlace,
+            onDismiss = { onAction(LabelsTabAction.DismissPlaceDialog) },
+            onAccept = {
+                val t = state.currentPlace.copy(
+                    name = it.name,
+                    color = it.color
+                )
+                onAction(LabelsTabAction.AcceptPlaceEditionClicked(t))
+            },
+            showTrash = state.isEditingPlace,
+            onTrash = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    message
+                )
+                onAction(LabelsTabAction.DeletePlaceClicked(state.currentPlace))
+            },
+            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place
         )
     }
 }

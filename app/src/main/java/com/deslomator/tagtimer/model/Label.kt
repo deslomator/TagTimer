@@ -31,7 +31,19 @@ sealed class Label {
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
         override val inTrash: Boolean = false
-    ) : Label()
+    ) : Label() {
+        override fun copyMe(
+            name: String,
+            color: String,
+            inTrash: Boolean
+        ): Tag {
+            return this.copy(
+                name = name,
+                color = color,
+                inTrash = inTrash
+            )
+        }
+    }
 
     @Keep
     @Serializable
@@ -48,7 +60,19 @@ sealed class Label {
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
         override val inTrash: Boolean = false
-    ) : Label()
+    ) : Label() {
+        override fun copyMe(
+            name: String,
+            color: String,
+            inTrash: Boolean
+        ): Place {
+            return this.copy(
+                name = name,
+                color = color,
+                inTrash = inTrash
+            )
+        }
+    }
 
     @Keep
     @Serializable
@@ -65,12 +89,30 @@ sealed class Label {
         @SerialName("in_trash")
         @ColumnInfo(name ="in_trash")
         override val inTrash: Boolean = false
-    ) : Label()
+    ) : Label() {
+        override fun copyMe(
+            name: String,
+            color: String,
+            inTrash: Boolean
+        ): Person {
+            return this.copy(
+                name = name,
+                color = color,
+                inTrash = inTrash
+            )
+        }
+    }
 
     @delegate:Ignore
     val id: String by lazy { name + color }
 
     @delegate:Ignore
     val longColor: Long by lazy { color.toLong(16) }
+
+    abstract fun copyMe(
+        name: String = this.name,
+        color: String = this.color,
+        inTrash: Boolean = this.inTrash
+    ): Label
 }
 

@@ -20,7 +20,7 @@ sealed interface LabelPreselectionAction {
     data class AcceptPersonEditionClicked(val person: Label.Person): LabelPreselectionAction
     object AddNewPersonClicked: LabelPreselectionAction
     object DismissPersonDialog: LabelPreselectionAction
-    data class TrashPersonSwiped(val person: Label.Person): LabelPreselectionAction
+    data class DeletePersonClicked(val person: Label.Person): LabelPreselectionAction
     /*
     PLACE
      */

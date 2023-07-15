@@ -180,7 +180,7 @@ class LabelPreselectionViewModel @Inject constructor(
                     isAddingNewPerson = false,
                 ) }
             }
-            is LabelPreselectionAction.TrashPersonSwiped -> {
+            is LabelPreselectionAction.DeletePersonClicked -> {
                 _state.update { it.copy(showPersonDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.person.copy(inTrash = true)

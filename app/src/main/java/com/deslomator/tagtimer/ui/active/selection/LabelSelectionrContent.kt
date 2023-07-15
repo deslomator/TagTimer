@@ -32,9 +32,7 @@ import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.TabIndicator
-import com.deslomator.tagtimer.ui.active.dialog.PersonDialog
-import com.deslomator.tagtimer.ui.active.dialog.PlaceDialog
-import com.deslomator.tagtimer.ui.active.dialog.TagDialog
+import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.toColor
@@ -186,27 +184,75 @@ fun LabelSelectionContent(
         }
     }
     if (state.showTagDialog) {
-        TagDialog(
-            state = state,
-            onAction = onAction,
-            scope = scope,
-            snackbarHostState = snackbarHostState
+        val message = stringResource(id = R.string.tag_sent_to_trash)
+        LabelDialog(
+            currentLabel = state.currentTag,
+            onDismiss = { onAction(LabelPreselectionAction.DismissTagDialog) },
+            onAccept = {
+                val t = state.currentTag.copy(
+                    name = it.name,
+                    color = it.color
+                )
+                onAction(LabelPreselectionAction.AcceptTagEditionClicked(t))
+            },
+            showTrash = state.isEditingTag,
+            onTrash = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    message
+                )
+                onAction(LabelPreselectionAction.DeleteTagClicked(state.currentTag))
+            },
+            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag
         )
     }
     if (state.showPersonDialog) {
-        PersonDialog(
-            state = state,
-            onAction = onAction,
-            scope = scope,
-            snackbarHostState = snackbarHostState
+        val message = stringResource(id = R.string.person_sent_to_trash)
+        LabelDialog(
+            currentLabel = state.currentPerson,
+            onDismiss = { onAction(LabelPreselectionAction.DismissPersonDialog) },
+            onAccept = {
+                val t = state.currentPerson.copy(
+                    name = it.name,
+                    color = it.color
+                )
+                onAction(LabelPreselectionAction.AcceptPersonEditionClicked(t))
+            },
+            showTrash = state.isEditingPerson,
+            onTrash = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    message
+                )
+                onAction(LabelPreselectionAction.DeletePersonClicked(state.currentPerson))
+            },
+            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person
         )
     }
     if (state.showPlaceDialog) {
-        PlaceDialog(
-            state = state,
-            onAction = onAction,
-            scope = scope,
-            snackbarHostState = snackbarHostState
+        val message = stringResource(id = R.string.place_sent_to_trash)
+        LabelDialog(
+            currentLabel = state.currentPlace,
+            onDismiss = { onAction(LabelPreselectionAction.DismissPlaceDialog) },
+            onAccept = {
+                val t = state.currentPlace.copy(
+                    name = it.name,
+                    color = it.color
+                )
+                onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(t))
+            },
+            showTrash = state.isEditingPlace,
+            onTrash = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    message
+                )
+                onAction(LabelPreselectionAction.DeletePlaceClicked(state.currentPlace))
+            },
+            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place
         )
     }
 }
