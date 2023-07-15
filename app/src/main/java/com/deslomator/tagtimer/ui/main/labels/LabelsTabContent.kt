@@ -175,7 +175,8 @@ fun LabelsTabContent(
                 )
                 onAction(LabelsTabAction.DeleteTagClicked(state.currentTag))
             },
-            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag
+            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag,
+            icon = R.drawable.tag
         )
     }
     AnimatedVisibility(
@@ -203,7 +204,8 @@ fun LabelsTabContent(
                 )
                 onAction(LabelsTabAction.DeletePersonClicked(state.currentPerson))
             },
-            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person
+            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person,
+            icon = R.drawable.person
         )
     }
     AnimatedVisibility(
@@ -231,7 +233,8 @@ fun LabelsTabContent(
                 )
                 onAction(LabelsTabAction.DeletePlaceClicked(state.currentPlace))
             },
-            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place
+            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place,
+            icon = R.drawable.place
         )
     }
 }

@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ fun <T: Label>LabelDialog(
     showTrash: Boolean,
     onTrash: (T) -> Unit,
     @StringRes title: Int,
+    @DrawableRes icon: Int,
 ) {
     var name by rememberSaveable { mutableStateOf(currentLabel.name) }
     var color by rememberSaveable { mutableStateOf(currentLabel.color) }
@@ -37,7 +39,7 @@ fun <T: Label>LabelDialog(
             value = name,
             onValueChange = { name = it },
             placeholder = R.string.name,
-            icon = R.drawable.person
+            icon = icon
         )
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(

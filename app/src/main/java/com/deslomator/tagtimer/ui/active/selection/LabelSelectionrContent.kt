@@ -1,12 +1,8 @@
 package com.deslomator.tagtimer.ui.active.selection
 
-import android.transition.Transition
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -211,7 +207,8 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeleteTagClicked(state.currentTag))
             },
-            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag
+            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag,
+            icon = R.drawable.tag
         )
     }
     AnimatedVisibility(
@@ -235,7 +232,8 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeletePersonClicked(state.currentPerson))
             },
-            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person
+            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person,
+            icon = R.drawable.person
         )
     }
     AnimatedVisibility(
@@ -259,7 +257,8 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeletePlaceClicked(state.currentPlace))
             },
-            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place
+            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place,
+            icon = R.drawable.place
         )
     }
 }
