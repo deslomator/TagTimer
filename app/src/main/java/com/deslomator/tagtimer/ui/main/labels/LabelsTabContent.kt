@@ -1,6 +1,9 @@
 package com.deslomator.tagtimer.ui.main.labels
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -147,7 +150,11 @@ fun LabelsTabContent(
             }
         }
     }
-    if (state.showTagDialog) {
+    AnimatedVisibility(
+        state.showTagDialog,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         val message = stringResource(id = R.string.tag_sent_to_trash)
         LabelDialog(
             currentLabel = state.currentTag,
@@ -171,7 +178,11 @@ fun LabelsTabContent(
             title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag
         )
     }
-    if (state.showPersonDialog) {
+    AnimatedVisibility(
+        state.showPersonDialog,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         val message = stringResource(id = R.string.person_sent_to_trash)
         LabelDialog(
             currentLabel = state.currentPerson,
@@ -195,7 +206,11 @@ fun LabelsTabContent(
             title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person
         )
     }
-    if (state.showPlaceDialog) {
+    AnimatedVisibility(
+        state.showPlaceDialog,
+        enter = fadeIn(),
+        exit = fadeOut()
+    ) {
         val message = stringResource(id = R.string.place_sent_to_trash)
         LabelDialog(
             currentLabel = state.currentPlace,
