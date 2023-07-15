@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,7 +45,7 @@ fun MyDialog(
 ) {
     Box(
         modifier = Modifier
-            .background(Color.Black.copy(alpha = .65f))
+            .background(MaterialTheme.colorScheme.scrim.copy(alpha = .65f))
             .clickable { onDismiss() }
             .fillMaxSize()
             .padding(top = 50.dp, bottom = 50.dp, start = 16.dp, end = 16.dp),
@@ -54,7 +55,7 @@ fun MyDialog(
             modifier = Modifier
                 .clickable { } // intercept clicks, only dismiss tapping the outer box
                 .clip(shape = RoundedCornerShape(10.dp))
-                .background(VeryLightGray)
+                .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(5.dp),
         ) { constraints ->
             val header = subcompose(3) {
@@ -67,14 +68,16 @@ fun MyDialog(
                         Text(
                             modifier = Modifier.weight(1F),
                             text = stringResource(id = it),
-                            textAlign = TextAlign.Center
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.secondary
                         )
                     }
                     if (showCopy) {
                         IconButton(onClick = { onCopy?.invoke() }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.copy),
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                     }
@@ -82,7 +85,8 @@ fun MyDialog(
                         IconButton(onClick = { onTrash?.invoke() }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.delete),
-                                contentDescription = null
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                     }

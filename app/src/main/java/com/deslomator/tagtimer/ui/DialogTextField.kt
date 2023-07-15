@@ -5,8 +5,11 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +33,8 @@ fun DialogTextField(
             Icon(
                 modifier = modifier.size(30.dp),
                 painter = painterResource(id = icon),
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.secondary
             )
         }
         TextField(
@@ -38,7 +42,13 @@ fun DialogTextField(
             value = value,
             onValueChange = onValueChange,
             placeholder = { placeholder?.let { Text(text = (stringResource(id = it))) } },
-            enabled = enabled
+            enabled = enabled,
+            colors = TextFieldDefaults.colors(
+                unfocusedTextColor = MaterialTheme.colorScheme.secondary,
+                focusedTextColor = MaterialTheme.colorScheme.primary,
+                unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            )
         )
     }
 }
