@@ -18,5 +18,5 @@ data class EventFilterState(
     val query: String = "",
     val currentPerson: String = "",
     val currentPlace: String = "",
-    val currentTag: String = "",
+    val currentTags: List<String> = emptyList(),
 )

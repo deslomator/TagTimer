@@ -61,7 +61,7 @@ fun EventFilterContent(
             TagsList(
                 modifier = Modifier.weight(.28F),
                 tags = state.tags,
-                currentTag = state.currentTag,
+                currentTags = state.currentTags,
                 onItemClicked = { onAction(EventFilterAction.UsedTagClicked(it)) },
                 showChecked = true
             )

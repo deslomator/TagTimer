@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +31,7 @@ class EventFilterViewModel @Inject constructor(
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0L)
-    private val _currentTag = MutableStateFlow("")
+    private val _currentTags = MutableStateFlow(emptyList<String>())
     private val _currentPerson = MutableStateFlow("")
     private val _currentPlace = MutableStateFlow("")
     private val _tagSort = MutableStateFlow(Sort.COLOR)
@@ -55,13 +56,13 @@ class EventFilterViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _filteredEvents = combine(
-        _events, _currentPerson, _currentPlace, _currentTag
-    ) { events, person, place, tag ->
+        _events, _currentPerson, _currentPlace, _currentTags
+    ) { events, person, place, tags ->
         events
             .filter { event ->
                 (if (place.isEmpty()) true else event.place == place) &&
                         (if (person.isEmpty()) true else event.person == person) &&
-                        (if (tag.isEmpty()) true else event.tag == tag)
+                        (if (tags.isEmpty()) true else tags.contains(event.tag))
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -114,14 +115,17 @@ class EventFilterViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _query = combine(
-        _currentPerson, _currentPlace, _currentTag
-    ) { person, place, tag ->
-        listOf(person, place, tag).filter { it.isNotEmpty() }.joinToString(", ")
+        _currentPerson, _currentPlace, _currentTags
+    ) { person, place, tags ->
+        val ts = tags.toMutableList()
+        ts.add(person)
+        ts.add(place)
+        ts.filter { it.isNotEmpty() }.joinToString(", ")
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     val state = combine(
-        _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTag
-    ) { state, events, tags, persons, places, query, currentPerson, currentPlace, currentTag ->
+        _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTags
+    ) { state, events, tags, persons, places, query, currentPerson, currentPlace, currentTags ->
         state.copy(
             events = events,
             tags = tags,
@@ -130,7 +134,7 @@ class EventFilterViewModel @Inject constructor(
             query = query,
             currentPerson = currentPerson,
             currentPlace = currentPlace,
-            currentTag = currentTag
+            currentTags = currentTags
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), EventFilterState()
@@ -182,9 +186,13 @@ class EventFilterViewModel @Inject constructor(
                 _currentPlace.update { place }
             }
             is EventFilterAction.UsedTagClicked -> {
-                val tag = if (action.tag.name == state.value.currentTag) ""
-                else action.tag.name
-                _currentTag.update { tag }
+                val newCurrentTags = state.value.currentTags.toMutableList()
+                if (newCurrentTags.contains(action.tag.name) ) {
+                    newCurrentTags.remove(action.tag.name)
+                } else {
+                    newCurrentTags.add(action.tag.name)
+                }
+                _currentTags.update { newCurrentTags }
             }
             is EventFilterAction.ExportFilteredEventsClicked -> {
                 _state.update { it.copy(
