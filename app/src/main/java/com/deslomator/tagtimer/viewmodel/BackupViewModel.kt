@@ -255,6 +255,7 @@ private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
                 val preselectedPlaces = async { appDao.getAllPreselectedPlacesList() }
                 val preselectedTags = async { appDao.getAllPreselectedTagsList() }
                 val sessions = async { appDao.getAllSessionsList() }
+                val prefs = async { appDao.getAllPreferencesList() }
                 dbBackup = DbBackup(
                     tags = tags.await(),
                     places = places.await(),
@@ -264,6 +265,7 @@ private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
                     preselectedPlaces = preselectedPlaces.await(),
                     preselectedTags = preselectedTags.await(),
                     sessions = sessions.await(),
+                    prefs = prefs.await()
                 )
             }
         }

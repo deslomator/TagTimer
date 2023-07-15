@@ -48,6 +48,7 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                             }
                             launch { dbBackup.events.forEach { appDao.upsertEvent(it) } }
                             launch { dbBackup.sessions.forEach { appDao.upsertSession(it) } }
+                            launch { dbBackup.prefs.forEach { appDao.upsertPreference(it) } }
                         }
                         Log.i(TAG, "FromString() Restore of full backup success")
                     }

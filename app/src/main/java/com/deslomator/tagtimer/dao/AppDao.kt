@@ -6,6 +6,7 @@ import androidx.room.Query
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import kotlinx.coroutines.Dispatchers
@@ -193,6 +194,8 @@ interface AppDao {
     suspend fun deleteAllPreselectedTags()
     @Query("DELETE FROM sessions")
     suspend fun deleteAllSessions()
+    @Query("DELETE FROM preferences")
+    suspend fun deleteAllPreferences()
     suspend fun deleteAllData() {
         withContext(Dispatchers.IO) {
             launch { deleteAllEvents() }
@@ -203,8 +206,22 @@ interface AppDao {
             launch { deleteAllPreselectedPlaces() }
             launch { deleteAllPreselectedTags() }
             launch { deleteAllSessions() }
+            launch { deleteAllPreferences() }
         }
     }
+    /*
+    PREFERENCES
+     */
+    @Upsert
+    suspend fun upsertPreference(preference: Preference)
+    @Delete
+    suspend fun deletePreference(preference: Preference)
+    @Query("SELECT * FROM preferences")
+    fun getPreferences(): Flow<List<Preference>>
+    @Query("SELECT * FROM preferences")
+    fun getAllPreferencesList(): List<Preference>
+    @Query("SELECT * FROM preferences WHERE sKey = :key")
+    suspend fun getPreference(key: String): Preference
 }
 
 private const val TAG ="AppDao"

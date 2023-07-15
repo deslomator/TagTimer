@@ -283,6 +283,7 @@ fun IntentProcessor(
                     }
                     launch { backup.events.forEach { appDao.upsertEvent(it) } }
                     launch { backup.sessions.forEach { appDao.upsertSession(it) } }
+                    launch { backup.prefs.forEach { appDao.upsertPreference(it) } }
                 }
                 Log.i(TAG, "FromString() Restore of full backup success")
             }

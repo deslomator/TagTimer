@@ -27,6 +27,8 @@ data class DbBackup(
     val sessions: List<Session> = emptyList(),
     @Embedded
     val events: List<Event> = emptyList(),
+    @Embedded
+    val prefs: List<Preference> = emptyList(),
 ){
     fun isEmpty(): Boolean {
         return this.tags.isEmpty() &&
@@ -36,7 +38,8 @@ data class DbBackup(
                 this.preselectedPersons.isEmpty() &&
                 this.preselectedPlaces.isEmpty() &&
                 this.preselectedTags.isEmpty() &&
-                this.sessions.isEmpty()
+                this.sessions.isEmpty() &&
+                this.prefs.isEmpty()
     }
 
     fun isLabelsOnly(): Boolean {
@@ -47,6 +50,7 @@ data class DbBackup(
                 this.preselectedPersons.isEmpty() &&
                 this.preselectedPlaces.isEmpty() &&
                 this.preselectedTags.isEmpty() &&
-                this.sessions.isEmpty()
+                this.sessions.isEmpty() &&
+                this.prefs.isEmpty()
     }
 }
