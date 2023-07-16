@@ -116,7 +116,7 @@ fun LabelsTabContent(
                         onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
                     ) {
                         Text(
-                            modifier = Modifier.padding(bottom = 7.dp),
+                            modifier = Modifier.padding(bottom = 7.dp, top = 7.dp),
                             text = stringResource(id = page.stringId),
                             fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
                             else FontWeight.Normal,
