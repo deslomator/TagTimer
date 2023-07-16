@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,6 +62,15 @@ val colorPickerColors: List<Color> = listOf(
     Color(0xffF6AE2D)
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun topBarColors() = TopAppBarDefaults.topAppBarColors(
+    containerColor = MaterialTheme.colorScheme.background,
+    navigationIconContentColor = MaterialTheme.colorScheme.primary,
+    titleContentColor = MaterialTheme.colorScheme.primary,
+    actionIconContentColor = MaterialTheme.colorScheme.primary,
+)
+
 fun Color.brightness(): Float {
     return (0.21f * this.red) + (0.72f * this.green) + (0.07f * this.blue)
 }
@@ -108,7 +119,7 @@ fun Color.toHex(): String {
 @Composable
 fun PickerColors() {
     Column {
-    colorPickerColors.forEach {
+        colorPickerColors.forEach {
             Box(
                 modifier = Modifier
                     .background(it)
@@ -184,17 +195,17 @@ val md_theme_light_primaryContainer = Color(0xFF9CF6B1)
 val md_theme_light_onPrimaryContainer = Color(0xFF00210C)
 val md_theme_light_secondary = Color(0xFF506352)
 val md_theme_light_onSecondary = Color(0xFFFFFFFF)
-val md_theme_light_secondaryContainer = Color(0xFFD3E8D3)
+val md_theme_light_secondaryContainer = Color(0xFFDCF0DC)
 val md_theme_light_onSecondaryContainer = Color(0xFF0E1F12)
-val md_theme_light_tertiary = Color(0xFF3A656E)
+val md_theme_light_tertiary = Color(0xFF2D4E55)
 val md_theme_light_onTertiary = Color(0xFFFFFFFF)
-val md_theme_light_tertiaryContainer = Color(0xFFBDEAF5)
+val md_theme_light_tertiaryContainer = Color(0xFFEBFBFF)
 val md_theme_light_onTertiaryContainer = Color(0xFF001F25)
 val md_theme_light_error = Color(0xFFBA1A1A)
 val md_theme_light_errorContainer = Color(0xFFFFDAD6)
 val md_theme_light_onError = Color(0xFFFFFFFF)
 val md_theme_light_onErrorContainer = Color(0xFF410002)
-val md_theme_light_background = Color(0xFFFCFDF7)
+val md_theme_light_background = Color(0xFFEEF3D8)
 val md_theme_light_onBackground = Color(0xFF191C19)
 val md_theme_light_surface = Color(0xFFFCFDF7)
 val md_theme_light_onSurface = Color(0xFF191C19)

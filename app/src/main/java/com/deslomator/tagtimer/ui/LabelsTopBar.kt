@@ -21,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -129,7 +130,8 @@ fun LabelsTopBar(
                     }
                 }
             }
-        }
+        },
+        colors = topBarColors()
     )
 }
 

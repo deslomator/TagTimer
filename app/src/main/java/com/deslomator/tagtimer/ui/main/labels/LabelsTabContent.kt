@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -102,6 +103,7 @@ fun LabelsTabContent(
     ) {
         Column {
             TabRow(
+                containerColor = MaterialTheme.colorScheme.background,
                 selectedTabIndex = pagerState.currentPage,
                 divider = { Divider() },
                 indicator = { tabPositions ->
@@ -117,7 +119,8 @@ fun LabelsTabContent(
                             modifier = Modifier.padding(bottom = 7.dp),
                             text = stringResource(id = page.stringId),
                             fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
-                            else FontWeight.Normal
+                            else FontWeight.Normal,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }

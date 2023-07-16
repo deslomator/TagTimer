@@ -10,6 +10,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +33,7 @@ fun BackupTopBar(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         ) },
+        colors = topBarColors()
     )
 }
 

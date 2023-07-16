@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,6 +38,7 @@ fun EventTrashTopBar(
                 painterResource(id = R.drawable.delete),
                 contentDescription = "event trash"
             )
-        }
+        },
+        colors = topBarColors()
     )
 }

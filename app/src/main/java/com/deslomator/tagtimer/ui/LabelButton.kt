@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,11 +57,16 @@ fun LabelButton(
             Color.LightGray
         }
     }
+    val secondaryContainer = MaterialTheme.colorScheme.tertiaryContainer
     val containerColor = remember {
-        if (item is Label.Person) Color.White
+        if (item is Label.Person) secondaryContainer
         else Color(item.longColor)
     }
-    val contentColor = remember { containerColor.contrasted() }
+    val secondary = MaterialTheme.colorScheme.tertiary
+    val contentColor = remember {
+        if (item is Label.Person) secondary
+        else containerColor.contrasted()
+    }
     val leadingIcon = remember {
         if (isTrash) {
             R.drawable.restore_from_trash

@@ -10,12 +10,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,6 +75,7 @@ fun SessionsTabTopBar(
                     },
                 )
             }
-        }
+        },
+        colors = topBarColors()
     )
 }

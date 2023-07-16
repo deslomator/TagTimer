@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +55,7 @@ fun EventFilterTopBar(
                     contentDescription = "share Events"
                 )
             }
-        }
+        },
+        colors = topBarColors()
     )
 }
