@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -124,7 +126,12 @@ fun IntentProcessor(
                 showPreImportErrorDialog = false
             }
         ) {
-            Card {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.secondary,
+                )
+            ) {
                 Column(modifier = Modifier.padding(15.dp)) {
                     Text(
                         text = stringResource(id = R.string.import_data),
@@ -180,7 +187,12 @@ fun IntentProcessor(
                         R.string.warning_this_will_erase
                     }
                 )
-                Card {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.secondary,
+                    )
+                ) {
                     Column(modifier = Modifier.padding(15.dp)) {
                         Text(
                             text = stringResource(id = R.string.import_data),
@@ -298,7 +310,12 @@ fun IntentProcessor(
         AlertDialog(
             onDismissRequest = { showSuccessDialog = false }
         ) {
-            Card {
+            Card(
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                    contentColor = MaterialTheme.colorScheme.secondary,
+                )
+            ) {
                 Column(modifier = Modifier.padding(15.dp)) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
