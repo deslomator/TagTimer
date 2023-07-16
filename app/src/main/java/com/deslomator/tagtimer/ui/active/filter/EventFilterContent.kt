@@ -25,6 +25,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.state.EventFilterState
+import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
@@ -90,11 +91,7 @@ fun EventFilterContent(
                 exit = slideOutVertically()
             ) {
                 Divider()
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = state.query,
-                    textAlign = TextAlign.Center
-                )
+                EmptyListText(state.query)
             }
         }
         AnimatedVisibility(

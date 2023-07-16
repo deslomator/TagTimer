@@ -31,11 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.state.BackupState
+import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.showSnackbar
 
 @Composable
@@ -154,13 +154,7 @@ fun BackupContent(
                 }
             }
             Divider()
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
-                text = stringResource(id = R.string.tap_file_for_actions),
-                textAlign = TextAlign.Center
-            )
+            EmptyListText(text = stringResource(id = R.string.tap_file_for_actions),)
         }
     }
 }

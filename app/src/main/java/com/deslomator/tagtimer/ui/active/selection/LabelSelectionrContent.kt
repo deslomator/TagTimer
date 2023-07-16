@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -27,7 +26,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
@@ -35,6 +33,7 @@ import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.state.SharedState
+import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -182,11 +181,7 @@ fun LabelSelectionContent(
                     }
                 }
             }
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(R.string.long_press_to_select_unselect),
-                textAlign = TextAlign.Center,
-            )
+            EmptyListText(stringResource(id = R.string.long_press_to_select_unselect))
         }
     }
     AnimatedVisibility(

@@ -22,6 +22,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -128,7 +130,7 @@ fun ActiveSessionContent(
             Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))
-                    .background(VeryLightGray)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .fillMaxWidth(.9F),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -143,7 +145,10 @@ fun ActiveSessionContent(
                     onClick = {
                         onSharedAction(SharedAction.PlayPauseClicked)
                         onAction(ActiveSessionAction.PlayPauseClicked)
-                    }
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        contentColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
                     Icon(
                         modifier = Modifier.size(36.dp),
