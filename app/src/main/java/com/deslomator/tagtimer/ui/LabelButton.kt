@@ -36,15 +36,15 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LabelButton(
+fun <T: Label>LabelButton(
     modifier: Modifier = Modifier,
-    item: Label,
+    item: T,
     isTrash: Boolean = false,
     iconSize: Dp = 26.dp,
-    onLeadingClick: ((Label) -> Unit)? = null,
-    onItemClick: ((Label) -> Unit)? = null,
-    onLongClick: ((Label) -> Unit)? = null,
-    onTrailingClick: ((Label) -> Unit)? = null,
+    onLeadingClick: ((T) -> Unit)? = null,
+    onItemClick: ((T) -> Unit)? = null,
+    onLongClick: ((T) -> Unit)? = null,
+    onTrailingClick: ((T) -> Unit)? = null,
     checked: Boolean = true,
     checkType: Checked = Checked.NONE
 ) {
@@ -74,7 +74,8 @@ fun LabelButton(
             when (item) {
                 is Label.Tag -> R.drawable.tag
                 is Label.Place -> R.drawable.place
-                is Label.Person -> R.drawable.person
+                else -> R.drawable.person
+//                is Label.Person -> R.drawable.person
             }
         }
     }

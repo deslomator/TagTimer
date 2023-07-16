@@ -22,10 +22,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.ui.TabIndicator
+import com.deslomator.tagtimer.ui.showSnackbar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -79,13 +81,70 @@ fun TrashTabContent(
                         SessionTrash(state, onAction, scope, snackbarHostState, context)
                     }
                     Trash.Tag -> {
-                        TagTrash(state, onAction, scope, snackbarHostState, context)
+                        LabelTrash(
+                            items = state.tags,
+                            onLeadingClick = {
+                                onAction(TrashTabAction.RestoreTagClicked(it))
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    context.getString(R.string.tag_restored)
+                                )
+                            },
+                            onTrailingClick = {
+                                onAction(
+                                    TrashTabAction.DeleteTagClicked(it))
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    context.getString(R.string.tag_deleted)
+                                )
+                            },
+                        )
                     }
                     Trash.Person -> {
-                        PersonTrash(state, onAction, scope, snackbarHostState, context)
+                        LabelTrash(
+                            items = state.persons,
+                            onLeadingClick = {
+                                onAction(TrashTabAction.RestorePersonClicked(it))
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    context.getString(R.string.person_restored)
+                                )
+                            },
+                            onTrailingClick = {
+                                onAction(
+                                    TrashTabAction.DeletePersonClicked(it))
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    context.getString(R.string.person_deleted)
+                                )
+                            },
+                        )
                     }
                     Trash.Place -> {
-                        PlaceTrash(state, onAction, scope, snackbarHostState, context)
+                        LabelTrash(
+                            items = state.places,
+                            onLeadingClick = {
+                                onAction(TrashTabAction.RestorePlaceClicked(it))
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    context.getString(R.string.place_restored)
+                                )
+                            },
+                            onTrailingClick = {
+                                onAction(
+                                    TrashTabAction.DeletePlaceClicked(it))
+                                showSnackbar(
+                                    scope,
+                                    snackbarHostState,
+                                    context.getString(R.string.place_deleted)
+                                )
+                            },
+                        )
                     }
                 }
             }
