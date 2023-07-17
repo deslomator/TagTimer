@@ -34,7 +34,7 @@ val OnLightBackground = Color(0xFF26242C)
 val colorPickerColors: List<Color> = listOf(
     Color(0xffffffff),
     Color(0xfffff8f0),
-    Color(0xffffebeb),
+    Color(0xffffeceb),
     Color(0xFFfffd9e),
     Color(0xFFEBEE3C),
     Color(0xffacb303),
@@ -49,14 +49,14 @@ val colorPickerColors: List<Color> = listOf(
     Color(0xffff43b3),
     Color(0xffd4a1fa),
     Color(0xFF95122E),
-    Color(0xffd21212),
+    Color(0xffd21312),
     Color(0xFFCB2F54),
     Color(0xff870058),
     Color(0xff7067cf),
     Color(0xff892ca0),
     Color(0xff582417),
     Color(0xffa5f9c2),
-    Color(0xff0aa00a),
+    Color(0xff0aa00b),
     Color(0xff5ccb5f),
     Color(0xff04a48f),
     Color(0xff005016),
@@ -70,7 +70,7 @@ val colorPickerColors: List<Color> = listOf(
     Color(0xff888888),
     Color(0xff272727),
     Color(0xff000000),
-)
+).sortedBy { it.hue() }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -137,7 +137,7 @@ fun PickerColors() {
                     .padding(6.dp)
             ) {
                 Text(
-                    text = it.toHex(),
+                    text = it.toHex() + "     " + it.hue(),
                     color = it.contrasted(),
                     fontSize = 13.sp
                 )
