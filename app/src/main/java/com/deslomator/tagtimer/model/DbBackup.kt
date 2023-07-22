@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-data class DbBackup(
+class DbBackup(
     @Embedded
     val persons: List<Label.Person> = emptyList(),
     @Embedded
