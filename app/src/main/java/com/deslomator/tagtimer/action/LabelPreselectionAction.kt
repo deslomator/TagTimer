@@ -6,28 +6,28 @@ sealed interface LabelPreselectionAction {
     /*
     TAG
      */
-    data class SelectTagCheckedChange(val tag: Label.Tag, val checked: Boolean): LabelPreselectionAction
-    data class EditTagClicked(val tag: Label.Tag): LabelPreselectionAction
-    data class AcceptTagEditionClicked(val name: String, val color: String): LabelPreselectionAction
+    class SelectTagCheckedChange(val tag: Label.Tag, val checked: Boolean): LabelPreselectionAction
+    class EditTagClicked(val tag: Label.Tag): LabelPreselectionAction
+    class AcceptTagEditionClicked(val name: String, val color: String): LabelPreselectionAction
     object AddNewTagClicked: LabelPreselectionAction
     object DismissTagDialog: LabelPreselectionAction
-    data class DeleteTagClicked(val tag: Label.Tag): LabelPreselectionAction
+    class DeleteTagClicked(val tag: Label.Tag): LabelPreselectionAction
     /*
     PERSON
      */
-    data class SelectPersonCheckedChange(val person: Label.Person, val checked: Boolean): LabelPreselectionAction
-    data class EditPersonClicked(val person: Label.Person): LabelPreselectionAction
-    data class AcceptPersonEditionClicked(val name: String, val color: String): LabelPreselectionAction
+    class SelectPersonCheckedChange(val person: Label.Person, val checked: Boolean): LabelPreselectionAction
+    class EditPersonClicked(val person: Label.Person): LabelPreselectionAction
+    class AcceptPersonEditionClicked(val name: String, val color: String): LabelPreselectionAction
     object AddNewPersonClicked: LabelPreselectionAction
     object DismissPersonDialog: LabelPreselectionAction
-    data class DeletePersonClicked(val person: Label.Person): LabelPreselectionAction
+    class DeletePersonClicked(val person: Label.Person): LabelPreselectionAction
     /*
     PLACE
      */
-    data class SelectPlaceCheckedChange(val place: Label.Place, val checked: Boolean): LabelPreselectionAction
-    data class EditPlaceClicked(val place: Label.Place): LabelPreselectionAction
-    data class AcceptPlaceEditionClicked(val name: String, val color: String): LabelPreselectionAction
+    class SelectPlaceCheckedChange(val place: Label.Place, val checked: Boolean): LabelPreselectionAction
+    class EditPlaceClicked(val place: Label.Place): LabelPreselectionAction
+    class AcceptPlaceEditionClicked(val name: String, val color: String): LabelPreselectionAction
     object AddNewPlaceClicked: LabelPreselectionAction
     object DismissPlaceDialog: LabelPreselectionAction
-    data class DeletePlaceClicked(val place: Label.Place): LabelPreselectionAction
+    class DeletePlaceClicked(val place: Label.Place): LabelPreselectionAction
 }
