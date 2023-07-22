@@ -68,7 +68,7 @@ val colorPickerColors: List<Color> = listOf(
     Color(0xff003366),
     Color(0xff001582),
     Color(0xff888888),
-    Color(0xff272727),
+    Color(0xff373c3e),
     Color(0xff000000),
 ).sortedBy { it.hue() }
 
