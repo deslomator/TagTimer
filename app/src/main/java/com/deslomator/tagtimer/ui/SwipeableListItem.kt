@@ -17,7 +17,6 @@ fun SwipeableListItem(
     onDismiss: () -> Unit,
     content: @Composable () -> Unit
 ) {
-
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
             when(it) {
@@ -33,12 +32,11 @@ fun SwipeableListItem(
     )
     SwipeToDismissBox(
         state = dismissState,
+        enableDismissFromEndToStart = false,
         backgroundContent = { DismissBackground(dismissState)},
         content = {
             content()
         })
-
-
 }
 
 @Composable

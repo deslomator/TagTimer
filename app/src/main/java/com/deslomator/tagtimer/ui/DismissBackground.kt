@@ -32,9 +32,11 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        Icon(
-            Icons.Default.Delete,
-            contentDescription = "delete"
-        )
+        if (dismissState.dismissDirection == SwipeToDismissBoxValue.StartToEnd) {
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = "delete"
+            )
+        }
     }
 }
