@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.model.type.Shared
 import com.deslomator.tagtimer.state.BackupState
-import com.deslomator.tagtimer.ui.active.ExportData
+import com.deslomator.tagtimer.ui.active.ShareData
 
 @Composable
 fun BackupScaffold(
@@ -21,11 +21,11 @@ fun BackupScaffold(
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     if (state.shareFile && state.currentFile != null && state.currentString.isNotEmpty()) {
-        ExportData(
+        ShareData(
             context = context,
             fileName = state.currentFile.nameWithoutExtension,
             data = state.currentString,
-            onDataExported = { onAction(BackupAction.BackupExported) },
+            onDataShared = { onAction(BackupAction.BackupShared) },
             type = Shared.Json
         )
     }

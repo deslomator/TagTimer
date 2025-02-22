@@ -18,7 +18,7 @@ import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.navigation.screen.ActiveScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.ui.active.ExportData
+import com.deslomator.tagtimer.ui.active.ShareData
 
 @Composable
 fun ActiveSessionScaffold(
@@ -50,11 +50,11 @@ fun ActiveSessionScaffold(
         }
     }
     if (state.exportData) {
-        ExportData(
+        ShareData(
             context = context,
             fileName = fileName,
             data = state.dataToExport,
-            onDataExported = { onAction(ActiveSessionAction.SessionExported) },
+            onDataShared = { onAction(ActiveSessionAction.SessionExported) },
         )
     }
     LaunchedEffect(state.currentSession) {

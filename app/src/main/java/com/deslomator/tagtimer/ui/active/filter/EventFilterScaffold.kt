@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.ui.active.ExportData
+import com.deslomator.tagtimer.ui.active.ShareData
 
 @Composable
 fun EventFilterScaffold(
@@ -25,11 +25,11 @@ fun EventFilterScaffold(
         )
             .filter { it.isNotEmpty() }
             .joinToString(separator = ",")
-        ExportData(
+        ShareData(
             context = context,
             fileName = fileName,
             data = state.dataToExport,
-            onDataExported = { onAction(EventFilterAction.EventsExported) }
+            onDataShared = { onAction(EventFilterAction.EventsExported) }
         )
     }
     LaunchedEffect(sharedState.tagSort) {

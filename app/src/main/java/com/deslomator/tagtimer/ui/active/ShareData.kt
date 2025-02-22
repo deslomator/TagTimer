@@ -3,21 +3,25 @@ package com.deslomator.tagtimer.ui.active
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.deslomator.tagtimer.model.type.Shared
 import java.io.File
 
 @Composable
-fun ExportData(
+fun ShareData(
     context: Context,
     fileName: String,
     data: String,
-    onDataExported: () -> Unit,
+    onDataShared: () -> Unit,
     type: Shared = Shared.Csv
 ) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) {}
     LaunchedEffect(Unit) {
         try {
             val file = File(
@@ -34,9 +38,10 @@ fun ExportData(
                 .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 .setType(type.mime)
                 .putExtra(Intent.EXTRA_STREAM, uri)
-            Intent.createChooser(intent, "Choose an App")
-            ContextCompat.startActivity(context, intent, null)
-            onDataExported()
+
+            launcher.launch(intent)
+
+            onDataShared()
         } catch (e: Exception) {
             Log.d(TAG, "ShareSession, error: $e")
         }

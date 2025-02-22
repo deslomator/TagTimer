@@ -107,7 +107,7 @@ class BackupViewModel @Inject constructor(
                     }
                 }
             }
-            BackupAction.BackupExported -> {
+            is BackupAction.BackupShared -> {
                 _state.update { it.copy(shareFile = false) }
             }
             is BackupAction.SaveBackupClicked -> {
