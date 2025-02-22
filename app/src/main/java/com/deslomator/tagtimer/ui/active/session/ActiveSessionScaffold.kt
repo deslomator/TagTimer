@@ -91,7 +91,7 @@ fun ActiveSessionScaffold(
                 },
                 onShareSessionClick = {
                     fileName = state.currentSession.name
-                    onAction(ActiveSessionAction.ExportSessionClicked)
+                    onAction(ActiveSessionAction.ShareSessionClicked)
                 },
                 onAddLabelClick = {
                     navController.navigate(

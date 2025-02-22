@@ -143,7 +143,7 @@ class ActiveSessionViewModel @Inject constructor(
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
-            ActiveSessionAction.ExportSessionClicked -> {
+            ActiveSessionAction.ShareSessionClicked -> {
                 _state.update { it.copy(
                     dataToExport = state.value.events.toCsv(state.value.currentSession),
                     exportData = true
