@@ -25,7 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.io.BufferedReader
 import java.io.File
@@ -180,7 +179,7 @@ class BackupViewModel @Inject constructor(
     }
 }
 
-private suspend fun backupInternally(
+private fun backupInternally(
     labelsOnly: Boolean = false,
     appDao: AppDao,
     backupDir: File,

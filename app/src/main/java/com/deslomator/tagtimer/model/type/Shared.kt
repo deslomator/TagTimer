@@ -11,6 +11,6 @@ sealed class Shared(
     val extension: String,
     val mime: String,
 ) {
-    object Json: Shared("json", "application/json")
-    object Csv: Shared("csv", "application/csv")
+    data object Json: Shared("json", "application/json")
+    data object Csv: Shared("csv", "application/csv")
 }

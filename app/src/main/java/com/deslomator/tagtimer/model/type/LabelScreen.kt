@@ -14,7 +14,7 @@ sealed class LabelScreen(
     @StringRes val stringId: Int,
     @DrawableRes val icon: Int,
 ) {
-    object Tag: LabelScreen(R.string.tags, R.drawable.tag)
-    object Person: LabelScreen(R.string.persons, R.drawable.person)
-    object Place: LabelScreen(R.string.places, R.drawable.place)
+    data object Tag: LabelScreen(R.string.tags, R.drawable.tag)
+    data object Person: LabelScreen(R.string.persons, R.drawable.person)
+    data object Place: LabelScreen(R.string.places, R.drawable.place)
 }

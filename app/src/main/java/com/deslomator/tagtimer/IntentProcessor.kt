@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -118,7 +118,7 @@ fun IntentProcessor(
 
     if (showPreImportErrorDialog) {
         Log.d(TAG, "loadBackup() Showing error dialog")
-        AlertDialog(
+        BasicAlertDialog(
             onDismissRequest = {
                 openUri = false
                 intentState = null
@@ -172,7 +172,7 @@ fun IntentProcessor(
     if (showImportDialog) {
         Log.d(TAG, "loadBackup() Showing import dialog, $dbBackup")
         dbBackup?.let { backupDb ->
-            AlertDialog(
+            BasicAlertDialog(
                 onDismissRequest = {
                     openUri = false
                     intentState = null
@@ -307,7 +307,7 @@ fun IntentProcessor(
 
     if (showSuccessDialog) {
         Log.d(TAG, "loadBackup() Showing success dialog")
-        AlertDialog(
+        BasicAlertDialog(
             onDismissRequest = { showSuccessDialog = false }
         ) {
             Card(

@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.main.labels
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -12,7 +11,6 @@ import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelsTopBar
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabelsScaffold(
     state: LabelsTabState,

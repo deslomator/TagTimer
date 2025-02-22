@@ -5,10 +5,10 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Sort
 
 sealed interface EventFilterAction {
-    object EventsExported: EventFilterAction
+    data object EventsExported: EventFilterAction
     class EventClicked(val event: Event): EventFilterAction
     class AcceptEventEditionClicked(val event: Event) : EventFilterAction
-    object DismissEventEditionDialog: EventFilterAction
+    data object DismissEventEditionDialog: EventFilterAction
     class UsedTagClicked(val tag: Label.Tag) : EventFilterAction
     class UsedPersonClicked(val personName: String) : EventFilterAction
     class UsedPlaceClicked(val placeName: String) : EventFilterAction

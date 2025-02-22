@@ -9,12 +9,12 @@ sealed class ActiveScreen(
     @StringRes val stringId: Int,
     @DrawableRes val icon: Int,
 ) {
-    val argumant = "{sessionId}"
-    object ActiveSession : ActiveScreen("ActiveSession", R.string.session, R.drawable.document_and_ray)
-    object LabelSelection : ActiveScreen("LabelSelection", R.string.select_labels, R.drawable.add_tag)
-    object EventFilter : ActiveScreen("EventFilter", R.string.filter_events, R.drawable.filter)
-    object EventTrash : ActiveScreen("EventTrash", R.string.trash, R.drawable.delete)
+    private val argument = "{sessionId}"
+    data object ActiveSession : ActiveScreen("ActiveSession", R.string.session, R.drawable.document_and_ray)
+    data object LabelSelection : ActiveScreen("LabelSelection", R.string.select_labels, R.drawable.add_tag)
+    data object EventFilter : ActiveScreen("EventFilter", R.string.filter_events, R.drawable.filter)
+    data object EventTrash : ActiveScreen("EventTrash", R.string.trash, R.drawable.delete)
 
-    val route = "$_route/$argumant"
+    val route = "$_route/$argument"
     fun routeWithArg(sessionId: Long) = "$_route/$sessionId"
 }

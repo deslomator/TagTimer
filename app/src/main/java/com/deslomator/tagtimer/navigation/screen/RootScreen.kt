@@ -7,6 +7,6 @@ sealed class RootScreen(
     val route: String,
     @StringRes val stringId: Int,
 ) {
-    object Main : RootScreen("main", R.string.app_name)
-    object Backup : RootScreen("backup_screen", R.string.full_backup)
+    data object Main : RootScreen("main", R.string.app_name)
+    data object Backup : RootScreen("backup_screen", R.string.full_backup)
 }

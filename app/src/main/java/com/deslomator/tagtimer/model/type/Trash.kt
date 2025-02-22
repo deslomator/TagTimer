@@ -14,8 +14,8 @@ sealed class Trash(
     @StringRes val stringId: Int,
     @DrawableRes val icon: Int,
 ) {
-    object Session: Trash(R.string.sessions, R.drawable.document_and_ray)
-    object Tag: Trash(R.string.tags, R.drawable.tag)
-    object Person: Trash(R.string.persons, R.drawable.person)
-    object Place: Trash(R.string.places, R.drawable.place)
+    data object Session: Trash(R.string.sessions, R.drawable.document_and_ray)
+    data object Tag: Trash(R.string.tags, R.drawable.tag)
+    data object Person: Trash(R.string.persons, R.drawable.person)
+    data object Place: Trash(R.string.places, R.drawable.place)
 }

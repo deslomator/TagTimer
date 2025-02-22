@@ -5,15 +5,15 @@ import com.deslomator.tagtimer.model.Label
 
 sealed interface ActiveSessionAction {
     class ExitSession(val isRunning: Boolean, val cursor: Long): ActiveSessionAction
-    object ExportSessionClicked: ActiveSessionAction
-    object PlayPauseClicked: ActiveSessionAction
-    object SessionExported: ActiveSessionAction
+    data object ExportSessionClicked: ActiveSessionAction
+    data object PlayPauseClicked: ActiveSessionAction
+    data object SessionExported: ActiveSessionAction
     class EventClicked(val event: Event): ActiveSessionAction
     class AcceptEventEditionClicked(val event: Event) : ActiveSessionAction
-    object DismissEventEditionDialog: ActiveSessionAction
+    data object DismissEventEditionDialog: ActiveSessionAction
     class TrashEventSwiped(val event: Event): ActiveSessionAction
     class TimeClicked(val cursor: Long): ActiveSessionAction
-    object DismissTimeDialog: ActiveSessionAction
+    data object DismissTimeDialog: ActiveSessionAction
     class PreSelectedTagClicked(val tag: Label.Tag, val cursor: Long) : ActiveSessionAction
     class PreSelectedPersonClicked(val personName: String) : ActiveSessionAction
     class PreSelectedPlaceClicked(val placeName: String) : ActiveSessionAction

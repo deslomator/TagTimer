@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
@@ -105,7 +105,7 @@ fun LabelsTabContent(
             TabRow(
                 containerColor = MaterialTheme.colorScheme.background,
                 selectedTabIndex = pagerState.currentPage,
-                divider = { Divider() },
+                divider = { HorizontalDivider() },
                 indicator = { tabPositions ->
                     TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
                 }
