@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.DismissDirection
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -23,10 +21,8 @@ import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.showSnackbar
-import com.deslomator.tagtimer.ui.theme.Pink80
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun EventList(
     modifier: Modifier,
     events: List<Event>,
@@ -54,7 +50,6 @@ fun EventList(
             key = { it.id!! }
         ) { event ->
             SwipeableListItem(
-                dismissDirection = DismissDirection.StartToEnd,
                 onDismiss = {
                     showSnackbar(
                         scope,
@@ -63,7 +58,6 @@ fun EventList(
                     )
                     onItemSwiped(event)
                 },
-                dismissColor = Pink80
             ) {
                 EventListItem(
                     event = event,

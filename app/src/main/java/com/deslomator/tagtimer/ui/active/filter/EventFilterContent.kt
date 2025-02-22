@@ -11,15 +11,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Text
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.EventFilterAction
@@ -52,13 +49,13 @@ fun EventFilterContent(
                 currentLabel = state.currentPerson,
                 onItemClick = { onAction(EventFilterAction.UsedPersonClicked(it)) }
             )
-            Divider()
+            HorizontalDivider()
             PreSelectedLabelsList(
                 labels = state.places,
                 currentLabel = state.currentPlace,
                 onItemClick = { onAction(EventFilterAction.UsedPlaceClicked(it)) }
             )
-            Divider()
+            HorizontalDivider()
             TagsList(
                 modifier = Modifier.weight(.28F),
                 tags = state.tags,
@@ -66,7 +63,7 @@ fun EventFilterContent(
                 onItemClicked = { onAction(EventFilterAction.UsedTagClicked(it)) },
                 showChecked = true
             )
-            Divider()
+            HorizontalDivider()
             LazyColumn(
                 modifier = Modifier.weight(.4F),
                 contentPadding = PaddingValues(6.dp),
@@ -90,7 +87,7 @@ fun EventFilterContent(
                 enter = slideInVertically(),
                 exit = slideOutVertically()
             ) {
-                Divider()
+                HorizontalDivider()
                 EmptyListText(state.query)
             }
         }

@@ -19,7 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -48,7 +48,6 @@ import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
-import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toElapsedTime
@@ -115,7 +114,7 @@ fun ActiveSessionContent(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Divider()
+            HorizontalDivider()
             EventList(
                 modifier = Modifier
                     .weight(0.5F),
@@ -125,7 +124,7 @@ fun ActiveSessionContent(
                 onItemSwiped = { onAction(ActiveSessionAction.TrashEventSwiped(it)) },
                 snackbarHostState = snackbarHostState
             )
-            Divider()
+            HorizontalDivider()
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier
@@ -180,7 +179,7 @@ fun ActiveSessionContent(
                     }
                 },
             )
-            Divider()
+            HorizontalDivider()
             PreSelectedLabelsList(
                 labels = persons,
                 currentLabel = state.currentPersonName,
@@ -188,7 +187,7 @@ fun ActiveSessionContent(
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
                 }
             )
-            Divider()
+            HorizontalDivider()
             PreSelectedLabelsList(
                 labels = places,
                 currentLabel = state.currentPlaceName,
