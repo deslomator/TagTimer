@@ -177,9 +177,7 @@ fun ActiveSessionContent(
                         onAction(
                             ActiveSessionAction.PreSelectedTagClicked(
                                 it,
-                            state.currentSession.durationMillis
-                                    + System.currentTimeMillis()
-                                    - state.currentSession.startTimestampMillis
+                                state.currentSession.durationMillis
                             )
                         )
                     }
