@@ -26,7 +26,11 @@ fun Long.toElapsedTime(): String {
     val hours = (secs / 3600)
     val minutes = (secs % 3600) / 60
     val seconds = (secs % 3600) % 60
-    return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    return String.format(
+        Locale.getDefault(),
+        "%02d:%02d:%02d",
+        hours, minutes, seconds
+    )
 }
 
 inline fun <T1, T2, T3, T4, T5, T6, T7, T8, R> combine(
