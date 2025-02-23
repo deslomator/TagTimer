@@ -20,7 +20,7 @@ data class Session(
 
     @SerialName("session_date_millis")
     @ColumnInfo(name = "session_date_millis")
-    val sessionDateMillis: Long = 0,
+    val eventDateMillis: Long = System.currentTimeMillis(),
 
     val name: String = "",
     val notes: String = "",
