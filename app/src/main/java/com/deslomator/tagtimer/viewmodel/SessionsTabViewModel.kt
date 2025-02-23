@@ -57,9 +57,11 @@ class SessionsTabViewModel @Inject constructor(
             is SessionsTabAction.TrashSessionClicked -> {
                 viewModelScope.launch {
                     _state.update { it.copy(showSessionDialog = false) }
-                    val trashed = state.value.currentSession.copy(inTrash = true)
+                    val trashed = state.value.currentSession.copy(
+                        running = false,
+                        inTrash = true
+                    )
                     appDao.upsertSession(trashed)
-//                    Log.d(TAG, "SessionsScreenAction.TrashSessionSwiped $trashed")
                 }
             }
             SessionsTabAction.PopulateDbClicked -> {
@@ -88,17 +90,17 @@ class SessionsTabViewModel @Inject constructor(
             val newId = appDao.upsertSession(newSession)
             launch {
                 appDao.getPreSelectedTagsListForSession(s.id!!)
-                    .map { it.copy(sessionId = newId,) }
+                    .map { it.copy(sessionId = newId) }
                     .forEach { psl -> appDao.upsertPreSelectedTag(psl) }
             }
             launch {
                 appDao.getPreSelectedPersonsListForSession(s.id!!)
-                    .map { it.copy(sessionId = newId,) }
+                    .map { it.copy(sessionId = newId) }
                     .forEach { psl -> appDao.upsertPreSelectedPerson(psl) }
             }
             launch {
                 appDao.getPreSelectedPlacesListForSession(s.id!!)
-                    .map { it.copy(sessionId = newId,) }
+                    .map { it.copy(sessionId = newId) }
                     .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
             }
         }
