@@ -85,7 +85,7 @@ class ActiveSessionViewModel @Inject constructor(
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 viewModelScope.launch {
                     val event = Event(
-                        sessionId = _sessionId.value,
+                        sessionId = _sessionId.value, // the value in state can be null
                         elapsedTimeMillis = action.elapsed,
                         tag = action.tag.name,
                         person = state.value.currentPersonName,

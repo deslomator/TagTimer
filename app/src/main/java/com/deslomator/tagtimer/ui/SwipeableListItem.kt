@@ -27,8 +27,8 @@ fun SwipeableListItem(
             }
             return@rememberSwipeToDismissBoxState true
         },
-        // positional threshold of 25%
-        positionalThreshold = { it * .25f }
+        // positional threshold of 99%
+        positionalThreshold = { it * .99f }
     )
     SwipeToDismissBox(
         state = dismissState,
