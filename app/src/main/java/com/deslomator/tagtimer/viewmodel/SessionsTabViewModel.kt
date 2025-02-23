@@ -8,6 +8,7 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -100,6 +101,32 @@ class SessionsTabViewModel @Inject constructor(
                     .map { it.copy(sessionId = newId,) }
                     .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
             }
+        }
+    }
+
+    /**
+     * only gets called for running sessions, no need to check
+     */
+    private fun getSessionDuration(s: Session): Long {
+        return  System.currentTimeMillis() - s.startTimestampMillis
+    }
+
+    private suspend fun updateDurations() {
+        while (true) {
+            val sessions = state.value.sessions
+            sessions.filter { it.running }.forEach { runningSession ->
+                val updated = runningSession.copy(
+                    durationMillis = getSessionDuration(runningSession)
+                )
+                appDao.upsertSession(updated)
+            }
+            delay(1000)
+        }
+    }
+
+    init {
+        viewModelScope.launch {
+            updateDurations()
         }
     }
 

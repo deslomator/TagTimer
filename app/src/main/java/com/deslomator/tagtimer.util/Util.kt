@@ -145,7 +145,7 @@ fun List<Event>.toCsv(session: Session, filtered: Boolean = false): String {
     val headers = "\"person\",\"place\",\"tag\",\"note\",\"time\""
     val filterString = if (filtered) "filtered" else ""
     val dateString = SimpleDateFormat(
-        "yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(session.sessionDateMillis)
+        "yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(session.eventDateMillis)
     val metadata = "\"session: ${session.name}\",\"$filterString\",\"\",\"${session.notes}\",\"$dateString\""
     ev.add(0, metadata)
     ev.add(0, headers)

@@ -52,8 +52,8 @@ fun SessionDialog(
     var show by rememberSaveable {
         mutableStateOf(Show.DIALOG)
     }
-    var sessionDate by rememberSaveable {
-        mutableLongStateOf(state.currentSession.sessionDateMillis)
+    var eventDate by rememberSaveable {
+        mutableLongStateOf(state.currentSession.eventDateMillis)
     }
     val message = stringResource(id = R.string.session_sent_to_trash)
     var name by rememberSaveable {
@@ -72,7 +72,7 @@ fun SessionDialog(
         },
         onAccept = {
             val s = state.currentSession.copy(
-                sessionDateMillis = sessionDate,
+                eventDateMillis = eventDate,
                 lastAccessMillis = System.currentTimeMillis(),
                 name = name.trim(),
                 notes = notes.trim(),
@@ -99,7 +99,7 @@ fun SessionDialog(
             when (s) {
                 Show.DIALOG -> {
                     Column {
-                        if (state.currentSession.sessionDateMillis > 0) {
+                        if (state.currentSession.eventDateMillis > 0) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -111,7 +111,7 @@ fun SessionDialog(
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 ) {
-                                    Text(text = sessionDate.toDate())
+                                    Text(text = eventDate.toDate())
                                 }
                                 TextButton(
                                     onClick = { show = Show.TIME },
@@ -120,7 +120,7 @@ fun SessionDialog(
                                         color = MaterialTheme.colorScheme.primary
                                     )
                                 ) {
-                                    Text(text = sessionDate.toTime())
+                                    Text(text = eventDate.toTime())
                                 }
                             }
                         }
@@ -145,16 +145,16 @@ fun SessionDialog(
                 }
                 Show.DATE -> {
                     val pickerState = rememberDatePickerState(
-                        initialSelectedDateMillis = sessionDate
+                        initialSelectedDateMillis = eventDate
                     )
                     DatePickerDialog(
                         onDismissRequest = { show = Show.DIALOG },
                         confirmButton = {
                             TextButton(
                                 onClick = {
-                                    val picked = pickerState.selectedDateMillis ?: sessionDate
-                                    val hoursOnly = sessionDate % (24 * 3600 * 1000)
-                                    sessionDate = picked + hoursOnly
+                                    val picked = pickerState.selectedDateMillis ?: eventDate
+                                    val hoursOnly = eventDate % (24 * 3600 * 1000)
+                                    eventDate = picked + hoursOnly
                                     show = Show.DIALOG
                                 }
                             ) {
@@ -166,8 +166,8 @@ fun SessionDialog(
                     }
                 }
                 Show.TIME -> {
-                    val tzOffset = TimeZone.getDefault().getOffset(sessionDate)
-                    val seconds = ((sessionDate + tzOffset) / 1000)
+                    val tzOffset = TimeZone.getDefault().getOffset(eventDate)
+                    val seconds = ((eventDate + tzOffset) / 1000)
                     val hour = (seconds % (3600 * 24)) / 3600
                     val minute = (seconds % 3600) / 60
                     val pickerState = rememberTimePickerState(
@@ -179,12 +179,12 @@ fun SessionDialog(
                         title = stringResource(id = R.string.select_time),
                         onCancel = { show = Show.DIALOG },
                         onConfirm = {
-                            val hoursOnly = sessionDate % (24 * 3600 * 1000)
-                            val daysOnly = sessionDate - hoursOnly
+                            val hoursOnly = eventDate % (24 * 3600 * 1000)
+                            val daysOnly = eventDate - hoursOnly
                             val h = pickerState.hour * 3600 * 1000L
                             val m = pickerState.minute * 60 * 1000L
                             val hm = h + m - tzOffset
-                            sessionDate = daysOnly + hm
+                            eventDate = daysOnly + hm
                             show = Show.DIALOG
                         }
                     ) {

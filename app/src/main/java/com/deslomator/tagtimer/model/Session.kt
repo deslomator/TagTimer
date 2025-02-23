@@ -10,6 +10,11 @@ import com.deslomator.tagtimer.ui.theme.toHex
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * @property lastAccessMillis just used for sessions sorting, not editable
+ * @property eventDateMillis just metadada, not used for calculations
+ */
+
 @Keep
 @Serializable
 @Entity(tableName = "sessions")
@@ -36,11 +41,15 @@ data class Session(
 
     @SerialName("start_timestamp_millis")
     @ColumnInfo(name = "start_timestamp_millis")
-    val startTimestampMillis: Long = 0,
+    val startTimestampMillis: Long = -1,
 
     @SerialName("in_trash")
     @ColumnInfo(name = "in_trash")
     val inTrash: Boolean = false,
+
+    @SerialName("running")
+    @ColumnInfo(name = "running")
+    val running: Boolean = false,
 
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,

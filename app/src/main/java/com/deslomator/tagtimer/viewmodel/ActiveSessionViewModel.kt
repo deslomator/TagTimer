@@ -14,6 +14,7 @@ import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toCsv
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
@@ -85,7 +86,7 @@ class ActiveSessionViewModel @Inject constructor(
                 viewModelScope.launch {
                     val event = Event(
                         sessionId = _sessionId.value,
-                        elapsedTimeMillis = action.cursor,
+                        elapsedTimeMillis = action.elapsed,
                         tag = action.tag.name,
                         person = state.value.currentPersonName,
                         place = state.value.currentPlaceName,
@@ -101,12 +102,11 @@ class ActiveSessionViewModel @Inject constructor(
                 val time = System.currentTimeMillis()
                 val session = state.value.currentSession.copy(
                     lastAccessMillis = time,
-                    durationMillis = getSessionDuration(action.cursor),
+                    durationMillis = getSessionDuration(),
                     eventCount = state.value.events.size,
-                    startTimestampMillis =
-                    if (action.isRunning) time - action.cursor else 0
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
+                Log.d(TAG, "exitSession, running: ${session.running}")
             }
             is ActiveSessionAction.TrashEventSwiped -> {
                 viewModelScope.launch {
@@ -145,16 +145,16 @@ class ActiveSessionViewModel @Inject constructor(
             }
             ActiveSessionAction.ShareSessionClicked -> {
                 _state.update { it.copy(
-                    dataToExport = state.value.events.toCsv(state.value.currentSession),
-                    exportData = true
+                    dataToShare = state.value.events.toCsv(state.value.currentSession),
+                    shareData = true
                 ) }
             }
-            ActiveSessionAction.SessionExported -> {
-                _state.update { it.copy(exportData = false) }
+            ActiveSessionAction.SessionShared -> {
+                _state.update { it.copy(shareData = false) }
             }
             is ActiveSessionAction.TimeClicked -> {
                 val s = state.value.currentSession.copy(
-                    durationMillis = getSessionDuration(action.cursor)
+                    durationMillis = getSessionDuration()
                 )
                 _state.update { it.copy(
                     currentSession = s,
@@ -177,19 +177,22 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.PlayPauseClicked -> {
                 val s =state.value.currentSession
-                if (s.sessionDateMillis == 0L) {
-                    val updated = s.copy(sessionDateMillis = System.currentTimeMillis())
+                val d = getSessionDuration()
+                if (s.running) {
+                    val updated = s.copy(
+                        running = false,
+                        durationMillis = d,
+                    )
+                    _state.update { it.copy(currentSession = updated) }
+                } else {
+                    val updated = s.copy(
+                        running = true,
+                        startTimestampMillis = System.currentTimeMillis() - d
+                    )
                     _state.update { it.copy(currentSession = updated) }
                 }
             }
         }
-    }
-
-    private fun getSessionDuration(cursor: Long): Long {
-        return maxOf(
-            cursor,
-            state.value.events.maxOfOrNull { it.elapsedTimeMillis } ?: 0
-        )
     }
 
     /**
@@ -243,6 +246,27 @@ class ActiveSessionViewModel @Inject constructor(
         }
     }
 
+    private fun getSessionDuration(): Long {
+        val s = state.value.currentSession
+        return when {
+            s.running -> System.currentTimeMillis() - s.startTimestampMillis
+            else -> s.durationMillis
+        }
+    }
+
+    private suspend fun updateDuration() {
+        while (true) {
+            val s = state.value.currentSession
+            if (s.running) {
+                val updated = s.copy(
+                    durationMillis = getSessionDuration()
+                )
+                _state.update { it.copy(currentSession = updated) }
+            }
+            delay(1000)
+        }
+    }
+
     init {
         val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
         _sessionId.update { sessionId }
@@ -252,6 +276,15 @@ class ActiveSessionViewModel @Inject constructor(
             }
             if (state.value.events.isNotEmpty())
                 _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
+            val s = state.value.currentSession
+            if (s.running) {
+                val updated = s.copy(
+                    startTimestampMillis = System.currentTimeMillis() - s.durationMillis
+                )
+                _state.update { it.copy( currentSession = updated) }
+            }
+            // TODO check updateDuration() is executed last
+            updateDuration()
         }
     }
 

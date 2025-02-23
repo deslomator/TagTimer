@@ -128,7 +128,6 @@ fun AppNavHost(
                     state = state,
                     onAction = viewModel::onAction,
                     sharedState = sharedState,
-                    onSharedAction = sharedVm::onAction,
                 )
             }
             composable(

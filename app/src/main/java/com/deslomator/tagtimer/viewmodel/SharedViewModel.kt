@@ -9,14 +9,10 @@ import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.SharedState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +20,6 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     private val appDao: AppDao,
 ) : ViewModel() {
-
-    private var timerJob: Job? = null
 
     private val _prefs = appDao.getPreferences()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -64,28 +58,6 @@ class SharedViewModel @Inject constructor(
                     sKey = PrefKey.PLACE_SORT.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
-            }
-            is SharedAction.SetCursor -> {
-                _state.update { it.copy(cursor = action.cursor) }
-            }
-            is SharedAction.PlayPauseClicked -> {
-                timerJob = if (state.value.isRunning) {
-                    timerJob?.cancel()
-                    null
-                } else viewModelScope.launch(Dispatchers.Main) {
-                    while (true) {
-                        delay(1000)
-                        _state.update { it.copy(cursor = state.value.cursor + 1000) }
-                    }
-                }
-                _state.update { it.copy(isRunning = !state.value.isRunning) }
-            }
-            SharedAction.StopTimer -> {
-                _state.update { it.copy(isRunning = false) }
-                with(timerJob) {
-                    this?.cancel()
-                    timerJob = null
-                }
             }
         }
     }

@@ -40,7 +40,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.model.type.Sort
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
@@ -58,7 +57,6 @@ fun ActiveSessionContent(
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
     sharedState: SharedState,
-    onSharedAction: (SharedAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
@@ -135,14 +133,15 @@ fun ActiveSessionContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { onAction(ActiveSessionAction.TimeClicked(sharedState.cursor)) }
+                    onClick = { onAction(ActiveSessionAction.TimeClicked) }
                 ) {
-                    Text(text = sharedState.cursor.toElapsedTime())
+                    Text(
+                        text = state.currentSession.durationMillis.toElapsedTime()
+                    )
                 }
                 Spacer(modifier = Modifier.width(30.dp))
                 IconButton(
                     onClick = {
-                        onSharedAction(SharedAction.PlayPauseClicked)
                         onAction(ActiveSessionAction.PlayPauseClicked)
                     },
                     colors = IconButtonDefaults.iconButtonColors(
@@ -152,7 +151,7 @@ fun ActiveSessionContent(
                     Icon(
                         modifier = Modifier.size(36.dp),
                         painter = painterResource(
-                            if (sharedState.isRunning) {
+                            if (state.currentSession.running) {
                                 R.drawable.pause_circle_outline
                             } else {
                                 R.drawable.play_circle_outline
@@ -168,14 +167,21 @@ fun ActiveSessionContent(
                     .weight(0.6f),
                 tags = tags,
                 onItemClicked = {
-                    if (!sharedState.isRunning) {
+                    if (!state.currentSession.running) {
                         showSnackbar(
                             scope,
                             snackbarHostState,
                             context.getString(R.string.tap_play_to_add_event)
                         )
                     } else {
-                        onAction(ActiveSessionAction.PreSelectedTagClicked(it, sharedState.cursor))
+                        onAction(
+                            ActiveSessionAction.PreSelectedTagClicked(
+                                it,
+                            state.currentSession.durationMillis
+                                    + System.currentTimeMillis()
+                                    - state.currentSession.startTimestampMillis
+                            )
+                        )
                     }
                 },
             )
@@ -212,13 +218,12 @@ fun ActiveSessionContent(
             enter = fadeIn(),
             exit = fadeOut()
         ) {
-            val max = maxOf(sharedState.cursor, state.currentSession.durationMillis)
             TimeDialog(
-                current = sharedState.cursor.toFloat(),
-                maximum = max.toFloat(),
+                current = state.currentSession.durationMillis.toFloat(),
+                // TODO set offset
+                maximum = state.currentSession.durationMillis.toFloat(),
                 onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
                 onAccept = {
-                    onSharedAction(SharedAction.SetCursor(it.toLong()))
                     onAction(ActiveSessionAction.DismissTimeDialog)
                 }
             )
