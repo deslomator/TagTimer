@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
@@ -13,6 +14,8 @@ import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
@@ -26,7 +29,9 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState) {
 
     Row(
         modifier = Modifier
+            .alpha(dismissState.progress + .5F)
             .fillMaxSize()
+            .clip(shape = RoundedCornerShape(15.dp))
             .background(color)
             .padding(12.dp, 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -35,7 +40,8 @@ fun DismissBackground(dismissState: SwipeToDismissBoxState) {
         if (dismissState.dismissDirection == SwipeToDismissBoxValue.StartToEnd) {
             Icon(
                 Icons.Default.Delete,
-                contentDescription = "delete"
+                contentDescription = "delete",
+                tint = Color.White
             )
         }
     }
