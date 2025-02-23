@@ -78,6 +78,10 @@ class SessionsTabViewModel @Inject constructor(
             val newSession = s.copy(
                 id = null,
                 name = newName,
+                eventCount = 0,
+                durationMillis = 0,
+                startTimestampMillis = -1,
+                running = false,
                 lastAccessMillis = System.currentTimeMillis()
             )
             val newId = appDao.upsertSession(newSession)
