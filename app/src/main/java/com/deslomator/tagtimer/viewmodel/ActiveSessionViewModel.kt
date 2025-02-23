@@ -153,16 +153,20 @@ class ActiveSessionViewModel @Inject constructor(
                 _state.update { it.copy(shareData = false) }
             }
             is ActiveSessionAction.TimeClicked -> {
-                val s = state.value.currentSession.copy(
-                    durationMillis = getSessionDuration()
-                )
                 _state.update { it.copy(
-                    currentSession = s,
                     showTimeDialog = true
                 ) }
             }
+            is ActiveSessionAction.AcceptTimeDialog -> {
+                val s = state.value.currentSession
+                val newCursor = s.startTimestampMillis + action.offset
+                val updated = s.copy(startTimestampMillis = newCursor)
+                _state.update { it.copy(
+                    currentSession = updated,
+                    showTimeDialog = false
+                ) }
+            }
             is ActiveSessionAction.DismissTimeDialog -> {
-                Log.d(TAG, "ActiveSessionAction.DismissTimeDialog")
                 _state.update { it.copy(showTimeDialog = false) }
             }
             is ActiveSessionAction.PreSelectedPersonClicked -> {

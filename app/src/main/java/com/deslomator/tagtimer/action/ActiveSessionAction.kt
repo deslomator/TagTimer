@@ -13,6 +13,7 @@ sealed interface ActiveSessionAction {
     data object DismissEventEditionDialog: ActiveSessionAction
     class TrashEventSwiped(val event: Event): ActiveSessionAction
     data object TimeClicked : ActiveSessionAction
+    class AcceptTimeDialog(val offset: Long): ActiveSessionAction
     data object DismissTimeDialog: ActiveSessionAction
     class PreSelectedTagClicked(val tag: Label.Tag, val elapsed: Long) : ActiveSessionAction
     class PreSelectedPersonClicked(val personName: String) : ActiveSessionAction

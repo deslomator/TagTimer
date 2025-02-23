@@ -24,7 +24,7 @@ fun TimeDialog(
     val max by rememberSaveable { mutableFloatStateOf(maximum) }
     MyDialog(
         onDismiss = onDismiss,
-        onAccept = { onAccept(value) },
+        onAccept = { onAccept(maximum - value) },
     ) {
         Text(
             modifier = Modifier.fillMaxWidth() ,

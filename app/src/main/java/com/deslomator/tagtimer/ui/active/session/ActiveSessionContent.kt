@@ -221,9 +221,7 @@ fun ActiveSessionContent(
                 // TODO set offset
                 maximum = state.currentSession.durationMillis.toFloat(),
                 onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
-                onAccept = {
-                    onAction(ActiveSessionAction.DismissTimeDialog)
-                }
+                onAccept = { onAction(ActiveSessionAction.AcceptTimeDialog(it.toLong())) }
             )
         }
     }
