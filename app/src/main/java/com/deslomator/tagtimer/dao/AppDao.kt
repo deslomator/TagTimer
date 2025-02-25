@@ -56,7 +56,13 @@ interface AppDao {
     suspend fun getSessionsList(): List<Session>
 
     @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY last_access_millis DESC")
-    fun getActiveSessions(): Flow<List<Session>>
+    fun getSessionsByLastAccess(): Flow<List<Session>>
+
+    @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY session_date_millis DESC")
+    fun getSessionsByDate(): Flow<List<Session>>
+
+    @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY name ASC")
+    fun getSessionsByName(): Flow<List<Session>>
 
     @Query("SELECT * FROM sessions WHERE in_trash = 1 ORDER BY last_access_millis DESC")
     fun getTrashedSessions(): Flow<List<Session>>

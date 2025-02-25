@@ -23,9 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
-import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.contrasted
@@ -53,17 +50,6 @@ fun SessionsTabContent(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
-    val sessions by remember(state.sessionSort, state.sessions) {
-        derivedStateOf {
-            state.sessions.sortedWith(
-                when (state.sessionSort) {
-                    SessionSort.DATE -> compareByDescending { it.sessionDateMillis }
-                    SessionSort.LAST_ACCESS -> compareByDescending { it.lastAccessMillis }
-                    SessionSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
     BackHandler(enabled = state.showSessionDialog) {
         onAction(SessionsTabAction.DismissSessionDialog)
     }
@@ -78,7 +64,7 @@ fun SessionsTabContent(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(
-                items = sessions,
+                items = state.sessions,
                 key = { it.id!! }
             ) { session ->
                 MyListItem(
