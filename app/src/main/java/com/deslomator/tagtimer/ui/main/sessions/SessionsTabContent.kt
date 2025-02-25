@@ -80,11 +80,11 @@ fun SessionsTabContent(
                         onAction(SessionsTabAction.ItemClicked(session))
                     },
                     onItemClick = {
-                        onAction(SessionsTabAction.ItemClicked(session))
-                    },
-                    trailingIcon = R.drawable.start,
-                    onTrailingClick = {
                         outerNavHostController.navigate("active/${session.id}")
+                    },
+                    trailingIcon = R.drawable.edit,
+                    onTrailingClick = {
+                        onAction(SessionsTabAction.ItemClicked(session))
                     },
                 ) { item ->
                     Spacer(modifier = Modifier.width(10.dp))
@@ -112,7 +112,7 @@ fun SessionsTabContent(
                             )
                             Icon(
                                 modifier = Modifier.graphicsLayer { alpha = alphaCycle },
-                                painter = painterResource(R.drawable.baseline_directions_run_24),
+                                painter = painterResource(R.drawable.running),
                                 contentDescription = "running",
                             )
                         }
