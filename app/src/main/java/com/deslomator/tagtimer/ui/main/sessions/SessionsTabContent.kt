@@ -1,6 +1,11 @@
 package com.deslomator.tagtimer.ui.main.sessions
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.InfiniteRepeatableSpec
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,14 +19,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
@@ -31,7 +40,6 @@ import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.contrasted
 import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toDateTime
-import com.deslomator.tagtimer.util.toElapsedTime
 
 @Composable
 fun SessionsTabContent(
@@ -87,14 +95,27 @@ fun SessionsTabContent(
                         Text(item.lastAccessMillis.toDateTime())
                     }
                     Column(
-                        modifier = Modifier.padding(end = 5.dp)
+                        modifier = Modifier.padding(end = 5.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(stringResource(R.string.events_count, item.eventCount))
-                        Text(
-                            text = item.durationMillis.toElapsedTime(),
-                            fontWeight = if (item.running) FontWeight.Bold
-                            else FontWeight.Normal
-                        )
+                        if (item.running) {
+                            val transition = rememberInfiniteTransition(label = "running_icon")
+                            val alphaCycle by transition.animateFloat(
+                                initialValue = .3F,
+                                targetValue = 1F,
+                                animationSpec = InfiniteRepeatableSpec(
+                                    animation = tween(durationMillis = 1000),
+                                    repeatMode = RepeatMode.Reverse
+                                ),
+                                label = "alpha_cycle"
+                            )
+                            Icon(
+                                modifier = Modifier.graphicsLayer { alpha = alphaCycle },
+                                painter = painterResource(R.drawable.baseline_directions_run_24),
+                                contentDescription = "running",
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.width(10.dp))
                 }
