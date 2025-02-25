@@ -1,9 +1,9 @@
 package com.deslomator.tagtimer.action
 
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 
 sealed interface SharedAction {
-    class TagSortClicked(val tagSort: Sort): SharedAction
-    class PersonSortClicked(val personSort: Sort): SharedAction
-    class PlaceSortClicked(val placeSort: Sort): SharedAction
+    class TagSortClicked(val tagSort: LabelSort): SharedAction
+    class PersonSortClicked(val personSort: LabelSort): SharedAction
+    class PlaceSortClicked(val placeSort: LabelSort): SharedAction
 }

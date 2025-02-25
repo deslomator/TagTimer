@@ -3,9 +3,9 @@ package com.deslomator.tagtimer.model.type
 import androidx.annotation.Keep
 
 /**
- * Types of label sorting
+ * Types of Preference
  */
 @Keep
 enum class PrefKey {
-    PERSON_SORT, PLACE_SORT, TAG_SORT
+    PERSON_SORT, PLACE_SORT, TAG_SORT, SESSION_SORT
 }

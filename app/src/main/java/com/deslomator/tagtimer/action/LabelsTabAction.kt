@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 
 sealed interface LabelsTabAction {
     /*
@@ -12,7 +12,7 @@ sealed interface LabelsTabAction {
     data object AddNewTagClicked: LabelsTabAction
     data object DismissTagDialog: LabelsTabAction
     class DeleteTagClicked(val tag: Label.Tag): LabelsTabAction
-    class TagSortClicked(val tagSort: Sort): LabelsTabAction
+    class TagSortClicked(val labelSort: LabelSort): LabelsTabAction
     /*
     PERSON
      */
@@ -21,7 +21,7 @@ sealed interface LabelsTabAction {
     data object AddNewPersonClicked: LabelsTabAction
     data object DismissPersonDialog: LabelsTabAction
     class DeletePersonClicked(val person: Label.Person): LabelsTabAction
-    class PersonSortClicked(val personSort: Sort): LabelsTabAction
+    class PersonSortClicked(val personSort: LabelSort): LabelsTabAction
     /*
     PLACE
      */
@@ -30,5 +30,5 @@ sealed interface LabelsTabAction {
     data object AddNewPlaceClicked: LabelsTabAction
     data object DismissPlaceDialog: LabelsTabAction
     class DeletePlaceClicked(val place: Label.Place): LabelsTabAction
-    class PlaceSortClicked(val placeSort: Sort): LabelsTabAction
+    class PlaceSortClicked(val placeSort: LabelSort): LabelsTabAction
 }

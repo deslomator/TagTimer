@@ -1,10 +1,13 @@
 package com.deslomator.tagtimer.ui.main.sessions
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -12,9 +15,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,6 +28,8 @@ fun SessionsTabTopBar(
     onNewSessionClick: () -> Unit,
     onPopulateDbClick: () -> Unit,
     onBackupClick: () -> Unit,
+    onSessionSortClick: (SessionSort) -> Unit,
+    currentSort: SessionSort
 ) {
     var showMenu by rememberSaveable { mutableStateOf(false) }
     TopAppBar(
@@ -74,6 +81,29 @@ fun SessionsTabTopBar(
                         showMenu = false
                     },
                 )
+                HorizontalDivider()
+                SessionSort.entries.forEach {
+                    DropdownMenuItem(
+                        text = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = currentSort == it,
+                                    onClick = {
+                                        showMenu = false
+                                        onSessionSortClick(it)
+                                    }
+                                )
+                                Text(text = stringResource(it.stringId))
+                            }
+                        },
+                        onClick = {
+                            showMenu = false
+                            onSessionSortClick(it)
+                        },
+                    )
+                }
             }
         },
         colors = topBarColors()

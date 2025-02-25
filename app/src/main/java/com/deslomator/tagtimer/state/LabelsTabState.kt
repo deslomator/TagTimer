@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 
 data class LabelsTabState(
     val tags: List<Label.Tag> = emptyList(),
@@ -19,7 +19,7 @@ data class LabelsTabState(
     val showPlaceDialog: Boolean = false,
     val isEditingPlace: Boolean = false,
     val isAddingNewPlace: Boolean = false,
-    val tagSort: Sort = Sort.COLOR,
-    val personSort: Sort = Sort.NAME,
-    val placeSort: Sort = Sort.NAME,
+    val tagSort: LabelSort = LabelSort.COLOR,
+    val personSort: LabelSort = LabelSort.NAME,
+    val placeSort: LabelSort = LabelSort.NAME,
 )

@@ -12,7 +12,7 @@ import kotlinx.serialization.Serializable
 
 /**
  * @property lastAccessMillis just used for sessions sorting, not editable
- * @property eventDateMillis just metadada, not used for calculations
+ * @property sessionDateMillis just metadada, not used for calculations
  */
 
 @Keep
@@ -25,7 +25,7 @@ data class Session(
 
     @SerialName("session_date_millis")
     @ColumnInfo(name = "session_date_millis")
-    val eventDateMillis: Long = System.currentTimeMillis(),
+    val sessionDateMillis: Long = System.currentTimeMillis(),
 
     val name: String = "",
     val notes: String = "",

@@ -2,7 +2,7 @@ package com.deslomator.tagtimer.action
 
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 
 sealed interface EventFilterAction {
     data object EventsExported: EventFilterAction
@@ -13,9 +13,9 @@ sealed interface EventFilterAction {
     class UsedPersonClicked(val personName: String) : EventFilterAction
     class UsedPlaceClicked(val placeName: String) : EventFilterAction
     class ExportFilteredEventsClicked(val filteredEvents: List<Event>): EventFilterAction
-    class SetTagSort(val tagSort: Sort): EventFilterAction
-    class SetPersonSort(val personSort: Sort): EventFilterAction
-    class SetPlaceSort(val placeSort: Sort): EventFilterAction
+    class SetTagSort(val labelSort: LabelSort): EventFilterAction
+    class SetPersonSort(val personSort: LabelSort): EventFilterAction
+    class SetPlaceSort(val placeSort: LabelSort): EventFilterAction
 
 
 }

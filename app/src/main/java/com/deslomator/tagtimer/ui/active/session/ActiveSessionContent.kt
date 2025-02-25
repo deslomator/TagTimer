@@ -40,7 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
@@ -74,8 +74,8 @@ fun ActiveSessionContent(
                 state.preSelectedTags.map { it.labelId }.contains(tag.id)
             }.sortedWith(
                 when (sharedState.tagSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
@@ -86,8 +86,8 @@ fun ActiveSessionContent(
                 state.preSelectedPersons.map { it.labelId }.contains(person.id)
             }.sortedWith(
                 when (sharedState.personSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
@@ -98,8 +98,8 @@ fun ActiveSessionContent(
                 state.preSelectedPlaces.map { it.labelId }.contains(place.id)
             }.sortedWith(
                 when (sharedState.placeSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }

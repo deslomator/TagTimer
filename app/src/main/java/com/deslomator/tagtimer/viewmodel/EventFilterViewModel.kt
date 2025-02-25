@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +7,7 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
@@ -34,9 +33,9 @@ class EventFilterViewModel @Inject constructor(
     private val _currentTags = MutableStateFlow(emptyList<String>())
     private val _currentPerson = MutableStateFlow("")
     private val _currentPlace = MutableStateFlow("")
-    private val _tagSort = MutableStateFlow(Sort.COLOR)
-    private val _personSort = MutableStateFlow(Sort.NAME)
-    private val _placeSort = MutableStateFlow(Sort.NAME)
+    private val _tagSort = MutableStateFlow(LabelSort.COLOR)
+    private val _personSort = MutableStateFlow(LabelSort.NAME)
+    private val _placeSort = MutableStateFlow(LabelSort.NAME)
     private val _state = MutableStateFlow(EventFilterState())
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -76,8 +75,8 @@ class EventFilterViewModel @Inject constructor(
             }.distinctBy { it.name }
             .sortedWith(
                 when (personSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -92,8 +91,8 @@ class EventFilterViewModel @Inject constructor(
             }.distinctBy { it.name }
             .sortedWith(
                 when (placeSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -108,8 +107,8 @@ class EventFilterViewModel @Inject constructor(
             }.distinctBy { it.name }
             .sortedWith(
                 when (tagSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -210,7 +209,7 @@ class EventFilterViewModel @Inject constructor(
                 _placeSort.update { action.placeSort }
             }
             is EventFilterAction.SetTagSort -> {
-                _tagSort.update { action.tagSort }
+                _tagSort.update { action.labelSort }
             }
         }
     }

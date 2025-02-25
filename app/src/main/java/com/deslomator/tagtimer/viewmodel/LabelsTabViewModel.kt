@@ -7,7 +7,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.type.PrefKey
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.LabelsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,9 +39,9 @@ class LabelsTabViewModel @Inject constructor(
             tags = tags,
             persons = persons,
             places = places,
-            tagSort = prefs.firstOrNull { it.sKey == PrefKey.TAG_SORT.name }?.getSort() ?: Sort.COLOR,
-            personSort = prefs.firstOrNull { it.sKey == PrefKey.PERSON_SORT.name }?.getSort() ?: Sort.NAME,
-            placeSort = prefs.firstOrNull { it.sKey == PrefKey.PLACE_SORT.name }?.getSort() ?: Sort.NAME,
+            tagSort = prefs.firstOrNull { it.key == PrefKey.TAG_SORT.name }?.getLabelSort() ?: LabelSort.COLOR,
+            personSort = prefs.firstOrNull { it.key == PrefKey.PERSON_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
+            placeSort = prefs.firstOrNull { it.key == PrefKey.PLACE_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelsTabState())
 
@@ -91,8 +91,8 @@ class LabelsTabViewModel @Inject constructor(
             }
             is LabelsTabAction.TagSortClicked -> {
                 val pref = Preference(
-                    value = action.tagSort.name,
-                    sKey = PrefKey.TAG_SORT.name
+                    key = PrefKey.TAG_SORT.name,
+                    value = action.labelSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -139,8 +139,8 @@ class LabelsTabViewModel @Inject constructor(
             }
             is LabelsTabAction.PersonSortClicked -> {
                 val pref = Preference(
-                    value = action.personSort.name,
-                    sKey = PrefKey.PERSON_SORT.name
+                    key = PrefKey.PERSON_SORT.name,
+                    value = action.personSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -187,8 +187,8 @@ class LabelsTabViewModel @Inject constructor(
             }
             is LabelsTabAction.PlaceSortClicked -> {
                 val pref = Preference(
-                    value = action.placeSort.name,
-                    sKey = PrefKey.PLACE_SORT.name
+                    key = PrefKey.PLACE_SORT.name,
+                    value = action.placeSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }

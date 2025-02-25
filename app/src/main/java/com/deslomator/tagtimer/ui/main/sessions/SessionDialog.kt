@@ -53,7 +53,7 @@ fun SessionDialog(
         mutableStateOf(Show.DIALOG)
     }
     var eventDate by rememberSaveable {
-        mutableLongStateOf(state.currentSession.eventDateMillis)
+        mutableLongStateOf(state.currentSession.sessionDateMillis)
     }
     val message = stringResource(id = R.string.session_sent_to_trash)
     var name by rememberSaveable {
@@ -72,7 +72,7 @@ fun SessionDialog(
         },
         onAccept = {
             val s = state.currentSession.copy(
-                eventDateMillis = eventDate,
+                sessionDateMillis = eventDate,
                 lastAccessMillis = System.currentTimeMillis(),
                 name = name.trim(),
                 notes = notes.trim(),
@@ -99,7 +99,7 @@ fun SessionDialog(
             when (s) {
                 Show.DIALOG -> {
                     Column {
-                        if (state.currentSession.eventDateMillis > 0) {
+                        if (state.currentSession.sessionDateMillis > 0) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly

@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.type.LabelScreen
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.EmptyListText
@@ -58,8 +58,8 @@ fun LabelSelectionContent(
         derivedStateOf {
             state.tags.sortedWith(
                 when (sharedState.tagSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
@@ -68,8 +68,8 @@ fun LabelSelectionContent(
         derivedStateOf {
             state.persons.sortedWith(
                 when (sharedState.personSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
@@ -78,8 +78,8 @@ fun LabelSelectionContent(
         derivedStateOf {
             state.places.sortedWith(
                 when (sharedState.placeSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }

@@ -1,9 +1,9 @@
 package com.deslomator.tagtimer.state
 
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 
 data class SharedState(
-    val tagSort: Sort = Sort.COLOR,
-    val personSort: Sort = Sort.NAME,
-    val placeSort: Sort = Sort.NAME,
+    val tagSort: LabelSort = LabelSort.COLOR,
+    val personSort: LabelSort = LabelSort.NAME,
+    val placeSort: LabelSort = LabelSort.NAME,
 )

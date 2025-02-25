@@ -4,7 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.type.PrefKey
+import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,12 +25,15 @@ class SessionsTabViewModel @Inject constructor(
     private val appDao: AppDao,
 ): ViewModel() {
 
+    private val _prefs = appDao.getPreferences()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _state = MutableStateFlow(SessionsTabState())
     private val _sessions = appDao.getActiveSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_state, _sessions) { state, sessions ->
+    val state = combine(_prefs, _state, _sessions) { prefs, state, sessions ->
         state.copy(
             sessions = sessions,
+            sessionSort = prefs.firstOrNull { it.key == PrefKey.SESSION_SORT.name }?.getSessionSort() ?: SessionSort.LAST_ACCESS
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsTabState())
 
@@ -70,6 +76,13 @@ class SessionsTabViewModel @Inject constructor(
             is SessionsTabAction.CopySessionClicked -> {
                 copySession(action.copyString)
                 _state.update { it.copy(showSessionDialog = false) }
+            }
+            is SessionsTabAction.SessionSortClicked -> {
+                val pref = Preference(
+                    key = PrefKey.SESSION_SORT.name,
+                    value = action.sessionSort.name
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
             }
         }
     }

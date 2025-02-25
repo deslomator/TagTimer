@@ -220,7 +220,7 @@ interface AppDao {
     fun getPreferences(): Flow<List<Preference>>
     @Query("SELECT * FROM preferences")
     fun getAllPreferencesList(): List<Preference>
-    @Query("SELECT * FROM preferences WHERE sKey = :key")
+    @Query("SELECT * FROM preferences WHERE `key` = :key")
     suspend fun getPreference(key: String): Preference
 }
 

@@ -6,7 +6,7 @@ import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.type.PrefKey
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.SharedState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,9 +26,9 @@ class SharedViewModel @Inject constructor(
     private val _state = MutableStateFlow(SharedState())
     val state = combine(_state, _prefs) { state, prefs ->
         state.copy(
-            tagSort = prefs.firstOrNull { it.sKey == PrefKey.TAG_SORT.name }?.getSort() ?: Sort.COLOR,
-            personSort = prefs.firstOrNull { it.sKey == PrefKey.PERSON_SORT.name }?.getSort() ?: Sort.NAME,
-            placeSort = prefs.firstOrNull { it.sKey == PrefKey.PLACE_SORT.name }?.getSort() ?: Sort.NAME,
+            tagSort = prefs.firstOrNull { it.key == PrefKey.TAG_SORT.name }?.getLabelSort() ?: LabelSort.COLOR,
+            personSort = prefs.firstOrNull { it.key == PrefKey.PERSON_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
+            placeSort = prefs.firstOrNull { it.key == PrefKey.PLACE_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -40,22 +40,22 @@ class SharedViewModel @Inject constructor(
         when(action) {
             is SharedAction.TagSortClicked -> {
                 val pref = Preference(
-                    value = action.tagSort.name,
-                    sKey = PrefKey.TAG_SORT.name
+                    key = PrefKey.TAG_SORT.name,
+                    value = action.tagSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
             is SharedAction.PersonSortClicked -> {
                 val pref = Preference(
-                    value = action.personSort.name,
-                    sKey = PrefKey.PERSON_SORT.name
+                    key = PrefKey.PERSON_SORT.name,
+                    value = action.personSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
             is SharedAction.PlaceSortClicked -> {
                 val pref = Preference(
-                    value = action.placeSort.name,
-                    sKey = PrefKey.PLACE_SORT.name
+                    key = PrefKey.PLACE_SORT.name,
+                    value = action.placeSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }

@@ -20,7 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,12 +35,12 @@ fun LabelsTopBar(
     showTagDialog: Boolean,
     showPersonDialog: Boolean,
     showPlaceDialog: Boolean,
-    tagSort: Sort,
-    personSort: Sort,
-    placeSort: Sort,
-    onTagSort: (Sort) -> Unit,
-    onPersonSort: (Sort) -> Unit,
-    onPlaceSort: (Sort) -> Unit,
+    tagSort: LabelSort,
+    personSort: LabelSort,
+    placeSort: LabelSort,
+    onTagSort: (LabelSort) -> Unit,
+    onPersonSort: (LabelSort) -> Unit,
+    onPlaceSort: (LabelSort) -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -55,15 +55,17 @@ fun LabelsTopBar(
                 }
             }
         },
-        title = { Text(
-            text = title,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        ) },
+        title = {
+            Text(
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
         actions = {
             if (!showTagDialog && !showPersonDialog && !showPlaceDialog) {
-                AnimatedContent(currentPage) {
-                    when (it) {
+                AnimatedContent(currentPage) { cpg ->
+                    when (cpg) {
                         0 -> {
                             Row {
                                 IconButton(
@@ -76,15 +78,13 @@ fun LabelsTopBar(
                                 }
                                 SortMenu(
                                     currentSort = tagSort,
-                                    onNameSortClick = {
-                                        onTagSort(Sort.NAME)
-                                    },
-                                    onColorSortClick = {
-                                        onTagSort(Sort.COLOR)
+                                    onItemClick = {
+                                        onTagSort(it)
                                     }
                                 )
                             }
                         }
+
                         1 -> {
                             Row {
                                 IconButton(
@@ -97,15 +97,13 @@ fun LabelsTopBar(
                                 }
                                 SortMenu(
                                     currentSort = personSort,
-                                    onNameSortClick = {
-                                        onPersonSort(Sort.NAME)
-                                    },
-                                    onColorSortClick = {
-                                        onPersonSort(Sort.COLOR)
+                                    onItemClick = {
+                                        onPersonSort(it)
                                     }
                                 )
                             }
                         }
+
                         else -> {
                             Row {
                                 IconButton(
@@ -118,11 +116,8 @@ fun LabelsTopBar(
                                 }
                                 SortMenu(
                                     currentSort = placeSort,
-                                    onNameSortClick = {
-                                        onPlaceSort(Sort.NAME)
-                                    },
-                                    onColorSortClick = {
-                                        onPlaceSort(Sort.COLOR)
+                                    onItemClick = {
+                                        onPlaceSort(it)
                                     }
                                 )
                             }
@@ -137,9 +132,8 @@ fun LabelsTopBar(
 
 @Composable
 private fun SortMenu(
-    currentSort: Sort,
-    onNameSortClick: () -> Unit,
-    onColorSortClick: () -> Unit,
+    currentSort: LabelSort,
+    onItemClick: (LabelSort) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
     IconButton(
@@ -154,45 +148,27 @@ private fun SortMenu(
         expanded = showMenu,
         onDismissRequest = { showMenu = false }
     ) {
-        DropdownMenuItem(
-            text = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = currentSort == Sort.NAME,
-                        onClick = {
-                            showMenu = false
-                            onNameSortClick()
-                        }
-                    )
-                    Text(text = stringResource(R.string.sort_by_name))
-                }
-            },
-            onClick = {
-                showMenu = false
-                onNameSortClick()
-            },
-        )
-        DropdownMenuItem(
-            text = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    RadioButton(
-                        selected = currentSort == Sort.COLOR,
-                        onClick = {
-                            showMenu = false
-                            onColorSortClick()
-                        }
-                    )
-                    Text(text = stringResource(R.string.sort_by_color))
-                }
-            },
-            onClick = {
-                showMenu = false
-                onColorSortClick()
-            },
-        )
+        LabelSort.entries.forEach {
+            DropdownMenuItem(
+                text = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        RadioButton(
+                            selected = currentSort == it,
+                            onClick = {
+                                showMenu = false
+                                onItemClick(it)
+                            }
+                        )
+                        Text(text = stringResource(it.stringId))
+                    }
+                },
+                onClick = {
+                    showMenu = false
+                    onItemClick(it)
+                },
+            )
+        }
     }
 }

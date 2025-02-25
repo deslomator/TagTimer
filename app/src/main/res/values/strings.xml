@@ -71,6 +71,9 @@
     <string name="long_press_to_select_unselect">Long press to Select or Unselect label</string>
     <string name="sort_by_name">sort by name</string>
     <string name="sort_by_color">sort by color</string>
+    <string name="sort_by_session_date">sort by session date</string>
+    <string name="sort_by_session_name">sort by session name</string>
+    <string name="sort_by_last_access">sort by last access</string>
     <string name="copy">Copy</string>
     <string name="full_backup">Full Backup</string>
     <string name="backup_deleted">Backup deleted</string>

@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,7 +30,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
-import com.deslomator.tagtimer.model.type.Sort
+import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
@@ -40,7 +39,6 @@ import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LabelsTabContent(
     paddingValues: PaddingValues,
@@ -55,8 +53,8 @@ fun LabelsTabContent(
         derivedStateOf {
             state.tags.sortedWith(
                 when (state.tagSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
@@ -65,8 +63,8 @@ fun LabelsTabContent(
         derivedStateOf {
             state.persons.sortedWith(
                 when (state.personSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
@@ -75,8 +73,8 @@ fun LabelsTabContent(
         derivedStateOf {
             state.places.sortedWith(
                 when (state.placeSort) {
-                    Sort.COLOR -> compareBy { it.color.toColor().hue() }
-                    Sort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
+                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
+                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
         }
