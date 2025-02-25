@@ -90,4 +90,5 @@
     <string name="warning_this_will_erase">WARNING: all current app data will be deleted</string>
     <string name="select_time">Select time</string>
     <string name="this_will_keep_current_data">Existing data will be preserved</string>
+    <string name="set_time">Set time</string>
 </resources>

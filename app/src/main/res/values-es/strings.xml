@@ -90,4 +90,5 @@
     <string name="select_time">Seleccionar hora</string>
     <string name="error_loading_backup">Error al cargar el archivo \n%1s\n%2s</string>
     <string name="this_will_keep_current_data">Se conservarán los datos actuales</string>
+    <string name="set_time">Modifica el tiempo</string>
 </resources>

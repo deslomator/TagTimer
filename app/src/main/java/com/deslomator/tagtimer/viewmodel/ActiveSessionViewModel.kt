@@ -159,8 +159,10 @@ class ActiveSessionViewModel @Inject constructor(
             }
             is ActiveSessionAction.AcceptTimeDialog -> {
                 val s = state.value.currentSession
-                val newCursor = s.startTimestampMillis + action.offset
-                val updated = s.copy(startTimestampMillis = newCursor)
+                val updated = s.copy(
+                    startTimestampMillis = System.currentTimeMillis() - action.newTime,
+                    durationMillis = action.newTime
+                )
                 _state.update { it.copy(
                     currentSession = updated,
                     showTimeDialog = false

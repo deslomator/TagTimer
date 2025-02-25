@@ -217,11 +217,9 @@ fun ActiveSessionContent(
             exit = fadeOut()
         ) {
             TimeDialog(
-                current = state.currentSession.durationMillis.toFloat(),
-                // TODO set offset
-                maximum = state.currentSession.durationMillis.toFloat(),
+                current = state.currentSession.durationMillis,
                 onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
-                onAccept = { onAction(ActiveSessionAction.AcceptTimeDialog(it.toLong())) }
+                onAccept = { onAction(ActiveSessionAction.AcceptTimeDialog(it)) }
             )
         }
     }
