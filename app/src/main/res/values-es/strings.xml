@@ -75,6 +75,7 @@
     <string name="sort_by_last_access">Ordenar por último uso</string>
     <string name="copy">Copia</string>
     <string name="full_backup">Copia Completa</string>
+    <string name="restore_backup">Restaurar Copia</string>
     <string name="backup_deleted">Copia eliminada</string>
     <string name="backup_restored">Copia restaurada</string>
     <string name="backup_restore">Copiar y Restaurar</string>

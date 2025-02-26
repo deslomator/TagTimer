@@ -10,6 +10,7 @@ import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.type.Backup
+import com.deslomator.tagtimer.model.type.BackupButton
 import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.util.restoreBackup
@@ -65,36 +66,26 @@ class BackupViewModel @Inject constructor(
                     )
                 }
             }
-            is BackupAction.BackupLabelsClicked -> {
-                viewModelScope.launch {
-                    val result = backupInternally(
-                        labelsOnly = true,
-                        appDao = appDao,
-                        backupDir = backupDir,
-                        file = null,
-                    )
-                    _state.update {
-                        it.copy(
-                            result = result,
-                        )
+            is BackupAction.TopButtonClicked -> {
+                when (action.button) {
+                    BackupButton.LABELS, BackupButton.FULL -> {
+                        viewModelScope.launch {
+                            val lbOnly = action.button == BackupButton.LABELS
+                            val result = backupInternally(
+                                labelsOnly = lbOnly,
+                                appDao = appDao,
+                                backupDir = backupDir,
+                                file = null,
+                            )
+                            _state.update {
+                                it.copy(
+                                    result = result,
+                                )
+                            }
+                            reloadFiles()
+                        }
                     }
-                    reloadFiles()
-                }
-            }
-            is BackupAction.FullBackupClicked -> {
-                viewModelScope.launch {
-                    val result = backupInternally(
-                        labelsOnly = false,
-                        appDao = appDao,
-                        backupDir = backupDir,
-                        file = null,
-                    )
-                    _state.update {
-                        it.copy(
-                            result = result,
-                        )
-                    }
-                    reloadFiles()
+                    BackupButton.RESTORE -> {}
                 }
             }
             is BackupAction.RestoreBackupClicked -> {

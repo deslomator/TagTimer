@@ -9,9 +9,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -31,9 +34,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.BackupAction
+import com.deslomator.tagtimer.model.type.BackupButton
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -50,7 +55,8 @@ fun BackupContent(
     var activityResult by remember { mutableStateOf<Uri?>(null) }
     var showSnackbar by rememberSaveable { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.CreateDocument("application/json")) { uri ->
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
         activityResult = uri
     }
     activityResult?.let {
@@ -58,7 +64,7 @@ fun BackupContent(
         activityResult = null
     }
     LaunchedEffect(state.result, showSnackbar) {
-        if (showSnackbar){
+        if (showSnackbar) {
             val r = showSnackbar(
                 scope = scope,
                 snackbarHostState = snackbarHostState,
@@ -76,68 +82,52 @@ fun BackupContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Button(
-                    onClick = {
-                        showSnackbar = true
-                        onAction(BackupAction.FullBackupClicked)
-                    }
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(stringResource(id = R.string.full_backup))
-                        Icon(
-                            painter = painterResource(id = R.drawable.document_and_ray),
-                            contentDescription = null
-                        )
-                    }
-                }
-                Button(
-                    onClick = {
-                        showSnackbar = true
-                        onAction(BackupAction.BackupLabelsClicked)
-                    }
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(stringResource(id = R.string.backup_labels))
-                        Row {
-                            Icon(
-                                painter = painterResource(id = R.drawable.tag),
-                                contentDescription = null
+                BackupButton.entries.forEach { button ->
+                    Button(
+                        modifier = Modifier.widthIn(max = 127.dp),
+                        onClick = {
+                            showSnackbar = true
+                            onAction(BackupAction.TopButtonClicked(button))
+                        }) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = stringResource(id = button.textId),
+                                textAlign = TextAlign.Center
                             )
-                            Icon(
-                                painter = painterResource(id = R.drawable.person),
-                                contentDescription = null
-                            )
-                            Icon(
-                                painter = painterResource(id = R.drawable.place),
-                                contentDescription = null
-                            )
+                            Spacer(Modifier.size(4.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceEvenly
+                            ) {
+                                button.iconIds.forEach { iconId ->
+                                    Icon(
+                                        painter = painterResource(id = iconId),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
                     }
                 }
             }
+            Spacer(Modifier.size(15.dp))
+            HorizontalDivider()
+            Spacer(Modifier.size(5.dp))
             LazyColumn(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 contentPadding = PaddingValues(6.dp)
             ) {
-                items(
-                    items = state.files,
-                    key = { it.absolutePath }
-                ) { file ->
+                items(items = state.files, key = { it.absolutePath }) { file ->
                     FileItem(
                         file = file,
                         onDeleteClick = {
                             showSnackbar(
-                                scope,
-                                snackbarHostState,
-                                context.getString(R.string.backup_deleted)
+                                scope, snackbarHostState, context.getString(R.string.backup_deleted)
                             )
                             onAction(BackupAction.DeleteBackupClicked(file))
                         },
@@ -154,7 +144,7 @@ fun BackupContent(
                 }
             }
             HorizontalDivider()
-            EmptyListText(text = stringResource(id = R.string.tap_file_for_actions),)
+            EmptyListText(text = stringResource(id = R.string.tap_file_for_actions))
         }
     }
 }

@@ -76,6 +76,7 @@
     <string name="sort_by_last_access">Sort by last access</string>
     <string name="copy">Copy</string>
     <string name="full_backup">Full Backup</string>
+    <string name="restore_backup">Restore Backup</string>
     <string name="backup_deleted">Backup deleted</string>
     <string name="backup_restored">Backup restored</string>
     <string name="backup_restore">Backup and Restore</string>
