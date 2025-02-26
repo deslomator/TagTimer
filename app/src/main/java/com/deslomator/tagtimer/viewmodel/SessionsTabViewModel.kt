@@ -12,7 +12,6 @@ import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -39,13 +38,14 @@ class SessionsTabViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _sessions = _sort.flatMapLatest { sSort ->
-            when (sSort) {
-                SessionSort.DATE -> appDao.getSessionsByDate()
-                SessionSort.LAST_ACCESS -> appDao.getSessionsByLastAccess()
-                SessionSort.NAME -> appDao.getSessionsByName()
-            }
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
-    val state = combine(_sort, _state, _sessions) { sort, state, sessions ->
+//        Log.d(TAG, "choosing sorted session list")
+        when (sSort) {
+            SessionSort.DATE -> appDao.getSessionsByDate()
+            SessionSort.LAST_ACCESS -> appDao.getSessionsByLastAccess()
+            SessionSort.NAME -> appDao.getSessionsByName()
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    val state = combine(_state, _sort, _sessions) { state, sort, sessions ->
         state.copy(
             sessions = sessions, sessionSort = sort
         )
@@ -102,7 +102,6 @@ class SessionsTabViewModel @Inject constructor(
             }
 
             is SessionsTabAction.SessionSortClicked -> {
-//                Log.d(TAG, "session sort: ${action.sessionSort.name}")
                 val pref = Preference(
                     key = PrefKey.SESSION_SORT.name, value = action.sessionSort.name
                 )
@@ -138,32 +137,6 @@ class SessionsTabViewModel @Inject constructor(
                 appDao.getPreSelectedPlacesListForSession(s.id!!).map { it.copy(sessionId = newId) }
                     .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
             }
-        }
-    }
-
-    /**
-     * only gets called for running sessions, no need to check
-     */
-    private fun getSessionDuration(s: Session): Long {
-        return System.currentTimeMillis() - s.startTimestampMillis
-    }
-
-    private suspend fun updateDurations() {
-        while (true) {
-            val sessions = state.value.sessions
-            sessions.filter { it.running }.forEach { runningSession ->
-                val updated = runningSession.copy(
-                    durationMillis = getSessionDuration(runningSession)
-                )
-                appDao.upsertSession(updated)
-            }
-            delay(1000)
-        }
-    }
-
-    init {
-        viewModelScope.launch {
-            updateDurations()
         }
     }
 

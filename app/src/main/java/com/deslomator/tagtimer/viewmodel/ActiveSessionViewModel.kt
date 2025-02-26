@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,10 +26,11 @@ import javax.inject.Inject
 @HiltViewModel
 class ActiveSessionViewModel @Inject constructor(
     private val appDao: AppDao, savedStateHandle: SavedStateHandle
-): ViewModel() {
+) : ViewModel() {
 
     private val _sessionId = MutableStateFlow(0L)
     private val _state = MutableStateFlow(ActiveSessionState())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _events = _sessionId
         .flatMapLatest {
@@ -39,6 +39,7 @@ class ActiveSessionViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _sessionId
         .flatMapLatest {
@@ -47,6 +48,7 @@ class ActiveSessionViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _persons = appDao.getActivePersons()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPersons = _sessionId
         .flatMapLatest {
@@ -55,6 +57,7 @@ class ActiveSessionViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
     private val _places = appDao.getActivePlaces()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPlaces = _sessionId
         .flatMapLatest {
@@ -81,7 +84,7 @@ class ActiveSessionViewModel @Inject constructor(
     )
 
     fun onAction(action: ActiveSessionAction) {
-        when(action) {
+        when (action) {
             is ActiveSessionAction.PreSelectedTagClicked -> {
                 viewModelScope.launch {
                     val event = Event(
@@ -94,10 +97,11 @@ class ActiveSessionViewModel @Inject constructor(
                     )
                     val id = appDao.upsertEvent(event)
                     _state.update {
-                        it.copy( eventForScrollTo = event.copy(id = id))
+                        it.copy(eventForScrollTo = event.copy(id = id))
                     }
                 }
             }
+
             is ActiveSessionAction.ExitSession -> {
                 val time = System.currentTimeMillis()
                 val session = state.value.currentSession.copy(
@@ -106,8 +110,8 @@ class ActiveSessionViewModel @Inject constructor(
                     eventCount = state.value.events.size,
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
-                Log.d(TAG, "exitSession, running: ${session.running}")
             }
+
             is ActiveSessionAction.TrashEventSwiped -> {
                 viewModelScope.launch {
                     // we don't want the Event that was retrieved
@@ -115,14 +119,19 @@ class ActiveSessionViewModel @Inject constructor(
                     // get the updated one from the DB instead
                     val event = appDao.getEvent(action.event.id!!)
                     val trashed = event.copy(inTrash = true)
-                    appDao.upsertEvent(trashed) }
+                    appDao.upsertEvent(trashed)
+                }
             }
+
             is ActiveSessionAction.EventClicked -> {
-                _state.update { it.copy(
-                    eventForDialog = action.event,
-                    showEventEditionDialog = true
-                ) }
+                _state.update {
+                    it.copy(
+                        eventForDialog = action.event,
+                        showEventEditionDialog = true
+                    )
+                }
             }
+
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 runBlocking {
                     viewModelScope.launch { appDao.upsertEvent(action.event) }
@@ -140,49 +149,64 @@ class ActiveSessionViewModel @Inject constructor(
                 }
                 createNewLabels(action.event)
             }
+
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
+
             ActiveSessionAction.ShareSessionClicked -> {
-                _state.update { it.copy(
-                    dataToShare = state.value.events.toCsv(state.value.currentSession),
-                    shareData = true
-                ) }
+                _state.update {
+                    it.copy(
+                        dataToShare = state.value.events.toCsv(state.value.currentSession),
+                        shareData = true
+                    )
+                }
             }
+
             ActiveSessionAction.SessionShared -> {
                 _state.update { it.copy(shareData = false) }
             }
+
             is ActiveSessionAction.TimeClicked -> {
-                _state.update { it.copy(
-                    showTimeDialog = true
-                ) }
+                _state.update {
+                    it.copy(
+                        showTimeDialog = true
+                    )
+                }
             }
+
             is ActiveSessionAction.AcceptTimeDialog -> {
                 val s = state.value.currentSession
                 val updated = s.copy(
                     startTimestampMillis = System.currentTimeMillis() - action.newTime,
                     durationMillis = action.newTime
                 )
-                _state.update { it.copy(
-                    currentSession = updated,
-                    showTimeDialog = false
-                ) }
+                _state.update {
+                    it.copy(
+                        currentSession = updated,
+                        showTimeDialog = false
+                    )
+                }
             }
+
             is ActiveSessionAction.DismissTimeDialog -> {
                 _state.update { it.copy(showTimeDialog = false) }
             }
+
             is ActiveSessionAction.PreSelectedPersonClicked -> {
                 val person = if (action.personName == state.value.currentPersonName) ""
                 else action.personName
                 _state.update { it.copy(currentPersonName = person) }
             }
+
             is ActiveSessionAction.PreSelectedPlaceClicked -> {
                 val place = if (action.placeName == state.value.currentPlaceName) ""
                 else action.placeName
                 _state.update { it.copy(currentPlaceName = place) }
             }
+
             is ActiveSessionAction.PlayPauseClicked -> {
-                val s =state.value.currentSession
+                val s = state.value.currentSession
                 val d = getSessionDuration()
                 if (s.running) {
                     val updated = s.copy(
@@ -287,9 +311,8 @@ class ActiveSessionViewModel @Inject constructor(
                 val updated = s.copy(
                     startTimestampMillis = System.currentTimeMillis() - s.durationMillis
                 )
-                _state.update { it.copy( currentSession = updated) }
+                _state.update { it.copy(currentSession = updated) }
             }
-            // TODO check updateDuration() is executed last
             updateDuration()
         }
     }
