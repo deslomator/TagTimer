@@ -6,11 +6,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.model.type.Shared
 import com.deslomator.tagtimer.state.BackupState
-import com.deslomator.tagtimer.ShareData
+import java.io.File
 
 @Composable
 fun BackupScaffold(
@@ -54,3 +56,16 @@ fun BackupScaffold(
 }
 
 private const val TAG = "BackupScaffold"
+
+@Preview
+@Composable
+fun BackupScaffoldPreview() {
+    val s = BackupState(
+        files = listOf(File("dir/file1"), File("file2"), File("file3"))
+    )
+    BackupScaffold(
+        navController = NavHostController(LocalContext.current),
+        state = s,
+        onAction = {}
+    )
+}

@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.ui.theme.topBarColors
 
@@ -38,3 +39,9 @@ fun BackupTopBar(
 }
 
 private const val TAG = "BackupTopBar"
+
+@Preview
+@Composable
+fun BackupTopBarPreview() {
+    BackupTopBar {  }
+}
