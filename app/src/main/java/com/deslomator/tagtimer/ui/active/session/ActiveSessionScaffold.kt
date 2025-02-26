@@ -15,7 +15,7 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.navigation.screen.ActiveScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.ui.active.ShareData
+import com.deslomator.tagtimer.ShareData
 
 @Composable
 fun ActiveSessionScaffold(

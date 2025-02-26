@@ -85,7 +85,9 @@ class BackupViewModel @Inject constructor(
                             reloadFiles()
                         }
                     }
-                    BackupButton.RESTORE -> {}
+                    BackupButton.RESTORE -> {
+                        _state.update { it.copy(loadFileFromStorage = true) }
+                    }
                 }
             }
             is BackupAction.RestoreBackupClicked -> {
@@ -101,16 +103,31 @@ class BackupViewModel @Inject constructor(
             is BackupAction.BackupShared -> {
                 _state.update { it.copy(shareFile = false) }
             }
-            is BackupAction.SaveBackupClicked -> {
+            is BackupAction.SaveBackupToStorageClicked -> {
                 _state.update { it.copy(currentFile = action.file) }
             }
-            is BackupAction.UriReceived -> {
+            is BackupAction.SaveToStorageUriReceived -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     val result = saveToStorage(action.uri)
                     _state.update { it.copy(
                         result = result,
                     ) }
                 }
+            }
+            is BackupAction.LoadFromStorageUriReceived -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    val result = loadFromStorage(action.uri, action.tempFile)
+                    _state.update { it.copy(
+                        result = result,
+                        loadFileFromStorage = false
+                    ) }
+                }
+            }
+            is BackupAction.LoadFromStorageDialogDismissed -> {
+                _state.update { it.copy(
+                    loadFileFromStorage = false,
+                    result = Result.NothingRestored
+                ) }
             }
         }
     }
@@ -123,6 +140,15 @@ class BackupViewModel @Inject constructor(
         _state.update { it.copy(
             result = Result.Deleted,
         ) }
+    }
+
+    private fun loadFromStorage(uri: Uri, tempFile: File): Result {
+        uri.let { contentResolver.openInputStream(it) }.use { input ->
+            tempFile.outputStream().use { output ->
+                input?.copyTo(output)
+            }
+        }
+        return restoreBackup(appDao, Uri.fromFile(tempFile))
     }
 
     /**

@@ -2,16 +2,20 @@ package com.deslomator.tagtimer.ui.backup
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
@@ -42,6 +46,7 @@ import com.deslomator.tagtimer.model.type.BackupButton
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.showSnackbar
+import java.io.File
 
 @Composable
 fun BackupContent(
@@ -52,17 +57,41 @@ fun BackupContent(
     context: Context
 ) {
     val scope = rememberCoroutineScope()
-    var activityResult by remember { mutableStateOf<Uri?>(null) }
     var showSnackbar by rememberSaveable { mutableStateOf(false) }
-    val launcher = rememberLauncherForActivityResult(
+
+    var saveToStorageActivityResult by remember { mutableStateOf<Uri?>(null) }
+    val saveToStorageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
-        activityResult = uri
+        saveToStorageActivityResult = uri
     }
-    activityResult?.let {
-        onAction(BackupAction.UriReceived(it))
-        activityResult = null
+    saveToStorageActivityResult?.let {
+        onAction(BackupAction.SaveToStorageUriReceived(it))
+        saveToStorageActivityResult = null
     }
+
+    var loadFromStorageActivityResult by remember { mutableStateOf<Uri?>(null) }
+    val loadFromStorageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        loadFromStorageActivityResult = uri
+        if (uri == null) onAction(BackupAction.LoadFromStorageDialogDismissed)
+        showSnackbar = true
+    }
+    loadFromStorageActivityResult?.let { storageUri ->
+        val tempFile = File(
+            context.cacheDir,
+            "tempFile"
+        )
+        onAction(BackupAction.LoadFromStorageUriReceived(storageUri, tempFile))
+        loadFromStorageActivityResult = null
+        showSnackbar = true
+    }
+    LaunchedEffect(state.loadFileFromStorage) {
+        if (state.loadFileFromStorage)
+            loadFromStorageLauncher.launch(arrayOf("application/json"))
+    }
+
     LaunchedEffect(state.result, showSnackbar) {
         if (showSnackbar) {
             val r = showSnackbar(
@@ -82,22 +111,31 @@ fun BackupContent(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Max),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
                 BackupButton.entries.forEach { button ->
                     Button(
-                        modifier = Modifier.widthIn(max = 127.dp),
+                        modifier = Modifier
+                            .widthIn(max = 127.dp)
+                            .fillMaxHeight(),
                         onClick = {
-                            showSnackbar = true
+                            showSnackbar = button.showSnackBar
                             onAction(BackupAction.TopButtonClicked(button))
                         }) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(
-                                text = stringResource(id = button.textId),
-                                textAlign = TextAlign.Center
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = stringResource(id = button.textId),
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                             Spacer(Modifier.size(4.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -137,8 +175,8 @@ fun BackupContent(
                             onAction(BackupAction.RestoreBackupClicked(file))
                         },
                         onSaveClick = {
-                            onAction(BackupAction.SaveBackupClicked(file))
-                            launcher.launch(file.name)
+                            onAction(BackupAction.SaveBackupToStorageClicked(file))
+                            saveToStorageLauncher.launch(file.name)
                         },
                     )
                 }

@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.model.type.Shared
 import com.deslomator.tagtimer.state.BackupState
-import com.deslomator.tagtimer.ui.active.ShareData
+import com.deslomator.tagtimer.ShareData
 
 @Composable
 fun BackupScaffold(

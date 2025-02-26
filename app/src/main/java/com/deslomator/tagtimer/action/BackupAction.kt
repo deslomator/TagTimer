@@ -8,8 +8,10 @@ sealed interface BackupAction {
     class TopButtonClicked(val button: BackupButton) : BackupAction
     class DeleteBackupClicked(val file: File) : BackupAction
     class ShareBackupClicked(val file: File) : BackupAction
-    class SaveBackupClicked(val file: File) : BackupAction
+    class SaveBackupToStorageClicked(val file: File) : BackupAction
     class RestoreBackupClicked(val file: File) : BackupAction
-    class UriReceived(val uri: Uri) : BackupAction
+    class SaveToStorageUriReceived(val uri: Uri) : BackupAction
+    class LoadFromStorageUriReceived(val uri: Uri, val tempFile: File) : BackupAction
+    data object LoadFromStorageDialogDismissed : BackupAction
     data object BackupShared : BackupAction
 }

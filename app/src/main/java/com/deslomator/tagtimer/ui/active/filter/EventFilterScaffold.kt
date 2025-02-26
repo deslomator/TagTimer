@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.ui.active.ShareData
+import com.deslomator.tagtimer.ShareData
 
 @Composable
 fun EventFilterScaffold(

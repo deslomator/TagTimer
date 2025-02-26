@@ -75,7 +75,7 @@
     <string name="sort_by_last_access">Ordenar por último uso</string>
     <string name="copy">Copia</string>
     <string name="full_backup">Copia Completa</string>
-    <string name="restore_backup">Restaurar Copia</string>
+    <string name="from_storage">Desde Almacenamiento</string>
     <string name="backup_deleted">Copia eliminada</string>
     <string name="backup_restored">Copia restaurada</string>
     <string name="backup_restore">Copiar y Restaurar</string>
@@ -90,6 +90,7 @@
     <string name="import_data">Importar datos</string>
     <string name="save_failed">No se pudo guardar el fichero</string>
     <string name="open_file_error">No se pudo abrir el fichero</string>
+    <string name="nothing_restored">Nada que restaurar</string>
     <string name="warning_this_will_erase">ATENCIÓN: se borrarán todos los datos actuales</string>
     <string name="select_time">Seleccionar hora</string>
     <string name="error_loading_backup">Error al cargar el archivo \n%1s\n%2s</string>

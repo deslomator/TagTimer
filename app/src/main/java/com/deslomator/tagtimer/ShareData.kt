@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active
+package com.deslomator.tagtimer
 
 import android.content.Context
 import android.content.Intent
