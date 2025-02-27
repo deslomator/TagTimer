@@ -32,7 +32,7 @@ class SessionsTabViewModel @Inject constructor(
         prefsList.firstOrNull { item ->
             item.key == PrefKey.SESSION_SORT.name
         }?.getSessionSort() ?: SessionSort.LAST_ACCESS
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), SessionSort.LAST_ACCESS)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionSort.LAST_ACCESS)
 
     private val _state = MutableStateFlow(SessionsTabState())
 
@@ -44,7 +44,7 @@ class SessionsTabViewModel @Inject constructor(
             SessionSort.LAST_ACCESS -> appDao.getSessionsByLastAccess()
             SessionSort.NAME -> appDao.getSessionsByName()
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val state = combine(_state, _sort, _sessions) { state, sort, sessions ->
         state.copy(
             sessions = sessions, sessionSort = sort

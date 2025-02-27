@@ -22,7 +22,7 @@ class SharedViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _prefs = appDao.getPreferences()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _state = MutableStateFlow(SharedState())
     val state = combine(_state, _prefs) { state, prefs ->
         state.copy(

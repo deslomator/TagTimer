@@ -36,34 +36,34 @@ class ActiveSessionViewModel @Inject constructor(
         .flatMapLatest {
             appDao.getActiveEventsForSession(_sessionId.value)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _tags = appDao.getActiveTags()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _sessionId
         .flatMapLatest {
             appDao.getPreSelectedTagsForSession(_sessionId.value)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _persons = appDao.getActivePersons()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPersons = _sessionId
         .flatMapLatest {
             appDao.getPreSelectedPersonsForSession(_sessionId.value)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _places = appDao.getActivePlaces()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPlaces = _sessionId
         .flatMapLatest {
             appDao.getPreSelectedPlacesForSession(_sessionId.value)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
         _state, _events, _preSelectedTags, _tags, _preSelectedPersons, _persons,

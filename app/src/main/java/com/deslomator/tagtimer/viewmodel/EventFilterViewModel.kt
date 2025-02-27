@@ -43,16 +43,16 @@ class EventFilterViewModel @Inject constructor(
         .flatMapLatest {
             appDao.getActiveEventsForSession(_sessionId.value)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _tags = appDao.getActiveTags()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _persons = appDao.getActivePersons()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _places = appDao.getActivePlaces()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _filteredEvents = combine(
         _events, _currentPerson, _currentPlace, _currentTags
@@ -63,7 +63,7 @@ class EventFilterViewModel @Inject constructor(
                         (if (person.isEmpty()) true else event.person == person) &&
                         (if (tags.isEmpty()) true else tags.contains(event.tag))
             }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _usedPersons = combine(
         _persons, _events, _personSort
@@ -79,7 +79,7 @@ class EventFilterViewModel @Inject constructor(
                     LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _usedPlaces = combine(
         _places, _events, _placeSort
@@ -95,7 +95,7 @@ class EventFilterViewModel @Inject constructor(
                     LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _usedTags = combine(
         _tags, _events, _tagSort
@@ -111,7 +111,7 @@ class EventFilterViewModel @Inject constructor(
                     LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
                 }
             )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _query = combine(
         _currentPerson, _currentPlace, _currentTags
@@ -120,7 +120,7 @@ class EventFilterViewModel @Inject constructor(
         ts.add(person)
         ts.add(place)
         ts.filter { it.isNotEmpty() }.joinToString(", ")
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val state = combine(
         _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTags

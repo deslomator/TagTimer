@@ -30,7 +30,7 @@ class EventTrashViewModel @Inject constructor(
         .flatMapLatest {
             appDao.getTrashedEventsForSession(_sessionId.value)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
         _state,

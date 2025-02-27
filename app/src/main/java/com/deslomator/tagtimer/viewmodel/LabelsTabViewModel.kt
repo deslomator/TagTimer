@@ -25,13 +25,13 @@ class LabelsTabViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(LabelsTabState())
     private val _prefs = appDao.getPreferences()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _tags = appDao.getActiveTags()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _persons = appDao.getActivePersons()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _places = appDao.getActivePlaces()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val state = combine(
         _state, _tags, _persons, _places, _prefs
     ) { state, tags, persons, places, prefs ->

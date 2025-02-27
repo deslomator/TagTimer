@@ -20,13 +20,13 @@ class TrashTabViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(TrashTabState())
     private val _sessions = appDao.getTrashedSessions()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _persons = appDao.getTrashedPersons()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _places = appDao.getTrashedPlaces()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     private val _tags = appDao.getTrashedTags()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val state = combine(_state, _sessions, _tags, _persons, _places) { state, sessions, tags, persons, places ->
         state.copy(
             sessions = sessions,
