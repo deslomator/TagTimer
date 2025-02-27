@@ -92,6 +92,9 @@
     <string name="save_failed">The file could not be saved</string>
     <string name="open_file_error">The file could not be opened</string>
     <string name="nothing_restored">Nothing was restored</string>
+    <string name="nothing_saved">Nothing was saved</string>
+    <string name="backup_shared">Backup shared</string>
+    <string name="nothing_shared">Nothing shared</string>
     <string name="warning_this_will_erase">WARNING: all current app data will be deleted</string>
     <string name="select_time">Select time</string>
     <string name="this_will_keep_current_data">Existing data will be preserved</string>

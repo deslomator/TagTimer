@@ -87,10 +87,13 @@
     <string name="nothing_to_backup">No hay etiquetas que guardar</string>
     <string name="restore_failed">No se pudo restaurar esta copia</string>
     <string name="nothing_to_restore">No hay nada nuevo que restaurar</string>
+    <string name="backup_shared">Backup compartido</string>
+    <string name="nothing_shared">No se envió el fichero</string>
     <string name="import_data">Importar datos</string>
     <string name="save_failed">No se pudo guardar el fichero</string>
     <string name="open_file_error">No se pudo abrir el fichero</string>
     <string name="nothing_restored">Nada que restaurar</string>
+    <string name="nothing_saved">No se guardó el fichero</string>
     <string name="warning_this_will_erase">ATENCIÓN: se borrarán todos los datos actuales</string>
     <string name="select_time">Seleccionar hora</string>
     <string name="error_loading_backup">Error al cargar el archivo \n%1s\n%2s</string>

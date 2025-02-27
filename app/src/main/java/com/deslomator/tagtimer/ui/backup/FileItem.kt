@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,17 +26,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.type.FileItemButton
 import java.io.File
 
 @Composable
 fun FileItem(
     file: File,
-    onDeleteClick: () -> Unit,
-    onShareClick: () -> Unit,
-    onRestoreClick: () -> Unit,
-    onSaveClick: () -> Unit,
+    onActionClick: (FileItemButton) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     val rotation by remember {
@@ -70,44 +70,29 @@ fun FileItem(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                IconButton(
-                    onClick = onRestoreClick
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.restore),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                IconButton(
-                    onClick = onSaveClick
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.save),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                IconButton(
-                    onClick = onShareClick
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.share),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                }
-                IconButton(
-                    onClick = onDeleteClick
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.delete_forever),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
+                FileItemButton.entries.forEach {
+                    IconButton(
+                        onClick = { onActionClick(it) }
+                    ) {
+                        Icon(
+                            modifier = Modifier.size(40.dp),
+                            painter = painterResource(id = it.iconId),
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+
+@Preview
+@Composable
+fun FileItemPreview() {
+    FileItem(
+        File("my filename"),
+        onActionClick = {},
+    )
+}

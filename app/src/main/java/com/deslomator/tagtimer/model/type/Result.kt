@@ -19,6 +19,8 @@ sealed class Result(
     data object SaveFailed : Result("Save Failed", R.string.save_failed)
     data object FileOpenError : Result("File Open Error", R.string.open_file_error)
     data object NothingRestored : Result("Nothing Restored", R.string.nothing_restored)
+    data object NothingSaved : Result("Nothing Restored", R.string.nothing_saved)
+    data object Shared : Result("Shared", R.string.nothing_saved)
 }
 
 

@@ -8,9 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.BackupAction
-import com.deslomator.tagtimer.model.type.Shared
 import com.deslomator.tagtimer.state.BackupState
 import java.io.File
 
@@ -22,15 +20,6 @@ fun BackupScaffold(
 ) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
-    if (state.shareFile && state.currentFile != null && state.currentString.isNotEmpty()) {
-        ShareData(
-            context = context,
-            fileName = state.currentFile.nameWithoutExtension,
-            data = state.currentString,
-            onDataShared = { onAction(BackupAction.BackupShared) },
-            type = Shared.Json
-        )
-    }
     Scaffold(
         topBar = {
             BackupTopBar(

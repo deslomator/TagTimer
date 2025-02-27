@@ -11,6 +11,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.type.Backup
 import com.deslomator.tagtimer.model.type.BackupButton
+import com.deslomator.tagtimer.model.type.FileItemButton
 import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.util.restoreBackup
@@ -18,6 +19,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -41,7 +43,7 @@ import javax.inject.Inject
 class BackupViewModel @Inject constructor(
     @ApplicationContext context: Context,
     private val appDao: AppDao,
-): ViewModel() {
+) : ViewModel() {
 
     private val backupDir = File(context.filesDir, "backup")
     private val contentResolver = context.contentResolver
@@ -51,95 +53,147 @@ class BackupViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), BackupState())
 
     fun onAction(action: BackupAction) {
-        when(action) {
-            is BackupAction.DeleteBackupClicked -> {
-                deleteFile(action.file)
+        when (action) {
+            is BackupAction.TopButtonClicked -> {
+                topButtonAction(action.button)
             }
-            is BackupAction.ShareBackupClicked -> {
-                val reader = BufferedReader(FileReader(action.file))
-                val string = reader.readText()
+
+            is BackupAction.FileItemActionClicked -> {
+                fileAction(action.button, action.file)
+            }
+
+            is BackupAction.BackupShared -> {
                 _state.update {
                     it.copy(
-                        currentString = string,
-                        currentFile = action.file,
-                        shareFile = true
+                        shareFile = false,
+                        result = action.result
                     )
                 }
             }
-            is BackupAction.TopButtonClicked -> {
-                when (action.button) {
-                    BackupButton.LABELS, BackupButton.FULL -> {
-                        viewModelScope.launch {
-                            val lbOnly = action.button == BackupButton.LABELS
-                            val result = backupInternally(
-                                labelsOnly = lbOnly,
-                                appDao = appDao,
-                                backupDir = backupDir,
-                                file = null,
+
+            is BackupAction.SaveToStorageUriReceived -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    if (action.uri == null) {
+                        _state.update {
+                            it.copy(
+                                saveFileToStorage = false,
+                                result = Result.NothingSaved
                             )
-                            _state.update {
-                                it.copy(
-                                    result = result,
-                                )
-                            }
-                            reloadFiles()
                         }
-                    }
-                    BackupButton.RESTORE -> {
-                        _state.update { it.copy(loadFileFromStorage = true) }
+                    } else {
+                        val result = saveToStorage(action.uri)
+                        _state.update {
+                            it.copy(
+                                result = result,
+                                saveFileToStorage = false
+                            )
+                        }
                     }
                 }
             }
-            is BackupAction.RestoreBackupClicked -> {
+
+            is BackupAction.LoadFromStorageUriReceived -> {
+                if (action.uri != null && action.tempFile != null) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val result = loadFromStorage(action.uri, action.tempFile)
+                        _state.update {
+                            it.copy(
+                                result = result,
+                                loadFileFromStorage = false
+                            )
+                        }
+                    }
+                } else {
+                    _state.update {
+                        it.copy(
+                            loadFileFromStorage = false,
+                            result = Result.NothingRestored
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun topButtonAction(button: BackupButton) {
+        when (button) {
+            BackupButton.LABELS, BackupButton.FULL -> {
                 viewModelScope.launch {
-                    val result = restoreBackup(appDao, Uri.fromFile(action.file))
+                    val lbOnly = button == BackupButton.LABELS
+                    val result = backupInternally(
+                        labelsOnly = lbOnly,
+                        appDao = appDao,
+                        backupDir = backupDir,
+                    )
                     _state.update {
                         it.copy(
                             result = result,
                         )
                     }
+                    reloadFiles()
                 }
             }
-            is BackupAction.BackupShared -> {
-                _state.update { it.copy(shareFile = false) }
-            }
-            is BackupAction.SaveBackupToStorageClicked -> {
-                _state.update { it.copy(currentFile = action.file) }
-            }
-            is BackupAction.SaveToStorageUriReceived -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val result = saveToStorage(action.uri)
-                    _state.update { it.copy(
-                        result = result,
-                    ) }
-                }
-            }
-            is BackupAction.LoadFromStorageUriReceived -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    val result = loadFromStorage(action.uri, action.tempFile)
-                    _state.update { it.copy(
-                        result = result,
-                        loadFileFromStorage = false
-                    ) }
-                }
-            }
-            is BackupAction.LoadFromStorageDialogDismissed -> {
-                _state.update { it.copy(
-                    loadFileFromStorage = false,
-                    result = Result.NothingRestored
-                ) }
+
+            BackupButton.RESTORE -> {
+                _state.update { it.copy(loadFileFromStorage = true) }
             }
         }
     }
 
-    private fun deleteFile(file: File) {
-        viewModelScope.launch(Dispatchers.IO) {
-            file.delete()
-            reloadFiles()
+    private fun fileAction(button: FileItemButton, file: File) {
+        when (button) {
+            FileItemButton.RESTORE -> {
+                viewModelScope.launch {
+                    val result = restoreBackup(appDao, Uri.fromFile(file))
+                    _state.update {
+                        it.copy(
+                            result = result,
+                            restoreBackup = true
+                        )
+                    }
+                    delay(100)
+                    _state.update {
+                        it.copy(restoreBackup = false)
+                    }
+                }
+            }
+
+            FileItemButton.SAVE_TO_STORAGE -> {
+                _state.update {
+                    it.copy(
+                        currentFile = file,
+                        saveFileToStorage = true
+                    )
+                }
+            }
+
+            FileItemButton.SHARE -> {
+                val reader = BufferedReader(FileReader(file))
+                val string = reader.readText()
+                _state.update {
+                    it.copy(
+                        currentString = string,
+                        currentFile = file,
+                        shareFile = true
+                    )
+                }
+            }
+
+            FileItemButton.DELETE -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    file.delete()
+                    reloadFiles()
+                    _state.update {
+                        it.copy(
+                            result = Result.Deleted,
+                            deleteBackup = true
+                        )
+                    }
+                    delay(100)
+                    _state.update { it.copy(deleteBackup = false) }
+                }
+            }
         }
-        _state.update { it.copy(
-            result = Result.Deleted,
-        ) }
     }
 
     private fun loadFromStorage(uri: Uri, tempFile: File): Result {
@@ -183,7 +237,10 @@ class BackupViewModel @Inject constructor(
     }
 
     private fun reloadFiles() {
-        _state.update { it.copy(files = backupDir.listFiles()?.toList()?.sortedBy { f -> f.name } ?: emptyList()) }
+        _state.update {
+            it.copy(files = backupDir.listFiles()?.toList()?.sortedBy { f -> f.name }
+                ?: emptyList())
+        }
     }
 
     init {
@@ -200,7 +257,6 @@ private fun backupInternally(
     labelsOnly: Boolean = false,
     appDao: AppDao,
     backupDir: File,
-    file: File? = null
 ): Result {
     var result: Result = Result.BackupFailed
     runBlocking(Dispatchers.IO) {
@@ -209,8 +265,8 @@ private fun backupInternally(
         ).format(Date())
         val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
         val fileName = "${prefix}_${timestamp}.json"
-        val new = file ?: File(backupDir, fileName)
-        if (new.createNewFile()) {
+        val file = File(backupDir, fileName)
+        if (file.createNewFile()) {
             val dbBackup = getDbBackup(appDao, labelsOnly)
             if (dbBackup.isEmpty()) {
                 Log.e("backupInternally()", "Nothing to backup, database is empty")
@@ -220,7 +276,7 @@ private fun backupInternally(
                     Json.encodeToString(dbBackup)
                         .encodeToByteArray()
                         .inputStream().use { bis ->
-                            FileOutputStream(new).use { fos ->
+                            FileOutputStream(file).use { fos ->
                                 val buf = ByteArray(bis.available())
                                 bis.read(buf)
                                 do {
@@ -262,6 +318,7 @@ private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
                     persons = persons.await(),
                 )
             }
+
             false -> {
                 val tags = async { appDao.getAllTagsList() }
                 val places = async { appDao.getAllPlacesList() }

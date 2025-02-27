@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.ui.backup
 
 import android.content.Context
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -30,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -44,8 +42,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.BackupAction
 import com.deslomator.tagtimer.model.type.BackupButton
+import com.deslomator.tagtimer.model.type.Shared
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -62,37 +62,46 @@ fun BackupContent(
     val scope = rememberCoroutineScope()
     var showSnackbar by rememberSaveable { mutableStateOf(false) }
 
-    var saveToStorageActivityResult by remember { mutableStateOf<Uri?>(null) }
     val saveToStorageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
-        saveToStorageActivityResult = uri
+        onAction(BackupAction.SaveToStorageUriReceived(uri))
+        showSnackbar = true
     }
-    saveToStorageActivityResult?.let {
-        onAction(BackupAction.SaveToStorageUriReceived(it))
-        saveToStorageActivityResult = null
+    LaunchedEffect(state.saveFileToStorage) {
+        if (state.saveFileToStorage)
+            saveToStorageLauncher.launch(state.currentFile!!.name)
     }
 
-    var loadFromStorageActivityResult by remember { mutableStateOf<Uri?>(null) }
     val loadFromStorageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
-        loadFromStorageActivityResult = uri
-        if (uri == null) onAction(BackupAction.LoadFromStorageDialogDismissed)
-        showSnackbar = true
-    }
-    loadFromStorageActivityResult?.let { storageUri ->
-        val tempFile = File(
-            context.cacheDir,
-            "tempFile"
-        )
-        onAction(BackupAction.LoadFromStorageUriReceived(storageUri, tempFile))
-        loadFromStorageActivityResult = null
+        val tempFile = if (uri != null) File(context.cacheDir, "tempFile") else null
+        onAction(BackupAction.LoadFromStorageUriReceived(uri, tempFile))
         showSnackbar = true
     }
     LaunchedEffect(state.loadFileFromStorage) {
         if (state.loadFileFromStorage)
             loadFromStorageLauncher.launch(arrayOf("application/json"))
+    }
+
+    LaunchedEffect(state.restoreBackup) {
+        if (state.restoreBackup) showSnackbar = true
+    }
+    LaunchedEffect(state.deleteBackup) {
+        if (state.deleteBackup) showSnackbar = true
+    }
+
+    if (state.shareFile && state.currentFile != null && state.currentString.isNotEmpty()) {
+        ShareData(
+            context = context,
+            fileName = state.currentFile.nameWithoutExtension,
+            data = state.currentString,
+            onDataShared = {
+                onAction(BackupAction.BackupShared(it))
+            },
+            type = Shared.Json
+        )
     }
 
     LaunchedEffect(state.result, showSnackbar) {
@@ -168,20 +177,8 @@ fun BackupContent(
                 items(items = state.files, key = { it.absolutePath }) { file ->
                     FileItem(
                         file = file,
-                        onDeleteClick = {
-                            showSnackbar(
-                                scope, snackbarHostState, context.getString(R.string.backup_deleted)
-                            )
-                            onAction(BackupAction.DeleteBackupClicked(file))
-                        },
-                        onShareClick = { onAction(BackupAction.ShareBackupClicked(file)) },
-                        onRestoreClick = {
-                            showSnackbar = true
-                            onAction(BackupAction.RestoreBackupClicked(file))
-                        },
-                        onSaveClick = {
-                            onAction(BackupAction.SaveBackupToStorageClicked(file))
-                            saveToStorageLauncher.launch(file.name)
+                        onActionClick = {
+                            onAction(BackupAction.FileItemActionClicked(it, file))
                         },
                     )
                 }
