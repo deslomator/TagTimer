@@ -72,22 +72,20 @@ class BackupViewModel @Inject constructor(
             }
 
             is BackupAction.SaveToStorageUriReceived -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    if (action.uri == null) {
-                        _state.update {
-                            it.copy(
-                                saveFileToStorage = false,
-                                result = Result.NothingSaved
-                            )
-                        }
-                    } else {
-                        val result = saveToStorage(action.uri)
-                        _state.update {
-                            it.copy(
-                                result = result,
-                                saveFileToStorage = false
-                            )
-                        }
+                if (action.uri == null) {
+                    _state.update {
+                        it.copy(
+                            saveFileToStorage = false,
+                            result = Result.NothingSaved
+                        )
+                    }
+                } else {
+                    val result = saveToStorage(action.uri)
+                    _state.update {
+                        it.copy(
+                            result = result,
+                            saveFileToStorage = false
+                        )
                     }
                 }
             }
