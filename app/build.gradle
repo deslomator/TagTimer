@@ -2,7 +2,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.dagger.hilt.android")
-    //id("kotlin-kapt")
     id("kotlinx-serialization")
     id("com.google.devtools.ksp")
     id ('org.jetbrains.kotlin.plugin.compose')
@@ -53,17 +52,13 @@ android {
     }
 }
 
-/*ksp {
-    correctErrorTypes = true
-}*/
-
 dependencies {
 
     implementation platform('org.jetbrains.kotlin:kotlin-bom:2.1.10')
     implementation platform('androidx.compose:compose-bom:2025.02.00')
     implementation('androidx.core:core-ktx:1.15.0')
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
-    implementation("androidx.activity:activity-compose:1.10.0")
+    implementation("androidx.activity:activity-compose:1.10.1")
     implementation("androidx.compose.foundation:foundation:1.7.8")
     implementation("androidx.compose.ui:ui-android:1.7.8")
     implementation("androidx.compose.ui:ui-graphics-android:1.7.8")
@@ -71,8 +66,8 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
-    implementation("androidx.navigation:navigation-compose:2.8.7")
-    implementation ("androidx.navigation:navigation-runtime-ktx:2.8.7")
+    implementation("androidx.navigation:navigation-compose:2.8.8")
+    implementation ("androidx.navigation:navigation-runtime-ktx:2.8.8")
     implementation ('org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0')
     // dagger hilt
     implementation('com.google.dagger:hilt-android:2.55')
