@@ -1,7 +1,5 @@
 package com.deslomator.tagtimer.navigation.screen
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import com.deslomator.tagtimer.R
 import kotlinx.serialization.Serializable
 
