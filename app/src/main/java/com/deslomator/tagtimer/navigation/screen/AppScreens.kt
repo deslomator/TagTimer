@@ -4,9 +4,6 @@ import com.deslomator.tagtimer.R
 import kotlinx.serialization.Serializable
 
 @Serializable
-object MainScreen
-
-@Serializable
 enum class MyBottomScreens(
     val stringId: Int,
     val iconId: Int,
