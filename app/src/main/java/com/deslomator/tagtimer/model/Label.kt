@@ -16,6 +16,8 @@ sealed class Label {
     abstract val color: String
     abstract val inTrash: Boolean
 
+    // TODO check if it's better to have a separate primary Key
+
     @Keep
     @Serializable
     @Entity(

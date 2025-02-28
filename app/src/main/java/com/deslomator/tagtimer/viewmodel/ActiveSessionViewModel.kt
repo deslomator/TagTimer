@@ -147,6 +147,7 @@ class ActiveSessionViewModel @Inject constructor(
                         eventForScrollTo = action.event
                     )
                 }
+                // TODO check if this is desirable
                 createNewLabels(action.event)
             }
 
