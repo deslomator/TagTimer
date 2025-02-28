@@ -63,7 +63,9 @@ fun AppNavHost(
                     navController = innerNavHostController,
                     startDestination = BottomNavigationScreen.Sessions.route,
                 ) {
-                    composable(BottomNavigationScreen.Sessions.route) {
+                    composable(
+                        route = BottomNavigationScreen.Sessions.route
+                    ) {
                         val viewModel = hiltViewModel<SessionsTabViewModel>(it)
                         val state by viewModel.state.collectAsStateWithLifecycle()
                         val onAction = viewModel::onAction
@@ -78,7 +80,9 @@ fun AppNavHost(
                             )
                         }
                     }
-                    composable(BottomNavigationScreen.Labels.route) {
+                    composable(
+                        route = BottomNavigationScreen.Labels.route
+                    ) {
                         val viewModel = hiltViewModel<LabelsTabViewModel>(it)
                         val state by viewModel.state.collectAsStateWithLifecycle()
                         val onAction= viewModel::onAction
@@ -92,7 +96,9 @@ fun AppNavHost(
                             )
                         }
                     }
-                    composable(BottomNavigationScreen.Trash.route) {
+                    composable(
+                        route = BottomNavigationScreen.Trash.route
+                    ) {
                         val viewModel = hiltViewModel<TrashTabViewModel>(it)
                         val state by viewModel.state.collectAsStateWithLifecycle()
                         val onAction= viewModel::onAction
@@ -179,7 +185,7 @@ fun AppNavHost(
         ) {
             composable(
                 route = RootScreen.Backup.route,
-            ) {backStackEntry ->
+            ) { backStackEntry ->
                 val viewModel = hiltViewModel<BackupViewModel>(backStackEntry)
                 val state by viewModel.state.collectAsStateWithLifecycle()
                 BackupScaffold(

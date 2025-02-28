@@ -19,6 +19,7 @@ fun EventFilterScaffold(
 ) {
     val context = LocalContext.current
     if (state.exportEvents) {
+        // TODO check recomposition
         val fileName = listOf(
             state.currentSession.name,
             state.query,
