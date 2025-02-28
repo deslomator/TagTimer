@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -66,7 +65,7 @@ fun AppNavHost(
                 ) {
                     composable(BottomNavigationScreen.Sessions.route) {
                         val viewModel = hiltViewModel<SessionsTabViewModel>(it)
-                        val state by viewModel.state.collectAsState()
+                        val state by viewModel.state.collectAsStateWithLifecycle()
                         val onAction = viewModel::onAction
                         SessionsTabScaffold(
                             navController = navController,
@@ -81,7 +80,7 @@ fun AppNavHost(
                     }
                     composable(BottomNavigationScreen.Labels.route) {
                         val viewModel = hiltViewModel<LabelsTabViewModel>(it)
-                        val state by viewModel.state.collectAsState()
+                        val state by viewModel.state.collectAsStateWithLifecycle()
                         val onAction= viewModel::onAction
                         LabelsScaffold(
                             state = state,
@@ -95,7 +94,7 @@ fun AppNavHost(
                     }
                     composable(BottomNavigationScreen.Trash.route) {
                         val viewModel = hiltViewModel<TrashTabViewModel>(it)
-                        val state by viewModel.state.collectAsState()
+                        val state by viewModel.state.collectAsStateWithLifecycle()
                         val onAction= viewModel::onAction
                         TrashTabScaffold(
                             state = state,
