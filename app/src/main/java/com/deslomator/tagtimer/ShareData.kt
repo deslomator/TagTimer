@@ -52,5 +52,5 @@ fun ShareData(
     }
 }
 
-private const val TAG = "ExportSession"
+private const val TAG = "ShareData"
 const val FILE_PROVIDER = "com.deslomator.tagtimer.fileprovider"

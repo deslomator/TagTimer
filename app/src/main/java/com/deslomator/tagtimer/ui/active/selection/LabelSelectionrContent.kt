@@ -53,7 +53,10 @@ fun LabelSelectionContent(
 ) {
     val scope = rememberCoroutineScope()
     val pages = remember { listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place) }
-    val pagerState = rememberPagerState(initialPage = 1) { pages.size }
+    val pagerState = rememberPagerState(
+        initialPage = 1,
+        pageCount = { pages.size }
+    )
     val tags by remember(sharedState.tagSort, state.tags) {
         derivedStateOf {
             state.tags.sortedWith(
@@ -128,60 +131,77 @@ fun LabelSelectionContent(
                         LabelSelectionList(
                             labels = tags,
                             preSelected = state.preSelectedTags,
-                            onLongClick = { tag, checked ->
+                            onItemClick = { tag, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
-                                onAction(LabelPreselectionAction.SelectTagCheckedChange(tag, checked))
+                                onAction(
+                                    LabelPreselectionAction.SelectTagCheckedChange(
+                                        tag,
+                                        checked
+                                    )
+                                )
                             },
-                            onItemClick = {
+                            onLongClick = {
                                 onAction(LabelPreselectionAction.EditTagClicked(it))
                             }
                         )
                     }
+
                     LabelScreen.Person -> {
                         val checkedMessage = stringResource(R.string.person_checked)
                         val unCheckedMessage = stringResource(R.string.person_unchecked)
                         LabelSelectionList(
                             labels = persons,
                             preSelected = state.preSelectedPersons,
-                            onLongClick = { person, checked ->
+                            onItemClick = { person, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
-                                onAction(LabelPreselectionAction.SelectPersonCheckedChange(person, checked))
+                                onAction(
+                                    LabelPreselectionAction.SelectPersonCheckedChange(
+                                        person,
+                                        checked
+                                    )
+                                )
                             },
-                            onItemClick = {
+                            onLongClick = {
                                 onAction(LabelPreselectionAction.EditPersonClicked(it))
                             }
                         )
                     }
+
                     LabelScreen.Place -> {
                         val checkedMessage = stringResource(R.string.place_checked)
                         val unCheckedMessage = stringResource(R.string.place_unchecked)
                         LabelSelectionList(
                             labels = places,
                             preSelected = state.preSelectedPlaces,
-                            onLongClick = { place, checked ->
+                            onItemClick = { place, checked ->
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
                                     message = if (checked) checkedMessage else unCheckedMessage,
                                 )
-                                onAction(LabelPreselectionAction.SelectPlaceCheckedChange(place, checked))
+                                onAction(
+                                    LabelPreselectionAction.SelectPlaceCheckedChange(
+                                        place,
+                                        checked
+                                    )
+                                )
                             },
-                            onItemClick = {
+                            onLongClick = {
                                 onAction(LabelPreselectionAction.EditPlaceClicked(it))
                             }
                         )
                     }
                 }
             }
-            EmptyListText(stringResource(id = R.string.long_press_to_select_unselect))
+            EmptyListText(stringResource(id = R.string.tap_to_select_unselect))
         }
     }
     AnimatedVisibility(
@@ -205,7 +225,7 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeleteTagClicked(state.currentTag))
             },
-            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag,
+            title = if (state.isEditingTag) R.string.edit_tag else R.string.new_tag,
             icon = R.drawable.tag
         )
     }
@@ -230,7 +250,7 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeletePersonClicked(state.currentPerson))
             },
-            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person,
+            title = if (state.isEditingPerson) R.string.edit_person else R.string.new_person,
             icon = R.drawable.person
         )
     }
@@ -255,7 +275,7 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeletePlaceClicked(state.currentPlace))
             },
-            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place,
+            title = if (state.isEditingPlace) R.string.edit_place else R.string.new_place,
             icon = R.drawable.place
         )
     }

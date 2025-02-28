@@ -75,10 +75,8 @@ fun SessionsTabContent(
                     shape = RoundedCornerShape(25.dp),
                     border = BorderStroke(1.dp, Color.LightGray),
                     item = session,
-                    leadingIcon = R.drawable.document_and_ray,
-                    onLeadingClick = {
-                        onAction(SessionsTabAction.ItemClicked(session))
-                    },
+                    leadingIcon = null,
+                    onLeadingClick = { },
                     onItemClick = {
                         outerNavHostController.navigate("active/${session.id}")
                     },
