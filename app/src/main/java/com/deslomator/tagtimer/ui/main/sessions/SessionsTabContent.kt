@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
+import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.contrasted
@@ -78,7 +79,9 @@ fun SessionsTabContent(
                     leadingIcon = null,
                     onLeadingClick = { },
                     onItemClick = {
-                        outerNavHostController.navigate("active/${session.id}")
+                        outerNavHostController.navigate(
+                            ActiveSessionScreen(sessionId = session.id)
+                        )
                     },
                     trailingIcon = R.drawable.edit,
                     onTrailingClick = {

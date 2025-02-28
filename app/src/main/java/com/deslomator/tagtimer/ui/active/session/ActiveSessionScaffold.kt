@@ -12,10 +12,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.navigation.screen.ActiveScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ShareData
+import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
+import com.deslomator.tagtimer.navigation.screen.EventTrashScreen
+import com.deslomator.tagtimer.navigation.screen.LabelSelectionScreen
+import com.deslomator.tagtimer.navigation.screen.MainScreen
 
 @Composable
 fun ActiveSessionScaffold(
@@ -35,8 +38,8 @@ fun ActiveSessionScaffold(
     }
     BackHandler(enabled = !state.showEventEditionDialog && !state.showTimeDialog) {
         onAction(ActiveSessionAction.ExitSession)
-        navController.navigate("root") {
-            popUpTo("root") {
+        navController.navigate(MainScreen) {
+            popUpTo(MainScreen) {
                 inclusive = false
             }
         }
@@ -60,8 +63,8 @@ fun ActiveSessionScaffold(
                         onAction(ActiveSessionAction.DismissTimeDialog)
                     } else {
                         onAction(ActiveSessionAction.ExitSession)
-                        navController.navigate("root") {
-                            popUpTo("root") {
+                        navController.navigate(MainScreen) {
+                            popUpTo(MainScreen) {
                                 inclusive = false
                             }
                         }
@@ -74,19 +77,21 @@ fun ActiveSessionScaffold(
                 onAddLabelClick = {
                     onAction(ActiveSessionAction.ExitSession)
                     navController.navigate(
-                        ActiveScreen.LabelSelection.routeWithArg(state.currentSession.id!!)
+                        LabelSelectionScreen(
+                            sessionId = state.currentSession.id
+                        )
                     )
                 },
                 onEventTrashClick = {
                     onAction(ActiveSessionAction.ExitSession)
                     navController.navigate(
-                        ActiveScreen.EventTrash.routeWithArg(state.currentSession.id!!)
+                        EventTrashScreen(sessionId = state.currentSession.id)
                     )
                 },
                 onFilterClick = {
                     onAction(ActiveSessionAction.ExitSession)
                     navController.navigate(
-                        ActiveScreen.EventFilter.routeWithArg(state.currentSession.id!!)
+                        EventFilterScreen(sessionId = state.currentSession.id)
                     )
                 },
             )

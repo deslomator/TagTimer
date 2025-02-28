@@ -9,6 +9,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.BackupAction
+import com.deslomator.tagtimer.navigation.screen.MainScreen
 import com.deslomator.tagtimer.state.BackupState
 import java.io.File
 
@@ -24,8 +25,8 @@ fun BackupScaffold(
         topBar = {
             BackupTopBar(
                 onBackClicked = {
-                    navController.navigate("root") {
-                        popUpTo("root") {
+                    navController.navigate(MainScreen) {
+                        popUpTo(MainScreen) {
                             inclusive = false
                         }
                     }

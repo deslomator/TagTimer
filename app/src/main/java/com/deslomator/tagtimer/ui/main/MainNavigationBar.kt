@@ -7,42 +7,37 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
+import com.deslomator.tagtimer.navigation.screen.MyBottomScreens
 
 @Composable
 fun MainNavigationBar(
-    backStackEntry: State<NavBackStackEntry?>,
-    barNavHostController: NavHostController
+    barNavHostController: NavHostController,
+    selected: MyBottomScreens,
+    onSelection: (MyBottomScreens) -> Unit
 ) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.secondary
     ) {
-        val tabItems = listOf(
-            BottomNavigationScreen.Sessions,
-            BottomNavigationScreen.Labels,
-            BottomNavigationScreen.Trash,
-        )
-        tabItems.forEach { tab ->
+        MyBottomScreens.entries.forEach { tab ->
             NavigationBarItem(
                 icon = {
                     Icon(
-                        painter = painterResource(tab.icon),
-                        contentDescription = tab.route
+                        painter = painterResource(tab.iconId),
+                        contentDescription = null
                     )
                 },
                 label = {
                     Text(stringResource(id = tab.stringId))
                 },
-                selected = tab.route == backStackEntry.value?.destination?.route,
+                selected = tab == selected,
                 onClick = {
                     barNavHostController.navigate(tab.route) {
+                        onSelection(tab)
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items

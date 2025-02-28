@@ -2,25 +2,25 @@ package com.deslomator.tagtimer.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import androidx.navigation.navigation
-import com.deslomator.tagtimer.navigation.screen.ActiveScreen
-import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
-import com.deslomator.tagtimer.navigation.screen.RootScreen
+import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
+import com.deslomator.tagtimer.navigation.screen.BackupScreen
+import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
+import com.deslomator.tagtimer.navigation.screen.EventTrashScreen
+import com.deslomator.tagtimer.navigation.screen.LabelSelectionScreen
+import com.deslomator.tagtimer.navigation.screen.LabelsTabScreen
+import com.deslomator.tagtimer.navigation.screen.MainScreen
+import com.deslomator.tagtimer.navigation.screen.MyBottomScreens
+import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
+import com.deslomator.tagtimer.navigation.screen.TrashTabScreen
 import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
 import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
@@ -34,10 +34,10 @@ import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.BackupViewModel
 import com.deslomator.tagtimer.viewmodel.EventFilterViewModel
 import com.deslomator.tagtimer.viewmodel.EventTrashViewModel
-import com.deslomator.tagtimer.viewmodel.SharedViewModel
 import com.deslomator.tagtimer.viewmodel.LabelPreselectionViewModel
 import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
+import com.deslomator.tagtimer.viewmodel.SharedViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
 
 @Composable
@@ -48,164 +48,126 @@ fun AppNavHost(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = "root",
+        startDestination = MainScreen,
     ) {
-        navigation(
-            route = "root",
-            startDestination = RootScreen.Main.route
-        ) {
-            composable(
-                route = RootScreen.Main.route,
+        composable<MainScreen> {
+            val bottomBarNavHostController = rememberNavController()
+            var selectedTab = rememberSaveable { MyBottomScreens.SESSIONS }
+            NavHost(
+                navController = bottomBarNavHostController,
+                startDestination = SessionsTabScreen,
             ) {
-                val bottomBarNavHostController = rememberNavController()
-                val backStackEntry = bottomBarNavHostController.currentBackStackEntryAsState()
-                NavHost(
-                    navController = bottomBarNavHostController,
-                    startDestination = BottomNavigationScreen.Sessions.route,
-                ) {
-                    composable(
-                        route = BottomNavigationScreen.Sessions.route
+                composable<SessionsTabScreen> { stackEntry ->
+                    val viewModel = hiltViewModel<SessionsTabViewModel>(stackEntry)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    val onAction = viewModel::onAction
+                    SessionsTabScaffold(
+                        navController = navController,
+                        state = state,
+                        onAction = onAction,
                     ) {
-                        val viewModel = hiltViewModel<SessionsTabViewModel>(it)
-                        val state by viewModel.state.collectAsStateWithLifecycle()
-                        val onAction = viewModel::onAction
-                        SessionsTabScaffold(
-                            navController = navController,
-                            state = state,
-                            onAction = onAction,
-                        ) {
-                            MainNavigationBar(
-                                backStackEntry = backStackEntry,
-                                barNavHostController = bottomBarNavHostController
-                            )
-                        }
+                        MainNavigationBar(
+                            barNavHostController = bottomBarNavHostController,
+                            selected = selectedTab,
+                            onSelection = { selectedTab = it }
+                        )
                     }
-                    composable(
-                        route = BottomNavigationScreen.Labels.route
+                }
+                composable<LabelsTabScreen> { stackEntry ->
+                    val viewModel = hiltViewModel<LabelsTabViewModel>(stackEntry)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    val onAction = viewModel::onAction
+                    LabelsScaffold(
+                        state = state,
+                        onAction = onAction,
                     ) {
-                        val viewModel = hiltViewModel<LabelsTabViewModel>(it)
-                        val state by viewModel.state.collectAsStateWithLifecycle()
-                        val onAction= viewModel::onAction
-                        LabelsScaffold(
-                            state = state,
-                            onAction = onAction,
-                        ) {
-                            MainNavigationBar(
-                                backStackEntry = backStackEntry,
-                                barNavHostController = bottomBarNavHostController
-                            )
-                        }
+                        MainNavigationBar(
+                            barNavHostController = bottomBarNavHostController,
+                            selected = selectedTab,
+                            onSelection = { selectedTab = it }
+                        )
                     }
-                    composable(
-                        route = BottomNavigationScreen.Trash.route
+                }
+                composable<TrashTabScreen> { stackEntry ->
+                    val viewModel = hiltViewModel<TrashTabViewModel>(stackEntry)
+                    val state by viewModel.state.collectAsStateWithLifecycle()
+                    val onAction = viewModel::onAction
+                    TrashTabScaffold(
+                        state = state,
+                        onAction = onAction,
                     ) {
-                        val viewModel = hiltViewModel<TrashTabViewModel>(it)
-                        val state by viewModel.state.collectAsStateWithLifecycle()
-                        val onAction= viewModel::onAction
-                        TrashTabScaffold(
-                            state = state,
-                            onAction = onAction,
-                        ) {
-                            MainNavigationBar(
-                                backStackEntry = backStackEntry,
-                                barNavHostController = bottomBarNavHostController
-                            )
-                        }
+                        MainNavigationBar(
+                            barNavHostController = bottomBarNavHostController,
+                            selected = selectedTab,
+                            onSelection = { selectedTab = it }
+                        )
                     }
                 }
             }
         }
-        navigation(
-            route = "active/{sessionId}",
-            startDestination = ActiveScreen.ActiveSession.route,
-            arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
-        ) {
-            composable(
-                route = ActiveScreen.ActiveSession.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
-            ) { backStackEntry ->
-                val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
-                val sharedState by sharedVm.state.collectAsStateWithLifecycle()
-                val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
-                val state by viewModel.state.collectAsStateWithLifecycle()
-                ActiveSessionScaffold(
-                    navController = navController,
-                    state = state,
-                    onAction = viewModel::onAction,
-                    sharedState = sharedState,
-                )
-            }
-            composable(
-                route = ActiveScreen.EventFilter.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
-            ) { backStackEntry ->
-                val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
-                val sharedState by sharedVm.state.collectAsStateWithLifecycle()
-                val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
-                val state by viewModel.state.collectAsStateWithLifecycle()
-                EventFilterScaffold(
-                    navController = navController,
-                    state = state,
-                    sharedState = sharedState,
-                    onAction = viewModel::onAction,
-                )
-            }
-            composable(
-                route = ActiveScreen.EventTrash.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
-            ) { backStackEntry ->
-                val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
-                val state by viewModel.state.collectAsStateWithLifecycle()
-                EventTrashScaffold(
-                    navController = navController,
-                    state = state,
-                    onAction = viewModel::onAction,
-                )
-            }
-            composable(
-                route = ActiveScreen.LabelSelection.route,
-                arguments = listOf(navArgument("sessionId") { type = NavType.LongType })
-            ) { backStackEntry ->
-                val sharedVm = backStackEntry.sharedViewModel<SharedViewModel>(navController)
-                val sharedState by sharedVm.state.collectAsStateWithLifecycle()
-                val viewModel = hiltViewModel<LabelPreselectionViewModel>(backStackEntry)
-                val state by viewModel.state.collectAsStateWithLifecycle()
-                LabelSelectionScaffold(
-                    navController = navController,
-                    state = state,
-                    onAction = viewModel::onAction,
-                    sharedState = sharedState,
-                    onSharedAction = sharedVm::onAction,
-                )
-            }
+        composable<ActiveSessionScreen> { backStackEntry ->
+            val sharedVm = navController.sharedViewModel<SharedViewModel>()
+            val sharedState by sharedVm.state.collectAsStateWithLifecycle()
+            val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            ActiveSessionScaffold(
+                navController = navController,
+                state = state,
+                onAction = viewModel::onAction,
+                sharedState = sharedState,
+            )
         }
-        navigation(
-            route = "backup",
-            startDestination = RootScreen.Backup.route
-        ) {
-            composable(
-                route = RootScreen.Backup.route,
-            ) { backStackEntry ->
-                val viewModel = hiltViewModel<BackupViewModel>(backStackEntry)
-                val state by viewModel.state.collectAsStateWithLifecycle()
-                BackupScaffold(
-                    navController = navController,
-                    state = state,
-                    onAction = viewModel::onAction,
-                )
-            }
+        composable<EventFilterScreen> { backStackEntry ->
+            val sharedVm = navController.sharedViewModel<SharedViewModel>()
+            val sharedState by sharedVm.state.collectAsStateWithLifecycle()
+            val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            EventFilterScaffold(
+                navController = navController,
+                state = state,
+                sharedState = sharedState,
+                onAction = viewModel::onAction,
+            )
+        }
+        composable<EventTrashScreen> { backStackEntry ->
+            val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            EventTrashScaffold(
+                navController = navController,
+                state = state,
+                onAction = viewModel::onAction,
+            )
+        }
+        composable<LabelSelectionScreen> { backStackEntry ->
+            val sharedVm = navController.sharedViewModel<SharedViewModel>()
+            val sharedState by sharedVm.state.collectAsStateWithLifecycle()
+            val viewModel = hiltViewModel<LabelPreselectionViewModel>(backStackEntry)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            LabelSelectionScaffold(
+                navController = navController,
+                state = state,
+                onAction = viewModel::onAction,
+                sharedState = sharedState,
+                onSharedAction = sharedVm::onAction,
+            )
+        }
+        composable<BackupScreen> { backStackEntry ->
+            val viewModel = hiltViewModel<BackupViewModel>(backStackEntry)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            BackupScaffold(
+                navController = navController,
+                state = state,
+                onAction = viewModel::onAction,
+            )
         }
     }
 }
 
 @Composable
-inline fun <reified T: ViewModel> NavBackStackEntry.sharedViewModel(
-    navHost: NavHostController): T {
-    val route = destination.parent?.route ?: return viewModel()
-    val parentEntry = remember(this) {
-        navHost.getBackStackEntry(route)
-    }
-    return hiltViewModel(parentEntry)
+inline fun <reified T : ViewModel> NavHostController.sharedViewModel(): T {
+    val pbs = previousBackStackEntry
+    return if (pbs != null) hiltViewModel<T>(pbs)
+    else hiltViewModel()
 }
 
-private const val TAG = "AppNavHost"
+const val TAG = "AppNavHost"
