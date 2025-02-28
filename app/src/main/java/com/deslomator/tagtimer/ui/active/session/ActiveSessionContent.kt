@@ -37,6 +37,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -124,43 +126,7 @@ fun ActiveSessionContent(
             )
             HorizontalDivider()
             Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .fillMaxWidth(.9F),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Button(
-                    onClick = { onAction(ActiveSessionAction.TimeClicked) }
-                ) {
-                    Text(
-                        text = state.currentSession.durationMillis.toElapsedTime()
-                    )
-                }
-                Spacer(modifier = Modifier.width(30.dp))
-                IconButton(
-                    onClick = {
-                        onAction(ActiveSessionAction.PlayPauseClicked)
-                    },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = MaterialTheme.colorScheme.primary
-                    )
-                ) {
-                    Icon(
-                        modifier = Modifier.size(36.dp),
-                        painter = painterResource(
-                            if (state.currentSession.running) {
-                                R.drawable.pause_circle_outline
-                            } else {
-                                R.drawable.play_circle_outline
-                            }
-                        ),
-                        contentDescription = "play pause"
-                    )
-                }
-            }
+            TimeBar(onAction, state)
             TagsList(
                 modifier = Modifier
                     .fillMaxSize()
@@ -220,6 +186,52 @@ fun ActiveSessionContent(
                 current = state.currentSession.durationMillis,
                 onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
                 onAccept = { onAction(ActiveSessionAction.AcceptTimeDialog(it)) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun TimeBar(
+    onAction: (ActiveSessionAction) -> Unit,
+    state: ActiveSessionState
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .fillMaxWidth(.9F),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = { onAction(ActiveSessionAction.TimeClicked) }
+        ) {
+            Text(
+                text = state.currentSession.durationMillis.toElapsedTime(),
+                style = MaterialTheme.typography.titleLarge
+            )
+        }
+        Spacer(modifier = Modifier.width(30.dp))
+        IconButton(
+            modifier = Modifier.size(60.dp),
+            onClick = {
+                onAction(ActiveSessionAction.PlayPauseClicked)
+            },
+            colors = IconButtonDefaults.iconButtonColors(
+                contentColor = MaterialTheme.colorScheme.primary
+            )
+        ) {
+            Icon(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(
+                    if (state.currentSession.running) {
+                        R.drawable.pause_circle_outline
+                    } else {
+                        R.drawable.play_circle_outline
+                    }
+                ),
+                contentDescription = "play pause"
             )
         }
     }
