@@ -18,7 +18,7 @@ import com.deslomator.tagtimer.navigation.screen.BottomNavigationScreen
 @Composable
 fun MainNavigationBar(
     backStackEntry: State<NavBackStackEntry?>,
-    innerNavHostController: NavHostController
+    barNavHostController: NavHostController
 ) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -42,11 +42,11 @@ fun MainNavigationBar(
                 },
                 selected = tab.route == backStackEntry.value?.destination?.route,
                 onClick = {
-                    innerNavHostController.navigate(tab.route) {
+                    barNavHostController.navigate(tab.route) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items
-                        popUpTo(innerNavHostController.graph.findStartDestination().id) {
+                        popUpTo(barNavHostController.graph.findStartDestination().id) {
                             saveState = true
                         }
                         // Avoid multiple copies of the same destination when

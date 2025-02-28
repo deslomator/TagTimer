@@ -57,10 +57,10 @@ fun AppNavHost(
             composable(
                 route = RootScreen.Main.route,
             ) {
-                val innerNavHostController = rememberNavController()
-                val backStackEntry = innerNavHostController.currentBackStackEntryAsState()
+                val bottomBarNavHostController = rememberNavController()
+                val backStackEntry = bottomBarNavHostController.currentBackStackEntryAsState()
                 NavHost(
-                    navController = innerNavHostController,
+                    navController = bottomBarNavHostController,
                     startDestination = BottomNavigationScreen.Sessions.route,
                 ) {
                     composable(
@@ -76,7 +76,7 @@ fun AppNavHost(
                         ) {
                             MainNavigationBar(
                                 backStackEntry = backStackEntry,
-                                innerNavHostController = innerNavHostController
+                                barNavHostController = bottomBarNavHostController
                             )
                         }
                     }
@@ -92,7 +92,7 @@ fun AppNavHost(
                         ) {
                             MainNavigationBar(
                                 backStackEntry = backStackEntry,
-                                innerNavHostController = innerNavHostController
+                                barNavHostController = bottomBarNavHostController
                             )
                         }
                     }
@@ -108,7 +108,7 @@ fun AppNavHost(
                         ) {
                             MainNavigationBar(
                                 backStackEntry = backStackEntry,
-                                innerNavHostController = innerNavHostController
+                                barNavHostController = bottomBarNavHostController
                             )
                         }
                     }
