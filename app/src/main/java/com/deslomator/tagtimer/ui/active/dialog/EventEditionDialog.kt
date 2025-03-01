@@ -23,7 +23,7 @@ import com.deslomator.tagtimer.util.toColor
 @Composable
 fun EventEditionDialog(
     event4d: EventForDisplay,
-    onAccept: (Event) -> Unit,
+    onAccept: (EventForDisplay) -> Unit,
     onDismiss: () -> Unit,
     enabled: Boolean = true
 ) {
@@ -49,12 +49,14 @@ fun EventEditionDialog(
     MyDialog(
         onDismiss = onDismiss,
         onAccept = {
-            val e = event4d.event.copy(
-                elapsedTimeMillis = elapsed,
-                note = note.trim(),
-                color = color
+            val e4d = event4d.copy(
+                event = Event(
+                    elapsedTimeMillis = elapsed,
+                    note = note.trim(),
+                    color = color
+                )
             )
-            onAccept(e)
+            onAccept(e4d)
         },
     ) {
         TimeNumberPicker(

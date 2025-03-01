@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.action
 
-import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
 
 sealed interface ActiveSessionAction {
@@ -9,7 +8,7 @@ sealed interface ActiveSessionAction {
     data object PlayPauseClicked: ActiveSessionAction
     data object SessionShared: ActiveSessionAction
     class EventClicked(val event: EventForDisplay): ActiveSessionAction
-    class AcceptEventEditionClicked(val event: Event) : ActiveSessionAction
+    class AcceptEventEditionClicked(val event4d: EventForDisplay) : ActiveSessionAction
     data object DismissEventEditionDialog: ActiveSessionAction
     class TrashEventSwiped(val event4d: EventForDisplay): ActiveSessionAction
     data object TimeClicked : ActiveSessionAction

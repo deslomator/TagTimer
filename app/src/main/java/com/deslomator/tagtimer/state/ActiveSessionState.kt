@@ -18,7 +18,7 @@ data class ActiveSessionState(
     val currentSession: Session = Session(),
     val showSnackbar: Boolean = false,
     val eventForDialog: EventForDisplay = EventForDisplay(),
-    val eventForScrollTo: Event = Event(),
+    val eventForScrollTo: EventForDisplay = EventForDisplay(),
     val showEventEditionDialog: Boolean = false,
     val showTimeDialog: Boolean = false,
     val shareData: Boolean = false,

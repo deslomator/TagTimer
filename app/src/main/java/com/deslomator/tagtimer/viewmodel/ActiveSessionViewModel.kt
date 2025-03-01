@@ -140,7 +140,7 @@ class ActiveSessionViewModel @Inject constructor(
                     )
                     val id = appDao.upsertEvent(event)
                     _state.update {
-                        it.copy(eventForScrollTo = event.copy(id = id))
+                        it.copy(eventForScrollTo = _eventsForDisplay.value.first { it.event.id == id })
                     }
                 }
             }
@@ -180,12 +180,12 @@ class ActiveSessionViewModel @Inject constructor(
 
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 runBlocking {
-                    viewModelScope.launch { appDao.upsertEvent(action.event) }
+                    viewModelScope.launch { appDao.upsertEvent(action.event4d.event) }
                 }
                 _state.update {
                     it.copy(
                         showEventEditionDialog = false,
-                        eventForScrollTo = action.event
+                        eventForScrollTo = action.event4d
                     )
                 }
             }
@@ -294,7 +294,7 @@ class ActiveSessionViewModel @Inject constructor(
                 it.copy(currentSession = appDao.getSession(sessionId))
             }
             if (state.value.events.isNotEmpty())
-                _state.update { it.copy(eventForScrollTo = state.value.events.last()) }
+                _state.update { it.copy(eventForScrollTo = state.value.eventsForDisplay.last()) }
             val s = state.value.currentSession
             if (s.running) {
                 val updated = s.copy(

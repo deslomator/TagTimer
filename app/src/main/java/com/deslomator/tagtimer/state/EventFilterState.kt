@@ -17,7 +17,7 @@ data class EventFilterState(
     val exportEvents: Boolean = false,
     val dataToExport: String = "",
     val query: String = "",
-    val currentPerson: Label? = null,
-    val currentPlace: Label? = null,
+    val currentPerson: Label = Label(),
+    val currentPlace: Label = Label(),
     val currentTags: List<Label> = emptyList(),
 )
