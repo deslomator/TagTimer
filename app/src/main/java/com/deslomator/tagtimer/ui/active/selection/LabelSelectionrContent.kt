@@ -18,8 +18,6 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -29,22 +27,17 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.type.LabelScreen
-import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.LabelPreselectionState
-import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.showSnackbar
-import com.deslomator.tagtimer.ui.theme.hue
-import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.launch
 
 @Composable
 fun LabelSelectionContent(
     paddingValues: PaddingValues,
     state: LabelPreselectionState,
-    sharedState: SharedState,
     onAction: (LabelPreselectionAction) -> Unit,
     onTabClick: (Int) -> Unit,
     snackbarHostState: SnackbarHostState,
@@ -55,36 +48,6 @@ fun LabelSelectionContent(
         initialPage = 1,
         pageCount = { pages.size }
     )
-    val tags by remember(sharedState.tagSort, state.tags) {
-        derivedStateOf {
-            state.tags.sortedWith(
-                when (sharedState.tagSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
-    val persons by remember(sharedState.personSort, state.persons) {
-        derivedStateOf {
-            state.persons.sortedWith(
-                when (sharedState.personSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
-    val places by remember(sharedState.placeSort, state.places) {
-        derivedStateOf {
-            state.places.sortedWith(
-                when (sharedState.placeSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
     LaunchedEffect(pagerState.currentPage) { onTabClick(pagerState.currentPage) }
     Box(
         modifier = Modifier
@@ -127,7 +90,7 @@ fun LabelSelectionContent(
                         val checkedMessage = stringResource(R.string.tag_checked)
                         val unCheckedMessage = stringResource(R.string.tag_unchecked)
                         LabelSelectionList(
-                            labels = tags,
+                            labels = state.tags,
                             preSelected = state.preSelectedTags,
                             onItemClick = { tag, checked ->
                                 showSnackbar(
@@ -152,7 +115,7 @@ fun LabelSelectionContent(
                         val checkedMessage = stringResource(R.string.person_checked)
                         val unCheckedMessage = stringResource(R.string.person_unchecked)
                         LabelSelectionList(
-                            labels = persons,
+                            labels = state.persons,
                             preSelected = state.preSelectedPersons,
                             onItemClick = { person, checked ->
                                 showSnackbar(
@@ -177,7 +140,7 @@ fun LabelSelectionContent(
                         val checkedMessage = stringResource(R.string.place_checked)
                         val unCheckedMessage = stringResource(R.string.place_unchecked)
                         LabelSelectionList(
-                            labels = places,
+                            labels = state.places,
                             preSelected = state.preSelectedPlaces,
                             onItemClick = { place, checked ->
                                 showSnackbar(

@@ -13,16 +13,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun <T: Label>LabelSelectionList(
-    labels: List<T>,
-    preSelected: List<Preselected>,
-    onLongClick: (T) -> Unit,
-    onItemClick: (T, Boolean) -> Unit
+fun LabelSelectionList(
+    labels: List<Label>,
+    preSelected: List<Label>,
+    onLongClick: (Label) -> Unit,
+    onItemClick: (Label, Boolean) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -36,7 +35,7 @@ fun <T: Label>LabelSelectionList(
             key = { it.id!! }
         ) { label ->
             val checked by remember(preSelected) {
-                derivedStateOf { preSelected.map { it.labelId }.contains(label.id) }
+                derivedStateOf { preSelected.map { it.id }.contains(label.id) }
             }
             LabelButton(
                 item = label,

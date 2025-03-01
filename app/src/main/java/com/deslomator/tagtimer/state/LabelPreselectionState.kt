@@ -2,6 +2,7 @@ package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.type.LabelSort
 
 data class LabelPreselectionState(
     val preSelectedPersons: List<Label> = emptyList(),
@@ -23,4 +24,7 @@ data class LabelPreselectionState(
     val showPlaceDialog: Boolean = false,
     val isEditingPlace: Boolean = false,
     val isAddingNewPlace: Boolean = false,
+    val tagSort: LabelSort = LabelSort.COLOR,
+    val personSort: LabelSort = LabelSort.NAME,
+    val placeSort: LabelSort = LabelSort.NAME,
 )

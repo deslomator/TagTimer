@@ -66,7 +66,6 @@ fun LabelSelectionScaffold(
         LabelSelectionContent(
             paddingValues = paddingValues,
             state = state,
-            sharedState = sharedState,
             onAction = onAction,
             onTabClick = { currentPage = it },
             snackbarHostState = snackbarHostState,
