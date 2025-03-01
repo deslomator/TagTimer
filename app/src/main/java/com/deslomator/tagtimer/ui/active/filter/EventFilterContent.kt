@@ -78,7 +78,7 @@ fun EventFilterContent(
                         trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
                         onTrailingClick = { onAction(EventFilterAction.EventClicked(event4d)) },
                         onItemClick = { onAction(EventFilterAction.EventClicked(event4d)) },
-                        persons = filteredEvents.map { it.getPersonName() }.filterNotNull().distinct().sorted()
+                        persons = filteredEvents.mapNotNull { it.getPersonName() }.distinct().sorted()
                     )
                 }
             }

@@ -7,13 +7,13 @@ import com.deslomator.tagtimer.model.type.LabelSort
 
 sealed interface EventFilterAction {
     data object EventsExported: EventFilterAction
-    class EventClicked(val event: EventForDisplay): EventFilterAction
-    class AcceptEventEditionClicked(val event: Event) : EventFilterAction
+    class EventClicked(val event4d: EventForDisplay): EventFilterAction
+    class AcceptEventEditionClicked(val event: Event) : EventFilterAction // this is an Event, not an E4D
     data object DismissEventEditionDialog: EventFilterAction
     class UsedTagClicked(val tag: Label) : EventFilterAction
-    class UsedPersonClicked(val personName: String) : EventFilterAction
-    class UsedPlaceClicked(val placeName: String) : EventFilterAction
-    class ExportFilteredEventsClicked(val filteredEvents: List<Event>): EventFilterAction
+    class UsedPersonClicked(val person: Label) : EventFilterAction
+    class UsedPlaceClicked(val place: Label) : EventFilterAction
+    class ExportFilteredEventsClicked(val filteredEvents: List<EventForDisplay>): EventFilterAction
     class SetTagSort(val labelSort: LabelSort): EventFilterAction
     class SetPersonSort(val personSort: LabelSort): EventFilterAction
     class SetPlaceSort(val placeSort: LabelSort): EventFilterAction

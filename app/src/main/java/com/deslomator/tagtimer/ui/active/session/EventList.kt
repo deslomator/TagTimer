@@ -28,8 +28,8 @@ fun EventList(
     modifier: Modifier,
     events: List<EventForDisplay>,
     listState: LazyListState,
-    onItemClicked: (Event) -> Unit,
-    onItemSwiped: (Event) -> Unit,
+    onItemClicked: (EventForDisplay) -> Unit,
+    onItemSwiped: (EventForDisplay) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
     val context = LocalContext.current
@@ -57,14 +57,14 @@ fun EventList(
                         snackbarHostState,
                         context.getString(R.string.event_sent_to_trash)
                     )
-                    onItemSwiped(event4d.event)
+                    onItemSwiped(event4d)
                 },
             ) {
                 EventListItem(
                     event4d = event4d,
                     trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
-                    onTrailingClick = { onItemClicked(event4d.event) },
-                    onItemClick = { onItemClicked(event4d.event) },
+                    onTrailingClick = { onItemClicked(event4d) },
+                    onItemClick = { onItemClicked(event4d) },
                     persons = events.mapNotNull{ it.getPersonName() }.distinct().sorted()
                 )
             }

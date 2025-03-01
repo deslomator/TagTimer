@@ -1,13 +1,12 @@
 package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 
 data class LabelPreselectionState(
-    val preSelectedPersons: List<Preselected> = emptyList(),
-    val preSelectedPlaces: List<Preselected> = emptyList(),
-    val preSelectedTags: List<Preselected> = emptyList(),
+    val preSelectedPersons: List<Label> = emptyList(),
+    val preSelectedPlaces: List<Label> = emptyList(),
+    val preSelectedTags: List<Label> = emptyList(),
     val tags: List<Label> = emptyList(),
     val persons: List<Label> = emptyList(),
     val places: List<Label> = emptyList(),

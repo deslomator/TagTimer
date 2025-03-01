@@ -30,22 +30,27 @@ class LabelPreselectionViewModel @Inject constructor(
 
     private val _tags = appDao.getActiveTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _sessionId
         .flatMapLatest {
             appDao.getPreSelectedTagsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _persons = appDao.getActivePersons()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPersons = _sessionId
         .flatMapLatest {
             appDao.getPreSelectedPersonsForSession(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    private val _places = appDao.getActivePlaces()
+
+    private val _places = appDao.getActivePLaces()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPlaces = _sessionId
         .flatMapLatest {
@@ -91,7 +96,7 @@ class LabelPreselectionViewModel @Inject constructor(
             }
             is LabelPreselectionAction.AddNewTagClicked -> {
                 _state.update { it.copy(
-                    currentTag = Label.Tag(),
+                    currentTag = Label(),
                     showTagDialog = true,
                     isAddingNewTag = true
                 ) }

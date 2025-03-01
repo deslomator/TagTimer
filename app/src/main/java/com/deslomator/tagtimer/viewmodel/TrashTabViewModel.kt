@@ -21,12 +21,16 @@ class TrashTabViewModel @Inject constructor(
     private val _state = MutableStateFlow(TrashTabState())
     private val _sessions = appDao.getTrashedSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _persons = appDao.getTrashedPersons()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _places = appDao.getTrashedPlaces()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _tags = appDao.getTrashedTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     val state = combine(_state, _sessions, _tags, _persons, _places) { state, sessions, tags, persons, places ->
         state.copy(
             sessions = sessions,
@@ -52,35 +56,35 @@ class TrashTabViewModel @Inject constructor(
             }
             is TrashTabAction.DeleteTagClicked -> {
                 viewModelScope.launch {
-                    appDao.deleteTag(action.tag)
+                    appDao.deleteLabel(action.tag)
                 }
             }
             is TrashTabAction.RestoreTagClicked -> {
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = false)
-                    appDao.upsertTag(trashed)
+                    appDao.upsertLabel(trashed)
                 }
             }
             is TrashTabAction.DeletePersonClicked -> {
                 viewModelScope.launch {
-                    appDao.deletePerson(action.person)
+                    appDao.deleteLabel(action.person)
                 }
             }
             is TrashTabAction.RestorePersonClicked -> {
                 viewModelScope.launch {
                     val trashed = action.person.copy(inTrash = false)
-                    appDao.upsertPerson(trashed)
+                    appDao.upsertLabel(trashed)
                 }
             }
             is TrashTabAction.DeletePlaceClicked -> {
                 viewModelScope.launch {
-                    appDao.deletePlace(action.place)
+                    appDao.deleteLabel(action.place)
                 }
             }
             is TrashTabAction.RestorePlaceClicked -> {
                 viewModelScope.launch {
                     val trashed = action.place.copy(inTrash = false)
-                    appDao.upsertPlace(trashed)
+                    appDao.upsertLabel(trashed)
                 }
             }
         }

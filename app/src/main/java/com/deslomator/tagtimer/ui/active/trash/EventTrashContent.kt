@@ -73,7 +73,7 @@ fun EventTrashContent(
                             snackbarHostState,
                             context.getString(R.string.event_restored)
                         )
-                        onAction(EventTrashAction.RestoreEventClicked(event4d.event))
+                        onAction(EventTrashAction.RestoreEventClicked(event4d))
                     },
                     trailingIcon = R.drawable.delete_forever,
                     onTrailingClick = {
@@ -82,9 +82,9 @@ fun EventTrashContent(
                             snackbarHostState,
                             context.getString(R.string.event_deleted)
                         )
-                        onAction(EventTrashAction.DeleteEventClicked(event4d.event))
+                        onAction(EventTrashAction.DeleteEventClicked(event4d))
                     },
-                    onItemClick = { onAction(EventTrashAction.EventInTrashClicked(event4d.event)) },
+                    onItemClick = { onAction(EventTrashAction.EventInTrashClicked(event4d)) },
                 )
             }
         }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Preference
+import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,12 +27,7 @@ class SessionsTabViewModel @Inject constructor(
     private val appDao: AppDao,
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _sort = appDao.getPreferences().mapLatest { prefsList ->
-        prefsList.firstOrNull { item ->
-            item.key == PrefKey.SESSION_SORT.name
-        }?.getSessionSort() ?: SessionSort.LAST_ACCESS
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionSort.LAST_ACCESS)
+    private val _sort = SortProvider.getSessionSort(appDao, viewModelScope)
 
     private val _state = MutableStateFlow(SessionsTabState())
 
@@ -42,12 +37,13 @@ class SessionsTabViewModel @Inject constructor(
         when (sSort) {
             SessionSort.DATE -> appDao.getSessionsByDate()
             SessionSort.LAST_ACCESS -> appDao.getSessionsByLastAccess()
-            SessionSort.NAME -> appDao.getSessionsByName()
+            else -> appDao.getSessionsByName()
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
     val state = combine(_state, _sort, _sessions) { state, sort, sessions ->
         state.copy(
-            sessions = sessions, sessionSort = sort
+            sessions = sessions,
+            sessionSort = sort
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsTabState())
 
@@ -125,20 +121,44 @@ class SessionsTabViewModel @Inject constructor(
             )
             val newId = appDao.upsertSession(newSession)
             launch {
-                appDao.getPreSelectedTagsListForSession(s.id!!).map { it.copy(sessionId = newId) }
-                    .forEach { psl -> appDao.upsertPreSelectedTag(psl) }
+                appDao.getPreSelectedTagsListForSession(s.id!!)
+                    .map {
+                        Preselected(
+                            sessionId = newId,
+                            labelId = it.id!!
+                        )
+                    }
+                    .let { list ->
+                        appDao.upsertPreSelectedLabels(list)
+                    }
             }
             launch {
                 appDao.getPreSelectedPersonsListForSession(s.id!!)
-                    .map { it.copy(sessionId = newId) }
-                    .forEach { psl -> appDao.upsertPreSelectedPerson(psl) }
+                    .map {
+                        Preselected(
+                            sessionId = newId,
+                            labelId = it.id!!
+                        )
+                    }
+                    .let { list ->
+                        appDao.upsertPreSelectedLabels(list)
+                    }
             }
             launch {
-                appDao.getPreSelectedPlacesListForSession(s.id!!).map { it.copy(sessionId = newId) }
-                    .forEach { psl -> appDao.upsertPreSelectedPlace(psl) }
+                appDao.getPreSelectedPlacesListForSession(s.id!!)
+                    .map {
+                        Preselected(
+                            sessionId = newId,
+                            labelId = it.id!!
+                        )
+                    }
+                    .let { list ->
+                        appDao.upsertPreSelectedLabels(list)
+                    }
             }
         }
     }
+
 
     companion object {
         private const val TAG = "SessionsScreenViewModel"

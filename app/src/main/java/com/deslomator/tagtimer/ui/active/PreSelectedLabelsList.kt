@@ -20,8 +20,8 @@ import com.deslomator.tagtimer.ui.LabelButton
 @Composable
 fun PreSelectedLabelsList(
     labels: List<Label>,
-    currentLabel: Long?,
-    onItemClick: (Long) -> Unit
+    currentLabel: Label?,
+    onItemClick: (Label) -> Unit
 ) {
     if (labels.size in 1..3) {
         Row(
@@ -29,12 +29,12 @@ fun PreSelectedLabelsList(
         ) {
             labels.forEachIndexed { index, label ->
                 val checked by remember(currentLabel) {
-                    derivedStateOf { currentLabel == label.id }
+                    derivedStateOf { currentLabel == label }
                 }
                 LabelButton(
                     modifier = Modifier.fillMaxWidth(1F / (labels.size -index)),
                     item = label,
-                    onItemClick = { onItemClick(label.id!!) },
+                    onItemClick = { onItemClick(label) },
                     checked = checked,
                     checkType = Checked.LEADING,
                 )
@@ -50,13 +50,13 @@ fun PreSelectedLabelsList(
                 key = { it.id!! }
             ) { label ->
                 val checked by remember(currentLabel) {
-                    derivedStateOf { currentLabel == label.id }
+                    derivedStateOf { currentLabel == label }
                 }
 //            Log.d(TAG, "recomposing PersonButton, id: ${person.id}")
                 LabelButton(
                     modifier = Modifier.width(120.dp),
                     item = label,
-                    onItemClick = { onItemClick(label.id!!) },
+                    onItemClick = { onItemClick(label) },
                     checked = checked,
                     checkType = Checked.LEADING,
                 )

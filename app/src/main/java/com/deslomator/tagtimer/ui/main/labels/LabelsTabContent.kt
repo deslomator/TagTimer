@@ -18,9 +18,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,14 +27,11 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
-import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.showSnackbar
-import com.deslomator.tagtimer.ui.theme.hue
-import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.launch
 
 @Composable
@@ -50,36 +44,6 @@ fun LabelsTabContent(
     pages: List<LabelScreen>
 ) {
     val scope = rememberCoroutineScope()
-    val tags by remember(state.tagSort, state.tags) {
-        derivedStateOf {
-            state.tags.sortedWith(
-                when (state.tagSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
-    val persons by remember(state.personSort, state.persons) {
-        derivedStateOf {
-            state.persons.sortedWith(
-                when (state.personSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
-    val places by remember(state.placeSort, state.places) {
-        derivedStateOf {
-            state.places.sortedWith(
-                when (state.placeSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
     BackHandler(
         enabled = state.showTagDialog
     ) {
@@ -132,19 +96,19 @@ fun LabelsTabContent(
                 when (pages[page]) {
                     LabelScreen.Tag -> {
                         LabelList(
-                            labels = tags,
+                            labels = state.tags,
                             onItemClick = { onAction(LabelsTabAction.EditTagClicked(it)) }
                         )
                     }
                     LabelScreen.Person -> {
                         LabelList(
-                            labels = persons,
+                            labels = state.persons,
                             onItemClick = { onAction(LabelsTabAction.EditPersonClicked(it)) }
                         )
                     }
                     LabelScreen.Place -> {
                         LabelList(
-                            labels = places,
+                            labels = state.places,
                             onItemClick = { onAction(LabelsTabAction.EditPlaceClicked(it)) }
                         )
                     }

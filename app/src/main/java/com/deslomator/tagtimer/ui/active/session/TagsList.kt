@@ -22,7 +22,7 @@ import com.deslomator.tagtimer.ui.LabelButton
 fun TagsList(
     modifier: Modifier,
     tags: List<Label>,
-    currentTags: List<Long> = emptyList(),
+    currentTags: List<Label> = emptyList(),
     onItemClicked: (Label) -> Unit,
     showChecked: Boolean = false
 ) {
@@ -41,7 +41,7 @@ fun TagsList(
             key = { it.id!! }
         ) { tag ->
             val checked by remember(currentTags) {
-                derivedStateOf { currentTags.contains(tag.id) }
+                derivedStateOf { currentTags.contains(tag) }
             }
             LabelButton(
                 item = tag,

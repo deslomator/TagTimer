@@ -92,8 +92,8 @@ interface AppDao {
     @Delete
     suspend fun deleteLabel(label: Label)
 
-    @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 0 ORDER BY :order ASC")
-    fun getActiveLabels(type: Int, order: String): Flow<List<Label>>
+    @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 0")
+    fun getActiveLabels(type: Int): Flow<List<Label>>
 
     @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 1 ORDER BY name ASC")
     fun getTrashedLabels(type: Int): Flow<List<Label>>
@@ -101,21 +101,18 @@ interface AppDao {
     /*
     TAGS
      */
-    fun getActiveTagsByColor() = getActiveLabels(LabelType.TAG.typeId, LabelSort.COLOR.sort)
-    fun getActiveTagsByName() = getActiveLabels(LabelType.TAG.typeId, LabelSort.NAME.sort)
+    fun getActiveTags() = getActiveLabels(LabelType.TAG.typeId)
     fun getTrashedTags() = getTrashedLabels(LabelType.TAG.typeId)
     /*
     PERSONS
      */
-    fun getActivePersonsByColor() = getActiveLabels(LabelType.PERSON.typeId, LabelSort.COLOR.sort)
-    fun getActivePersonsByName() = getActiveLabels(LabelType.PERSON.typeId, LabelSort.NAME.sort)
+    fun getActivePersons() = getActiveLabels(LabelType.PERSON.typeId)
     fun getTrashedPersons() = getTrashedLabels(LabelType.PERSON.typeId)
 
     /*
     PLACES
      */
-    fun getActivePLacesByColor() = getActiveLabels(LabelType.PLACE.typeId, LabelSort.COLOR.sort)
-    fun getActivePlacesByName() = getActiveLabels(LabelType.PLACE.typeId, LabelSort.NAME.sort)
+    fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
     fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE.typeId)
 
 
@@ -131,35 +128,29 @@ interface AppDao {
     @Delete
     suspend fun deletePreSelectedLabel(preSelectedLabel: Preselected)
 
-    @Query("SELECT session_id, label_id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type ORDER BY :order")
-    fun getPreSelectedLabelsForSession(sessionId: Long, type: Int, order: String): Flow<List<Preselected>>
+    @Query("SELECT name, color, in_trash, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    fun getPreSelectedLabelsForSession(sessionId: Long, type: Int): Flow<List<Label>>
 
-    @Query("SELECT session_id, label_id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type ORDER BY :order")
-    suspend fun getPreSelectedLabelsListForSession(sessionId: Long, type: Int, order: String): List<Preselected>
+    @Query("SELECT name, color, in_trash, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    suspend fun getPreSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
 
     /*
     PRESELECTED TAGS
      */
-    fun getPreSelectedTagsForSessionByColor(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId, LabelSort.COLOR.sort)
-    fun getPreSelectedTagsForSessionByName(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId, LabelSort.NAME.sort)
-    suspend fun getPreSelectedTagsListForSessionByColor(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId, LabelSort.COLOR.sort)
-    suspend fun getPreSelectedTagsListForSessionByName(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId, LabelSort.NAME.sort)
+    fun getPreSelectedTagsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
+    suspend fun getPreSelectedTagsListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId)
 
     /*
     PRESELECTED PERSONS
      */
-    fun getPreSelectedPersonsForSessionByColor(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId, LabelSort.COLOR.sort)
-    fun getPreSelectedPersonsForSessionByName(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId, LabelSort.NAME.sort)
-    suspend fun getPreSelectedPersonsListForSessionByColor(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId, LabelSort.COLOR.sort)
-    suspend fun getPreSelectedPersonsListForSessionByName(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId, LabelSort.NAME.sort)
+    fun getPreSelectedPersonsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
+    suspend fun getPreSelectedPersonsListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId)
 
     /*
     PRESELECTED PLACES
      */
-    fun getPreSelectedPlacesForSessionByColor(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId, LabelSort.COLOR.sort)
-    fun getPreSelectedPlacesForSessionByName(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId, LabelSort.NAME.sort)
-    suspend fun getPreSelectedPlacesListForSessionByColor(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId, LabelSort.COLOR.sort)
-    suspend fun getPreSelectedPlacesListForSessionByName(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId, LabelSort.NAME.sort)
+    fun getPreSelectedPlacesForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
+    suspend fun getPreSelectedPlacesListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId)
 
     /*
     ORPHANS

@@ -33,6 +33,8 @@ class EventFilterViewModel @Inject constructor(
     private val _currentTags = MutableStateFlow(emptyList<String>())
     private val _currentPerson = MutableStateFlow("")
     private val _currentPlace = MutableStateFlow("")
+    // sorting in this screen is independent from global sorting preference
+    // so we don't get it from the AppDao
     private val _tagSort = MutableStateFlow(LabelSort.COLOR)
     private val _personSort = MutableStateFlow(LabelSort.NAME)
     private val _placeSort = MutableStateFlow(LabelSort.NAME)
@@ -143,7 +145,7 @@ class EventFilterViewModel @Inject constructor(
         when(action) {
             is EventFilterAction.EventClicked -> {
                 _state.update { it.copy(
-                    eventForDialog = action.event,
+                    eventForDialog = action.event4d,
                     showEventEditionDialog = true
                 ) }
             }
@@ -175,13 +177,13 @@ class EventFilterViewModel @Inject constructor(
                 _state.update { it.copy(exportEvents = false) }
             }
             is EventFilterAction.UsedPersonClicked -> {
-                val person = if (action.personName == state.value.currentPerson) ""
-                else action.personName
+                val person = if (action.personId == state.value.currentPerson) ""
+                else action.personId
                 _currentPerson.update { person }
             }
             is EventFilterAction.UsedPlaceClicked -> {
-                val place = if (action.placeName == state.value.currentPlace) ""
-                else action.placeName
+                val place = if (action.placeId == state.value.currentPlace) ""
+                else action.placeId
                 _currentPlace.update { place }
             }
             is EventFilterAction.UsedTagClicked -> {

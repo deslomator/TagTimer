@@ -19,7 +19,4 @@ data class LabelsTabState(
     val showPlaceDialog: Boolean = false,
     val isEditingPlace: Boolean = false,
     val isAddingNewPlace: Boolean = false,
-    val tagSort: LabelSort = LabelSort.COLOR,
-    val personSort: LabelSort = LabelSort.NAME,
-    val placeSort: LabelSort = LabelSort.NAME,
 )
