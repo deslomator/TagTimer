@@ -18,23 +18,23 @@ import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun <T: Label>PreSelectedLabelsList(
-    labels: List<T>,
-    currentLabel: String,
-    onItemClick: (String) -> Unit
+fun PreSelectedLabelsList(
+    labels: List<Label>,
+    currentLabel: Long?,
+    onItemClick: (Long) -> Unit
 ) {
     if (labels.size in 1..3) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            labels.forEachIndexed { index, person ->
+            labels.forEachIndexed { index, label ->
                 val checked by remember(currentLabel) {
-                    derivedStateOf { currentLabel == person.name }
+                    derivedStateOf { currentLabel == label.id }
                 }
                 LabelButton(
                     modifier = Modifier.fillMaxWidth(1F / (labels.size -index)),
-                    item = person,
-                    onItemClick = { onItemClick(person.name) },
+                    item = label,
+                    onItemClick = { onItemClick(label.id!!) },
                     checked = checked,
                     checkType = Checked.LEADING,
                 )
@@ -47,16 +47,16 @@ fun <T: Label>PreSelectedLabelsList(
         ) {
             items(
                 items = labels,
-                key = { it.id }
-            ) { person ->
+                key = { it.id!! }
+            ) { label ->
                 val checked by remember(currentLabel) {
-                    derivedStateOf { currentLabel == person.name }
+                    derivedStateOf { currentLabel == label.id }
                 }
 //            Log.d(TAG, "recomposing PersonButton, id: ${person.id}")
                 LabelButton(
                     modifier = Modifier.width(120.dp),
-                    item = person,
-                    onItemClick = { onItemClick(person.name) },
+                    item = label,
+                    onItemClick = { onItemClick(label.id!!) },
                     checked = checked,
                     checkType = Checked.LEADING,
                 )

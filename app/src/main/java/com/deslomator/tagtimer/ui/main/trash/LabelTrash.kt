@@ -12,10 +12,10 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun <T: Label>LabelTrash(
-    items: List<T>,
-    onLeadingClick: (T) -> Unit,
-    onTrailingClick: (T) -> Unit,
+fun LabelTrash(
+    items: List<Label>,
+    onRestoreClick: (Label) -> Unit,
+    onPurgeClick: (Label) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -24,13 +24,13 @@ fun <T: Label>LabelTrash(
     ) {
         items(
             items = items,
-            key = { it.id }
+            key = { it.id!! }
         ) { label ->
             LabelButton(
                 item = label,
                 isTrash = true,
-                onLeadingClick = { onLeadingClick(it) },
-                onTrailingClick = { onTrailingClick(it) },
+                onLeadingClick = { onRestoreClick(it) },
+                onTrailingClick = { onPurgeClick(it) },
             )
         }
     }

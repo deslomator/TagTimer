@@ -81,7 +81,7 @@ fun TrashTabContent(
                     Trash.Tag -> {
                         LabelTrash(
                             items = state.tags,
-                            onLeadingClick = {
+                            onRestoreClick = {
                                 onAction(TrashTabAction.RestoreTagClicked(it))
                                 showSnackbar(
                                     scope,
@@ -89,7 +89,7 @@ fun TrashTabContent(
                                     context.getString(R.string.tag_restored)
                                 )
                             },
-                            onTrailingClick = {
+                            onPurgeClick = {
                                 onAction(
                                     TrashTabAction.DeleteTagClicked(it))
                                 showSnackbar(
@@ -103,7 +103,7 @@ fun TrashTabContent(
                     Trash.Person -> {
                         LabelTrash(
                             items = state.persons,
-                            onLeadingClick = {
+                            onRestoreClick = {
                                 onAction(TrashTabAction.RestorePersonClicked(it))
                                 showSnackbar(
                                     scope,
@@ -111,7 +111,7 @@ fun TrashTabContent(
                                     context.getString(R.string.person_restored)
                                 )
                             },
-                            onTrailingClick = {
+                            onPurgeClick = {
                                 onAction(
                                     TrashTabAction.DeletePersonClicked(it))
                                 showSnackbar(
@@ -125,7 +125,7 @@ fun TrashTabContent(
                     Trash.Place -> {
                         LabelTrash(
                             items = state.places,
-                            onLeadingClick = {
+                            onRestoreClick = {
                                 onAction(TrashTabAction.RestorePlaceClicked(it))
                                 showSnackbar(
                                     scope,
@@ -133,7 +133,7 @@ fun TrashTabContent(
                                     context.getString(R.string.place_restored)
                                 )
                             },
-                            onTrailingClick = {
+                            onPurgeClick = {
                                 onAction(
                                     TrashTabAction.DeletePlaceClicked(it))
                                 showSnackbar(

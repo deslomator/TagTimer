@@ -11,21 +11,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ShareData
+import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
 import com.deslomator.tagtimer.navigation.screen.EventTrashScreen
 import com.deslomator.tagtimer.navigation.screen.LabelSelectionScreen
 import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
+import com.deslomator.tagtimer.state.ActiveSessionState
 
 @Composable
 fun ActiveSessionScaffold(
     navController: NavHostController,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
-    sharedState: SharedState,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
@@ -102,7 +100,6 @@ fun ActiveSessionScaffold(
             paddingValues = paddingValues,
             state = state,
             onAction = onAction,
-            sharedState = sharedState,
             snackbarHostState = snackbarHostState
         )
     }

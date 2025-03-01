@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Keep
 @Serializable
 @Entity(tableName = "preferences")
-class Preference(
+data class Preference(
     @PrimaryKey val key: String,
     val value: String
 ) {

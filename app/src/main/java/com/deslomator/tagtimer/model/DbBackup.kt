@@ -2,54 +2,34 @@ package com.deslomator.tagtimer.model
 
 import androidx.annotation.Keep
 import androidx.room.Embedded
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-class DbBackup(
+data class DbBackup(
     @Embedded
-    val persons: List<Label.Person> = emptyList(),
+    val labels: List<Label> = emptyList(),
     @Embedded
-    val places: List<Label.Place> = emptyList(),
-    @Embedded
-    val tags: List<Label.Tag> = emptyList(),
-    @Embedded
-    @SerialName("preselected_persons")
-    val preselectedPersons: List<Preselected.Person> = emptyList(),
-    @Embedded
-    @SerialName("preselected_places")
-    val preselectedPlaces: List<Preselected.Place> = emptyList(),
-    @Embedded
-    @SerialName("preselected_tags")
-    val preselectedTags: List<Preselected.Tag> = emptyList(),
+    val preselected: List<Preselected> = emptyList(),
     @Embedded
     val sessions: List<Session> = emptyList(),
     @Embedded
     val events: List<Event> = emptyList(),
     @Embedded
     val prefs: List<Preference> = emptyList(),
-){
+) {
     fun isEmpty(): Boolean {
-        return this.tags.isEmpty() &&
-                this.places.isEmpty() &&
-                this.persons.isEmpty() &&
+        return this.labels.isEmpty() &&
                 this.events.isEmpty() &&
-                this.preselectedPersons.isEmpty() &&
-                this.preselectedPlaces.isEmpty() &&
-                this.preselectedTags.isEmpty() &&
+                this.preselected.isEmpty() &&
                 this.sessions.isEmpty() &&
                 this.prefs.isEmpty()
     }
 
     fun isLabelsOnly(): Boolean {
-        return (this.tags.isNotEmpty() ||
-                this.places.isNotEmpty() ||
-                this.persons.isNotEmpty()) &&
+        return this.labels.isNotEmpty() &&
                 this.events.isEmpty() &&
-                this.preselectedPersons.isEmpty() &&
-                this.preselectedPlaces.isEmpty() &&
-                this.preselectedTags.isEmpty() &&
+                this.preselected.isEmpty() &&
                 this.sessions.isEmpty() &&
                 this.prefs.isEmpty()
     }

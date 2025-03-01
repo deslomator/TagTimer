@@ -4,12 +4,12 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelSort
 
 data class LabelsTabState(
-    val tags: List<Label.Tag> = emptyList(),
-    val persons: List<Label.Person> = emptyList(),
-    val places: List<Label.Place> = emptyList(),
-    val currentTag: Label.Tag = Label.Tag(),
-    val currentPerson: Label.Person = Label.Person(),
-    val currentPlace: Label.Place = Label.Place(),
+    val tags: List<Label> = emptyList(),
+    val persons: List<Label> = emptyList(),
+    val places: List<Label> = emptyList(),
+    val currentTag: Label = Label(),
+    val currentPerson: Label = Label(),
+    val currentPlace: Label = Label(),
     val showTagDialog: Boolean = false,
     val isEditingTag: Boolean = false,
     val isAddingNewTag: Boolean = false,

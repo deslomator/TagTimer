@@ -11,13 +11,9 @@ suspend fun cleanOrphans(dao: AppDao) {
     withContext(Dispatchers.IO) {
         delay(4000)
         val oe = async { dao.clearOrphanEvents() }
-        val out = async { dao.clearOrphanPreSelectedPersons() }
-        val out2 = async { dao.clearOrphanPreSelectedPlaces() }
-        val out3 = async { dao.clearOrphanPreSelectedTags() }
+        val out = async { dao.clearOrphanPreSelected() }
         Log.d(TAG, "dao.clearOrphanEvents(): ${oe.await()}")
         Log.d(TAG, "dao.clearOrphanPreSelectedPersons(): ${out.await()}")
-        Log.d(TAG, "dao.clearOrphanPreSelectedPlaces(): ${out2.await()}")
-        Log.d(TAG, "dao.clearOrphanPreSelectedTags(): ${out3.await()}")
     }
 }
 

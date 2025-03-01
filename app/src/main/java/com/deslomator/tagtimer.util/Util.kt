@@ -1,9 +1,9 @@
 package com.deslomator.tagtimer.util
 
 import android.icu.text.SimpleDateFormat
-import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.Session
 import androidx.compose.ui.graphics.Color
+import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.Session
 import kotlinx.coroutines.flow.Flow
 import java.util.Locale
 
@@ -138,9 +138,9 @@ inline fun <T1, T2, T3, T4, T5, T6, T7, R> combine(
     }
 }
 
-fun List<Event>.toCsv(session: Session, filtered: Boolean = false): String {
+fun List<EventForDisplay>.toCsv(session: Session, filtered: Boolean = false): String {
     val ev = this.map {
-        "\"${it.person}\",\"${it.place}\",\"${it.tag}\",\"${it.note}\",\"${it.elapsedTimeMillis}\""
+        "\"${it.getPersonName()}\",\"${it.getPlaceName()}\",\"${it.getTagName()}\",\"${it.event.note}\",\"${it.event.elapsedTimeMillis}\""
     }.toMutableList()
     val headers = "\"person\",\"place\",\"tag\",\"note\",\"time\""
     val filterString = if (filtered) "filtered" else ""

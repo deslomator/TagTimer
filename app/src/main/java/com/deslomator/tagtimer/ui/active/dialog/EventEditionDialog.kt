@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -21,38 +22,36 @@ import com.deslomator.tagtimer.util.toColor
 
 @Composable
 fun EventEditionDialog(
-    event: Event,
+    event4d: EventForDisplay,
     onAccept: (Event) -> Unit,
     onDismiss: () -> Unit,
     enabled: Boolean = true
 ) {
     var elapsed by rememberSaveable {
-        mutableLongStateOf(event.elapsedTimeMillis)
-    }
-    var label by rememberSaveable {
-        mutableStateOf(event.tag)
+        mutableLongStateOf(event4d.event.elapsedTimeMillis)
     }
     var note by rememberSaveable {
-        mutableStateOf(event.note)
-    }
-    var person by rememberSaveable {
-        mutableStateOf(event.person)
-    }
-    var place by rememberSaveable {
-        mutableStateOf(event.place)
+        mutableStateOf(event4d.event.note)
     }
     var color by rememberSaveable {
-        mutableStateOf(event.color)
+        mutableStateOf(event4d.event.color)
+    }
+    // next: non editable fields
+    var tag by rememberSaveable {
+        mutableStateOf(event4d.getTagName())
+    }
+    var person by rememberSaveable {
+        mutableStateOf(event4d.getPersonName())
+    }
+    var place by rememberSaveable {
+        mutableStateOf(event4d.getPlaceName())
     }
     MyDialog(
         onDismiss = onDismiss,
         onAccept = {
-            val e = event.copy(
+            val e = event4d.event.copy(
                 elapsedTimeMillis = elapsed,
-                tag = label.trim(),
                 note = note.trim(),
-                person = person.trim(),
-                place = place.trim(),
                 color = color
             )
             onAccept(e)
@@ -62,13 +61,15 @@ fun EventEditionDialog(
             timeMillis = elapsed,
             onValueChange = { elapsed = it }
         )
-        DialogTextField(
-            value = label,
-            onValueChange = { label = it },
-            placeholder = R.string.label,
-            icon = R.drawable.tag,
-            enabled = enabled
-        )
+        event4d.getPlaceName()?.let { t ->
+            DialogTextField(
+                value = t,
+                onValueChange = { tag = it },
+                placeholder = R.string.label,
+                icon = R.drawable.tag,
+                enabled = false
+            )
+        }
         DialogTextField(
             value = note,
             onValueChange = { note = it },
@@ -76,20 +77,24 @@ fun EventEditionDialog(
             icon = R.drawable.note,
             enabled = enabled
         )
-        DialogTextField(
-            value = person,
-            onValueChange = { person = it },
-            placeholder = R.string.person,
-            icon = R.drawable.person,
-            enabled = enabled
-        )
-        DialogTextField(
-            value = place,
-            onValueChange = { place = it },
-            placeholder = R.string.place,
-            icon = R.drawable.place,
-            enabled = enabled
-        )
+        event4d.getPlaceName()?.let { pl ->
+            DialogTextField(
+                value = pl,
+                onValueChange = { person = it },
+                placeholder = R.string.person,
+                icon = R.drawable.person,
+                enabled = false
+            )
+        }
+        event4d.getPlaceName()?.let { p ->
+            DialogTextField(
+                value = p,
+                onValueChange = { place = it },
+                placeholder = R.string.place,
+                icon = R.drawable.place,
+                enabled = false
+            )
+        }
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
             selectedColor = color.toColor(),

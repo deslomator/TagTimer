@@ -36,21 +36,21 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun <T: Label>LabelButton(
+fun LabelButton(
     modifier: Modifier = Modifier,
-    item: T,
+    item: Label,
     isTrash: Boolean = false,
     iconSize: Dp = 26.dp,
-    onLeadingClick: ((T) -> Unit)? = null,
-    onItemClick: ((T) -> Unit)? = null,
-    onLongClick: ((T) -> Unit)? = null,
-    onTrailingClick: ((T) -> Unit)? = null,
+    onLeadingClick: ((Label) -> Unit)? = null,
+    onItemClick: ((Label) -> Unit)? = null,
+    onLongClick: ((Label) -> Unit)? = null,
+    onTrailingClick: ((Label) -> Unit)? = null,
     checked: Boolean = true,
     checkType: Checked = Checked.NONE
 ) {
-    val borderWidth = remember { if (item is Label.Person) 5.dp else 1.dp }
+    val borderWidth = remember { if (item.isPerson()) 5.dp else 1.dp }
     val borderColor = remember {
-        if (item is Label.Person) {
+        if (item.isPerson()) {
             if (Color(item.longColor).brightness() > .9F) VeryLightGray
             else Color(item.longColor)
         } else {
@@ -59,24 +59,19 @@ fun <T: Label>LabelButton(
     }
     val secondaryContainer = MaterialTheme.colorScheme.tertiaryContainer
     val containerColor = remember {
-        if (item is Label.Person) secondaryContainer
+        if (item.isPerson()) secondaryContainer
         else Color(item.longColor)
     }
     val secondary = MaterialTheme.colorScheme.tertiary
     val contentColor = remember {
-        if (item is Label.Person) secondary
+        if (item.isPerson()) secondary
         else containerColor.contrasted()
     }
     val leadingIcon = remember {
         if (isTrash) {
             R.drawable.restore_from_trash
         } else {
-            when (item) {
-                is Label.Tag -> R.drawable.tag
-                is Label.Place -> R.drawable.place
-                else -> R.drawable.person
-//                is Label.Person -> R.drawable.person
-            }
+            item.getIcon()
         }
     }
     val trailingIcon = remember { if (isTrash) R.drawable.delete_forever else null }

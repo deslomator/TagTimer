@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.EventFilterAction
-import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.active.EventListItem
@@ -33,7 +33,7 @@ fun EventFilterContent(
     paddingValues: PaddingValues,
     state: EventFilterState,
     onAction: (EventFilterAction) -> Unit,
-    filteredEvents: List<Event>
+    filteredEvents: List<EventForDisplay>
 ) {
     BackHandler(enabled = state.showEventEditionDialog) {
         onAction(EventFilterAction.DismissEventEditionDialog)
@@ -71,14 +71,14 @@ fun EventFilterContent(
             ) {
                 items(
                     items = filteredEvents,
-                    key = { it.id!! }
-                ) { event ->
+                    key = { it.event.id!! }
+                ) { event4d ->
                     EventListItem(
-                        event = event,
-                        trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
-                        onTrailingClick = { onAction(EventFilterAction.EventClicked(event)) },
-                        onItemClick = { onAction(EventFilterAction.EventClicked(event)) },
-                        persons = state.events.map { it.person }.distinct().sorted()
+                        event4d = event4d,
+                        trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
+                        onTrailingClick = { onAction(EventFilterAction.EventClicked(event4d)) },
+                        onItemClick = { onAction(EventFilterAction.EventClicked(event4d)) },
+                        persons = filteredEvents.map { it.getPersonName() }.filterNotNull().distinct().sorted()
                     )
                 }
             }
@@ -97,7 +97,7 @@ fun EventFilterContent(
             exit = fadeOut()
         ) {
             EventEditionDialog(
-                event = state.eventForDialog,
+                event4d = state.eventForDialog,
                 onAccept = { onAction(EventFilterAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(EventFilterAction.DismissEventEditionDialog) },
             )

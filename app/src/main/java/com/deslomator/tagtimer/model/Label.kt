@@ -4,6 +4,8 @@ import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
 import kotlinx.serialization.SerialName
@@ -11,68 +13,37 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-sealed class Label {
-    abstract val name: String
-    abstract val color: String
-    abstract val inTrash: Boolean
+@Entity(tableName = "labels")
+data class Label(
+    @SerialName(LABEL_NAME)
+    @ColumnInfo(name = LABEL_NAME)
+    val name: String = "",
 
-    // TODO check if it's better to have a separate primary Key
+    @SerialName(LABEL_COLOR)
+    @ColumnInfo(name = LABEL_COLOR)
+    val color: String = colorPickerColors[7].toHex(),
 
-    @Keep
-    @Serializable
-    @Entity(
-        tableName = "tags",
-        primaryKeys = ["name", "color"]
-    )
-    data class Tag(
-        @SerialName("tag_name")
-        override val name: String = "",
+    @SerialName("in_trash")
+    @ColumnInfo(name = "in_trash")
+    val inTrash: Boolean = false,
 
-        override val color: String = colorPickerColors[7].toHex(),
+    val type: Int = LabelType.TAG.typeId,
 
-        @SerialName("in_trash")
-        @ColumnInfo(name ="in_trash")
-        override val inTrash: Boolean = false
-    ) : Label()
-
-    @Keep
-    @Serializable
-    @Entity(
-        tableName = "places",
-        primaryKeys = ["name", "color"]
-    )
-    data class Place(
-        @SerialName("place_name")
-        override val name: String = "",
-
-        override val color: String = colorPickerColors[7].toHex(),
-
-        @SerialName("in_trash")
-        @ColumnInfo(name ="in_trash")
-        override val inTrash: Boolean = false
-    ) : Label()
-
-    @Keep
-    @Serializable
-    @Entity(
-        tableName = "persons",
-        primaryKeys = ["name", "color"]
-    )
-    data class Person(
-        @SerialName("person_name")
-        override val name: String = "",
-
-        override val color: String = colorPickerColors[7].toHex(),
-
-        @SerialName("in_trash")
-        @ColumnInfo(name ="in_trash")
-        override val inTrash: Boolean = false
-    ) : Label()
-
-    @delegate:Ignore
-    val id: String by lazy { name + color }
-
+    @PrimaryKey(autoGenerate = true) val id: Long? = null,
+) {
     @delegate:Ignore
     val longColor: Long by lazy { color.toLong(16) }
+
+    fun isTag(): Boolean = type == LabelType.TAG.typeId
+    fun isPerson(): Boolean = type == LabelType.PERSON.typeId
+    fun isPlace(): Boolean = type == LabelType.PLACE.typeId
+
+    fun getIcon() = when (type) {
+        LabelType.TAG.typeId -> LabelType.TAG.iconId
+        LabelType.PERSON.typeId -> LabelType.PERSON.iconId
+        else -> LabelType.PLACE.iconId
+    }
 }
 
+const val LABEL_NAME = "name"
+const val LABEL_COLOR = "color"

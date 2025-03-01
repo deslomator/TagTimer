@@ -2,19 +2,16 @@ package com.deslomator.tagtimer.ui.active.filter
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.state.EventFilterState
-import com.deslomator.tagtimer.state.SharedState
-import com.deslomator.tagtimer.ShareData
 
 @Composable
 fun EventFilterScaffold(
     navController: NavHostController,
     state: EventFilterState,
-    sharedState: SharedState,
     onAction: (EventFilterAction) -> Unit,
 ) {
     val context = LocalContext.current
@@ -32,15 +29,6 @@ fun EventFilterScaffold(
             data = state.dataToExport,
             onDataShared = { onAction(EventFilterAction.EventsExported) }
         )
-    }
-    LaunchedEffect(sharedState.tagSort) {
-        onAction(EventFilterAction.SetTagSort(sharedState.tagSort))
-    }
-    LaunchedEffect(sharedState.personSort) {
-        onAction(EventFilterAction.SetPersonSort(sharedState.personSort))
-    }
-    LaunchedEffect(sharedState.placeSort) {
-        onAction(EventFilterAction.SetPlaceSort(sharedState.placeSort))
     }
     Scaffold(
         topBar = {
@@ -60,7 +48,7 @@ fun EventFilterScaffold(
             paddingValues = paddingValues,
             state = state,
             onAction = onAction,
-            filteredEvents = state.events
+            filteredEvents = state.eventsForDisplay
         )
     }
 }

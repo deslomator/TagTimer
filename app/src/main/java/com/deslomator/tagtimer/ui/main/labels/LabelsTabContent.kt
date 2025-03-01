@@ -31,6 +31,7 @@ import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
@@ -161,9 +162,11 @@ fun LabelsTabContent(
             currentLabel = state.currentTag,
             onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
             onAccept = { name, color ->
-                val t = Label.Tag(
+                val t = Label(
                     name = name,
-                    color = color
+                    color = color,
+                    type = state.currentTag.type,
+                    id = state.currentTag.id
                 )
                 onAction(LabelsTabAction.AcceptTagEditionClicked(t))
             },
@@ -177,7 +180,7 @@ fun LabelsTabContent(
                 onAction(LabelsTabAction.DeleteTagClicked(state.currentTag))
             },
             title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag,
-            icon = R.drawable.tag
+            icon = LabelType.TAG.iconId
         )
     }
     AnimatedVisibility(
@@ -190,11 +193,13 @@ fun LabelsTabContent(
             currentLabel = state.currentPerson,
             onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
             onAccept = { name, color ->
-                val t = Label.Person(
+                val l = Label(
                     name = name,
-                    color = color
+                    color = color,
+                    type = state.currentPerson.type,
+                    id = state.currentPerson.id
                 )
-                onAction(LabelsTabAction.AcceptPersonEditionClicked(t))
+                onAction(LabelsTabAction.AcceptPersonEditionClicked(l))
             },
             showTrash = state.isEditingPerson,
             onTrash = {
@@ -206,7 +211,7 @@ fun LabelsTabContent(
                 onAction(LabelsTabAction.DeletePersonClicked(state.currentPerson))
             },
             title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person,
-            icon = R.drawable.person
+            icon = LabelType.PERSON.iconId
         )
     }
     AnimatedVisibility(
@@ -219,9 +224,11 @@ fun LabelsTabContent(
             currentLabel = state.currentPlace,
             onDismiss = { onAction(LabelsTabAction.DismissPlaceDialog) },
             onAccept = { name, color ->
-                val t = Label.Place(
+                val t = Label(
                     name = name,
-                    color = color
+                    color = color,
+                    type = state.currentPlace.type,
+                    id = state.currentPlace.id
                 )
                 onAction(LabelsTabAction.AcceptPlaceEditionClicked(t))
             },
@@ -235,7 +242,7 @@ fun LabelsTabContent(
                 onAction(LabelsTabAction.DeletePlaceClicked(state.currentPlace))
             },
             title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place,
-            icon = R.drawable.place
+            icon = LabelType.PLACE.iconId
         )
     }
 }

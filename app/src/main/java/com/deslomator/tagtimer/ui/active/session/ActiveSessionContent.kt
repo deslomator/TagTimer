@@ -28,9 +28,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,15 +37,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
-import com.deslomator.tagtimer.ui.theme.hue
-import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toElapsedTime
 
 @Composable
@@ -56,7 +49,6 @@ fun ActiveSessionContent(
     paddingValues: PaddingValues,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
-    sharedState: SharedState,
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
@@ -68,42 +60,7 @@ fun ActiveSessionContent(
     }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val tags by remember(sharedState.tagSort, state.tags, state.preSelectedTags) {
-        derivedStateOf {
-            state.tags.filter { tag ->
-                state.preSelectedTags.map { it.labelId }.contains(tag.id)
-            }.sortedWith(
-                when (sharedState.tagSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
-    val persons by remember(sharedState.personSort, state.persons, state.preSelectedPersons) {
-        derivedStateOf {
-            state.persons.filter { person ->
-                state.preSelectedPersons.map { it.labelId }.contains(person.id)
-            }.sortedWith(
-                when (sharedState.personSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
-    val places by remember(sharedState.placeSort, state.places, state.preSelectedPlaces) {
-        derivedStateOf {
-            state.places.filter { place ->
-                state.preSelectedPlaces.map { it.labelId }.contains(place.id)
-            }.sortedWith(
-                when (sharedState.placeSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
-        }
-    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -116,7 +73,7 @@ fun ActiveSessionContent(
             EventList(
                 modifier = Modifier
                     .weight(0.5F),
-                events = state.events,
+                events = state.eventsForDisplay,
                 listState = listState,
                 onItemClicked = { onAction(ActiveSessionAction.EventClicked(it)) },
                 onItemSwiped = { onAction(ActiveSessionAction.TrashEventSwiped(it)) },
@@ -129,7 +86,7 @@ fun ActiveSessionContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.6f),
-                tags = tags,
+                tags = state.tags,
                 onItemClicked = {
                     if (!state.currentSession.running) {
                         showSnackbar(
@@ -140,7 +97,8 @@ fun ActiveSessionContent(
                     } else {
                         onAction(
                             ActiveSessionAction.PreSelectedTagClicked(
-                                it,
+                                it.id,
+                                it.color,
                                 state.currentSession.durationMillis
                             )
                         )
@@ -149,16 +107,16 @@ fun ActiveSessionContent(
             )
             HorizontalDivider()
             PreSelectedLabelsList(
-                labels = persons,
-                currentLabel = state.currentPersonName,
+                labels = state.persons,
+                currentLabel = state.currentPersonId,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
                 }
             )
             HorizontalDivider()
             PreSelectedLabelsList(
-                labels = places,
-                currentLabel = state.currentPlaceName,
+                labels = state.places,
+                currentLabel = state.currentPlaceId,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))
                 }
@@ -170,7 +128,7 @@ fun ActiveSessionContent(
             exit = fadeOut()
         ) {
             EventEditionDialog(
-                event = state.eventForDialog,
+                event4d = state.eventForDialog,
                 onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
             )

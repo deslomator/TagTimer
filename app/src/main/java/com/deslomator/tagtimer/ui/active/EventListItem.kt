@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.OnDarkBackground
@@ -30,21 +31,21 @@ import com.deslomator.tagtimer.ui.theme.brightness
 
 @Composable
 fun EventListItem(
-    event: Event,
+    event4d: EventForDisplay,
     leadingIcon: Int? = null,
-    onLeadingClick: ((Event) -> Unit)? = null,
+    onLeadingClick: ((EventForDisplay) -> Unit)? = null,
     trailingIcon: Int? = null,
-    onTrailingClick: ((Event) -> Unit)? = null,
+    onTrailingClick: ((EventForDisplay) -> Unit)? = null,
     onItemClick: () -> Unit,
     persons: List<String> = emptyList()
 ) {
 //    Log.d(TAG, "recomposing event, id: ${event.id}")
     val borderColor =
-        if (Color(event.longColor).brightness() > 0.9f) OnDarkBackground.toArgb().toLong()
-        else event.longColor
+        if (Color(event4d.event.longColor).brightness() > 0.9f) OnDarkBackground.toArgb().toLong()
+        else event4d.event.longColor
     val index by remember {
         derivedStateOf {
-            maxOf(persons.indexOf(event.person), 0)
+            maxOf(persons.indexOf(event4d.getPersonName()), 0)
         }
     }
     Row(
@@ -60,7 +61,7 @@ fun EventListItem(
                     ),
                     shape = RoundedCornerShape(15.dp),
                     border = BorderStroke(4.dp, Color(borderColor)),
-                    item = event,
+                    item = event4d,
                     onItemClick = { onItemClick() },
                     iconSize = 22.dp,
                     leadingIcon = leadingIcon,
@@ -69,8 +70,8 @@ fun EventListItem(
                     onTrailingClick = onTrailingClick
                 ) { item ->
                     Text(
-                        text = listOf(item.tag, item.place,item.person)
-                            .filter { it.isNotEmpty() }.joinToString(separator = ","),
+                        text = listOf(item.getTagName(), item.getPlaceName(),item.getPersonName())
+                            .filter { !it.isNullOrEmpty() }.joinToString(separator = ","),
                         maxLines = 1,
                         overflow = TextOverflow.Clip
                     )
@@ -82,7 +83,7 @@ fun EventListItem(
                     modifier = Modifier
                         .padding(start = 7.dp)
                         .width(70.dp),
-                    text = event.elapsedTimeMillis.toElapsedTime(),
+                    text = event4d.event.elapsedTimeMillis.toElapsedTime(),
                     maxLines = 1,
                     overflow = TextOverflow.Clip
                 )
@@ -108,25 +109,31 @@ fun EventListItem(
 @Composable
 @Preview
 fun EventListItemPreview() {
-    val event = Event(
-        tag = "label",
+    val event4d = EventForDisplay(
+        event = Event(
         note = "fff",
-        elapsedTimeMillis = 25_000L,
+        elapsedTimeMillis = 25_000L,),
+        emptyList(),
+        emptyList(),
+        emptyList(),
     )
-    val event2 = Event(
-        tag = "label",
-        note = "",
-        elapsedTimeMillis = 25_000L,
+    val event2 = EventForDisplay(
+        event = Event(
+            note = "",
+            elapsedTimeMillis = 25_000L,),
+        emptyList(),
+        emptyList(),
+        emptyList(),
     )
     Column {
         EventListItem(
-            trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
-            event = event,
+            trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
+            event4d = event4d,
             onItemClick = { },
         )
         EventListItem(
-            trailingIcon = if (event2.note.isEmpty()) null else R.drawable.note,
-            event = event2,
+            trailingIcon = if (event2.event.note.isEmpty()) null else R.drawable.note,
+            event4d = event2,
             onItemClick = { },
         )
     }

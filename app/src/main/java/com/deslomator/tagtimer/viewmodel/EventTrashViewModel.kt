@@ -28,7 +28,7 @@ class EventTrashViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _trashedEvents = _sessionId
         .flatMapLatest {
-            appDao.getTrashedEventsForSession(_sessionId.value)
+            appDao.getTrashedEventsForDisplay(_sessionId.value)
         }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -46,11 +46,11 @@ class EventTrashViewModel @Inject constructor(
     fun onAction(action: EventTrashAction) {
         when(action) {
             is EventTrashAction.DeleteEventClicked -> {
-                viewModelScope.launch { appDao.deleteEvent(action.event) }
+                viewModelScope.launch { appDao.deleteEvent(action.event4d.event) }
             }
             is EventTrashAction.RestoreEventClicked -> {
                 viewModelScope.launch {
-                    val e = action.event.copy(inTrash = false)
+                    val e = action.event4d.event.copy(inTrash = false)
                     appDao.upsertEvent(e) }
             }
             is EventTrashAction.EventInTrashClicked -> {

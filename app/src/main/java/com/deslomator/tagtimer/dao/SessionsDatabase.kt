@@ -12,12 +12,8 @@ import com.deslomator.tagtimer.model.Session
     entities = [
         Event::class,
         Session::class,
-        Label.Tag::class,
-        Label.Person::class,
-        Label.Place::class,
-        Preselected.Person::class,
-        Preselected.Place::class,
-        Preselected.Tag::class,
+        Label::class,
+        Preselected::class,
         Preference::class,
     ],
     version = 1

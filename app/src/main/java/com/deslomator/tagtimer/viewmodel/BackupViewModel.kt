@@ -307,34 +307,22 @@ private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
     withContext(Dispatchers.IO) {
         when (labelsOnly) {
             true -> {
-                val tags = async { appDao.getAllTagsList() }
-                val places = async { appDao.getAllPlacesList() }
-                val persons = async { appDao.getAllPersonsList() }
+                val labels = async { appDao.getAllLabelsList() }
                 dbBackup = DbBackup(
-                    tags = tags.await(),
-                    places = places.await(),
-                    persons = persons.await(),
+                    labels = labels.await(),
                 )
             }
 
             false -> {
-                val tags = async { appDao.getAllTagsList() }
-                val places = async { appDao.getAllPlacesList() }
-                val persons = async { appDao.getAllPersonsList() }
+                val labels = async { appDao.getAllLabelsList() }
                 val events = async { appDao.getAllEventsList() }
-                val preselectedPersons = async { appDao.getAllPreselectedPersonsList() }
-                val preselectedPlaces = async { appDao.getAllPreselectedPlacesList() }
-                val preselectedTags = async { appDao.getAllPreselectedTagsList() }
+                val preselectedLabels = async { appDao.getAllPreselectedLabelsList() }
                 val sessions = async { appDao.getAllSessionsList() }
                 val prefs = async { appDao.getAllPreferencesList() }
                 dbBackup = DbBackup(
-                    tags = tags.await(),
-                    places = places.await(),
-                    persons = persons.await(),
+                    labels = labels.await(),
                     events = events.await(),
-                    preselectedPersons = preselectedPersons.await(),
-                    preselectedPlaces = preselectedPlaces.await(),
-                    preselectedTags = preselectedTags.await(),
+                    preselected = preselectedLabels.await(),
                     sessions = sessions.await(),
                     prefs = prefs.await()
                 )

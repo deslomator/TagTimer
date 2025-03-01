@@ -5,10 +5,13 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -21,6 +24,8 @@ interface AppDao {
     */
     @Upsert
     suspend fun upsertEvent(event: Event): Long
+    @Upsert
+    suspend fun upsertEvents(events: List<Event>): Long
 
     @Delete
     suspend fun deleteEvent(event: Event)
@@ -37,11 +42,19 @@ interface AppDao {
     @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 1 ORDER BY elapsed_time_millis ASC")
     fun getTrashedEventsForSession(sessionId: Long): Flow<List<Event>>
 
+    @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 0 ORDER BY elapsed_time_millis ASC")
+    fun getEventsForDisplay(sessionId: Long): Flow<List<EventForDisplay>>
+
+    @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 1 ORDER BY elapsed_time_millis ASC")
+    fun getTrashedEventsForDisplay(sessionId: Long): Flow<List<EventForDisplay>>
+
     /*
     SESSIONS
      */
     @Upsert
     suspend fun upsertSession(session: Session): Long
+    @Upsert
+    suspend fun upsertSessions(sessions: List<Session>): Long
 
     @Delete
     suspend fun deleteSession(session: Session)
@@ -66,160 +79,151 @@ interface AppDao {
 
     @Query("SELECT * FROM sessions WHERE in_trash = 1 ORDER BY last_access_millis DESC")
     fun getTrashedSessions(): Flow<List<Session>>
-    
+
+    /*
+    LABELS
+     */
+    @Upsert
+    suspend fun upsertLabel(label: Label)
+
+    @Upsert
+    suspend fun upsertLabels(label: List<Label>)
+
+    @Delete
+    suspend fun deleteLabel(label: Label)
+
+    @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 0 ORDER BY :order ASC")
+    fun getActiveLabels(type: Int, order: String): Flow<List<Label>>
+
+    @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 1 ORDER BY name ASC")
+    fun getTrashedLabels(type: Int): Flow<List<Label>>
+
     /*
     TAGS
      */
-    @Upsert
-    suspend fun upsertTag(tag: Label.Tag)
-    @Delete
-    suspend fun deleteTag(tag: Label.Tag)
-    @Query("SELECT * FROM tags WHERE in_trash = 0 ORDER BY name ASC")
-    fun getActiveTags(): Flow<List<Label.Tag>>
-    @Query("SELECT * FROM tags WHERE in_trash = 1 ORDER BY name ASC")
-    fun getTrashedTags(): Flow<List<Label.Tag>>
-    
+    fun getActiveTagsByColor() = getActiveLabels(LabelType.TAG.typeId, LabelSort.COLOR.sort)
+    fun getActiveTagsByName() = getActiveLabels(LabelType.TAG.typeId, LabelSort.NAME.sort)
+    fun getTrashedTags() = getTrashedLabels(LabelType.TAG.typeId)
     /*
     PERSONS
      */
-    @Upsert
-    suspend fun upsertPerson(person: Label.Person)
-    @Delete
-    suspend fun deletePerson(person: Label.Person)
-    @Query("SELECT * FROM persons WHERE in_trash = 0 ORDER BY name ASC")
-    fun getActivePersons(): Flow<List<Label.Person>>
-    @Query("SELECT * FROM persons WHERE in_trash = 1 ORDER BY name ASC")
-    fun getTrashedPersons(): Flow<List<Label.Person>>
-    
+    fun getActivePersonsByColor() = getActiveLabels(LabelType.PERSON.typeId, LabelSort.COLOR.sort)
+    fun getActivePersonsByName() = getActiveLabels(LabelType.PERSON.typeId, LabelSort.NAME.sort)
+    fun getTrashedPersons() = getTrashedLabels(LabelType.PERSON.typeId)
+
     /*
     PLACES
      */
+    fun getActivePLacesByColor() = getActiveLabels(LabelType.PLACE.typeId, LabelSort.COLOR.sort)
+    fun getActivePlacesByName() = getActiveLabels(LabelType.PLACE.typeId, LabelSort.NAME.sort)
+    fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE.typeId)
+
+
+    /*
+    PRESELECTED
+     */
     @Upsert
-    suspend fun upsertPlace(place: Label.Place)
+    suspend fun upsertPreSelectedLabel(preSelectedLabel: Preselected)
+
+    @Upsert
+    suspend fun upsertPreSelectedLabels(preSelectedLabels: List<Preselected>)
+
     @Delete
-    suspend fun deletePlace(place: Label.Place)
-    @Query("SELECT * FROM places WHERE in_trash = 0 ORDER BY name ASC")
-    fun getActivePlaces(): Flow<List<Label.Place>>
-    @Query("SELECT * FROM places WHERE in_trash = 1 ORDER BY name ASC")
-    fun getTrashedPlaces(): Flow<List<Label.Place>>
-    
+    suspend fun deletePreSelectedLabel(preSelectedLabel: Preselected)
+
+    @Query("SELECT session_id, label_id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type ORDER BY :order")
+    fun getPreSelectedLabelsForSession(sessionId: Long, type: Int, order: String): Flow<List<Preselected>>
+
+    @Query("SELECT session_id, label_id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type ORDER BY :order")
+    suspend fun getPreSelectedLabelsListForSession(sessionId: Long, type: Int, order: String): List<Preselected>
+
     /*
     PRESELECTED TAGS
      */
-    @Upsert
-    suspend fun upsertPreSelectedTag(preSelectedTag: Preselected.Tag)
-    @Delete
-    suspend fun deletePreSelectedTag(preSelectedTag: Preselected.Tag)
-    @Query("SELECT * FROM ps_tags WHERE session_id = :sessionId")
-    fun getPreSelectedTagsForSession(sessionId: Long): Flow<List<Preselected.Tag>>
-    @Query("SELECT * FROM ps_tags WHERE session_id = :sessionId")
-    suspend fun getPreSelectedTagsListForSession(sessionId: Long): List<Preselected.Tag>
-    
+    fun getPreSelectedTagsForSessionByColor(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId, LabelSort.COLOR.sort)
+    fun getPreSelectedTagsForSessionByName(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId, LabelSort.NAME.sort)
+    suspend fun getPreSelectedTagsListForSessionByColor(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId, LabelSort.COLOR.sort)
+    suspend fun getPreSelectedTagsListForSessionByName(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId, LabelSort.NAME.sort)
+
     /*
     PRESELECTED PERSONS
      */
-    @Upsert
-    suspend fun upsertPreSelectedPerson(preSelectedPerson: Preselected.Person)
-    @Delete
-    suspend fun deletePreSelectedPerson(preSelectedPerson: Preselected.Person)
-    @Query("SELECT * FROM ps_persons WHERE session_id = :sessionId")
-    fun getPreSelectedPersonsForSession(sessionId: Long): Flow<List<Preselected.Person>>
-    @Query("SELECT * FROM ps_persons WHERE session_id = :sessionId")
-    suspend fun getPreSelectedPersonsListForSession(sessionId: Long): List<Preselected.Person>
-    
+    fun getPreSelectedPersonsForSessionByColor(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId, LabelSort.COLOR.sort)
+    fun getPreSelectedPersonsForSessionByName(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId, LabelSort.NAME.sort)
+    suspend fun getPreSelectedPersonsListForSessionByColor(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId, LabelSort.COLOR.sort)
+    suspend fun getPreSelectedPersonsListForSessionByName(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId, LabelSort.NAME.sort)
+
     /*
     PRESELECTED PLACES
      */
-    @Upsert
-    suspend fun upsertPreSelectedPlace(preSelectedPlace: Preselected.Place)
-    @Delete
-    suspend fun deletePreSelectedPlace(preSelectedPlace: Preselected.Place)
-    @Query("SELECT * FROM ps_places WHERE session_id = :sessionId")
-    fun getPreSelectedPlacesForSession(sessionId: Long): Flow<List<Preselected.Place>>
-    @Query("SELECT * FROM ps_places WHERE session_id = :sessionId")
-    suspend fun getPreSelectedPlacesListForSession(sessionId: Long): List<Preselected.Place>
-    
+    fun getPreSelectedPlacesForSessionByColor(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId, LabelSort.COLOR.sort)
+    fun getPreSelectedPlacesForSessionByName(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId, LabelSort.NAME.sort)
+    suspend fun getPreSelectedPlacesListForSessionByColor(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId, LabelSort.COLOR.sort)
+    suspend fun getPreSelectedPlacesListForSessionByName(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId, LabelSort.NAME.sort)
+
     /*
     ORPHANS
      */
-    @Query("DELETE FROM events " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE events.session_id = sessions.id)")
+    @Query("DELETE FROM events WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE events.session_id = sessions.id)")
     suspend fun clearOrphanEvents(): Int
-    @Query("DELETE FROM ps_persons " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_persons.session_id = sessions.id)")
-    suspend fun clearOrphanPreSelectedPersons(): Int
-    @Query("DELETE FROM ps_places " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_places.session_id = sessions.id)")
-    suspend fun clearOrphanPreSelectedPlaces(): Int
-    @Query("DELETE FROM ps_tags " +
-            "WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE ps_tags.session_id = sessions.id)")
-    suspend fun clearOrphanPreSelectedTags(): Int
+
+    @Query("DELETE FROM preselected WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE preselected.session_id = sessions.id)")
+    suspend fun clearOrphanPreSelected(): Int
 
     /*
     BACKUP AND RESTORE
      */
-    @Query("SELECT * FROM persons WHERE in_trash = 0")
-    suspend fun getActivePersonsList(): List<Label.Person>
-    @Query("SELECT * FROM places WHERE in_trash = 0")
-    suspend fun getActivePlacesList(): List<Label.Place>
-    @Query("SELECT * FROM tags WHERE in_trash = 0")
-    suspend fun getActiveTagsList(): List<Label.Tag>
+    @Query("SELECT * FROM labels WHERE in_trash = 0")
+    suspend fun getActiveLabelsList(): List<Label>
 
-    @Query("SELECT * FROM persons")
-    suspend fun getAllPersonsList(): List<Label.Person>
-    @Query("SELECT * FROM places")
-    suspend fun getAllPlacesList(): List<Label.Place>
-    @Query("SELECT * FROM tags")
-    suspend fun getAllTagsList(): List<Label.Tag>
-    @Query("SELECT * FROM ps_persons")
-    suspend fun getAllPreselectedPersonsList(): List<Preselected.Person>
-    @Query("SELECT * FROM ps_places")
-    suspend fun getAllPreselectedPlacesList(): List<Preselected.Place>
-    @Query("SELECT * FROM ps_tags")
-    suspend fun getAllPreselectedTagsList(): List<Preselected.Tag>
+    @Query("SELECT * FROM labels")
+    suspend fun getAllLabelsList(): List<Label>
+
+    @Query("SELECT * FROM preselected")
+    suspend fun getAllPreselectedLabelsList(): List<Preselected>
+
     @Query("SELECT * FROM sessions")
     suspend fun getAllSessionsList(): List<Session>
+
     @Query("SELECT * FROM events")
     suspend fun getAllEventsList(): List<Event>
+
     /*
     DELETE
      */
     @Query("DELETE FROM events")
     suspend fun deleteAllEvents()
-    @Query("DELETE FROM persons")
-    suspend fun deleteAllPersons()
-    @Query("DELETE FROM places")
-    suspend fun deleteAllPlaces()
-    @Query("DELETE FROM tags")
-    suspend fun deleteAllTags()
-    @Query("DELETE FROM ps_persons")
-    suspend fun deleteAllPreselectedPersons()
-    @Query("DELETE FROM ps_places")
-    suspend fun deleteAllPreselectedPlaces()
-    @Query("DELETE FROM ps_tags")
-    suspend fun deleteAllPreselectedTags()
+
+    @Query("DELETE FROM labels")
+    suspend fun deleteAllLabels()
+
+
+    @Query("DELETE FROM preselected")
+    suspend fun deleteAllPreselectedLabels()
+
     @Query("DELETE FROM sessions")
     suspend fun deleteAllSessions()
+
     @Query("DELETE FROM preferences")
     suspend fun deleteAllPreferences()
+
     suspend fun deleteAllData() {
         withContext(Dispatchers.IO) {
             launch { deleteAllEvents() }
-            launch { deleteAllPersons() }
-            launch { deleteAllPlaces() }
-            launch { deleteAllTags() }
-            launch { deleteAllPreselectedPersons() }
-            launch { deleteAllPreselectedPlaces() }
-            launch { deleteAllPreselectedTags() }
+            launch { deleteAllLabels() }
+            launch { deleteAllPreselectedLabels() }
             launch { deleteAllSessions() }
             launch { deleteAllPreferences() }
         }
     }
+
     /*
     PREFERENCES
      */
     @Upsert
     suspend fun upsertPreference(preference: Preference)
+    @Upsert
+    suspend fun upsertPreferences(preference: List<Preference>)
     @Delete
     suspend fun deletePreference(preference: Preference)
     @Query("SELECT * FROM preferences")

@@ -17,12 +17,12 @@ import com.deslomator.tagtimer.ui.theme.toHex
 import com.deslomator.tagtimer.util.toColor
 
 @Composable
-fun <T: Label>LabelDialog(
-    currentLabel: T,
+fun LabelDialog(
+    currentLabel: Label,
     onDismiss: () -> Unit,
     onAccept: (String, String) -> Unit,
     showTrash: Boolean,
-    onTrash: (T) -> Unit,
+    onTrash: (Label) -> Unit,
     @StringRes title: Int,
     @DrawableRes icon: Int,
 ) {

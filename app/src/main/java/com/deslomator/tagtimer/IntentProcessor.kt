@@ -248,54 +248,16 @@ fun IntentProcessor(
     if (insertBackupIntoDb) {
         Log.e(TAG, "loadBackup() Inserting backup into DB")
         dbBackup?.let { backup ->
-            runBlocking {
-                // only insert tags that do not exist already, as in
-                // they have the same name and color regardless of id
-                if (backup.persons.isNotEmpty()) launch {
-                    val persons = appDao.getActivePersonsList().map { Pair(it.name, it.color) }
-                    backup.persons.forEach {
-                        val alreadyExists = persons.contains(Pair(it.name, it.color))
-                        if (!alreadyExists) appDao.upsertPerson(it)
-                    }
-                }
-                if (backup.places.isNotEmpty()) launch {
-                    val places = appDao.getActivePlacesList().map { Pair(it.name, it.color) }
-                    backup.places.forEach {
-                        val alreadyExists = places.contains(Pair(it.name, it.color))
-                        if (!alreadyExists) appDao.upsertPlace(it)
-                    }
-                }
-                if (backup.tags.isNotEmpty()) launch {
-                    val tags = appDao.getActiveTagsList().map { Pair(it.name, it.color) }
-                    backup.tags.forEach {
-                        val alreadyExists = tags.contains(Pair(it.name, it.color))
-                        if (!alreadyExists) appDao.upsertTag(it)
-                    }
-                }
-            }
+            runBlocking { launch { appDao.upsertLabels(backup.labels) } }
             Log.i(TAG, "FromString() Restore of labels success")
             if (!backup.isLabelsOnly()) {
                 runBlocking {
                     Log.i(TAG, "FromString() Deleting current data")
                     appDao.deleteAllData()
-                    launch {
-                        backup.preselectedPersons.forEach {
-                            appDao.upsertPreSelectedPerson(it)
-                        }
-                    }
-                    launch {
-                        backup.preselectedPlaces.forEach {
-                            appDao.upsertPreSelectedPlace(it)
-                        }
-                    }
-                    launch {
-                        backup.preselectedTags.forEach {
-                            appDao.upsertPreSelectedTag(it)
-                        }
-                    }
-                    launch { backup.events.forEach { appDao.upsertEvent(it) } }
-                    launch { backup.sessions.forEach { appDao.upsertSession(it) } }
-                    launch { backup.prefs.forEach { appDao.upsertPreference(it) } }
+                    launch { appDao.upsertPreSelectedLabels(backup.preselected) }
+                    launch { appDao.upsertEvents(backup.events) }
+                    launch { appDao.upsertSessions(backup.sessions) }
+                    launch { appDao.upsertPreferences(backup.prefs) }
                 }
                 Log.i(TAG, "FromString() Restore of full backup success")
             }

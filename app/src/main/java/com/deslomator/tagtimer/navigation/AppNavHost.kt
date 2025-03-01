@@ -92,26 +92,20 @@ fun AppNavHost(
             }
         }
         composable<ActiveSessionScreen> { backStackEntry ->
-            val sharedVm = navController.sharedViewModel<SharedViewModel>()
-            val sharedState by sharedVm.state.collectAsStateWithLifecycle()
             val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             ActiveSessionScaffold(
                 navController = navController,
                 state = state,
                 onAction = viewModel::onAction,
-                sharedState = sharedState,
             )
         }
         composable<EventFilterScreen> { backStackEntry ->
-            val sharedVm = navController.sharedViewModel<SharedViewModel>()
-            val sharedState by sharedVm.state.collectAsStateWithLifecycle()
             val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             EventFilterScaffold(
                 navController = navController,
                 state = state,
-                sharedState = sharedState,
                 onAction = viewModel::onAction,
             )
         }

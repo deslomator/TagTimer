@@ -13,9 +13,9 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun <T: Label>LabelList(
-    labels: List<T>,
-    onItemClick: (T) -> Unit
+fun LabelList(
+    labels: List<Label>,
+    onItemClick: (Label) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -26,7 +26,7 @@ fun <T: Label>LabelList(
     ) {
         items(
             items = labels,
-            key = { it.id }
+            key = { it.id!! }
         ) { label ->
             LabelButton(
                 item = label,

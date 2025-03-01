@@ -3,6 +3,7 @@ package com.deslomator.tagtimer
 import android.util.Log
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
 
@@ -20,21 +21,26 @@ suspend fun populateDb (dao: AppDao) {
             inTrash = true
         )
         dao.upsertSession(sessionT)*/
-        val tag = Label.Tag(
-            color = it.toHex(),
+        val tag = Label(
             name = "Tag $index",
-        )
-        dao.upsertTag(tag)
-        val place = Label.Place(
             color = it.toHex(),
-            name = "Place $index",
+            type = LabelType.TAG.typeId
         )
-        dao.upsertPlace(place)
-        val person = Label.Person(
+        dao.upsertLabel(tag)
+
+        val person = Label(
+            name = "Tag $index",
             color = it.toHex(),
-            name = "Person $index",
+            type = LabelType.PERSON.typeId
         )
-        dao.upsertPerson(person)
+
+        val place = Label(
+            name = "Tag $index",
+            color = it.toHex(),
+            type = LabelType.PLACE.typeId
+        )
+        dao.upsertLabel(place)
+        dao.upsertLabel(person)
         /*colorPickerColors.forEachIndexed { idx, it2 ->
             val event = Event(
                 sessionId = i,

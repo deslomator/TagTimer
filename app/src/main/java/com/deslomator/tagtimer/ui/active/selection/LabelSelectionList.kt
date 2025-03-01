@@ -33,7 +33,7 @@ fun <T: Label>LabelSelectionList(
     ) {
         items(
             items = labels,
-            key = { it.id }
+            key = { it.id!! }
         ) { label ->
             val checked by remember(preSelected) {
                 derivedStateOf { preSelected.map { it.labelId }.contains(label.id) }

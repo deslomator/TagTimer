@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
+import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.active.EventListItem
@@ -25,7 +26,7 @@ import com.deslomator.tagtimer.ui.showSnackbar
 @Composable
 fun EventList(
     modifier: Modifier,
-    events: List<Event>,
+    events: List<EventForDisplay>,
     listState: LazyListState,
     onItemClicked: (Event) -> Unit,
     onItemSwiped: (Event) -> Unit,
@@ -47,8 +48,8 @@ fun EventList(
         }
         items(
             items = events,
-            key = { it.id!! }
-        ) { event ->
+            key = { it.event.id!! }
+        ) { event4d ->
             SwipeableListItem(
                 onDismiss = {
                     showSnackbar(
@@ -56,15 +57,15 @@ fun EventList(
                         snackbarHostState,
                         context.getString(R.string.event_sent_to_trash)
                     )
-                    onItemSwiped(event)
+                    onItemSwiped(event4d.event)
                 },
             ) {
                 EventListItem(
-                    event = event,
-                    trailingIcon = if (event.note.isEmpty()) null else R.drawable.note,
-                    onTrailingClick = { onItemClicked(event) },
-                    onItemClick = { onItemClicked(event) },
-                    persons = events.map { it.person }.distinct().sorted()
+                    event4d = event4d,
+                    trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
+                    onTrailingClick = { onItemClicked(event4d.event) },
+                    onItemClick = { onItemClicked(event4d.event) },
+                    persons = events.mapNotNull{ it.getPersonName() }.distinct().sorted()
                 )
             }
         }

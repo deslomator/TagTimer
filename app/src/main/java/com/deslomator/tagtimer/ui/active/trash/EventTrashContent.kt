@@ -62,10 +62,10 @@ fun EventTrashContent(
             }
             items(
                 items = state.trashedEvents,
-                key = { it.id!! }
-            ) { event ->
+                key = { it.event.id!! }
+            ) { event4d ->
                 EventListItem(
-                    event = event,
+                    event4d = event4d,
                     leadingIcon = R.drawable.restore_from_trash,
                     onLeadingClick = {
                         showSnackbar(
@@ -73,7 +73,7 @@ fun EventTrashContent(
                             snackbarHostState,
                             context.getString(R.string.event_restored)
                         )
-                        onAction(EventTrashAction.RestoreEventClicked(event))
+                        onAction(EventTrashAction.RestoreEventClicked(event4d.event))
                     },
                     trailingIcon = R.drawable.delete_forever,
                     onTrailingClick = {
@@ -82,9 +82,9 @@ fun EventTrashContent(
                             snackbarHostState,
                             context.getString(R.string.event_deleted)
                         )
-                        onAction(EventTrashAction.DeleteEventClicked(event))
+                        onAction(EventTrashAction.DeleteEventClicked(event4d.event))
                     },
-                    onItemClick = { onAction(EventTrashAction.EventInTrashClicked(event)) },
+                    onItemClick = { onAction(EventTrashAction.EventInTrashClicked(event4d.event)) },
                 )
             }
         }
@@ -95,7 +95,7 @@ fun EventTrashContent(
         exit = fadeOut()
     ) {
         EventEditionDialog(
-            event = state.eventForDialog,
+            event4d = state.eventForDialog,
             onAccept = { onAction(EventTrashAction.DismissEventInTrashDialog) },
             onDismiss = { onAction(EventTrashAction.DismissEventInTrashDialog) },
             enabled = false
