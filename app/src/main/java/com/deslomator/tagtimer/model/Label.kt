@@ -15,12 +15,12 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "labels")
 data class Label(
-    @SerialName(LABEL_NAME)
-    @ColumnInfo(name = LABEL_NAME)
+    @SerialName(COLUMN_LABEL_NAME)
+    @ColumnInfo(name = COLUMN_LABEL_NAME)
     val name: String = "",
 
-    @SerialName(LABEL_COLOR)
-    @ColumnInfo(name = LABEL_COLOR)
+    @SerialName(COLUMN_LABEL_COLOR)
+    @ColumnInfo(name = COLUMN_LABEL_COLOR)
     val color: String = colorPickerColors[7].toHex(),
 
     @SerialName("in_trash")
@@ -34,22 +34,14 @@ data class Label(
     @delegate:Ignore
     val longColor: Long by lazy { color.toLong(16) }
 
-    fun isTag(): Boolean = type == LabelType.TAG.typeId
     fun isPerson(): Boolean = type == LabelType.PERSON.typeId
-    fun isPlace(): Boolean = type == LabelType.PLACE.typeId
 
     fun getIcon() = when (type) {
         LabelType.TAG.typeId -> LabelType.TAG.iconId
         LabelType.PERSON.typeId -> LabelType.PERSON.iconId
         else -> LabelType.PLACE.iconId
     }
-
-    fun getLabelType() = when (type) {
-        LabelType.TAG.typeId -> LabelType.TAG
-        LabelType.PERSON.typeId -> LabelType.PERSON
-        else -> LabelType.PLACE
-    }
 }
 
-const val LABEL_NAME = "name"
-const val LABEL_COLOR = "color"
+const val COLUMN_LABEL_NAME = "name"
+const val COLUMN_LABEL_COLOR = "color"
