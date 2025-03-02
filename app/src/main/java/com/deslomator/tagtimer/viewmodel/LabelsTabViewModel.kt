@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelsTabAction
@@ -8,14 +9,16 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.theme.hue
+import com.deslomator.tagtimer.util.combine
+import com.deslomator.tagtimer.util.getSort
 import com.deslomator.tagtimer.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -36,37 +39,42 @@ class LabelsTabViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _tags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActiveTags()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActiveTags()
+        else appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _persons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActivePersons()
-            .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActivePersons().map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
+        if (sort == LabelSort.NAME.sortId) {
+            appDao.getActiveLabels(LabelType.PERSON.typeId)
+                .map { lst -> lst.sortedBy { it.name } }
+        } else {
+            appDao.getActiveLabels(LabelType.PERSON.typeId)
+                .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _places = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActivePLaces()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActivePLaces().map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
+        else appDao.getActiveLabels(LabelType.PLACE.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
-        _state, _tags, _persons, _places
-    ) { state, tags, persons, places ->
+        _state, _tags, _persons, _places, _tagSort, _personSort, _placeSort
+    ) { state, tags, persons, places, tagSort, personSort, placeSort ->
         state.copy(
             tags = tags,
             persons = persons,
             places = places,
+            tagSort = tagSort.getSort(),
+            personSort = personSort.getSort(),
+            placeSort = placeSort.getSort(),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelsTabState())
 
@@ -78,7 +86,7 @@ class LabelsTabViewModel @Inject constructor(
             is LabelsTabAction.AddNewTagClicked -> {
                 _state.update {
                     it.copy(
-                        currentTag = Label(),
+                        currentTag = Label(type = LabelType.TAG.typeId),
                         showTagDialog = true,
                         isAddingNewTag = true
                     )
@@ -128,8 +136,8 @@ class LabelsTabViewModel @Inject constructor(
 
             is LabelsTabAction.TagSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.TAG_SORT.name,
-                    value = action.labelSort.name
+                    prefKey = PrefKey.TAG_SORT.name,
+                    value = action.labelSort.sortId
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -139,7 +147,7 @@ class LabelsTabViewModel @Inject constructor(
             is LabelsTabAction.AddNewPersonClicked -> {
                 _state.update {
                     it.copy(
-                        currentPerson = Label(),
+                        currentPerson = Label(type = LabelType.PERSON.typeId),
                         showPersonDialog = true,
                         isAddingNewPerson = true
                     )
@@ -188,8 +196,8 @@ class LabelsTabViewModel @Inject constructor(
 
             is LabelsTabAction.PersonSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.PERSON_SORT.name,
-                    value = action.personSort.name
+                    prefKey = PrefKey.PERSON_SORT.name,
+                    value = action.personSort.sortId
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -199,7 +207,7 @@ class LabelsTabViewModel @Inject constructor(
             is LabelsTabAction.AddNewPlaceClicked -> {
                 _state.update {
                     it.copy(
-                        currentPlace = Label(),
+                        currentPlace = Label(type = LabelType.PLACE.typeId),
                         showPlaceDialog = true,
                         isAddingNewPlace = true
                     )
@@ -248,8 +256,8 @@ class LabelsTabViewModel @Inject constructor(
 
             is LabelsTabAction.PlaceSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.PLACE_SORT.name,
-                    value = action.placeSort.name
+                    prefKey = PrefKey.PLACE_SORT.name,
+                    value = action.placeSort.sortId
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -257,6 +265,6 @@ class LabelsTabViewModel @Inject constructor(
     }
 
     companion object {
-        private const val TAG = "TagsScreenViewModel"
+        private const val TAG = "LabelsTabViewModel"
     }
 }

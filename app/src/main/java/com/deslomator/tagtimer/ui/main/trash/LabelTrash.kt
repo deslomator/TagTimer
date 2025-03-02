@@ -27,7 +27,7 @@ fun LabelTrash(
             key = { it.id!! }
         ) { label ->
             LabelButton(
-                item = label,
+                label = label,
                 isTrash = true,
                 onLeadingClick = { onRestoreClick(it) },
                 onTrailingClick = { onPurgeClick(it) },

@@ -7,6 +7,10 @@ data class LabelsTabState(
     val tags: List<Label> = emptyList(),
     val persons: List<Label> = emptyList(),
     val places: List<Label> = emptyList(),
+    val tagSort: LabelSort = LabelSort.COLOR,
+    val personSort: LabelSort = LabelSort.NAME,
+    val placeSort: LabelSort = LabelSort.NAME,
+
     val currentTag: Label = Label(),
     val currentPerson: Label = Label(),
     val currentPlace: Label = Label(),
@@ -19,7 +23,4 @@ data class LabelsTabState(
     val showPlaceDialog: Boolean = false,
     val isEditingPlace: Boolean = false,
     val isAddingNewPlace: Boolean = false,
-    val tagSort: LabelSort = LabelSort.COLOR,
-    val personSort: LabelSort = LabelSort.NAME,
-    val placeSort: LabelSort = LabelSort.NAME,
 )

@@ -11,6 +11,9 @@ data class LabelPreselectionState(
     val tags: List<Label> = emptyList(),
     val persons: List<Label> = emptyList(),
     val places: List<Label> = emptyList(),
+    val tagSort: LabelSort = LabelSort.COLOR,
+    val personSort: LabelSort = LabelSort.NAME,
+    val placeSort: LabelSort = LabelSort.NAME,
     val currentSession: Session = Session(),
     val currentTag: Label = Label(),
     val currentPerson: Label = Label(),
@@ -24,7 +27,4 @@ data class LabelPreselectionState(
     val showPlaceDialog: Boolean = false,
     val isEditingPlace: Boolean = false,
     val isAddingNewPlace: Boolean = false,
-    val tagSort: LabelSort = LabelSort.COLOR,
-    val personSort: LabelSort = LabelSort.NAME,
-    val placeSort: LabelSort = LabelSort.NAME,
 )

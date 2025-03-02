@@ -6,11 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
+import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
+import com.deslomator.tagtimer.util.getSort
 import com.deslomator.tagtimer.util.toColor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,61 +42,61 @@ class LabelPreselectionViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _tags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActiveTags()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActiveTags()
+        else appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getPreSelectedTagsForSession(_sessionId.value)
+        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedTagsForSession(_sessionId.value)
+        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _persons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActivePersons()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActivePersons().map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
+        else appDao.getActiveLabels(LabelType.PERSON.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPersons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getPreSelectedPersonsForSession(_sessionId.value)
+        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedPersonsForSession(_sessionId.value).map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
+        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _places = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActivePLaces()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActivePLaces().map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
+        else appDao.getActiveLabels(LabelType.PLACE.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPlaces = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getPreSelectedPlacesForSession(_sessionId.value)
+        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedPlacesForSession(_sessionId.value).map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
+        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
         _state, _preSelectedTags, _tags, _preSelectedPersons, _persons,
-        _preSelectedPlaces, _places
+        _preSelectedPlaces, _places, _tagSort, _personSort, _placeSort
     ) { state, preSelectedTags, tags, preSelectedPersons, persons,
-        preSelectedPlaces, places ->
+        preSelectedPlaces, places, tagSort, personSort, placeSort ->
         state.copy(
             preSelectedTags = preSelectedTags,
             tags = tags,
@@ -100,6 +104,9 @@ class LabelPreselectionViewModel @Inject constructor(
             persons = persons,
             preSelectedPlaces = preSelectedPlaces,
             places = places,
+            tagSort = tagSort.getSort(),
+            personSort = personSort.getSort(),
+            placeSort = placeSort.getSort(),
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), LabelPreselectionState()
@@ -126,7 +133,7 @@ class LabelPreselectionViewModel @Inject constructor(
             }
             is LabelPreselectionAction.AddNewTagClicked -> {
                 _state.update { it.copy(
-                    currentTag = Label(),
+                    currentTag = Label(type = LabelType.TAG.typeId),
                     showTagDialog = true,
                     isAddingNewTag = true
                 ) }
@@ -160,12 +167,21 @@ class LabelPreselectionViewModel @Inject constructor(
                     isAddingNewTag = false,
                 ) }
             }
+
             is LabelPreselectionAction.DeleteTagClicked -> { // TODO used tag deletion loop
                 _state.update { it.copy(showTagDialog = false) }
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = true)
                     appDao.upsertLabel(trashed)
                 }
+            }
+
+            is LabelPreselectionAction.SortTagsClicked -> {
+                val pref = Preference(
+                    prefKey = PrefKey.TAG_SORT.name,
+                    value = action.tagSort.sortId
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
             }
             /*
             PERSON
@@ -186,7 +202,7 @@ class LabelPreselectionViewModel @Inject constructor(
             }
             is LabelPreselectionAction.AddNewPersonClicked -> {
                 _state.update { it.copy(
-                    currentPerson = Label(),
+                    currentPerson = Label(type = LabelType.PERSON.typeId),
                     showPersonDialog = true,
                     isAddingNewPerson = true
                 ) }
@@ -227,6 +243,14 @@ class LabelPreselectionViewModel @Inject constructor(
                     appDao.upsertLabel(trashed)
                 }
             }
+
+            is LabelPreselectionAction.SortPersonsClicked -> {
+                val pref = Preference(
+                    prefKey = PrefKey.PERSON_SORT.name,
+                    value = action.personSort.sortId
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
             /*
             PLACE
              */
@@ -246,7 +270,7 @@ class LabelPreselectionViewModel @Inject constructor(
             }
             is LabelPreselectionAction.AddNewPlaceClicked -> {
                 _state.update { it.copy(
-                    currentPlace = Label(),
+                    currentPlace = Label(type = LabelType.PLACE.typeId),
                     showPlaceDialog = true,
                     isAddingNewPlace = true
                 ) }
@@ -286,6 +310,14 @@ class LabelPreselectionViewModel @Inject constructor(
                     val trashed = action.place.copy(inTrash = true)
                     appDao.upsertLabel(trashed)
                 }
+            }
+
+            is LabelPreselectionAction.SortPlacesClicked -> {
+                val pref = Preference(
+                    prefKey = PrefKey.PLACE_SORT.name,
+                    value = action.placeSort.sortId
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
             }
         }
     }

@@ -7,6 +7,7 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.state.ActiveSessionState
@@ -57,54 +58,54 @@ class ActiveSessionViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _tags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActiveTags()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActiveTags()
+        else appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedTags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getPreSelectedTagsForSession(_sessionId.value)
+        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedTagsForSession(_sessionId.value)
+        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _persons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActivePersons()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActivePersons().map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
-        }
+        else appDao.getActiveLabels(LabelType.PERSON.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPersons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getPreSelectedPersonsForSession(_sessionId.value)
+        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedPersonsForSession(_sessionId.value).map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
-        }
+        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _places = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getActivePLaces()
+        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getActivePLaces().map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
-        }
+        else appDao.getActiveLabels(LabelType.PLACE.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _preSelectedPlaces = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getPreSelectedPlacesForSession(_sessionId.value)
+        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedPlacesForSession(_sessionId.value).map { lst ->
-            lst.sortedBy { it.color.toColor().hue() }
-        }
+        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
@@ -315,36 +316,23 @@ class SortProvider {
 
     companion object {
 
-        @OptIn(ExperimentalCoroutinesApi::class)
         fun getTagSort(appDao: AppDao, viewModelScope: CoroutineScope) =
-            appDao.getPreferences().mapLatest { prefsList ->
-                prefsList.firstOrNull { item ->
-                    item.key == PrefKey.TAG_SORT.name
-                }?.getLabelSort() ?: LabelSort.COLOR
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionSort.LAST_ACCESS)
+            appDao.getPreferenceValue(PrefKey.TAG_SORT.name)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.COLOR.sortId)
 
-
-        @OptIn(ExperimentalCoroutinesApi::class)
         fun getPersonSort(appDao: AppDao, viewModelScope: CoroutineScope) =
-            appDao.getPreferences().mapLatest { prefsList ->
-                prefsList.firstOrNull { item ->
-                    item.key == PrefKey.PERSON_SORT.name
-                }?.getLabelSort() ?: LabelSort.COLOR
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionSort.LAST_ACCESS)
+            appDao.getPreferenceValue(PrefKey.PERSON_SORT.name)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.COLOR.sortId)
 
-        @OptIn(ExperimentalCoroutinesApi::class)
         fun getPlaceSort(appDao: AppDao, viewModelScope: CoroutineScope) =
-            appDao.getPreferences().mapLatest { prefsList ->
-                prefsList.firstOrNull { item ->
-                    item.key == PrefKey.PLACE_SORT.name
-                }?.getLabelSort() ?: LabelSort.COLOR
-            }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionSort.LAST_ACCESS)
+            appDao.getPreferenceValue(PrefKey.PLACE_SORT.name)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.COLOR.sortId)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         fun getSessionSort(appDao: AppDao, viewModelScope: CoroutineScope) =
             appDao.getPreferences().mapLatest { prefsList ->
                 prefsList.firstOrNull { item ->
-                    item.key == PrefKey.SESSION_SORT.name
+                    item.prefKey == PrefKey.SESSION_SORT.name
                 }?.getSessionSort() ?: SessionSort.NAME
             }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionSort.LAST_ACCESS)
     }

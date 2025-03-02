@@ -15,7 +15,8 @@ import com.deslomator.tagtimer.ui.LabelButton
 @Composable
 fun LabelList(
     labels: List<Label>,
-    onItemClick: (Label) -> Unit
+    onItemClick: ((Label) -> Unit)? = null,
+    onLongClick: ((Label) -> Unit)? = null,
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -29,8 +30,9 @@ fun LabelList(
             key = { it.id!! }
         ) { label ->
             LabelButton(
-                item = label,
-                onItemClick = { onItemClick(label) },
+                label = label,
+                onLongClick = { onLongClick?.invoke(label) },
+                onItemClick = { onItemClick?.invoke(label) },
             )
         }
 

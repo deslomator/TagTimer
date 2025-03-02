@@ -44,7 +44,7 @@ fun TagsList(
                 derivedStateOf { currentTags.contains(tag) }
             }
             LabelButton(
-                item = tag,
+                label = tag,
                 onItemClick = { onItemClicked(tag) },
                 checked = checked && showChecked,
                 checkType = Checked.LEADING,

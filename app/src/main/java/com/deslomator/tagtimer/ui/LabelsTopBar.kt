@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DropdownMenu

@@ -38,7 +38,7 @@ fun LabelSelectionList(
                 derivedStateOf { preSelected.map { it.id }.contains(label.id) }
             }
             LabelButton(
-                item = label,
+                label = label,
                 onItemClick = {
                     onItemClick(label, !checked)
                 },

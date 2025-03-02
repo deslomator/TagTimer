@@ -35,7 +35,6 @@ import com.deslomator.tagtimer.viewmodel.EventTrashViewModel
 import com.deslomator.tagtimer.viewmodel.LabelPreselectionViewModel
 import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
-import com.deslomator.tagtimer.viewmodel.SharedViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
 
 @Composable
@@ -119,16 +118,12 @@ fun AppNavHost(
             )
         }
         composable<LabelSelectionScreen> { backStackEntry ->
-            val sharedVm = navController.sharedViewModel<SharedViewModel>()
-            val sharedState by sharedVm.state.collectAsStateWithLifecycle()
             val viewModel = hiltViewModel<LabelPreselectionViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             LabelSelectionScaffold(
                 navController = navController,
                 state = state,
                 onAction = viewModel::onAction,
-                sharedState = sharedState,
-                onSharedAction = sharedVm::onAction,
             )
         }
         composable<BackupScreen> { backStackEntry ->

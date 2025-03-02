@@ -96,19 +96,19 @@ fun LabelsTabContent(
                     LabelScreen.Tag -> {
                         LabelList(
                             labels = state.tags,
-                            onItemClick = { onAction(LabelsTabAction.EditTagClicked(it)) }
+                            onLongClick = { onAction(LabelsTabAction.EditTagClicked(it)) }
                         )
                     }
                     LabelScreen.Person -> {
                         LabelList(
                             labels = state.persons,
-                            onItemClick = { onAction(LabelsTabAction.EditPersonClicked(it)) }
+                            onLongClick = { onAction(LabelsTabAction.EditPersonClicked(it)) }
                         )
                     }
                     LabelScreen.Place -> {
                         LabelList(
                             labels = state.places,
-                            onItemClick = { onAction(LabelsTabAction.EditPlaceClicked(it)) }
+                            onLongClick = { onAction(LabelsTabAction.EditPlaceClicked(it)) }
                         )
                     }
                 }

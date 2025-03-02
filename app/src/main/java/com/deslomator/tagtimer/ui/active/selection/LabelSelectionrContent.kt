@@ -224,7 +224,7 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentPlace,
             onDismiss = { onAction(LabelPreselectionAction.DismissPlaceDialog) },
-            onAccept = { 
+            onAccept = {
                 onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(it))
             },
             showTrash = state.isEditingPlace,

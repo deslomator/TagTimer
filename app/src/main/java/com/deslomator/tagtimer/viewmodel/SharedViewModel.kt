@@ -26,9 +26,9 @@ class SharedViewModel @Inject constructor(
     private val _state = MutableStateFlow(SharedState())
     val state = combine(_state, _prefs) { state, prefs ->
         state.copy(
-            tagSort = prefs.firstOrNull { it.key == PrefKey.TAG_SORT.name }?.getLabelSort() ?: LabelSort.COLOR,
-            personSort = prefs.firstOrNull { it.key == PrefKey.PERSON_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
-            placeSort = prefs.firstOrNull { it.key == PrefKey.PLACE_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
+            tagSort = prefs.firstOrNull { it.prefKey == PrefKey.TAG_SORT.name }?.getLabelSort() ?: LabelSort.COLOR,
+            personSort = prefs.firstOrNull { it.prefKey == PrefKey.PERSON_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
+            placeSort = prefs.firstOrNull { it.prefKey == PrefKey.PLACE_SORT.name }?.getLabelSort() ?: LabelSort.NAME,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -40,21 +40,21 @@ class SharedViewModel @Inject constructor(
         when(action) {
             is SharedAction.TagSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.TAG_SORT.name,
+                    prefKey = PrefKey.TAG_SORT.name,
                     value = action.tagSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
             is SharedAction.PersonSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.PERSON_SORT.name,
+                    prefKey = PrefKey.PERSON_SORT.name,
                     value = action.personSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
             is SharedAction.PlaceSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.PLACE_SORT.name,
+                    prefKey = PrefKey.PLACE_SORT.name,
                     value = action.placeSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }

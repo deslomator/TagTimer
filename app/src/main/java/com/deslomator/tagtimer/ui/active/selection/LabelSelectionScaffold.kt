@@ -11,9 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.LabelPreselectionAction
-import com.deslomator.tagtimer.action.SharedAction
 import com.deslomator.tagtimer.state.LabelPreselectionState
-import com.deslomator.tagtimer.state.SharedState
 import com.deslomator.tagtimer.ui.LabelsTopBar
 
 @Composable
@@ -21,8 +19,6 @@ fun LabelSelectionScaffold(
     navController: NavHostController,
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
-    sharedState: SharedState,
-    onSharedAction: (SharedAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var currentPage by remember { mutableIntStateOf(1) }
@@ -53,12 +49,12 @@ fun LabelSelectionScaffold(
                 showTagDialog = state.showTagDialog,
                 showPersonDialog = state.showPersonDialog,
                 showPlaceDialog = state.showPlaceDialog,
-                tagSort = sharedState.tagSort,
-                personSort = sharedState.personSort,
-                placeSort = sharedState.placeSort,
-                onTagSort = { onSharedAction(SharedAction.TagSortClicked(it)) },
-                onPersonSort = { onSharedAction(SharedAction.PersonSortClicked(it)) },
-                onPlaceSort = { onSharedAction(SharedAction.PlaceSortClicked(it)) },
+                tagSort = state.tagSort,
+                personSort = state.personSort,
+                placeSort = state.placeSort,
+                onTagSort = { onAction(LabelPreselectionAction.SortTagsClicked(it)) },
+                onPersonSort = { onAction(LabelPreselectionAction.SortPersonsClicked(it)) },
+                onPlaceSort = { onAction(LabelPreselectionAction.SortPlacesClicked(it)) },
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },

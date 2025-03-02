@@ -7,6 +7,7 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
@@ -45,13 +46,13 @@ class EventFilterViewModel @Inject constructor(
             appDao.getEventsForDisplay(_sessionId.value)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _tags = appDao.getActiveTags()
+    private val _tags = appDao.getActiveLabels(LabelType.TAG.typeId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _persons = appDao.getActivePersons()
+    private val _persons = appDao.getActiveLabels(LabelType.PERSON.typeId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _places = appDao.getActivePLaces()
+    private val _places = appDao.getActiveLabels(LabelType.PLACE.typeId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _filteredEvents = combine(

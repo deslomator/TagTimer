@@ -11,7 +11,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "preferences")
 data class Preference(
-    @PrimaryKey val key: String,
+    @PrimaryKey val prefKey: String,
     val value: String
 ) {
     fun getLabelSort(): LabelSort? = when (value) {

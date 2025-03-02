@@ -43,6 +43,12 @@ data class Label(
         LabelType.PERSON.typeId -> LabelType.PERSON.iconId
         else -> LabelType.PLACE.iconId
     }
+
+    fun getLabelType() = when (type) {
+        LabelType.TAG.typeId -> LabelType.TAG
+        LabelType.PERSON.typeId -> LabelType.PERSON
+        else -> LabelType.PLACE
+    }
 }
 
 const val LABEL_NAME = "name"

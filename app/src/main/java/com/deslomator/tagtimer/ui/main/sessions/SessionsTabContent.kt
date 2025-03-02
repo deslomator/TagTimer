@@ -83,8 +83,7 @@ fun SessionsTabContent(
                             ActiveSessionScreen(sessionId = session.id)
                         )
                     },
-                    trailingIcon = R.drawable.edit,
-                    onTrailingClick = {
+                    onLongClick = {
                         onAction(SessionsTabAction.ItemClicked(session))
                     },
                 ) { item ->

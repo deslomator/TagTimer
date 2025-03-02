@@ -101,18 +101,18 @@ interface AppDao {
     /*
     TAGS
      */
-    fun getActiveTags() = getActiveLabels(LabelType.TAG.typeId)
+    //fun getActiveTags() = getActiveLabels(LabelType.TAG.typeId)
     fun getTrashedTags() = getTrashedLabels(LabelType.TAG.typeId)
     /*
     PERSONS
      */
-    fun getActivePersons() = getActiveLabels(LabelType.PERSON.typeId)
+    //fun getActivePersons() = getActiveLabels(LabelType.PERSON.typeId)
     fun getTrashedPersons() = getTrashedLabels(LabelType.PERSON.typeId)
 
     /*
     PLACES
      */
-    fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
+    //fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
     fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE.typeId)
 
 
@@ -137,19 +137,19 @@ interface AppDao {
     /*
     PRESELECTED TAGS
      */
-    fun getPreSelectedTagsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
+    //fun getPreSelectedTagsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
     suspend fun getPreSelectedTagsListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId)
 
     /*
     PRESELECTED PERSONS
      */
-    fun getPreSelectedPersonsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
+    //fun getPreSelectedPersonsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
     suspend fun getPreSelectedPersonsListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId)
 
     /*
     PRESELECTED PLACES
      */
-    fun getPreSelectedPlacesForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
+    //fun getPreSelectedPlacesForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
     suspend fun getPreSelectedPlacesListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId)
 
     /*
@@ -213,15 +213,23 @@ interface AppDao {
      */
     @Upsert
     suspend fun upsertPreference(preference: Preference)
+
     @Upsert
     suspend fun upsertPreferences(preference: List<Preference>)
+
     @Delete
     suspend fun deletePreference(preference: Preference)
+
     @Query("SELECT * FROM preferences")
     fun getPreferences(): Flow<List<Preference>>
+
+    @Query("SELECT value FROM preferences WHERE prefKey = :prefKey")
+    fun getPreferenceValue(prefKey: String): Flow<String>
+
     @Query("SELECT * FROM preferences")
     fun getAllPreferencesList(): List<Preference>
-    @Query("SELECT * FROM preferences WHERE `key` = :key")
+
+    @Query("SELECT * FROM preferences WHERE prefKey = :key")
     suspend fun getPreference(key: String): Preference
 }
 

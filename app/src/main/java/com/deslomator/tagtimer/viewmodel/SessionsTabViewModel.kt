@@ -99,7 +99,7 @@ class SessionsTabViewModel @Inject constructor(
 
             is SessionsTabAction.SessionSortClicked -> {
                 val pref = Preference(
-                    key = PrefKey.SESSION_SORT.name, value = action.sessionSort.name
+                    prefKey = PrefKey.SESSION_SORT.name, value = action.sessionSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }

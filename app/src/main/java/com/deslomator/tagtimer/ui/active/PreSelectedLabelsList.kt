@@ -33,7 +33,7 @@ fun PreSelectedLabelsList(
                 }
                 LabelButton(
                     modifier = Modifier.fillMaxWidth(1F / (labels.size -index)),
-                    item = label,
+                    label = label,
                     onItemClick = { onItemClick(label) },
                     checked = checked,
                     checkType = Checked.LEADING,
@@ -55,7 +55,7 @@ fun PreSelectedLabelsList(
 //            Log.d(TAG, "recomposing PersonButton, id: ${person.id}")
                 LabelButton(
                     modifier = Modifier.width(120.dp),
-                    item = label,
+                    label = label,
                     onItemClick = { onItemClick(label) },
                     checked = checked,
                     checkType = Checked.LEADING,
