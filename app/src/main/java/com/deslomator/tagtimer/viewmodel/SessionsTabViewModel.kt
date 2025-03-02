@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Preference
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
@@ -82,7 +81,8 @@ class SessionsTabViewModel @Inject constructor(
                 viewModelScope.launch {
                     _state.update { it.copy(showSessionDialog = false) }
                     val trashed = state.value.currentSession.copy(
-                        running = false, inTrash = true
+                        running = false,
+                        inTrash = true
                     )
                     appDao.upsertSession(trashed)
                 }
@@ -121,40 +121,11 @@ class SessionsTabViewModel @Inject constructor(
             )
             val newId = appDao.upsertSession(newSession)
             launch {
-                appDao.getPreSelectedTagsListForSession(s.id!!)
-                    .map {
-                        Preselected(
-                            sessionId = newId,
-                            labelId = it.id!!
-                        )
+                appDao.getPreSelectedListForSession(s.id!!)
+                    .map{
+                        it.copy(sessionId = newId)
                     }
-                    .let { list ->
-                        appDao.upsertPreSelectedLabels(list)
-                    }
-            }
-            launch {
-                appDao.getPreSelectedPersonsListForSession(s.id!!)
-                    .map {
-                        Preselected(
-                            sessionId = newId,
-                            labelId = it.id!!
-                        )
-                    }
-                    .let { list ->
-                        appDao.upsertPreSelectedLabels(list)
-                    }
-            }
-            launch {
-                appDao.getPreSelectedPlacesListForSession(s.id!!)
-                    .map {
-                        Preselected(
-                            sessionId = newId,
-                            labelId = it.id!!
-                        )
-                    }
-                    .let { list ->
-                        appDao.upsertPreSelectedLabels(list)
-                    }
+                    .let { appDao.upsertPreSelectedLabels(it) }
             }
         }
     }

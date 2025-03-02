@@ -10,7 +10,6 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -133,6 +132,9 @@ interface AppDao {
 
     @Query("SELECT name, color, in_trash, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
     suspend fun getPreSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
+
+    @Query("SELECT session_id, label_id FROM preselected WHERE session_id = :sessionId")
+    suspend fun getPreSelectedListForSession(sessionId: Long): List<Preselected>
 
     /*
     PRESELECTED TAGS
