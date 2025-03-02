@@ -3,7 +3,6 @@ package com.deslomator.tagtimer.state
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.Preselected
 import com.deslomator.tagtimer.model.Session
 
 data class ActiveSessionState(
@@ -23,7 +22,7 @@ data class ActiveSessionState(
     val showTimeDialog: Boolean = false,
     val shareData: Boolean = false,
     val dataToShare: String = "",
-    val currentPersonId: Long? = null,
-    val currentPlaceId: Long? = null,
-    val currentLabelId: Long? = null,
+    val currentPerson: Label? = null,
+    val currentPlace: Label? = null,
+    val currentLabel: Label? = null
 )

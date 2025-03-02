@@ -174,8 +174,8 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentTag,
             onDismiss = { onAction(LabelPreselectionAction.DismissTagDialog) },
-            onAccept = { name, color ->
-                onAction(LabelPreselectionAction.AcceptTagEditionClicked(name, color))
+            onAccept = {
+                onAction(LabelPreselectionAction.AcceptTagEditionClicked(it))
             },
             showTrash = state.isEditingTag,
             onTrash = {
@@ -199,8 +199,8 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentPerson,
             onDismiss = { onAction(LabelPreselectionAction.DismissPersonDialog) },
-            onAccept = { name, color ->
-                onAction(LabelPreselectionAction.AcceptPersonEditionClicked(name, color))
+            onAccept = {
+                onAction(LabelPreselectionAction.AcceptPersonEditionClicked(it))
             },
             showTrash = state.isEditingPerson,
             onTrash = {
@@ -224,8 +224,8 @@ fun LabelSelectionContent(
         LabelDialog(
             currentLabel = state.currentPlace,
             onDismiss = { onAction(LabelPreselectionAction.DismissPlaceDialog) },
-            onAccept = { name, color ->
-                onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(name, color))
+            onAccept = { 
+                onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(it))
             },
             showTrash = state.isEditingPlace,
             onTrash = {

@@ -20,7 +20,7 @@ import com.deslomator.tagtimer.util.toColor
 fun LabelDialog(
     currentLabel: Label,
     onDismiss: () -> Unit,
-    onAccept: (String, String) -> Unit,
+    onAccept: (Label) -> Unit,
     showTrash: Boolean,
     onTrash: (Label) -> Unit,
     @StringRes title: Int,
@@ -30,7 +30,13 @@ fun LabelDialog(
     var color by rememberSaveable { mutableStateOf(currentLabel.color) }
     MyDialog(
         onDismiss = onDismiss,
-        onAccept = { onAccept(name.trim(), color) },
+        onAccept = {
+            val editedLabel = currentLabel.copy(
+                name = name,
+                color= color
+            )
+            onAccept(editedLabel)
+        },
         showTrash = showTrash,
         onTrash = { onTrash(currentLabel) },
         title = title

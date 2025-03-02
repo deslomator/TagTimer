@@ -25,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
-import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelScreen
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
@@ -125,14 +124,8 @@ fun LabelsTabContent(
         LabelDialog(
             currentLabel = state.currentTag,
             onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
-            onAccept = { name, color ->
-                val t = Label(
-                    name = name,
-                    color = color,
-                    type = state.currentTag.type,
-                    id = state.currentTag.id
-                )
-                onAction(LabelsTabAction.AcceptTagEditionClicked(t))
+            onAccept = {
+                onAction(LabelsTabAction.AcceptTagEditionClicked(it))
             },
             showTrash = state.isEditingTag,
             onTrash = {
@@ -156,14 +149,8 @@ fun LabelsTabContent(
         LabelDialog(
             currentLabel = state.currentPerson,
             onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
-            onAccept = { name, color ->
-                val l = Label(
-                    name = name,
-                    color = color,
-                    type = state.currentPerson.type,
-                    id = state.currentPerson.id
-                )
-                onAction(LabelsTabAction.AcceptPersonEditionClicked(l))
+            onAccept = {
+                onAction(LabelsTabAction.AcceptPersonEditionClicked(it))
             },
             showTrash = state.isEditingPerson,
             onTrash = {
@@ -187,14 +174,8 @@ fun LabelsTabContent(
         LabelDialog(
             currentLabel = state.currentPlace,
             onDismiss = { onAction(LabelsTabAction.DismissPlaceDialog) },
-            onAccept = { name, color ->
-                val t = Label(
-                    name = name,
-                    color = color,
-                    type = state.currentPlace.type,
-                    id = state.currentPlace.id
-                )
-                onAction(LabelsTabAction.AcceptPlaceEditionClicked(t))
+            onAccept = {
+                onAction(LabelsTabAction.AcceptPlaceEditionClicked(it))
             },
             showTrash = state.isEditingPlace,
             onTrash = {

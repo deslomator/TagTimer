@@ -53,7 +53,7 @@ fun ActiveSessionContent(
 ) {
     val listState = rememberLazyListState()
     LaunchedEffect(state.eventForScrollTo, state.events) {
-        val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.id)
+        val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.event.id)
         if (index >= 0) {
             listState.animateScrollToItem(index, 0)
         }
@@ -96,11 +96,7 @@ fun ActiveSessionContent(
                         )
                     } else {
                         onAction(
-                            ActiveSessionAction.PreSelectedTagClicked(
-                                it.id,
-                                it.color,
-                                state.currentSession.durationMillis
-                            )
+                            ActiveSessionAction.PreSelectedTagClicked(it)
                         )
                     }
                 },
@@ -108,7 +104,7 @@ fun ActiveSessionContent(
             HorizontalDivider()
             PreSelectedLabelsList(
                 labels = state.persons,
-                currentLabel = state.currentPersonId,
+                currentLabel = state.currentPerson,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
                 }
@@ -116,7 +112,7 @@ fun ActiveSessionContent(
             HorizontalDivider()
             PreSelectedLabelsList(
                 labels = state.places,
-                currentLabel = state.currentPlaceId,
+                currentLabel = state.currentPlace,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))
                 }

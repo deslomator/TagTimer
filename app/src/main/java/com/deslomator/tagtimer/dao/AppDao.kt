@@ -25,7 +25,7 @@ interface AppDao {
     @Upsert
     suspend fun upsertEvent(event: Event): Long
     @Upsert
-    suspend fun upsertEvents(events: List<Event>): Long
+    suspend fun upsertEvents(events: List<Event>): List<Long>
 
     @Delete
     suspend fun deleteEvent(event: Event)
@@ -54,7 +54,7 @@ interface AppDao {
     @Upsert
     suspend fun upsertSession(session: Session): Long
     @Upsert
-    suspend fun upsertSessions(sessions: List<Session>): Long
+    suspend fun upsertSessions(sessions: List<Session>): List<Long>
 
     @Delete
     suspend fun deleteSession(session: Session)

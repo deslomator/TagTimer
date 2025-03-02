@@ -132,11 +132,11 @@ class ActiveSessionViewModel @Inject constructor(
                 viewModelScope.launch {
                     val event = Event(
                         sessionId = _sessionId.value, // the value in state can be null
-                        elapsedTimeMillis = action.elapsed,
-                        color = action.color,
-                        tagId = action.tagId,
-                        personId = state.value.currentPersonId,
-                        placeId = state.value.currentPlaceId,
+                        elapsedTimeMillis = getSessionDuration(),
+                        color = action.tag.color,
+                        tagId = action.tag.id,
+                        personId = state.value.currentPerson?.id,
+                        placeId = state.value.currentPlace?.id,
                     )
                     val id = appDao.upsertEvent(event)
                     _state.update {
@@ -234,15 +234,15 @@ class ActiveSessionViewModel @Inject constructor(
             }
 
             is ActiveSessionAction.PreSelectedPersonClicked -> {
-                val personId = if (action.personId == state.value.currentPersonId) null
-                else action.personId
-                _state.update { it.copy(currentPersonId = personId) }
+                val person = if (action.person == state.value.currentPerson) null
+                else action.person
+                _state.update { it.copy(currentPerson = person) }
             }
 
             is ActiveSessionAction.PreSelectedPlaceClicked -> {
-                val placeId = if (action.placeId == state.value.currentPlaceId) null
-                else action.placeId
-                _state.update { it.copy(currentPlaceId = placeId) }
+                val place = if (action.place == state.value.currentPlace) null
+                else action.place
+                _state.update { it.copy(currentPlace = place) }
             }
 
             is ActiveSessionAction.PlayPauseClicked -> {
