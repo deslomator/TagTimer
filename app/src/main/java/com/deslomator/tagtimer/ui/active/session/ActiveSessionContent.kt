@@ -86,7 +86,7 @@ fun ActiveSessionContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.6f),
-                tags = state.tags,
+                tags = state.preSelectedTags,
                 onItemClicked = {
                     if (!state.currentSession.running) {
                         showSnackbar(
@@ -103,7 +103,7 @@ fun ActiveSessionContent(
             )
             HorizontalDivider()
             PreSelectedLabelsList(
-                labels = state.persons,
+                labels = state.preSelectedPersons,
                 currentLabel = state.currentPerson,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
@@ -111,7 +111,7 @@ fun ActiveSessionContent(
             )
             HorizontalDivider()
             PreSelectedLabelsList(
-                labels = state.places,
+                labels = state.preSelectedPlaces,
                 currentLabel = state.currentPlace,
                 onItemClick = {
                     onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))
