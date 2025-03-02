@@ -42,14 +42,9 @@ class TrashTabViewModel @Inject constructor(
 
     fun onAction(action: TrashTabAction) {
         when(action) {
-            /*
-            SESSION
-             */
+
             is TrashTabAction.DeleteSessionClicked -> {
-                viewModelScope.launch {
-                    appDao.deleteSession(action.session)
-                    appDao.deleteEventsForSession(action.session.id!!)
-                }
+                viewModelScope.launch { appDao.purgeSession(action.session) }
             }
             is TrashTabAction.RestoreSessionClicked -> {
                 viewModelScope.launch {
@@ -57,9 +52,7 @@ class TrashTabViewModel @Inject constructor(
                     appDao.upsertSession(trashed)
                 }
             }
-            /*
-            TAG
-             */
+
             is TrashTabAction.DeleteLabelClicked -> {
                 viewModelScope.launch {
                     appDao.deleteLabel(action.tag)

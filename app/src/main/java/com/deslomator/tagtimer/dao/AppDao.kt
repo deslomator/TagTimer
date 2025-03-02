@@ -79,6 +79,12 @@ interface AppDao {
     @Query("SELECT * FROM sessions WHERE in_trash = 1 ORDER BY last_access_millis DESC")
     fun getTrashedSessions(): Flow<List<Session>>
 
+    suspend fun purgeSession(session: Session) {
+        deleteEventsForSession(session.id!!)
+        deletePreselectedForSession(session.id!!)
+        deleteSession(session)
+    }
+
     /*
     LABELS
      */
@@ -135,6 +141,9 @@ interface AppDao {
 
     @Query("SELECT session_id, label_id FROM preselected WHERE session_id = :sessionId")
     suspend fun getPreSelectedListForSession(sessionId: Long): List<Preselected>
+
+    @Query("DELETE FROM preselected WHERE session_id = :sessionId")
+    suspend fun  deletePreselectedForSession(sessionId: Long)
 
     /*
     PRESELECTED TAGS
