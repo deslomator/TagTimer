@@ -62,7 +62,7 @@ class LabelsTabViewModel @Inject constructor(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
-        }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
@@ -94,12 +94,16 @@ class LabelsTabViewModel @Inject constructor(
             }
 
             is LabelsTabAction.EditTagClicked -> {
-                _state.update {
-                    it.copy(
-                        currentTag = action.tag,
-                        showTagDialog = true,
-                        isEditingTag = true,
-                    )
+                viewModelScope.launch {
+                    val cbd = action.tag.canBeDeleted()
+                    _state.update {
+                        it.copy(
+                            currentTag = action.tag,
+                            showTagDialog = true,
+                            isEditingTag = true,
+                            canBeDeleted = cbd
+                        )
+                    }
                 }
             }
 
@@ -155,12 +159,16 @@ class LabelsTabViewModel @Inject constructor(
             }
 
             is LabelsTabAction.EditPersonClicked -> {
-                _state.update {
-                    it.copy(
-                        currentPerson = action.person,
-                        showPersonDialog = true,
-                        isEditingPerson = true,
-                    )
+                viewModelScope.launch {
+                    val cbd = action.person.canBeDeleted()
+                    _state.update {
+                        it.copy(
+                            currentPerson = action.person,
+                            showPersonDialog = true,
+                            isEditingPerson = true,
+                            canBeDeleted = cbd
+                        )
+                    }
                 }
             }
 
@@ -215,12 +223,16 @@ class LabelsTabViewModel @Inject constructor(
             }
 
             is LabelsTabAction.EditPlaceClicked -> {
-                _state.update {
-                    it.copy(
-                        currentPlace = action.place,
-                        showPlaceDialog = true,
-                        isEditingPlace = true,
-                    )
+                viewModelScope.launch {
+                    val cbd = action.place.canBeDeleted()
+                    _state.update {
+                        it.copy(
+                            currentPlace = action.place,
+                            showPlaceDialog = true,
+                            isEditingPlace = true,
+                            canBeDeleted = cbd
+                        )
+                    }
                 }
             }
 
@@ -263,6 +275,10 @@ class LabelsTabViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun Label.canBeDeleted() =
+        appDao.getSEventsForTag(this.id!!) == 0
+
 
     companion object {
         private const val TAG = "LabelsTabViewModel"

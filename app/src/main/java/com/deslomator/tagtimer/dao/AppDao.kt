@@ -120,6 +120,9 @@ interface AppDao {
     //fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
     fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE.typeId)
 
+    @Query("SELECT COUNT(*) FROM events WHERE tagId = :labelId OR personId = :labelId OR placeId = :labelId")
+    suspend fun getSEventsForTag(labelId: Long): Int
+
 
     /*
     PRESELECTED

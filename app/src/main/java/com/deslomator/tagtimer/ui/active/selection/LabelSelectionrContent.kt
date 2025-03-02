@@ -178,6 +178,7 @@ fun LabelSelectionContent(
                 onAction(LabelPreselectionAction.AcceptTagEditionClicked(it))
             },
             showTrash = state.isEditingTag,
+            canBeDeleted = state.canBeDeleted,
             onTrash = {
                 showSnackbar(
                     scope,
@@ -203,6 +204,7 @@ fun LabelSelectionContent(
                 onAction(LabelPreselectionAction.AcceptPersonEditionClicked(it))
             },
             showTrash = state.isEditingPerson,
+            canBeDeleted = state.canBeDeleted,
             onTrash = {
                 showSnackbar(
                     scope,
@@ -228,6 +230,7 @@ fun LabelSelectionContent(
                 onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(it))
             },
             showTrash = state.isEditingPlace,
+            canBeDeleted = state.canBeDeleted,
             onTrash = {
                 showSnackbar(
                     scope,

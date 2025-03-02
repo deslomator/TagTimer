@@ -135,15 +135,22 @@ class LabelPreselectionViewModel @Inject constructor(
                 _state.update { it.copy(
                     currentTag = Label(type = LabelType.TAG.typeId),
                     showTagDialog = true,
-                    isAddingNewTag = true
+                    isAddingNewTag = true,
+                    canBeDeleted =  false
                 ) }
             }
             is LabelPreselectionAction.EditTagClicked -> {
-                _state.update { it.copy(
-                    currentTag = action.tag,
-                    showTagDialog = true,
-                    isEditingTag = true,
-                ) }
+                viewModelScope.launch {
+                    val cbd = action.tag.canBeDeleted()
+                    _state.update {
+                        it.copy(
+                            currentTag = action.tag,
+                            showTagDialog = true,
+                            isEditingTag = true,
+                            canBeDeleted = cbd
+                        )
+                    }
+                }
             }
             is LabelPreselectionAction.AcceptTagEditionClicked -> {
                 _state.update { it.copy(
@@ -204,15 +211,22 @@ class LabelPreselectionViewModel @Inject constructor(
                 _state.update { it.copy(
                     currentPerson = Label(type = LabelType.PERSON.typeId),
                     showPersonDialog = true,
-                    isAddingNewPerson = true
+                    isAddingNewPerson = true,
+                    canBeDeleted = false
                 ) }
             }
             is LabelPreselectionAction.EditPersonClicked -> {
-                _state.update { it.copy(
-                    currentPerson = action.person,
-                    showPersonDialog = true,
-                    isEditingPerson = true,
-                ) }
+                viewModelScope.launch {
+                    val cbd = action.person.canBeDeleted()
+                    _state.update {
+                        it.copy(
+                            currentPerson = action.person,
+                            showPersonDialog = true,
+                            isEditingPerson = true,
+                            canBeDeleted = cbd
+                        )
+                    }
+                }
             }
             is LabelPreselectionAction.AcceptPersonEditionClicked -> {
                 _state.update { it.copy(
@@ -272,15 +286,22 @@ class LabelPreselectionViewModel @Inject constructor(
                 _state.update { it.copy(
                     currentPlace = Label(type = LabelType.PLACE.typeId),
                     showPlaceDialog = true,
-                    isAddingNewPlace = true
+                    isAddingNewPlace = true,
+                    canBeDeleted = false
                 ) }
             }
             is LabelPreselectionAction.EditPlaceClicked -> {
-                _state.update { it.copy(
-                    currentPlace = action.place,
-                    showPlaceDialog = true,
-                    isEditingPlace = true,
-                ) }
+                viewModelScope.launch {
+                    val cbd = action.place.canBeDeleted()
+                    _state.update {
+                        it.copy(
+                            currentPlace = action.place,
+                            showPlaceDialog = true,
+                            isEditingPlace = true,
+                            canBeDeleted = cbd
+                        )
+                    }
+                }
             }
             is LabelPreselectionAction.AcceptPlaceEditionClicked -> {
                 _state.update { it.copy(
@@ -321,6 +342,9 @@ class LabelPreselectionViewModel @Inject constructor(
             }
         }
     }
+
+    private suspend fun Label.canBeDeleted() =
+        appDao.getSEventsForTag(this.id!!) == 0
 
     init {
         val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0

@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,6 +36,7 @@ fun MyDialog(
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
     showTrash: Boolean = false,
+    canBeDeleted: Boolean = false,
     onTrash: (() -> Unit)? = null,
     showCopy: Boolean = false,
     onCopy: (() -> Unit)? = null,
@@ -80,11 +82,19 @@ fun MyDialog(
                         }
                     }
                     if (showTrash) {
-                        IconButton(onClick = { onTrash?.invoke() }) {
+                        if (canBeDeleted) {
+                            IconButton(onClick = { onTrash?.invoke() }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.delete),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                        } else {
                             Icon(
                                 painter = painterResource(id = R.drawable.delete),
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary
+                                tint = Color.Red
                             )
                         }
                     }

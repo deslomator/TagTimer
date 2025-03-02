@@ -23,4 +23,5 @@ data class LabelsTabState(
     val showPlaceDialog: Boolean = false,
     val isEditingPlace: Boolean = false,
     val isAddingNewPlace: Boolean = false,
+    val canBeDeleted: Boolean = false
 )

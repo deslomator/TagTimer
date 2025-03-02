@@ -22,6 +22,7 @@ fun LabelDialog(
     onDismiss: () -> Unit,
     onAccept: (Label) -> Unit,
     showTrash: Boolean,
+    canBeDeleted: Boolean = false,
     onTrash: (Label) -> Unit,
     @StringRes title: Int,
     @DrawableRes icon: Int,
@@ -38,6 +39,7 @@ fun LabelDialog(
             onAccept(editedLabel)
         },
         showTrash = showTrash,
+        canBeDeleted = canBeDeleted,
         onTrash = { onTrash(currentLabel) },
         title = title
     ) {

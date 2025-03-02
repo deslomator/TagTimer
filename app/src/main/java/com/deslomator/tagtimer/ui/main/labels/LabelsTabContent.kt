@@ -128,6 +128,7 @@ fun LabelsTabContent(
                 onAction(LabelsTabAction.AcceptTagEditionClicked(it))
             },
             showTrash = state.isEditingTag,
+            canBeDeleted = state.canBeDeleted,
             onTrash = {
                 showSnackbar(
                     scope,
@@ -153,6 +154,7 @@ fun LabelsTabContent(
                 onAction(LabelsTabAction.AcceptPersonEditionClicked(it))
             },
             showTrash = state.isEditingPerson,
+            canBeDeleted = state.canBeDeleted,
             onTrash = {
                 showSnackbar(
                     scope,
@@ -178,6 +180,7 @@ fun LabelsTabContent(
                 onAction(LabelsTabAction.AcceptPlaceEditionClicked(it))
             },
             showTrash = state.isEditingPlace,
+            canBeDeleted = state.canBeDeleted,
             onTrash = {
                 showSnackbar(
                     scope,
