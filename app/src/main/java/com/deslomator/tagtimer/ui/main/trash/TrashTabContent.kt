@@ -82,7 +82,7 @@ fun TrashTabContent(
                         LabelTrash(
                             items = state.tags,
                             onRestoreClick = {
-                                onAction(TrashTabAction.RestoreTagClicked(it))
+                                onAction(TrashTabAction.RestoreLabelClicked(it))
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -91,7 +91,7 @@ fun TrashTabContent(
                             },
                             onPurgeClick = {
                                 onAction(
-                                    TrashTabAction.DeleteTagClicked(it))
+                                    TrashTabAction.DeleteLabelClicked(it))
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -104,7 +104,7 @@ fun TrashTabContent(
                         LabelTrash(
                             items = state.persons,
                             onRestoreClick = {
-                                onAction(TrashTabAction.RestorePersonClicked(it))
+                                onAction(TrashTabAction.RestoreLabelClicked(it))
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -113,7 +113,7 @@ fun TrashTabContent(
                             },
                             onPurgeClick = {
                                 onAction(
-                                    TrashTabAction.DeletePersonClicked(it))
+                                    TrashTabAction.DeleteLabelClicked(it))
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -126,7 +126,7 @@ fun TrashTabContent(
                         LabelTrash(
                             items = state.places,
                             onRestoreClick = {
-                                onAction(TrashTabAction.RestorePlaceClicked(it))
+                                onAction(TrashTabAction.RestoreLabelClicked(it))
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
@@ -135,7 +135,7 @@ fun TrashTabContent(
                             },
                             onPurgeClick = {
                                 onAction(
-                                    TrashTabAction.DeletePlaceClicked(it))
+                                    TrashTabAction.DeleteLabelClicked(it))
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,

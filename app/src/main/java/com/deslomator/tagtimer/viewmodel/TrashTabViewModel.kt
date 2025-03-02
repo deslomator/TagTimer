@@ -42,6 +42,9 @@ class TrashTabViewModel @Inject constructor(
 
     fun onAction(action: TrashTabAction) {
         when(action) {
+            /*
+            SESSION
+             */
             is TrashTabAction.DeleteSessionClicked -> {
                 viewModelScope.launch {
                     appDao.deleteSession(action.session)
@@ -54,36 +57,17 @@ class TrashTabViewModel @Inject constructor(
                     appDao.upsertSession(trashed)
                 }
             }
-            is TrashTabAction.DeleteTagClicked -> {
+            /*
+            TAG
+             */
+            is TrashTabAction.DeleteLabelClicked -> {
                 viewModelScope.launch {
                     appDao.deleteLabel(action.tag)
                 }
             }
-            is TrashTabAction.RestoreTagClicked -> {
+            is TrashTabAction.RestoreLabelClicked -> {
                 viewModelScope.launch {
                     val trashed = action.tag.copy(inTrash = false)
-                    appDao.upsertLabel(trashed)
-                }
-            }
-            is TrashTabAction.DeletePersonClicked -> {
-                viewModelScope.launch {
-                    appDao.deleteLabel(action.person)
-                }
-            }
-            is TrashTabAction.RestorePersonClicked -> {
-                viewModelScope.launch {
-                    val trashed = action.person.copy(inTrash = false)
-                    appDao.upsertLabel(trashed)
-                }
-            }
-            is TrashTabAction.DeletePlaceClicked -> {
-                viewModelScope.launch {
-                    appDao.deleteLabel(action.place)
-                }
-            }
-            is TrashTabAction.RestorePlaceClicked -> {
-                viewModelScope.launch {
-                    val trashed = action.place.copy(inTrash = false)
                     appDao.upsertLabel(trashed)
                 }
             }
