@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,26 +51,30 @@ fun LabelButton(
 ) {
     val borderWidth =  if (label.isPerson()) 5.dp else 1.dp
     val borderColor = if (label.isPerson()) {
-            if (Color(label.longColor).brightness() > .9F) VeryLightGray
-            else Color(label.longColor)
-        } else {
-            Color.LightGray
-        }
-    val secondaryContainer = MaterialTheme.colorScheme.tertiaryContainer
-    val containerColor = remember {
-        if (label.isPerson()) secondaryContainer
+        if (Color(label.longColor).brightness() > .9F) VeryLightGray
         else Color(label.longColor)
+    } else {
+        Color.LightGray
+    }
+    val secondaryContainer = MaterialTheme.colorScheme.tertiaryContainer
+    val containerColor by remember(label.color) {
+        derivedStateOf {
+            if (label.isPerson()) secondaryContainer
+            else Color(label.longColor)
+        }
     }
     val secondary = MaterialTheme.colorScheme.tertiary
-    val contentColor = remember {
-        if (label.isPerson()) secondary
-        else containerColor.contrasted()
+    val contentColor by remember(label.color) {
+        derivedStateOf {
+            if (label.isPerson()) secondary
+            else containerColor.contrasted()
+        }
     }
     val leadingIcon = if (isTrash) {
-            R.drawable.restore_from_trash
-        } else {
-            label.getIcon()
-        }
+        R.drawable.restore_from_trash
+    } else {
+        label.getIcon()
+    }
     val trailingIcon = if (isTrash) R.drawable.delete_forever else null
     val iconPadding = if (isTrash) 9.dp else 0.dp
     val containerPadding by animateDpAsState(
