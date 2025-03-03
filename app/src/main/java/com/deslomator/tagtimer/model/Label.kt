@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
@@ -41,6 +42,15 @@ data class Label(
         LabelType.PERSON.typeId -> LabelType.PERSON.iconId
         else -> LabelType.PLACE.iconId
     }
+
+    fun getLabelType() = when (type) {
+        LabelType.TAG.typeId -> LabelType.TAG
+        LabelType.PERSON.typeId -> LabelType.PERSON
+        else -> LabelType.PLACE
+    }
+
+    suspend fun canBeDeleted(appDao: AppDao) =
+        appDao.getSEventsForTag(this.id!!) == 0
 }
 
 const val COLUMN_LABEL_NAME = "name"

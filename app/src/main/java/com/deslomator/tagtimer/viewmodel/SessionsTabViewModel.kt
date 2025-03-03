@@ -6,6 +6,7 @@ import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
@@ -52,8 +53,7 @@ class SessionsTabViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentSession = Session(),
-                        isEditingSession = false,
-                        showSessionDialog = true,
+                        sessionDialogState = DialogState.NEW_ITEM,
                     )
                 }
             }
@@ -62,24 +62,23 @@ class SessionsTabViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         currentSession = action.session,
-                        isEditingSession = true,
-                        showSessionDialog = true
+                        sessionDialogState = DialogState.EDIT_CAN_DELETE
                     )
                 }
             }
 
             is SessionsTabAction.DialogAcceptClicked -> {
-                _state.update { it.copy(showSessionDialog = false) }
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
                 viewModelScope.launch { appDao.upsertSession(action.session) }
             }
 
             is SessionsTabAction.DismissSessionDialog -> {
-                _state.update { it.copy(showSessionDialog = false) }
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
             }
 
             is SessionsTabAction.TrashSessionClicked -> {
                 viewModelScope.launch {
-                    _state.update { it.copy(showSessionDialog = false) }
+                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
                     val trashed = state.value.currentSession.copy(
                         running = false,
                         inTrash = true
@@ -94,7 +93,7 @@ class SessionsTabViewModel @Inject constructor(
 
             is SessionsTabAction.CopySessionClicked -> {
                 copySession(action.copyString)
-                _state.update { it.copy(showSessionDialog = false) }
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
             }
 
             is SessionsTabAction.SessionSortClicked -> {

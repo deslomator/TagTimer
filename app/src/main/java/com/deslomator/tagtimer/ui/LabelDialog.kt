@@ -13,16 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.ui.theme.toHex
 import com.deslomator.tagtimer.util.toColor
 
 @Composable
 fun LabelDialog(
     currentLabel: Label,
+    dialogState: DialogState, //TODO deny deletion of preselected labels?
     onDismiss: () -> Unit,
     onAccept: (Label) -> Unit,
-    showTrash: Boolean,
-    canBeDeleted: Boolean = false,
     onTrash: (Label) -> Unit,
     @StringRes title: Int,
     @DrawableRes icon: Int,
@@ -38,8 +38,7 @@ fun LabelDialog(
             )
             onAccept(editedLabel)
         },
-        showTrash = showTrash,
-        canBeDeleted = canBeDeleted,
+        dialogState = dialogState,
         onTrash = { onTrash(currentLabel) },
         title = title
     ) {

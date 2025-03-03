@@ -8,6 +8,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Preselected
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.model.type.PrefKey
@@ -62,7 +63,7 @@ class LabelPreselectionViewModel @Inject constructor(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getActiveLabels(LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
-        }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -71,7 +72,7 @@ class LabelPreselectionViewModel @Inject constructor(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
-        }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -80,7 +81,7 @@ class LabelPreselectionViewModel @Inject constructor(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
-        }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -89,7 +90,7 @@ class LabelPreselectionViewModel @Inject constructor(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
-        }
+            }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
@@ -115,6 +116,55 @@ class LabelPreselectionViewModel @Inject constructor(
     fun onAction(action: LabelPreselectionAction) {
         when(action) {
             /*
+            LABEL
+             */
+            is LabelPreselectionAction.AddNewLabelClicked -> {
+                _state.update { it.copy(
+                    currentLabel = Label(type = action.type.typeId),
+                    dialogState = DialogState.NEW_ITEM,
+                ) }
+            }
+            is LabelPreselectionAction.EditLabelClicked -> {
+                viewModelScope.launch {
+                    val cbd = action.label.canBeDeleted(appDao)
+                    _state.update {
+                        it.copy(
+                            currentLabel = action.label,
+                            dialogState = if (cbd) DialogState.EDIT_CAN_DELETE else DialogState.EDIT_NO_DELETE,
+                        )
+                    }
+                }
+            }
+            is LabelPreselectionAction.AcceptLabelEditionClicked -> {
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
+                val edited = Label(
+                    name = action.label.name,
+                    color = action.label.color,
+                    type = action.label.type,
+                    id = action.label.id
+                )
+                viewModelScope.launch {
+                    appDao.upsertLabel(edited)
+                }
+            }
+            is LabelPreselectionAction.DismissLabelDialog -> {
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
+            }
+
+            is LabelPreselectionAction.DeleteLabelClicked -> {
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
+                viewModelScope.launch {
+                    val trashed = action.label.copy(inTrash = true)
+                    appDao.upsertLabel(trashed)
+                }
+            }
+            /*
             TAG
              */
             is LabelPreselectionAction.SelectTagCheckedChange -> {
@@ -129,57 +179,6 @@ class LabelPreselectionViewModel @Inject constructor(
                     } else {
                         appDao.deletePreSelectedLabel(pst)
                     }
-                }
-            }
-            is LabelPreselectionAction.AddNewTagClicked -> {
-                _state.update { it.copy(
-                    currentTag = Label(type = LabelType.TAG.typeId),
-                    showTagDialog = true,
-                    isAddingNewTag = true,
-                    canBeDeleted =  false
-                ) }
-            }
-            is LabelPreselectionAction.EditTagClicked -> {
-                viewModelScope.launch {
-                    val cbd = action.tag.canBeDeleted()
-                    _state.update {
-                        it.copy(
-                            currentTag = action.tag,
-                            showTagDialog = true,
-                            isEditingTag = true,
-                            canBeDeleted = cbd
-                        )
-                    }
-                }
-            }
-            is LabelPreselectionAction.AcceptTagEditionClicked -> {
-                _state.update { it.copy(
-                    showTagDialog = false,
-                    isEditingTag = false,
-                ) }
-                val edited = Label(
-                    name = action.label.name,
-                    color = action.label.color,
-                    type = action.label.type,
-                    id = action.label.id
-                )
-                viewModelScope.launch {
-                    appDao.upsertLabel(edited)
-                }
-            }
-            is LabelPreselectionAction.DismissTagDialog -> {
-                _state.update { it.copy(
-                    showTagDialog = false,
-                    isEditingTag = false,
-                    isAddingNewTag = false,
-                ) }
-            }
-
-            is LabelPreselectionAction.DeleteTagClicked -> { // TODO used tag deletion loop
-                _state.update { it.copy(showTagDialog = false) }
-                viewModelScope.launch {
-                    val trashed = action.tag.copy(inTrash = true)
-                    appDao.upsertLabel(trashed)
                 }
             }
 
@@ -207,56 +206,6 @@ class LabelPreselectionViewModel @Inject constructor(
                     }
                 }
             }
-            is LabelPreselectionAction.AddNewPersonClicked -> {
-                _state.update { it.copy(
-                    currentPerson = Label(type = LabelType.PERSON.typeId),
-                    showPersonDialog = true,
-                    isAddingNewPerson = true,
-                    canBeDeleted = false
-                ) }
-            }
-            is LabelPreselectionAction.EditPersonClicked -> {
-                viewModelScope.launch {
-                    val cbd = action.person.canBeDeleted()
-                    _state.update {
-                        it.copy(
-                            currentPerson = action.person,
-                            showPersonDialog = true,
-                            isEditingPerson = true,
-                            canBeDeleted = cbd
-                        )
-                    }
-                }
-            }
-            is LabelPreselectionAction.AcceptPersonEditionClicked -> {
-                _state.update { it.copy(
-                    showPersonDialog = false,
-                    isEditingPerson = false,
-                ) }
-                val edited = Label(
-                    name = action.label.name,
-                    color = action.label.color,
-                    type = action.label.type,
-                    id = action.label.id
-                )
-                viewModelScope.launch {
-                    appDao.upsertLabel(edited)
-                }
-            }
-            is LabelPreselectionAction.DismissPersonDialog -> {
-                _state.update { it.copy(
-                    showPersonDialog = false,
-                    isEditingPerson = false,
-                    isAddingNewPerson = false,
-                ) }
-            }
-            is LabelPreselectionAction.DeletePersonClicked -> { // TODO used tag deletion loop
-                _state.update { it.copy(showPersonDialog = false) }
-                viewModelScope.launch {
-                    val trashed = action.person.copy(inTrash = true)
-                    appDao.upsertLabel(trashed)
-                }
-            }
 
             is LabelPreselectionAction.SortPersonsClicked -> {
                 val pref = Preference(
@@ -282,56 +231,6 @@ class LabelPreselectionViewModel @Inject constructor(
                     }
                 }
             }
-            is LabelPreselectionAction.AddNewPlaceClicked -> {
-                _state.update { it.copy(
-                    currentPlace = Label(type = LabelType.PLACE.typeId),
-                    showPlaceDialog = true,
-                    isAddingNewPlace = true,
-                    canBeDeleted = false
-                ) }
-            }
-            is LabelPreselectionAction.EditPlaceClicked -> {
-                viewModelScope.launch {
-                    val cbd = action.place.canBeDeleted()
-                    _state.update {
-                        it.copy(
-                            currentPlace = action.place,
-                            showPlaceDialog = true,
-                            isEditingPlace = true,
-                            canBeDeleted = cbd
-                        )
-                    }
-                }
-            }
-            is LabelPreselectionAction.AcceptPlaceEditionClicked -> {
-                _state.update { it.copy(
-                    showPlaceDialog = false,
-                    isEditingPlace = false,
-                ) }
-                val edited = Label(
-                    name = action.label.name,
-                    color = action.label.color,
-                    type = action.label.type,
-                    id = action.label.id
-                )
-                viewModelScope.launch {
-                    appDao.upsertLabel(edited)
-                }
-            }
-            is LabelPreselectionAction.DismissPlaceDialog -> {
-                _state.update { it.copy(
-                    showPlaceDialog = false,
-                    isEditingPlace = false,
-                    isAddingNewPlace = false,
-                ) }
-            }
-            is LabelPreselectionAction.DeletePlaceClicked -> { // TODO used tag deletion loop
-                _state.update { it.copy(showPlaceDialog = false) }
-                viewModelScope.launch {
-                    val trashed = action.place.copy(inTrash = true)
-                    appDao.upsertLabel(trashed)
-                }
-            }
 
             is LabelPreselectionAction.SortPlacesClicked -> {
                 val pref = Preference(
@@ -342,9 +241,6 @@ class LabelPreselectionViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun Label.canBeDeleted() =
-        appDao.getSEventsForTag(this.id!!) == 0
 
     init {
         val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0

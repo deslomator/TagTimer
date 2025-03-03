@@ -26,7 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
-import com.deslomator.tagtimer.model.type.LabelScreen
+import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.LabelDialog
@@ -43,7 +44,7 @@ fun LabelSelectionContent(
     snackbarHostState: SnackbarHostState,
 ) {
     val scope = rememberCoroutineScope()
-    val pages = remember { listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place) }
+    val pages = remember { LabelType.entries }
     val pagerState = rememberPagerState(
         initialPage = 1,
         pageCount = { pages.size }
@@ -72,7 +73,7 @@ fun LabelSelectionContent(
                     ) {
                         Text(
                             modifier = Modifier.padding(bottom = 7.dp, top = 7.dp),
-                            text = stringResource(id = page.stringId),
+                            text = stringResource(id = page.titleBarId),
                             fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
                             else FontWeight.Normal,
                             color = MaterialTheme.colorScheme.primary
@@ -85,10 +86,10 @@ fun LabelSelectionContent(
                 state = pagerState,
                 beyondViewportPageCount = 1
             ) { page ->
-                when (pages[page]) {
-                    LabelScreen.Tag -> {
-                        val checkedMessage = stringResource(R.string.tag_checked)
-                        val unCheckedMessage = stringResource(R.string.tag_unchecked)
+                when (val lbl = pages[page]) {
+                    LabelType.TAG -> {
+                        val checkedMessage = stringResource(lbl.checkedStringId)
+                        val unCheckedMessage = stringResource(lbl.unCheckedStringId)
                         LabelSelectionList(
                             labels = state.tags,
                             preSelected = state.preSelectedTags,
@@ -106,14 +107,14 @@ fun LabelSelectionContent(
                                 )
                             },
                             onLongClick = {
-                                onAction(LabelPreselectionAction.EditTagClicked(it))
+                                onAction(LabelPreselectionAction.EditLabelClicked(it))
                             }
                         )
                     }
 
-                    LabelScreen.Person -> {
-                        val checkedMessage = stringResource(R.string.person_checked)
-                        val unCheckedMessage = stringResource(R.string.person_unchecked)
+                    LabelType.PERSON -> {
+                        val checkedMessage = stringResource(lbl.checkedStringId)
+                        val unCheckedMessage = stringResource(lbl.unCheckedStringId)
                         LabelSelectionList(
                             labels = state.persons,
                             preSelected = state.preSelectedPersons,
@@ -131,14 +132,14 @@ fun LabelSelectionContent(
                                 )
                             },
                             onLongClick = {
-                                onAction(LabelPreselectionAction.EditPersonClicked(it))
+                                onAction(LabelPreselectionAction.EditLabelClicked(it))
                             }
                         )
                     }
 
-                    LabelScreen.Place -> {
-                        val checkedMessage = stringResource(R.string.place_checked)
-                        val unCheckedMessage = stringResource(R.string.place_unchecked)
+                    LabelType.PLACE -> {
+                        val checkedMessage = stringResource(lbl.checkedStringId)
+                        val unCheckedMessage = stringResource(lbl.unCheckedStringId)
                         LabelSelectionList(
                             labels = state.places,
                             preSelected = state.preSelectedPlaces,
@@ -156,7 +157,7 @@ fun LabelSelectionContent(
                                 )
                             },
                             onLongClick = {
-                                onAction(LabelPreselectionAction.EditPlaceClicked(it))
+                                onAction(LabelPreselectionAction.EditLabelClicked(it))
                             }
                         )
                     }
@@ -166,81 +167,31 @@ fun LabelSelectionContent(
         }
     }
     AnimatedVisibility(
-        visible = state.showTagDialog,
+        visible = state.dialogState != DialogState.HIDDEN,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        val message = stringResource(id = R.string.tag_sent_to_trash)
+        val message = stringResource(id = state.currentLabel.getLabelType().messageId)
         LabelDialog(
-            currentLabel = state.currentTag,
-            onDismiss = { onAction(LabelPreselectionAction.DismissTagDialog) },
+            currentLabel = state.currentLabel,
+            onDismiss = { onAction(LabelPreselectionAction.DismissLabelDialog) },
             onAccept = {
-                onAction(LabelPreselectionAction.AcceptTagEditionClicked(it))
+                onAction(LabelPreselectionAction.AcceptLabelEditionClicked(it))
             },
-            showTrash = state.isEditingTag,
-            canBeDeleted = state.canBeDeleted,
+            dialogState = state.dialogState,
             onTrash = {
                 showSnackbar(
                     scope,
                     snackbarHostState,
                     message
                 )
-                onAction(LabelPreselectionAction.DeleteTagClicked(state.currentTag))
+                onAction(LabelPreselectionAction.DeleteLabelClicked(state.currentLabel))
             },
-            title = if (state.isEditingTag) R.string.edit_tag else R.string.new_tag,
-            icon = R.drawable.tag
-        )
-    }
-    AnimatedVisibility(
-        state.showPersonDialog,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        val message = stringResource(id = R.string.person_sent_to_trash)
-        LabelDialog(
-            currentLabel = state.currentPerson,
-            onDismiss = { onAction(LabelPreselectionAction.DismissPersonDialog) },
-            onAccept = {
-                onAction(LabelPreselectionAction.AcceptPersonEditionClicked(it))
-            },
-            showTrash = state.isEditingPerson,
-            canBeDeleted = state.canBeDeleted,
-            onTrash = {
-                showSnackbar(
-                    scope,
-                    snackbarHostState,
-                    message
-                )
-                onAction(LabelPreselectionAction.DeletePersonClicked(state.currentPerson))
-            },
-            title = if (state.isEditingPerson) R.string.edit_person else R.string.new_person,
-            icon = R.drawable.person
-        )
-    }
-    AnimatedVisibility(
-        state.showPlaceDialog,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        val message = stringResource(id = R.string.place_sent_to_trash)
-        LabelDialog(
-            currentLabel = state.currentPlace,
-            onDismiss = { onAction(LabelPreselectionAction.DismissPlaceDialog) },
-            onAccept = {
-                onAction(LabelPreselectionAction.AcceptPlaceEditionClicked(it))
-            },
-            showTrash = state.isEditingPlace,
-            canBeDeleted = state.canBeDeleted,
-            onTrash = {
-                showSnackbar(
-                    scope,
-                    snackbarHostState,
-                    message
-                )
-                onAction(LabelPreselectionAction.DeletePlaceClicked(state.currentPlace))
-            },
-            title = if (state.isEditingPlace) R.string.edit_place else R.string.new_place,
-            icon = R.drawable.place
+            title = if (
+                state.dialogState == DialogState.EDIT_NO_DELETE ||
+                state.dialogState == DialogState.EDIT_CAN_DELETE
+            ) state.currentLabel.getLabelType().editTitleId else state.currentLabel.getLabelType().newTitleId,
+            icon = state.currentLabel.getLabelType().iconId
         )
     }
 }

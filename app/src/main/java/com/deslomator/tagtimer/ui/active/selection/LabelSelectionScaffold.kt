@@ -11,6 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.ui.LabelsTopBar
 
@@ -22,33 +23,26 @@ fun LabelSelectionScaffold(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     var currentPage by remember { mutableIntStateOf(1) }
-    BackHandler(
-        enabled = state.showTagDialog || state.showPersonDialog || state.showPlaceDialog
-    ) {
-        onAction(LabelPreselectionAction.DismissTagDialog)
-        onAction(LabelPreselectionAction.DismissPersonDialog)
-        onAction(LabelPreselectionAction.DismissPlaceDialog)
+    BackHandler(enabled = state.dialogState != DialogState.HIDDEN) {
+        onAction(LabelPreselectionAction.DismissLabelDialog)
     }
     Scaffold(
         topBar = {
             LabelsTopBar(
                 title = state.currentSession.name,
                 onBackClicked = {
-                    if (state.showTagDialog || state.showPersonDialog || state.showPlaceDialog) {
-                        onAction(LabelPreselectionAction.DismissTagDialog)
-                        onAction(LabelPreselectionAction.DismissPersonDialog)
-                        onAction(LabelPreselectionAction.DismissPlaceDialog)
+                    if (
+                        state.dialogState != DialogState.HIDDEN
+                    )
+                    {
+                        onAction(LabelPreselectionAction.DismissLabelDialog)
                     } else {
                         navController.navigateUp()
                     }
                 },
                 currentPage = currentPage,
-                onAddTagClick = { onAction(LabelPreselectionAction.AddNewTagClicked) },
-                onAddPersonClick = { onAction(LabelPreselectionAction.AddNewPersonClicked) },
-                onAddPlaceClick = { onAction(LabelPreselectionAction.AddNewPlaceClicked) },
-                showTagDialog = state.showTagDialog,
-                showPersonDialog = state.showPersonDialog,
-                showPlaceDialog = state.showPlaceDialog,
+                onAddLabelClick = { onAction(LabelPreselectionAction.AddNewLabelClicked(it)) },
+                dialogState = state.dialogState,
                 tagSort = state.tagSort,
                 personSort = state.personSort,
                 placeSort = state.placeSort,

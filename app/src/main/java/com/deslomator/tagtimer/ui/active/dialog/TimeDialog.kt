@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.TimeNumberPicker
 
@@ -24,6 +25,7 @@ fun TimeDialog(
     MyDialog(
         onDismiss = onDismiss,
         onAccept = { onAccept(value) },
+        dialogState = DialogState.EDIT_NO_DELETE
     ) {
         Text(
             modifier = Modifier.fillMaxWidth() ,

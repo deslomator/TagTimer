@@ -23,10 +23,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelsTabAction
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelScreen
-import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
@@ -44,19 +43,9 @@ fun LabelsTabContent(
 ) {
     val scope = rememberCoroutineScope()
     BackHandler(
-        enabled = state.showTagDialog
+        enabled = state.dialogState != DialogState.HIDDEN
     ) {
-        onAction(LabelsTabAction.DismissTagDialog)
-    }
-    BackHandler(
-        enabled = state.showPersonDialog
-    ) {
-        onAction(LabelsTabAction.DismissPersonDialog)
-    }
-    BackHandler(
-        enabled = state.showPlaceDialog
-    ) {
-        onAction(LabelsTabAction.DismissPlaceDialog)
+        onAction(LabelsTabAction.DismissLabelDialog)
     }
     Box(
         modifier = Modifier
@@ -96,19 +85,19 @@ fun LabelsTabContent(
                     LabelScreen.Tag -> {
                         LabelList(
                             labels = state.tags,
-                            onLongClick = { onAction(LabelsTabAction.EditTagClicked(it)) }
+                            onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
                         )
                     }
                     LabelScreen.Person -> {
                         LabelList(
                             labels = state.persons,
-                            onLongClick = { onAction(LabelsTabAction.EditPersonClicked(it)) }
+                            onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
                         )
                     }
                     LabelScreen.Place -> {
                         LabelList(
                             labels = state.places,
-                            onLongClick = { onAction(LabelsTabAction.EditPlaceClicked(it)) }
+                            onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
                         )
                     }
                 }
@@ -116,81 +105,31 @@ fun LabelsTabContent(
         }
     }
     AnimatedVisibility(
-        state.showTagDialog,
+        visible = state.dialogState != DialogState.HIDDEN,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        val message = stringResource(id = R.string.tag_sent_to_trash)
+        val message = stringResource(id = state.currentLabel.getLabelType().messageId)
         LabelDialog(
-            currentLabel = state.currentTag,
-            onDismiss = { onAction(LabelsTabAction.DismissTagDialog) },
+            currentLabel = state.currentLabel,
+            onDismiss = { onAction(LabelsTabAction.DismissLabelDialog) },
             onAccept = {
-                onAction(LabelsTabAction.AcceptTagEditionClicked(it))
+                onAction(LabelsTabAction.AcceptLabelEditionClicked(it))
             },
-            showTrash = state.isEditingTag,
-            canBeDeleted = state.canBeDeleted,
+            dialogState = state.dialogState,
             onTrash = {
                 showSnackbar(
                     scope,
                     snackbarHostState,
                     message
                 )
-                onAction(LabelsTabAction.DeleteTagClicked(state.currentTag))
+                onAction(LabelsTabAction.DeleteTagClicked(state.currentLabel))
             },
-            title = if(state.isEditingTag) R.string.edit_tag else R.string.new_tag,
-            icon = LabelType.TAG.iconId
-        )
-    }
-    AnimatedVisibility(
-        state.showPersonDialog,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        val message = stringResource(id = R.string.person_sent_to_trash)
-        LabelDialog(
-            currentLabel = state.currentPerson,
-            onDismiss = { onAction(LabelsTabAction.DismissPersonDialog) },
-            onAccept = {
-                onAction(LabelsTabAction.AcceptPersonEditionClicked(it))
-            },
-            showTrash = state.isEditingPerson,
-            canBeDeleted = state.canBeDeleted,
-            onTrash = {
-                showSnackbar(
-                    scope,
-                    snackbarHostState,
-                    message
-                )
-                onAction(LabelsTabAction.DeletePersonClicked(state.currentPerson))
-            },
-            title = if(state.isEditingPerson) R.string.edit_person else R.string.new_person,
-            icon = LabelType.PERSON.iconId
-        )
-    }
-    AnimatedVisibility(
-        state.showPlaceDialog,
-        enter = fadeIn(),
-        exit = fadeOut()
-    ) {
-        val message = stringResource(id = R.string.place_sent_to_trash)
-        LabelDialog(
-            currentLabel = state.currentPlace,
-            onDismiss = { onAction(LabelsTabAction.DismissPlaceDialog) },
-            onAccept = {
-                onAction(LabelsTabAction.AcceptPlaceEditionClicked(it))
-            },
-            showTrash = state.isEditingPlace,
-            canBeDeleted = state.canBeDeleted,
-            onTrash = {
-                showSnackbar(
-                    scope,
-                    snackbarHostState,
-                    message
-                )
-                onAction(LabelsTabAction.DeletePlaceClicked(state.currentPlace))
-            },
-            title = if(state.isEditingPlace) R.string.edit_place else R.string.new_place,
-            icon = LabelType.PLACE.iconId
+            title = if (
+                state.dialogState == DialogState.EDIT_NO_DELETE ||
+                state.dialogState == DialogState.EDIT_CAN_DELETE
+            ) state.currentLabel.getLabelType().editTitleId else state.currentLabel.getLabelType().newTitleId,
+            icon = state.currentLabel.getLabelType().iconId
         )
     }
 }

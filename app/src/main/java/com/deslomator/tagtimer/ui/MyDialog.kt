@@ -30,13 +30,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.type.DialogState
 
 @Composable
 fun MyDialog(
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
-    showTrash: Boolean = false,
-    canBeDeleted: Boolean = false,
+    dialogState: DialogState,
     onTrash: (() -> Unit)? = null,
     showCopy: Boolean = false,
     onCopy: (() -> Unit)? = null,
@@ -81,8 +81,9 @@ fun MyDialog(
                             )
                         }
                     }
-                    if (showTrash) {
-                        if (canBeDeleted) {
+                    when (dialogState) {
+                        DialogState.NEW_ITEM, DialogState.HIDDEN -> { }
+                        DialogState.EDIT_CAN_DELETE -> {
                             IconButton(onClick = { onTrash?.invoke() }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.delete),
@@ -90,7 +91,8 @@ fun MyDialog(
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                             }
-                        } else {
+                        }
+                        DialogState.EDIT_NO_DELETE -> {
                             Icon(
                                 painter = painterResource(id = R.drawable.delete),
                                 contentDescription = null,

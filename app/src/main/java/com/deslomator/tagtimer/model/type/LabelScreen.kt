@@ -18,3 +18,4 @@ sealed class LabelScreen(
     data object Person: LabelScreen(R.string.persons, R.drawable.person)
     data object Place: LabelScreen(R.string.places, R.drawable.place)
 }
+// TODO perhaps this class can be removed

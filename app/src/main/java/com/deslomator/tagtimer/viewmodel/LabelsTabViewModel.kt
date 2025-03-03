@@ -1,12 +1,12 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
@@ -81,60 +81,55 @@ class LabelsTabViewModel @Inject constructor(
     fun onAction(action: LabelsTabAction) {
         when (action) {
             /*
-            TAG
+            LABEL
              */
-            is LabelsTabAction.AddNewTagClicked -> {
+            is LabelsTabAction.AddNewLabelClicked -> {
                 _state.update {
                     it.copy(
-                        currentTag = Label(type = LabelType.TAG.typeId),
-                        showTagDialog = true,
-                        isAddingNewTag = true
+                        currentLabel = Label(type = action.type.typeId),
+                        dialogState = DialogState.NEW_ITEM,
                     )
                 }
             }
 
-            is LabelsTabAction.EditTagClicked -> {
+            is LabelsTabAction.EditLabelClicked -> {
                 viewModelScope.launch {
-                    val cbd = action.tag.canBeDeleted()
+                    val cbd = action.label.canBeDeleted(appDao)
                     _state.update {
                         it.copy(
-                            currentTag = action.tag,
-                            showTagDialog = true,
-                            isEditingTag = true,
-                            canBeDeleted = cbd
+                            currentLabel = action.label,
+                            dialogState = if (cbd) DialogState.EDIT_CAN_DELETE else DialogState.EDIT_NO_DELETE,
                         )
                     }
                 }
             }
 
-            is LabelsTabAction.AcceptTagEditionClicked -> {
+            is LabelsTabAction.AcceptLabelEditionClicked -> {
                 _state.update {
                     it.copy(
-                        showTagDialog = false,
-                        isEditingTag = false,
+                        dialogState = DialogState.HIDDEN
                     )
                 }
                 viewModelScope.launch {
-                    appDao.upsertLabel(action.tag)
+                    appDao.upsertLabel(action.label)
                 }
             }
 
-            is LabelsTabAction.DismissTagDialog -> {
+            is LabelsTabAction.DismissLabelDialog -> {
                 _state.update {
                     it.copy(
-                        showTagDialog = false,
-                        isEditingTag = false,
-                        isAddingNewTag = false,
+                        dialogState = DialogState.HIDDEN
                     )
                 }
             }
-            // TODO show why a used label can't be deleted
+
             is LabelsTabAction.DeleteTagClicked -> {
-                _state.update { it.copy(showTagDialog = false) }
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
                 viewModelScope.launch {
-                    val trashed = action.tag.copy(inTrash = true)
+                    val trashed = action.label.copy(inTrash = true)
                     appDao.upsertLabel(trashed)
-//                    Log.d(TAG, "TagsScreenAction.TrashTagSwiped $trashed")
                 }
             }
 
@@ -148,60 +143,6 @@ class LabelsTabViewModel @Inject constructor(
             /*
             PERSON
              */
-            is LabelsTabAction.AddNewPersonClicked -> {
-                _state.update {
-                    it.copy(
-                        currentPerson = Label(type = LabelType.PERSON.typeId),
-                        showPersonDialog = true,
-                        isAddingNewPerson = true
-                    )
-                }
-            }
-
-            is LabelsTabAction.EditPersonClicked -> {
-                viewModelScope.launch {
-                    val cbd = action.person.canBeDeleted()
-                    _state.update {
-                        it.copy(
-                            currentPerson = action.person,
-                            showPersonDialog = true,
-                            isEditingPerson = true,
-                            canBeDeleted = cbd
-                        )
-                    }
-                }
-            }
-
-            is LabelsTabAction.AcceptPersonEditionClicked -> {
-                _state.update {
-                    it.copy(
-                        showPersonDialog = false,
-                        isEditingPerson = false,
-                    )
-                }
-                viewModelScope.launch {
-                    appDao.upsertLabel(action.person)
-                }
-            }
-
-            is LabelsTabAction.DismissPersonDialog -> {
-                _state.update {
-                    it.copy(
-                        showPersonDialog = false,
-                        isEditingPerson = false,
-                        isAddingNewPerson = false,
-                    )
-                }
-            }
-            // TODO show why a used label can't be deleted
-            is LabelsTabAction.DeletePersonClicked -> {
-                _state.update { it.copy(showPersonDialog = false) }
-                viewModelScope.launch {
-                    val trashed = action.person.copy(inTrash = true)
-                    appDao.upsertLabel(trashed)
-                }
-            }
-
             is LabelsTabAction.PersonSortClicked -> {
                 val pref = Preference(
                     prefKey = PrefKey.PERSON_SORT.name,
@@ -212,60 +153,6 @@ class LabelsTabViewModel @Inject constructor(
             /*
             PLACE
              */
-            is LabelsTabAction.AddNewPlaceClicked -> {
-                _state.update {
-                    it.copy(
-                        currentPlace = Label(type = LabelType.PLACE.typeId),
-                        showPlaceDialog = true,
-                        isAddingNewPlace = true
-                    )
-                }
-            }
-
-            is LabelsTabAction.EditPlaceClicked -> {
-                viewModelScope.launch {
-                    val cbd = action.place.canBeDeleted()
-                    _state.update {
-                        it.copy(
-                            currentPlace = action.place,
-                            showPlaceDialog = true,
-                            isEditingPlace = true,
-                            canBeDeleted = cbd
-                        )
-                    }
-                }
-            }
-
-            is LabelsTabAction.AcceptPlaceEditionClicked -> {
-                _state.update {
-                    it.copy(
-                        showPlaceDialog = false,
-                        isEditingPlace = false,
-                    )
-                }
-                viewModelScope.launch {
-                    appDao.upsertLabel(action.place)
-                }
-            }
-
-            is LabelsTabAction.DismissPlaceDialog -> {
-                _state.update {
-                    it.copy(
-                        showPlaceDialog = false,
-                        isEditingPlace = false,
-                        isAddingNewPlace = false,
-                    )
-                }
-            }
-            // TODO show why a used label can't be deleted
-            is LabelsTabAction.DeletePlaceClicked -> {
-                _state.update { it.copy(showPlaceDialog = false) }
-                viewModelScope.launch {
-                    val trashed = action.place.copy(inTrash = true)
-                    appDao.upsertLabel(trashed)
-                }
-            }
-
             is LabelsTabAction.PlaceSortClicked -> {
                 val pref = Preference(
                     prefKey = PrefKey.PLACE_SORT.name,
@@ -275,9 +162,6 @@ class LabelsTabViewModel @Inject constructor(
             }
         }
     }
-
-    private suspend fun Label.canBeDeleted() =
-        appDao.getSEventsForTag(this.id!!) == 0
 
 
     companion object {

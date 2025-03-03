@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
@@ -47,7 +48,7 @@ fun SessionDialog(
     state: SessionsTabState,
     onAction: (SessionsTabAction) -> Unit,
     scope: CoroutineScope,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
 ) {
     var show by rememberSaveable {
         mutableStateOf(Show.DIALOG)
@@ -80,7 +81,7 @@ fun SessionDialog(
             )
             onAction(SessionsTabAction.DialogAcceptClicked(s))
         },
-        showTrash = state.isEditingSession,
+        dialogState = state.sessionDialogState,
         onTrash = {
             showSnackbar(
                 scope,
@@ -89,11 +90,13 @@ fun SessionDialog(
             )
             onAction(SessionsTabAction.TrashSessionClicked)
         },
-        showCopy = state.isEditingSession,
+        showCopy = state.sessionDialogState == DialogState.EDIT_CAN_DELETE,
         onCopy = {
             onAction(SessionsTabAction.CopySessionClicked(copy))
         },
-        title = if (state.isEditingSession) R.string.edit_session else R.string.new_session
+        title = if (
+            state.sessionDialogState == DialogState.NEW_ITEM
+        ) R.string.new_session else R.string.edit_session
     ) {
         AnimatedContent(targetState = show) { s ->
             when (s) {
@@ -138,8 +141,8 @@ fun SessionDialog(
                         )
                         Spacer(modifier = Modifier.height(7.dp))
                         ColorPicker(
-            selectedColor = color.toColor(),
-            onItemClick = { color = it.toHex() }
+                            selectedColor = color.toColor(),
+                            onItemClick = { color = it.toHex() }
                         )
                     }
                 }

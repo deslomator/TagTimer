@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -25,7 +26,7 @@ fun EventEditionDialog(
     event4d: EventForDisplay,
     onAccept: (EventForDisplay) -> Unit,
     onDismiss: () -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean = true,
 ) {
     var elapsed by rememberSaveable {
         mutableLongStateOf(event4d.event.elapsedTimeMillis)
@@ -58,6 +59,7 @@ fun EventEditionDialog(
             )
             onAccept(e4d)
         },
+        dialogState = DialogState.EDIT_NO_DELETE,
     ) {
         TimeNumberPicker(
             timeMillis = elapsed,

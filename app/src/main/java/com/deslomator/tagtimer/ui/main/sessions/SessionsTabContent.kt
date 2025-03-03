@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
 import com.deslomator.tagtimer.state.SessionsTabState
 import com.deslomator.tagtimer.ui.MyListItem
@@ -51,7 +52,7 @@ fun SessionsTabContent(
     snackbarHostState: SnackbarHostState
 ) {
     val scope = rememberCoroutineScope()
-    BackHandler(enabled = state.showSessionDialog) {
+    BackHandler(enabled = state.sessionDialogState != DialogState.HIDDEN) {
         onAction(SessionsTabAction.DismissSessionDialog)
     }
     Box(
@@ -122,7 +123,7 @@ fun SessionsTabContent(
             }
         }
     }
-    if (state.showSessionDialog) {
+    if (state.sessionDialogState != DialogState.HIDDEN) {
         SessionDialog(
             state = state,
             onAction = onAction,

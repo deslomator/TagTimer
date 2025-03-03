@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.DropdownMenu
@@ -21,7 +20,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -30,12 +31,8 @@ fun LabelsTopBar(
     title: String,
     onBackClicked: (() -> Unit)?,
     currentPage: Int,
-    onAddTagClick: () -> Unit,
-    onAddPersonClick: () -> Unit,
-    onAddPlaceClick: () -> Unit,
-    showTagDialog: Boolean,
-    showPersonDialog: Boolean,
-    showPlaceDialog: Boolean,
+    onAddLabelClick: (LabelType) -> Unit,
+    dialogState: DialogState,
     tagSort: LabelSort,
     personSort: LabelSort,
     placeSort: LabelSort,
@@ -64,17 +61,17 @@ fun LabelsTopBar(
             )
         },
         actions = {
-            if (!showTagDialog && !showPersonDialog && !showPlaceDialog) {
+            if (dialogState == DialogState.HIDDEN) {
                 AnimatedContent(currentPage) { cpg ->
                     when (cpg) {
                         0 -> {
                             Row {
                                 IconButton(
-                                    onClick = onAddTagClick
+                                    onClick = { onAddLabelClick(LabelType.TAG) }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.add_tag),
-                                        contentDescription = stringResource(id = R.string.add_tag)
+                                        painter = painterResource(LabelType.TAG.addIconId),
+                                        contentDescription = stringResource(id = LabelType.TAG.addStringId)
                                     )
                                 }
                                 SortMenu(
@@ -89,11 +86,11 @@ fun LabelsTopBar(
                         1 -> {
                             Row {
                                 IconButton(
-                                    onClick = onAddPersonClick
+                                    onClick = { onAddLabelClick(LabelType.PERSON) }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.add_person),
-                                        contentDescription = stringResource(id = R.string.add_person)
+                                        painter = painterResource(LabelType.PERSON.addIconId),
+                                        contentDescription = stringResource(id = LabelType.PERSON.addStringId)
                                     )
                                 }
                                 SortMenu(
@@ -108,11 +105,11 @@ fun LabelsTopBar(
                         else -> {
                             Row {
                                 IconButton(
-                                    onClick = onAddPlaceClick
+                                    onClick = { onAddLabelClick(LabelType.PLACE) }
                                 ) {
                                     Icon(
-                                        painter = painterResource(R.drawable.add_place),
-                                        contentDescription = stringResource(id = R.string.add_place)
+                                        painter = painterResource(LabelType.PLACE.addIconId),
+                                        contentDescription = stringResource(id = LabelType.PLACE.addStringId)
                                     )
                                 }
                                 SortMenu(
