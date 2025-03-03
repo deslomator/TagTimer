@@ -322,11 +322,11 @@ class SortProvider {
 
         fun getPersonSort(appDao: AppDao, viewModelScope: CoroutineScope) =
             appDao.getPreferenceValue(PrefKey.PERSON_SORT.name)
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.COLOR.sortId)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.NAME.sortId)
 
         fun getPlaceSort(appDao: AppDao, viewModelScope: CoroutineScope) =
             appDao.getPreferenceValue(PrefKey.PLACE_SORT.name)
-                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.COLOR.sortId)
+                .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSort.NAME.sortId)
 
         @OptIn(ExperimentalCoroutinesApi::class)
         fun getSessionSort(appDao: AppDao, viewModelScope: CoroutineScope) =

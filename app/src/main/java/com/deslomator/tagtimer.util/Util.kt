@@ -34,9 +34,7 @@ fun Long.toElapsedTime(): String {
     )
 }
 
-
-
-fun String.getSort() = when (this) {
+fun String?.getSort() = when (this) {
     LabelSort.NAME.sortId -> LabelSort.NAME
     else -> LabelSort.COLOR
 }
