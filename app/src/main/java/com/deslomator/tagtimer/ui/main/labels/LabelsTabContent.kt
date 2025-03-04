@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.LabelScreen
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
@@ -39,7 +39,7 @@ fun LabelsTabContent(
     onAction: (LabelsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState,
     pagerState: PagerState,
-    pages: List<LabelScreen>
+    pages: List<LabelType>
 ) {
     val scope = rememberCoroutineScope()
     BackHandler(
@@ -68,7 +68,7 @@ fun LabelsTabContent(
                     ) {
                         Text(
                             modifier = Modifier.padding(bottom = 7.dp, top = 7.dp),
-                            text = stringResource(id = page.stringId),
+                            text = stringResource(id = page.titleBarId),
                             fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
                             else FontWeight.Normal,
                             color = MaterialTheme.colorScheme.primary
@@ -81,26 +81,14 @@ fun LabelsTabContent(
                 state = pagerState,
                 beyondViewportPageCount = 1
             ) { page ->
-                when (pages[page]) {
-                    LabelScreen.Tag -> {
-                        LabelList(
-                            labels = state.tags,
-                            onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
-                        )
-                    }
-                    LabelScreen.Person -> {
-                        LabelList(
-                            labels = state.persons,
-                            onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
-                        )
-                    }
-                    LabelScreen.Place -> {
-                        LabelList(
-                            labels = state.places,
-                            onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
-                        )
-                    }
-                }
+                LabelList(
+                    labels = when (pages[page]) {
+                        LabelType.TAG -> state.tags
+                        LabelType.PERSON -> state.persons
+                        LabelType.PLACE -> state.places
+                    },
+                    onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
+                )
             }
         }
     }

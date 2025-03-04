@@ -7,7 +7,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.deslomator.tagtimer.action.LabelsTabAction
-import com.deslomator.tagtimer.model.type.LabelScreen
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelsTopBar
 
@@ -18,7 +18,7 @@ fun LabelsScaffold(
     bottomBar: @Composable () -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val pages = remember { listOf(LabelScreen.Tag, LabelScreen.Person, LabelScreen.Place) }
+    val pages = remember { LabelType.entries }
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     Scaffold(
         topBar = {

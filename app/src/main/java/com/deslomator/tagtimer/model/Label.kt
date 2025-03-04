@@ -28,6 +28,8 @@ data class Label(
     @ColumnInfo(name = "in_trash")
     val inTrash: Boolean = false,
 
+    val archived: Boolean = false,
+
     val type: Int = LabelType.TAG.typeId,
 
     @PrimaryKey(autoGenerate = true) val id: Long? = null,
