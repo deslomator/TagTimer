@@ -34,7 +34,8 @@ fun TimeDialog(
         )
         TimeNumberPicker(
             timeMillis = value,
-            onValueChange = { value = it }
+            onValueChange = { value = it },
+            enabled = true
         )
     }
 }

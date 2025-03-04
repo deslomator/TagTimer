@@ -59,12 +59,13 @@ fun EventEditionDialog(
             )
             onAccept(e4d)
         },
-        dialogState = DialogState.EDIT_NO_DELETE,
+        dialogState = DialogState.NEW_ITEM,
         archiveState = LabelArchiveState.HIDDEN,
     ) {
         TimeNumberPicker(
             timeMillis = elapsed,
-            onValueChange = { elapsed = it }
+            onValueChange = { elapsed = it },
+            enabled = enabled
         )
         event4d.tag?.let { t ->
             DialogTextField(
