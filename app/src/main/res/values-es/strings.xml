@@ -19,7 +19,7 @@
     <string name="trash">Papelera</string>
     <string name="new_tag">Nueva Etiqueta</string>
     <string name="edit_tag">Editar Etiqueta</string>
-    <string name="label">Nombre</string>
+    <string name="label">Tarjeta</string>
     <string name="category">Categoría</string>
     <string name="tag_sent_to_trash">Etiqueta enviada a la Papelera</string>
     <string name="active_session">Sesión Activa</string>
