@@ -142,7 +142,6 @@ class ActiveSessionViewModel @Inject constructor(
                     val id = appDao.upsertEvent(event)
                     // TODO probably not the right way of waiting for _eventsForDisplay to update
                     while (_eventsForDisplay.value.firstOrNull { it.event.id == id } == null) {
-                        Log.d(TAG, "waiting for events to update")
                         delay(5)
                     }
                     _state.update { sessionState ->
@@ -163,15 +162,8 @@ class ActiveSessionViewModel @Inject constructor(
 
             is ActiveSessionAction.TrashEventSwiped -> {
                 viewModelScope.launch {
-                    // we don't want the Event that was retrieved
-                    // in the action because it was stale
-                    // get the updated one from the DB instead
-                    // TODO check the statement above
-                    if (action.event4d.event.id != null) {
-                        val event = appDao.getEvent(action.event4d.event.id)
-                        val trashed = event.copy(inTrash = true)
-                        appDao.upsertEvent(trashed)
-                    }
+                    val e = action.event4d.event.copy(inTrash = true)
+                    appDao.upsertEvent(e)
                 }
             }
 
