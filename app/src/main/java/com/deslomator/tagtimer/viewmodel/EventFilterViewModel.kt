@@ -60,9 +60,9 @@ class EventFilterViewModel @Inject constructor(
     ) { eventForDisplay, currentPerson, currentPlace, currentTags ->
         eventForDisplay
             .filter { event4d ->
-                (if (currentPlace.name.isEmpty()) true else event4d.getPlaceName() == currentPlace.name) &&
-                        (if (currentPerson.name.isEmpty()) true else event4d.getPersonName() == currentPerson.name) &&
-                        (if (currentTags.isEmpty()) true else currentTags.map{ it.name }.contains(event4d.getTagName()))
+                (if (currentPlace.name.isEmpty()) true else event4d.place?.name == currentPlace.name) &&
+                        (if (currentPerson.name.isEmpty()) true else event4d.person?.name == currentPerson.name) &&
+                        (if (currentTags.isEmpty()) true else currentTags.map{ it.name }.contains(event4d.tag?.name))
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -72,7 +72,7 @@ class EventFilterViewModel @Inject constructor(
         persons
             .filter { person ->
                 person.name.isNotEmpty() &&
-                        eventForDisplay.map { it.getPersonName() }.contains(person.name)
+                        eventForDisplay.map { it.person?.name }.contains(person.name)
             }.distinctBy { it.name }
             .sortedWith(
                 when (personSort) {
@@ -88,7 +88,7 @@ class EventFilterViewModel @Inject constructor(
         places
             .filter { place ->
                 place.name.isNotEmpty() &&
-                        eventForDisplay.map { it.getPlaceName() }.contains(place.name)
+                        eventForDisplay.map { it.place?.name }.contains(place.name)
             }.distinctBy { it.name }
             .sortedWith(
                 when (placeSort) {
@@ -104,7 +104,7 @@ class EventFilterViewModel @Inject constructor(
         tags
             .filter { tag ->
                 tag.name.isNotEmpty() &&
-                        eventForDisplay.map { it.getTagName() }.contains(tag.name)
+                        eventForDisplay.map { it.tag?.name }.contains(tag.name)
             }.distinctBy { it.name }
             .sortedWith(
                 when (tagSort) {

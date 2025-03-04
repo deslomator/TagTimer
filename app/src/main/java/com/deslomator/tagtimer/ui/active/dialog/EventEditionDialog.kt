@@ -39,13 +39,13 @@ fun EventEditionDialog(
     }
     // next: non editable fields
     var tag by rememberSaveable {
-        mutableStateOf(event4d.getTagName())
+        mutableStateOf(event4d.tag?.name)
     }
     var person by rememberSaveable {
-        mutableStateOf(event4d.getPersonName())
+        mutableStateOf(event4d.person?.name)
     }
     var place by rememberSaveable {
-        mutableStateOf(event4d.getPlaceName())
+        mutableStateOf(event4d.place?.name)
     }
     MyDialog(
         onDismiss = onDismiss,
@@ -65,11 +65,11 @@ fun EventEditionDialog(
             timeMillis = elapsed,
             onValueChange = { elapsed = it }
         )
-        event4d.getPlaceName()?.let { t ->
+        event4d.tag?.let { t ->
             DialogTextField(
-                value = t,
+                value = t.name,
                 onValueChange = { tag = it },
-                placeholder = R.string.label,
+                placeholder = R.string.tags,
                 icon = R.drawable.tag,
                 enabled = false
             )
@@ -81,18 +81,18 @@ fun EventEditionDialog(
             icon = R.drawable.note,
             enabled = enabled
         )
-        event4d.getPlaceName()?.let { pl ->
+        event4d.person?.let { pr ->
             DialogTextField(
-                value = pl,
+                value = pr.name,
                 onValueChange = { person = it },
                 placeholder = R.string.person,
                 icon = R.drawable.person,
                 enabled = false
             )
         }
-        event4d.getPlaceName()?.let { p ->
+        event4d.place?.let { p ->
             DialogTextField(
-                value = p,
+                value = p.name,
                 onValueChange = { place = it },
                 placeholder = R.string.place,
                 icon = R.drawable.place,

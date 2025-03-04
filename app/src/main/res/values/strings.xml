@@ -16,6 +16,7 @@
     <string name="sessions">Sessions</string>
     <string name="session">Session</string>
     <string name="tags">Tags</string>
+    <string name="tag">Tag</string>
     <string name="labels">Labels</string>
     <string name="trash">Trash</string>
     <string name="new_tag">New Tag</string>

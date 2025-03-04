@@ -179,7 +179,7 @@ inline fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> combine(
 
 fun List<EventForDisplay>.toCsv(session: Session, filtered: Boolean = false): String {
     val ev = this.map {
-        "\"${it.getPersonName()}\",\"${it.getPlaceName()}\",\"${it.getTagName()}\",\"${it.event.note}\",\"${it.event.elapsedTimeMillis}\""
+        "\"${it.person?.name}\",\"${it.place?.name}\",\"${it.tag?.name}\",\"${it.event.note}\",\"${it.event.elapsedTimeMillis}\""
     }.toMutableList()
     val headers = "\"person\",\"place\",\"tag\",\"note\",\"time\""
     val filterString = if (filtered) "filtered" else ""
