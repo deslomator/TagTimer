@@ -11,6 +11,7 @@ sealed interface LabelPreselectionAction {
     data class EditLabelClicked(val label: Label): LabelPreselectionAction
     data class AcceptLabelEditionClicked(val label: Label): LabelPreselectionAction
     data class AddNewLabelClicked(val type: LabelType): LabelPreselectionAction
+    data class ArchiveLabelClicked(val label: Label): LabelPreselectionAction
     data object DismissLabelDialog: LabelPreselectionAction
     data class DeleteLabelClicked(val label: Label): LabelPreselectionAction
     /*

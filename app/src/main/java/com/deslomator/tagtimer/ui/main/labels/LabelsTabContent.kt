@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.LabelArchiveState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelDialog
@@ -39,7 +40,8 @@ fun LabelsTabContent(
     onAction: (LabelsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState,
     pagerState: PagerState,
-    pages: List<LabelType>
+    pages: List<LabelType>,
+    showArchived: Boolean,
 ) {
     val scope = rememberCoroutineScope()
     BackHandler(
@@ -83,9 +85,9 @@ fun LabelsTabContent(
             ) { page ->
                 LabelList(
                     labels = when (pages[page]) {
-                        LabelType.TAG -> state.tags
-                        LabelType.PERSON -> state.persons
-                        LabelType.PLACE -> state.places
+                        LabelType.TAG -> state.tags.filter { if(showArchived) true else !it.archived }
+                        LabelType.PERSON -> state.persons.filter { if(showArchived) true else !it.archived }
+                        LabelType.PLACE -> state.places.filter { if(showArchived) true else !it.archived }
                     },
                     onLongClick = { onAction(LabelsTabAction.EditLabelClicked(it)) }
                 )
@@ -111,8 +113,13 @@ fun LabelsTabContent(
                     snackbarHostState,
                     message
                 )
-                onAction(LabelsTabAction.DeleteTagClicked(state.currentLabel))
+                onAction(LabelsTabAction.DeleteLabelClicked(state.currentLabel))
             },
+            archiveState = when (state.dialogState) {
+                DialogState.HIDDEN, DialogState.NEW_ITEM -> LabelArchiveState.HIDDEN
+                else -> if (state.currentLabel.archived) LabelArchiveState.UNARCHIVE else LabelArchiveState.ARCHIVE
+            },
+            onArchiveClicked = { onAction(LabelsTabAction.ArchiveLabelClicked(it)) },
             title = if (
                 state.dialogState == DialogState.EDIT_NO_DELETE ||
                 state.dialogState == DialogState.EDIT_CAN_DELETE

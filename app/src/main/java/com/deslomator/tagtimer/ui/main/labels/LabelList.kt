@@ -33,6 +33,7 @@ fun LabelList(
                 label = label,
                 onLongClick = { onLongClick?.invoke(label) },
                 onItemClick = { onItemClick?.invoke(label) },
+                archived = label.archived
             )
         }
 

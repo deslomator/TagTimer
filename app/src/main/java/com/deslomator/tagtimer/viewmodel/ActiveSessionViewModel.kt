@@ -139,10 +139,10 @@ class ActiveSessionViewModel @Inject constructor(
                         personId = state.value.currentPerson?.id,
                         placeId = state.value.currentPlace?.id,
                     )
-                    val id = appDao.upsertEvent(event)
-                    _state.update {
-                        it.copy(eventForScrollTo = _eventsForDisplay.value.first { it.event.id == id })
-                    }
+                    val id = appDao.upsertEvent(event) // TODO fix this crash
+//                    _state.update { sessionState ->
+//                        sessionState.copy(eventForScrollTo = _eventsForDisplay.value.first { it.event.id == id })
+//                    }
                 }
             }
 

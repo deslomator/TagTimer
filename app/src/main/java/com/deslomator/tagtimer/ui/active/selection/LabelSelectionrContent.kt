@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.LabelArchiveState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelPreselectionState
 import com.deslomator.tagtimer.ui.EmptyListText
@@ -44,6 +45,7 @@ fun LabelSelectionContent(
     snackbarHostState: SnackbarHostState,
     pagerState: PagerState,
     pages: EnumEntries<LabelType>,
+    showArchived: Boolean,
 ) {
     val scope = rememberCoroutineScope()
     BackHandler(
@@ -92,9 +94,9 @@ fun LabelSelectionContent(
                 val unCheckedMessage = stringResource(current.unCheckedStringId)
                 LabelSelectionList(
                     labels = when (current) {
-                        LabelType.TAG -> state.tags
-                        LabelType.PERSON -> state.persons
-                        LabelType.PLACE -> state.places
+                        LabelType.TAG -> state.tags.filter { if(showArchived) true else !it.archived }
+                        LabelType.PERSON -> state.persons.filter { if(showArchived) true else !it.archived }
+                        LabelType.PLACE -> state.places.filter { if(showArchived) true else !it.archived }
                     },
                     preSelected = when (current) {
                         LabelType.TAG -> state.preSelectedTags
@@ -140,6 +142,11 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeleteLabelClicked(state.currentLabel))
             },
+            archiveState = when (state.dialogState) {
+                DialogState.HIDDEN, DialogState.NEW_ITEM -> LabelArchiveState.HIDDEN
+                else -> if (state.currentLabel.archived) LabelArchiveState.UNARCHIVE else LabelArchiveState.ARCHIVE
+            },
+            onArchiveClicked = { onAction(LabelPreselectionAction.ArchiveLabelClicked(it)) },
             title =
             if (
                 state.dialogState == DialogState.EDIT_NO_DELETE ||

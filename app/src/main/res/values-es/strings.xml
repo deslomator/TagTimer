@@ -67,6 +67,7 @@
     <string name="populate_db">datos de ejemplo</string>
     <string name="event_trash">Eventos eliminados</string>
     <string name="share_session">Compartir Sesión</string>
+    <string name="show_archived">mostrar archivadas</string>
     <string name="tap_to_select_unselect">Toca para seleccionar, pulsación larga para editar</string>
     <string name="sort_by_name">ordenar por nombre</string>
     <string name="sort_by_color">ordenar por color</string>

@@ -47,7 +47,8 @@ fun LabelButton(
     onLongClick: ((Label) -> Unit)? = null,
     onTrailingClick: ((Label) -> Unit)? = null,
     checked: Boolean = true,
-    checkType: Checked = Checked.NONE
+    checkType: Checked = Checked.NONE,
+    archived: Boolean = false,
 ) {
     val borderWidth =  if (label.isPerson()) 5.dp else 1.dp
     val borderColor = if (label.isPerson()) {
@@ -75,7 +76,11 @@ fun LabelButton(
     } else {
         label.getIcon()
     }
-    val trailingIcon = if (isTrash) R.drawable.delete_forever else null
+    val trailingIcon = when {
+        isTrash -> R.drawable.delete_forever
+        archived -> R.drawable.folder
+        else -> null
+    }
     val iconPadding = if (isTrash) 9.dp else 0.dp
     val containerPadding by animateDpAsState(
         targetValue = if (checked && checkType == Checked.LEADING) 12.dp else 5.dp

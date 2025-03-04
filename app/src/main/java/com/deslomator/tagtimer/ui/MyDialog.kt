@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.LabelArchiveState
 
 @Composable
 fun MyDialog(
@@ -40,6 +41,8 @@ fun MyDialog(
     onTrash: (() -> Unit)? = null,
     showCopy: Boolean = false,
     onCopy: (() -> Unit)? = null,
+    archiveState: LabelArchiveState = LabelArchiveState.HIDDEN,
+    onArchiveClicked: () -> Unit = {},
     @StringRes title: Int? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -72,6 +75,15 @@ fun MyDialog(
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
+                    if (archiveState != LabelArchiveState.HIDDEN) {
+                        IconButton(onClick = onArchiveClicked) {
+                            Icon(
+                                painter = painterResource(id = archiveState.iconId),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
                     if (showCopy) {
                         IconButton(onClick = { onCopy?.invoke() }) {
                             Icon(
@@ -94,9 +106,8 @@ fun MyDialog(
                         }
                         DialogState.EDIT_NO_DELETE -> {
                             Icon(
-                                painter = painterResource(id = R.drawable.delete),
+                                painter = painterResource(id = R.drawable.do_not_delete),
                                 contentDescription = null,
-                                tint = Color.Red
                             )
                         }
                     }

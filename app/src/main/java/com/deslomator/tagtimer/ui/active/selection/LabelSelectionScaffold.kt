@@ -6,7 +6,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.LabelPreselectionAction
 import com.deslomator.tagtimer.model.type.DialogState
@@ -23,6 +27,7 @@ fun LabelSelectionScaffold(
     val snackbarHostState = remember { SnackbarHostState() }
     val pages = LabelType.entries
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
+    var showArchived by rememberSaveable { mutableStateOf(false) }
     BackHandler(enabled = state.dialogState != DialogState.HIDDEN) {
         onAction(LabelPreselectionAction.DismissLabelDialog)
     }
@@ -47,6 +52,8 @@ fun LabelSelectionScaffold(
                 onTagSort = { onAction(LabelPreselectionAction.SortTagsClicked(it)) },
                 onPersonSort = { onAction(LabelPreselectionAction.SortPersonsClicked(it)) },
                 onPlaceSort = { onAction(LabelPreselectionAction.SortPlacesClicked(it)) },
+                showArchived = showArchived,
+                onShowArchivedChanged = { showArchived = it }
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -58,6 +65,7 @@ fun LabelSelectionScaffold(
             snackbarHostState = snackbarHostState,
             pagerState = pagerState,
             pages = pages,
+            showArchived = showArchived,
         )
     }
 }

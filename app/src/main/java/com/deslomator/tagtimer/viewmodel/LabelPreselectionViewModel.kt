@@ -164,6 +164,25 @@ class LabelPreselectionViewModel @Inject constructor(
                     appDao.upsertLabel(trashed)
                 }
             }
+
+            is LabelPreselectionAction.ArchiveLabelClicked -> {
+                val newValue = !action.label.archived
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
+                viewModelScope.launch {
+                    val archived = action.label.copy(archived = newValue)
+                    appDao.upsertLabel(archived)
+                    // remove preselection if we are archiving a label
+                    if (newValue) {
+                        val pst = Preselected(
+                            sessionId = _sessionId.value,
+                            labelId = action.label.id!!
+                        )
+                        appDao.deletePreSelectedLabel(pst)
+                    }
+                }
+            }
             /*
             TAG
              */
@@ -176,6 +195,11 @@ class LabelPreselectionViewModel @Inject constructor(
                     delay(UPSERT_DELAY_MS) // TODO what's this delay
                     if (action.checked) {
                         appDao.upsertPreSelectedLabel(pst)
+                        // unarchive the label if necessary
+                        if (action.tag.archived) {
+                            val lbl = action.tag.copy(archived = false)
+                            appDao.upsertLabel(lbl)
+                        }
                     } else {
                         appDao.deletePreSelectedLabel(pst)
                     }
@@ -201,6 +225,11 @@ class LabelPreselectionViewModel @Inject constructor(
                     delay(UPSERT_DELAY_MS) // TODO what's this delay
                     if (action.checked) {
                         appDao.upsertPreSelectedLabel(pst)
+                        // unarchive the label if necessary
+                        if (action.person.archived) {
+                            val lbl = action.person.copy(archived = false)
+                            appDao.upsertLabel(lbl)
+                        }
                     } else {
                         appDao.deletePreSelectedLabel(pst)
                     }
@@ -226,6 +255,11 @@ class LabelPreselectionViewModel @Inject constructor(
                     delay(UPSERT_DELAY_MS) // TODO what's this delay
                     if (action.checked) {
                         appDao.upsertPreSelectedLabel(pst)
+                        // unarchive the label if necessary
+                        if (action.place.archived) {
+                            val lbl = action.place.copy(archived = false)
+                            appDao.upsertLabel(lbl)
+                        }
                     } else {
                         appDao.deletePreSelectedLabel(pst)
                     }

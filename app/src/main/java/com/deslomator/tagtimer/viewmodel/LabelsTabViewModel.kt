@@ -123,7 +123,7 @@ class LabelsTabViewModel @Inject constructor(
                 }
             }
 
-            is LabelsTabAction.DeleteTagClicked -> {
+            is LabelsTabAction.DeleteLabelClicked -> {
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
@@ -133,6 +133,18 @@ class LabelsTabViewModel @Inject constructor(
                 }
             }
 
+            is LabelsTabAction.ArchiveLabelClicked -> {
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
+                viewModelScope.launch {
+                    val archived = action.label.copy(archived = !action.label.archived)
+                    appDao.upsertLabel(archived)
+                }
+            }
+            /*
+            TAG
+             */
             is LabelsTabAction.TagSortClicked -> {
                 val pref = Preference(
                     prefKey = PrefKey.TAG_SORT.name,

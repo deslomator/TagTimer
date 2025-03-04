@@ -2,6 +2,7 @@ package com.deslomator.tagtimer.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +42,8 @@ fun LabelsTopBar(
     onTagSort: (LabelSort) -> Unit,
     onPersonSort: (LabelSort) -> Unit,
     onPlaceSort: (LabelSort) -> Unit,
+    showArchived: Boolean,
+    onShowArchivedChanged: (Boolean) -> Unit,
 ) {
     TopAppBar(
         navigationIcon = {
@@ -86,7 +89,9 @@ fun LabelsTopBar(
                                     LabelType.PERSON -> onPersonSort(it)
                                     LabelType.PLACE -> onPlaceSort(it)
                                 }
-                            }
+                            },
+                            showArchived = showArchived,
+                            onShowArchivedChanged = { onShowArchivedChanged(it) }
                         )
                     }
                 }
@@ -100,6 +105,8 @@ fun LabelsTopBar(
 private fun SortMenu(
     currentSort: LabelSort,
     onItemClick: (LabelSort) -> Unit,
+    showArchived: Boolean,
+    onShowArchivedChanged: (Boolean) -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
     IconButton(
@@ -136,5 +143,25 @@ private fun SortMenu(
                 },
             )
         }
+        DropdownMenuItem(
+            text = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Checkbox(
+                        checked = showArchived,
+                        onCheckedChange = {
+                            showMenu = false
+                            onShowArchivedChanged(it)
+                        }
+                    )
+                    Text(text = stringResource(R.string.show_archived))
+                }
+            },
+            onClick = {
+                showMenu = false
+                onShowArchivedChanged(!showArchived)
+            },
+        )
     }
 }
