@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -140,10 +139,15 @@ class ActiveSessionViewModel @Inject constructor(
                         personId = state.value.currentPerson?.id,
                         placeId = state.value.currentPlace?.id,
                     )
-                    val id = appDao.upsertEvent(event) // TODO fix this crash
-//                    _state.update { sessionState ->
-//                        sessionState.copy(eventForScrollTo = _eventsForDisplay.value.first { it.event.id == id })
-//                    }
+                    val id = appDao.upsertEvent(event)
+                    // TODO probably not the right way of waiting for _eventsForDisplay to update
+                    while (_eventsForDisplay.value.firstOrNull { it.event.id == id } == null) {
+                        Log.d(TAG, "waiting for events to update")
+                        delay(5)
+                    }
+                    _state.update { sessionState ->
+                        sessionState.copy(eventForScrollTo = _eventsForDisplay.value.first { it.event.id == id })
+                    }
                 }
             }
 
