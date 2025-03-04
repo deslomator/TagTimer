@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.OnDarkBackground
@@ -45,7 +46,7 @@ fun EventListItem(
         else event4d.event.longColor
     val index by remember {
         derivedStateOf {
-            maxOf(persons.indexOf(event4d.getPersonName()), 0)
+            maxOf(persons.indexOf(event4d.person?.name), 0)
         }
     }
     Row(
@@ -70,7 +71,7 @@ fun EventListItem(
                     onTrailingClick = onTrailingClick
                 ) { item ->
                     Text(
-                        text = listOf(item.getTagName(), item.getPlaceName(),item.getPersonName())
+                        text = listOf(item.tag?.name, item.place?.name,item.person?.name)
                             .filter { !it.isNullOrEmpty() }.joinToString(separator = ","),
                         maxLines = 1,
                         overflow = TextOverflow.Clip
@@ -113,17 +114,17 @@ fun EventListItemPreview() {
         event = Event(
         note = "fff",
         elapsedTimeMillis = 25_000L,),
-        emptyList(),
-        emptyList(),
-        emptyList(),
+        Label(name = "tag 1"),
+        Label(name = "person 1"),
+        Label(name = "place 1"),
     )
     val event2 = EventForDisplay(
         event = Event(
             note = "",
             elapsedTimeMillis = 25_000L,),
-        emptyList(),
-        emptyList(),
-        emptyList(),
+        Label(name = "tag 2"),
+        Label(name = "person 1"),
+        Label(name = "place 4"),
     )
     Column {
         EventListItem(
