@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.selection
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -9,7 +10,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -17,7 +18,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -34,22 +34,23 @@ import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.showSnackbar
 import kotlinx.coroutines.launch
+import kotlin.enums.EnumEntries
 
 @Composable
 fun LabelSelectionContent(
     paddingValues: PaddingValues,
     state: LabelPreselectionState,
     onAction: (LabelPreselectionAction) -> Unit,
-    onTabClick: (Int) -> Unit,
     snackbarHostState: SnackbarHostState,
+    pagerState: PagerState,
+    pages: EnumEntries<LabelType>,
 ) {
     val scope = rememberCoroutineScope()
-    val pages = remember { LabelType.entries }
-    val pagerState = rememberPagerState(
-        initialPage = 1,
-        pageCount = { pages.size }
-    )
-    LaunchedEffect(pagerState.currentPage) { onTabClick(pagerState.currentPage) }
+    BackHandler(
+        enabled = state.dialogState != DialogState.HIDDEN
+    ) {
+        onAction(LabelPreselectionAction.DismissLabelDialog)
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -86,82 +87,34 @@ fun LabelSelectionContent(
                 state = pagerState,
                 beyondViewportPageCount = 1
             ) { page ->
-                when (val lbl = pages[page]) {
-                    LabelType.TAG -> {
-                        val checkedMessage = stringResource(lbl.checkedStringId)
-                        val unCheckedMessage = stringResource(lbl.unCheckedStringId)
-                        LabelSelectionList(
-                            labels = state.tags,
-                            preSelected = state.preSelectedTags,
-                            onItemClick = { tag, checked ->
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    message = if (checked) checkedMessage else unCheckedMessage,
-                                )
-                                onAction(
-                                    LabelPreselectionAction.SelectTagCheckedChange(
-                                        tag,
-                                        checked
-                                    )
-                                )
-                            },
-                            onLongClick = {
-                                onAction(LabelPreselectionAction.EditLabelClicked(it))
-                            }
+                val current = remember(page) { pages[page] }
+                val checkedMessage = stringResource(current.checkedStringId)
+                val unCheckedMessage = stringResource(current.unCheckedStringId)
+                LabelSelectionList(
+                    labels = when (current) {
+                        LabelType.TAG -> state.tags
+                        LabelType.PERSON -> state.persons
+                        LabelType.PLACE -> state.places
+                    },
+                    preSelected = when (current) {
+                        LabelType.TAG -> state.preSelectedTags
+                        LabelType.PERSON -> state.preSelectedPersons
+                        LabelType.PLACE -> state.preSelectedPlaces
+                    },
+                    onItemClick = { tag, checked ->
+                        showSnackbar(
+                            scope,
+                            snackbarHostState,
+                            message = if (checked) checkedMessage else unCheckedMessage,
                         )
-                    }
-
-                    LabelType.PERSON -> {
-                        val checkedMessage = stringResource(lbl.checkedStringId)
-                        val unCheckedMessage = stringResource(lbl.unCheckedStringId)
-                        LabelSelectionList(
-                            labels = state.persons,
-                            preSelected = state.preSelectedPersons,
-                            onItemClick = { person, checked ->
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    message = if (checked) checkedMessage else unCheckedMessage,
-                                )
-                                onAction(
-                                    LabelPreselectionAction.SelectPersonCheckedChange(
-                                        person,
-                                        checked
-                                    )
-                                )
-                            },
-                            onLongClick = {
-                                onAction(LabelPreselectionAction.EditLabelClicked(it))
-                            }
+                        onAction(
+                            LabelPreselectionAction.SelectTagCheckedChange(tag,checked)
                         )
+                    },
+                    onLongClick = {
+                        onAction(LabelPreselectionAction.EditLabelClicked(it))
                     }
-
-                    LabelType.PLACE -> {
-                        val checkedMessage = stringResource(lbl.checkedStringId)
-                        val unCheckedMessage = stringResource(lbl.unCheckedStringId)
-                        LabelSelectionList(
-                            labels = state.places,
-                            preSelected = state.preSelectedPlaces,
-                            onItemClick = { place, checked ->
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    message = if (checked) checkedMessage else unCheckedMessage,
-                                )
-                                onAction(
-                                    LabelPreselectionAction.SelectPlaceCheckedChange(
-                                        place,
-                                        checked
-                                    )
-                                )
-                            },
-                            onLongClick = {
-                                onAction(LabelPreselectionAction.EditLabelClicked(it))
-                            }
-                        )
-                    }
-                }
+                )
             }
             EmptyListText(stringResource(id = R.string.tap_to_select_unselect))
         }
@@ -187,10 +140,12 @@ fun LabelSelectionContent(
                 )
                 onAction(LabelPreselectionAction.DeleteLabelClicked(state.currentLabel))
             },
-            title = if (
+            title =
+            if (
                 state.dialogState == DialogState.EDIT_NO_DELETE ||
                 state.dialogState == DialogState.EDIT_CAN_DELETE
-            ) state.currentLabel.getLabelType().editTitleId else state.currentLabel.getLabelType().newTitleId,
+            ) state.currentLabel.getLabelType().editTitleId
+            else state.currentLabel.getLabelType().newTitleId,
             icon = state.currentLabel.getLabelType().iconId
         )
     }

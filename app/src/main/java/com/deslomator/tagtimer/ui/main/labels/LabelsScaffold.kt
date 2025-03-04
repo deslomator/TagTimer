@@ -25,6 +25,7 @@ fun LabelsScaffold(
             LabelsTopBar(
                 title = "",
                 onBackClicked = null,
+                pages = pages,
                 currentPage = pagerState.currentPage,
                 dialogState = state.dialogState,
                 onAddLabelClick = { onAction(LabelsTabAction.AddNewLabelClicked(it)) },

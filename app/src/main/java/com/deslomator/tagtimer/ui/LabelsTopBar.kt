@@ -24,12 +24,14 @@ import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.ui.theme.topBarColors
+import kotlin.enums.EnumEntries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabelsTopBar(
     title: String,
     onBackClicked: (() -> Unit)?,
+    pages: EnumEntries<LabelType>,
     currentPage: Int,
     onAddLabelClick: (LabelType) -> Unit,
     dialogState: DialogState,
@@ -62,64 +64,30 @@ fun LabelsTopBar(
         },
         actions = {
             if (dialogState == DialogState.HIDDEN) {
-                AnimatedContent(currentPage) { cpg ->
-                    when (cpg) {
-                        0 -> {
-                            Row {
-                                IconButton(
-                                    onClick = { onAddLabelClick(LabelType.TAG) }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(LabelType.TAG.addIconId),
-                                        contentDescription = stringResource(id = LabelType.TAG.addStringId)
-                                    )
-                                }
-                                SortMenu(
-                                    currentSort = tagSort,
-                                    onItemClick = {
-                                        onTagSort(it)
-                                    }
-                                )
-                            }
+                AnimatedContent(pages[currentPage]) { current ->
+                    Row {
+                        IconButton(
+                            onClick = { onAddLabelClick(current) }
+                        ) {
+                            Icon(
+                                painter = painterResource(current.addIconId),
+                                contentDescription = stringResource(id = current.addStringId)
+                            )
                         }
-
-                        1 -> {
-                            Row {
-                                IconButton(
-                                    onClick = { onAddLabelClick(LabelType.PERSON) }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(LabelType.PERSON.addIconId),
-                                        contentDescription = stringResource(id = LabelType.PERSON.addStringId)
-                                    )
+                        SortMenu(
+                            currentSort = when (current) {
+                                LabelType.TAG -> tagSort
+                                LabelType.PERSON -> personSort
+                                LabelType.PLACE -> placeSort
+                            },
+                            onItemClick = {
+                                when (current) {
+                                    LabelType.TAG -> onTagSort(it)
+                                    LabelType.PERSON -> onPersonSort(it)
+                                    LabelType.PLACE -> onPlaceSort(it)
                                 }
-                                SortMenu(
-                                    currentSort = personSort,
-                                    onItemClick = {
-                                        onPersonSort(it)
-                                    }
-                                )
                             }
-                        }
-
-                        else -> {
-                            Row {
-                                IconButton(
-                                    onClick = { onAddLabelClick(LabelType.PLACE) }
-                                ) {
-                                    Icon(
-                                        painter = painterResource(LabelType.PLACE.addIconId),
-                                        contentDescription = stringResource(id = LabelType.PLACE.addStringId)
-                                    )
-                                }
-                                SortMenu(
-                                    currentSort = placeSort,
-                                    onItemClick = {
-                                        onPlaceSort(it)
-                                    }
-                                )
-                            }
-                        }
+                        )
                     }
                 }
             }
