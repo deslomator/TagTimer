@@ -8,9 +8,25 @@ import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
 
 suspend fun populateDb (dao: AppDao) {
-    colorPickerColors.forEachIndexed { index, it ->
+
+    for (i in 0..20) {
+        val maxCol = colorPickerColors.size - 1
+        val color = colorPickerColors[(0..maxCol).random()]
+        val names = listOf("fs", "sf", "hfg", "kk", "aff", "gss", "sf", "fsh", "gds", "dg", "ff", "gs",)
+        val maxName = names.size - 1
+        val name = names[(0..maxName).random()]
+        val type = (0..2).random()
+        val rndtag = Label(
+            name = name + (0..12).random(),
+            color = color.toHex(),
+            type = type
+        )
+        dao.upsertLabel(rndtag)
+    }
+
+    /*colorPickerColors.forEachIndexed { index, it ->
         Log.d(TAG, "populateDb() creating sessions and tags")
-        /*val session = Session(
+        val session = Session(
             id = i,
             color = it.toArgb(),
             name = "Session $index"
@@ -20,7 +36,9 @@ suspend fun populateDb (dao: AppDao) {
             id = i + 100,
             inTrash = true
         )
-        dao.upsertSession(sessionT)*/
+        dao.upsertSession(sessionT)
+
+
         val tag = Label(
             name = "Tag $index",
             color = it.toHex(),
@@ -41,7 +59,7 @@ suspend fun populateDb (dao: AppDao) {
         )
         dao.upsertLabel(place)
         dao.upsertLabel(person)
-        /*colorPickerColors.forEachIndexed { idx, it2 ->
+        colorPickerColors.forEachIndexed { idx, it2 ->
             val event = Event(
                 sessionId = i,
                 elapsedTimeMillis = (1000 * idx).toLong(),
@@ -64,8 +82,8 @@ suspend fun populateDb (dao: AppDao) {
             dao.upsertPreSelectedPlace(preselectedPlace)
             val preselectedPerson = Preselected.Person(i, i + idx)
             dao.upsertPreSelectedPerson(preselectedPerson)
-        }*/
-    }
+        }
+    }*/
 }
 
 private const val TAG = "populateDb"
