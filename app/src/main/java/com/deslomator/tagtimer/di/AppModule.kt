@@ -24,14 +24,14 @@ object AppModule {
             DATABASE_NAME
         ).build().appDao
 
-    @Singleton
+    /*@Singleton
     @Provides
     fun provideDatabase(@ApplicationContext appContext: Context): SessionsDatabase =
         Room.databaseBuilder(
             appContext,
             SessionsDatabase::class.java,
             DATABASE_NAME
-        ).build()
+        ).build()*/
 
     /*@Singleton
     @Provides
