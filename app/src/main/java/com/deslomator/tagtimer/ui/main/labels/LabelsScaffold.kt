@@ -5,11 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelsTabState
@@ -24,7 +20,6 @@ fun LabelsScaffold(
     val snackbarHostState = remember { SnackbarHostState() }
     val pages = remember { LabelType.entries }
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
-    var showArchived by rememberSaveable { mutableStateOf(false) }
     Scaffold(
         topBar = {
             LabelsTopBar(
@@ -40,8 +35,8 @@ fun LabelsScaffold(
                 onTagSort = { onAction(LabelsTabAction.TagSortClicked(it)) },
                 onPersonSort = { onAction(LabelsTabAction.PersonSortClicked(it)) },
                 onPlaceSort = { onAction(LabelsTabAction.PlaceSortClicked(it)) },
-                showArchived = showArchived,
-                onShowArchivedChanged = { showArchived = it }
+                showArchived = state.showArchived,
+                onShowArchivedChanged = { onAction(LabelsTabAction.ShowArchivedClicked(it)) }
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -53,7 +48,7 @@ fun LabelsScaffold(
                 snackbarHostState = snackbarHostState,
                 pagerState = pagerState,
                 pages = pages,
-                showArchived = showArchived,
+                showArchived = state.showArchived,
             )
         },
         bottomBar = bottomBar

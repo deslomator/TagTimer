@@ -29,4 +29,7 @@ sealed interface LabelPreselectionAction {
      */
     data class SelectPlaceCheckedChange(val place: Label, val checked: Boolean): LabelPreselectionAction
     class SortPlacesClicked(val placeSort: LabelSort): LabelPreselectionAction
+
+    class ShowArchivedClicked(val show: Boolean): LabelPreselectionAction
+
 }

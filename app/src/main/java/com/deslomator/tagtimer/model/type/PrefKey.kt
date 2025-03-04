@@ -7,5 +7,5 @@ import androidx.annotation.Keep
  */
 @Keep
 enum class PrefKey {
-    PERSON_SORT, PLACE_SORT, TAG_SORT, SESSION_SORT
+    PERSON_SORT, PLACE_SORT, TAG_SORT, SESSION_SORT, SHOW_ARCHIVED
 }

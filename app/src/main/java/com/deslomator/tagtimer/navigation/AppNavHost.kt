@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -32,7 +30,7 @@ import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.BackupViewModel
 import com.deslomator.tagtimer.viewmodel.EventFilterViewModel
 import com.deslomator.tagtimer.viewmodel.EventTrashViewModel
-import com.deslomator.tagtimer.viewmodel.LabelPreselectionViewModel
+import com.deslomator.tagtimer.viewmodel.LabelSelectionViewModel
 import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
@@ -118,7 +116,7 @@ fun AppNavHost(
             )
         }
         composable<LabelSelectionScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<LabelPreselectionViewModel>(backStackEntry)
+            val viewModel = hiltViewModel<LabelSelectionViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             LabelSelectionScaffold(
                 navController = navController,

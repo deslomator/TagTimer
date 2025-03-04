@@ -14,4 +14,5 @@ data class LabelsTabState(
 
     val dialogState: DialogState = DialogState.HIDDEN,
     val currentLabel: Label = Label(),
+    val showArchived: Boolean = false,
 )

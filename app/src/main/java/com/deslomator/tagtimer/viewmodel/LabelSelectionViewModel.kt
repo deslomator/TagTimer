@@ -24,13 +24,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LabelPreselectionViewModel @Inject constructor(
+class LabelSelectionViewModel @Inject constructor(
     private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
@@ -93,11 +94,16 @@ class LabelPreselectionViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _showArchived = appDao.getPreferenceValue(PrefKey.SHOW_ARCHIVED.name)
+        .mapLatest { it == true.toString() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
     val state = combine(
         _state, _preSelectedTags, _tags, _preSelectedPersons, _persons,
-        _preSelectedPlaces, _places, _tagSort, _personSort, _placeSort
+        _preSelectedPlaces, _places, _tagSort, _personSort, _placeSort, _showArchived
     ) { state, preSelectedTags, tags, preSelectedPersons, persons,
-        preSelectedPlaces, places, tagSort, personSort, placeSort ->
+        preSelectedPlaces, places, tagSort, personSort, placeSort, showArchived ->
         state.copy(
             preSelectedTags = preSelectedTags,
             tags = tags,
@@ -108,6 +114,7 @@ class LabelPreselectionViewModel @Inject constructor(
             tagSort = tagSort.getSort(),
             personSort = personSort.getSort(),
             placeSort = placeSort.getSort(),
+            showArchived = showArchived
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), LabelPreselectionState()
@@ -272,6 +279,12 @@ class LabelPreselectionViewModel @Inject constructor(
                     value = action.placeSort.sortId
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
+
+            is LabelPreselectionAction.ShowArchivedClicked -> {
+                viewModelScope.launch {
+                    appDao.upsertPreference(Preference(PrefKey.SHOW_ARCHIVED.name, action.show.toString()))
+                }
             }
         }
     }

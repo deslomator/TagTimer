@@ -15,6 +15,7 @@ sealed interface LabelsTabAction {
     data object DismissLabelDialog: LabelsTabAction
     class DeleteLabelClicked(val label: Label): LabelsTabAction
     class TagSortClicked(val labelSort: LabelSort): LabelsTabAction
+    class ShowArchivedClicked(val show: Boolean): LabelsTabAction
     /*
     PERSON
      */

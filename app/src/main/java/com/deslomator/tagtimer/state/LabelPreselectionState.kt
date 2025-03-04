@@ -19,4 +19,5 @@ data class LabelPreselectionState(
 
     val currentLabel: Label = Label(),
     val dialogState: DialogState = DialogState.HIDDEN,
+    val showArchived: Boolean = false
 )
