@@ -18,6 +18,7 @@ import com.deslomator.tagtimer.model.Session
     ],
     version = 1
 )
+
 abstract class SessionsDatabase: RoomDatabase() {
 
     abstract val appDao: AppDao

@@ -41,6 +41,9 @@ interface AppDao {
     @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 1 ORDER BY elapsed_time_millis ASC")
     fun getTrashedEventsForSession(sessionId: Long): Flow<List<Event>>
 
+    /*
+    EVENTS FOR DISPLAY
+     */
     @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 0 ORDER BY elapsed_time_millis ASC")
     fun getEventsForDisplay(sessionId: Long): Flow<List<EventForDisplay>>
 
