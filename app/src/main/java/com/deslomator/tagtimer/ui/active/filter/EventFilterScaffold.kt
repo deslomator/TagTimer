@@ -38,9 +38,9 @@ fun EventFilterScaffold(
                     navController.navigateUp()
                 },
                 onShareFilteredEventsClick = {
-                    onAction(EventFilterAction.ExportFilteredEventsClicked(state.events))
+                    onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
                 },
-                totalEvents = state.events.size
+                totalEvents = state.filteredEvents.size
             )
         },
     ) { paddingValues ->
@@ -48,7 +48,7 @@ fun EventFilterScaffold(
             paddingValues = paddingValues,
             state = state,
             onAction = onAction,
-            filteredEvents = state.eventsForDisplay
+            filteredEvents = state.filteredEvents
         )
     }
 }

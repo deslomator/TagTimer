@@ -5,7 +5,7 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Session
 
 data class EventFilterState(
-    val events: List<EventForDisplay> = emptyList(),
+    val filteredEvents: List<EventForDisplay> = emptyList(),
     val eventsForDisplay: List<EventForDisplay> = emptyList(),
     val tags: List<Label> = emptyList(),
     val persons: List<Label> = emptyList(),

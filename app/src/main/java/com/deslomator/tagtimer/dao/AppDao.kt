@@ -126,6 +126,17 @@ interface AppDao {
     @Query("SELECT COUNT(*) FROM events WHERE tagId = :labelId OR personId = :labelId OR placeId = :labelId")
     suspend fun getSEventsForTag(labelId: Long): Int
 
+    /*
+    USED LABELS
+     */
+    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT tagId FROM events WHERE session_id = :sessionId)")
+    fun getUsedTags(sessionId: Long): Flow<List<Label>>
+
+    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT personId FROM events WHERE session_id = :sessionId)")
+    fun getUsedPersons(sessionId: Long): Flow<List<Label>>
+
+    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT placeId FROM events WHERE session_id = :sessionId)")
+    fun getUsedPlaces(sessionId: Long): Flow<List<Label>>
 
     /*
     PRESELECTED

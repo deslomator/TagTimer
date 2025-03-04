@@ -7,7 +7,6 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.LabelSort
-import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
@@ -19,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -46,19 +46,10 @@ class EventFilterViewModel @Inject constructor(
             appDao.getEventsForDisplay(_sessionId.value)
         }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _tags = appDao.getActiveLabels(LabelType.TAG.typeId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    private val _persons = appDao.getActiveLabels(LabelType.PERSON.typeId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    private val _places = appDao.getActiveLabels(LabelType.PLACE.typeId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
     private val _filteredEvents = combine(
         _eventsForDisplay, _currentPerson, _currentPlace, _currentTags
-    ) { eventForDisplay, currentPerson, currentPlace, currentTags ->
-        eventForDisplay
+    ) { eventsForDisplay, currentPerson, currentPlace, currentTags ->
+        eventsForDisplay
             .filter { event4d ->
                 (if (currentPlace.name.isEmpty()) true else event4d.place?.name == currentPlace.name) &&
                         (if (currentPerson.name.isEmpty()) true else event4d.person?.name == currentPerson.name) &&
@@ -66,68 +57,44 @@ class EventFilterViewModel @Inject constructor(
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _usedPersons = combine(
-        _persons, _eventsForDisplay, _personSort
-    ) { persons, eventForDisplay, personSort ->
-        persons
-            .filter { person ->
-                person.name.isNotEmpty() &&
-                        eventForDisplay.map { it.person?.name }.contains(person.name)
-            }.distinctBy { it.name }
-            .sortedWith(
-                when (personSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _usedTags = _tagSort.flatMapLatest { sort ->
+        if (sort == LabelSort.NAME) appDao.getUsedTags(_sessionId.value)
+            .map { lst -> lst.sortedBy { it.name } }
+        else appDao.getUsedTags(_sessionId.value)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _usedPlaces = combine(
-        _places, _eventsForDisplay, _placeSort
-    ) { places, eventForDisplay, placeSort ->
-        places
-            .filter { place ->
-                place.name.isNotEmpty() &&
-                        eventForDisplay.map { it.place?.name }.contains(place.name)
-            }.distinctBy { it.name }
-            .sortedWith(
-                when (placeSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _usedPersons = _personSort.flatMapLatest { sort ->
+        if (sort == LabelSort.NAME) appDao.getUsedPersons(_sessionId.value)
+            .map { lst -> lst.sortedBy { it.name } }
+        else appDao.getUsedPersons(_sessionId.value)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    private val _usedTags = combine(
-        _tags, _eventsForDisplay, _tagSort
-    ) { tags, eventForDisplay, tagSort ->
-        tags
-            .filter { tag ->
-                tag.name.isNotEmpty() &&
-                        eventForDisplay.map { it.tag?.name }.contains(tag.name)
-            }.distinctBy { it.name }
-            .sortedWith(
-                when (tagSort) {
-                    LabelSort.COLOR -> compareBy { it.color.toColor().hue() }
-                    LabelSort.NAME -> compareBy(String.CASE_INSENSITIVE_ORDER) { it.name }
-                }
-            )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _usedPlaces = _placeSort.flatMapLatest { sort ->
+        if (sort == LabelSort.NAME) appDao.getUsedPlaces(_sessionId.value)
+            .map { lst -> lst.sortedBy { it.name } }
+        else appDao.getUsedPlaces(_sessionId.value)
+            .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _query = combine(
         _currentPerson, _currentPlace, _currentTags
     ) { currentPerson, currentPlace, currentTags ->
-        val ts = currentTags.toMutableList()
-        ts.add(currentPerson)
-        ts.add(currentPlace)
-        ts.filter { it.name.isNotEmpty() }.joinToString(", ")
+        val ts = currentTags.map{ it.name }.toMutableList()
+        ts.add(currentPerson.name)
+        ts.add(currentPlace.name)
+        ts.filter { it.isNotEmpty() }.joinToString(", ")
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
 
     val state = combine(
         _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTags
-    ) { state, events, tags, persons, places, query, currentPerson, currentPlace, currentTags ->
+    ) { state, filteredEvents, tags, persons, places, query, currentPerson, currentPlace, currentTags ->
         state.copy(
-            events = events,
+            filteredEvents = filteredEvents,
             tags = tags,
             persons = persons,
             places = places,
@@ -157,7 +124,7 @@ class EventFilterViewModel @Inject constructor(
                  compare it with the rest of the list to set the new duration
                 */
                 // TODO understand this
-                val maxInList = state.value.events
+                val maxInList = state.value.filteredEvents
                     .filter { it.event.id != action.event4d.event.id }
                     .maxOfOrNull { it.event.elapsedTimeMillis } ?: 0
                 val duration = maxOf(maxInList, action.event4d.event.elapsedTimeMillis)
