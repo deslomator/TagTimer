@@ -138,11 +138,12 @@ fun AppNavHost(
     }
 }
 
-@Composable
+// keep commented instead of deleting, it can be needed in the future
+/*@Composable
 inline fun <reified T : ViewModel> NavHostController.sharedViewModel(): T {
     val pbs = previousBackStackEntry
     return if (pbs != null) hiltViewModel<T>(pbs)
     else hiltViewModel()
-}
+}*/
 
 const val TAG = "AppNavHost"
