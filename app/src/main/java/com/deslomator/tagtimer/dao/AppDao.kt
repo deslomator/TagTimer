@@ -136,10 +136,10 @@ interface AppDao {
     @Delete
     suspend fun deletePreSelectedLabel(preSelectedLabel: Preselected)
 
-    @Query("SELECT name, color, in_trash, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    @Query("SELECT name, color, in_trash, archived, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
     fun getPreSelectedLabelsForSession(sessionId: Long, type: Int): Flow<List<Label>>
 
-    @Query("SELECT name, color, in_trash, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    @Query("SELECT name, color, in_trash, archived, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
     suspend fun getPreSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
 
     @Query("SELECT session_id, label_id FROM preselected WHERE session_id = :sessionId")
