@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -180,14 +181,15 @@ class ActiveSessionViewModel @Inject constructor(
             }
 
             is ActiveSessionAction.AcceptEventEditionClicked -> {
-                runBlocking {
-                    viewModelScope.launch { appDao.upsertEvent(action.event4d.event) }
-                }
-                _state.update {
-                    it.copy(
-                        showEventEditionDialog = false,
-                        eventForScrollTo = action.event4d
-                    )
+                viewModelScope.launch {
+                    val ev = action.event4d.event
+                    appDao.upsertEvent(ev)
+                    _state.update {
+                        it.copy(
+                            showEventEditionDialog = false,
+                            eventForScrollTo = action.event4d
+                        )
+                    }
                 }
             }
 

@@ -11,9 +11,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.LabelArchiveState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -51,7 +51,7 @@ fun EventEditionDialog(
         onDismiss = onDismiss,
         onAccept = {
             val e4d = event4d.copy(
-                event = Event(
+                event = event4d.event.copy(
                     elapsedTimeMillis = elapsed,
                     note = note.trim(),
                     color = color
@@ -60,6 +60,7 @@ fun EventEditionDialog(
             onAccept(e4d)
         },
         dialogState = DialogState.EDIT_NO_DELETE,
+        archiveState = LabelArchiveState.HIDDEN,
     ) {
         TimeNumberPicker(
             timeMillis = elapsed,
