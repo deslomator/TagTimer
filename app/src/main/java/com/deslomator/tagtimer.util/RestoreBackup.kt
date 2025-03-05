@@ -28,21 +28,25 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                 Log.e(TAG, "FromString(). Failed, backup class is empty")
                 result = Result.NothingToBackup
             } else { // do not erase anything if it's a labels only backup
-                Log.i(TAG, "FromString(). Inserting labels, nothing is deleted")
-                runBlocking {
-                    launch { appDao.upsertLabels(dbBackup.labels) }
-                    Log.i(TAG, "FromString() Restore of labels success")
-                    if (!dbBackup.isLabelsOnly()) {
-                        runBlocking {
-                            Log.i(TAG, "FromString() Deleting current data")
-                            appDao.deleteAllData()
-                            launch { appDao.upsertPreSelectedLabels(dbBackup.preselected) }
-                            launch {  appDao.upsertEvents(dbBackup.events) }
-                            launch { appDao.upsertSessions(dbBackup.sessions) }
-                            launch { appDao.upsertPreferences(dbBackup.prefs) }
-                        }
-                        Log.i(TAG, "FromString() Restore of full backup success")
+                if (dbBackup.isLabelsOnly()) {
+                    Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
+                    runBlocking {
+                        launch { appDao.upsertLabels(dbBackup.labels) }
                     }
+                    Log.i(TAG, "FromString() Restore of labels success")
+                } else {
+                    runBlocking {
+                        Log.i(TAG, "restoreBackup() Deleting current data")
+                        appDao.deleteAllData()
+                    }
+                    runBlocking {
+                        launch { appDao.upsertLabels(dbBackup.labels) }
+                        launch { appDao.upsertPreSelectedLabels(dbBackup.preselected) }
+                        launch {  appDao.upsertEvents(dbBackup.events) }
+                        launch { appDao.upsertSessions(dbBackup.sessions) }
+                        launch { appDao.upsertPreferences(dbBackup.prefs) }
+                    }
+                    Log.i(TAG, "restoreBackup() Restore of full backup success")
                 }
                 result = Result.Restored
             }

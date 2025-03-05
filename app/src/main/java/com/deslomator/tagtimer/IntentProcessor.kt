@@ -248,12 +248,17 @@ fun IntentProcessor(
     if (insertBackupIntoDb) {
         Log.e(TAG, "loadBackup() Inserting backup into DB")
         dbBackup?.let { backup ->
-            runBlocking { launch { appDao.upsertLabels(backup.labels) } }
-            Log.i(TAG, "FromString() Restore of labels success")
-            if (!backup.isLabelsOnly()) {
+            if (backup.isLabelsOnly()) {
+                Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
+                runBlocking { launch { appDao.upsertLabels(backup.labels) } }
+                Log.i(TAG, "FromString() Restore of labels success")
+            } else {
                 runBlocking {
                     Log.i(TAG, "FromString() Deleting current data")
                     appDao.deleteAllData()
+                }
+                runBlocking {
+                    launch { appDao.upsertLabels(backup.labels) }
                     launch { appDao.upsertPreSelectedLabels(backup.preselected) }
                     launch { appDao.upsertEvents(backup.events) }
                     launch { appDao.upsertSessions(backup.sessions) }

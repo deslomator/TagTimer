@@ -95,7 +95,7 @@ interface AppDao {
     suspend fun upsertLabel(label: Label)
 
     @Upsert
-    suspend fun upsertLabels(label: List<Label>)
+    suspend fun upsertLabels(labels: List<Label>)
 
     @Delete
     suspend fun deleteLabel(label: Label)
