@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -16,7 +15,6 @@ import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toCsv
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -28,11 +26,10 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ActiveSessionViewModel @Inject constructor(
-    private val appDao: AppDao, savedStateHandle: SavedStateHandle
+class ActiveSessionViewModel(
+    private val appDao: AppDao,
+    seshId: Long?,
 ) : ViewModel() {
 
     private val _sessionId = MutableStateFlow(0L)
@@ -286,7 +283,8 @@ class ActiveSessionViewModel @Inject constructor(
     }
 
     init {
-        val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
+
+        val sessionId = seshId ?: 0L
         _sessionId.update { sessionId }
         viewModelScope.launch {
             _state.update {

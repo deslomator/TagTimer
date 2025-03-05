@@ -7,15 +7,14 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
+import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.getSort
 import com.deslomator.tagtimer.util.toColor
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -25,10 +24,8 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class LabelsTabViewModel @Inject constructor(
+class LabelsTabViewModel(
     private val appDao: AppDao,
 ) : ViewModel() {
 
@@ -187,7 +184,6 @@ class LabelsTabViewModel @Inject constructor(
             }
         }
     }
-
 
     companion object {
         private const val TAG = "LabelsTabViewModel"

@@ -14,21 +14,26 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.di.AppModule
+import com.deslomator.tagtimer.di.AppModuleImpl
 import com.deslomator.tagtimer.navigation.AppNavHost
 import com.deslomator.tagtimer.ui.theme.TagTimerTheme
-import dagger.hilt.android.AndroidEntryPoint
-import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
-@HiltAndroidApp
-class TagTimerApp: Application()
+class TagTimerApp: Application() {
+    companion object {
+        lateinit var appModule: AppModule
+    }
+    override fun onCreate() {
+        super.onCreate()
+        appModule = AppModuleImpl(this)
+    }
+}
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    @Inject lateinit var appDao: AppDao
+    val appDao: AppDao = TagTimerApp.appModule.appDao
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -22,8 +22,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@HiltViewModel
-class SessionsTabViewModel @Inject constructor(
+class SessionsTabViewModel(
     private val appDao: AppDao,
 ) : ViewModel() {
 
@@ -128,7 +127,6 @@ class SessionsTabViewModel @Inject constructor(
             }
         }
     }
-
 
     companion object {
         private const val TAG = "SessionsScreenViewModel"

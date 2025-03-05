@@ -15,8 +15,6 @@ import com.deslomator.tagtimer.model.type.FileItemButton
 import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.util.restoreBackup
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -37,11 +35,9 @@ import java.io.FileOutputStream
 import java.io.FileReader
 import java.util.Date
 import java.util.Locale
-import javax.inject.Inject
 
-@HiltViewModel
-class BackupViewModel @Inject constructor(
-    @ApplicationContext context: Context,
+class BackupViewModel(
+    context: Context,
     private val appDao: AppDao,
 ) : ViewModel() {
 

@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelPreselectionAction
@@ -17,7 +16,6 @@ import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.getSort
 import com.deslomator.tagtimer.util.toColor
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,11 +26,10 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class LabelSelectionViewModel @Inject constructor(
-    private val appDao: AppDao, savedStateHandle: SavedStateHandle
+class LabelSelectionViewModel(
+    private val appDao: AppDao,
+    seshId: Long?
 ): ViewModel() {
 
     private val _sessionId = MutableStateFlow(0L)
@@ -290,7 +287,7 @@ class LabelSelectionViewModel @Inject constructor(
     }
 
     init {
-        val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
+        val sessionId = seshId ?: 0
         _sessionId.update { sessionId }
         viewModelScope.launch {
             _state.update {

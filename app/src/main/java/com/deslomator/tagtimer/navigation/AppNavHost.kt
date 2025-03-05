@@ -1,13 +1,16 @@
 package com.deslomator.tagtimer.navigation
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.deslomator.tagtimer.TagTimerApp
 import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
 import com.deslomator.tagtimer.navigation.screen.BackupScreen
 import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
@@ -32,6 +35,7 @@ import com.deslomator.tagtimer.viewmodel.LabelSelectionViewModel
 import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
+import com.deslomator.tagtimer.viewmodel.viewModelFactory
 
 @Composable
 fun AppNavHost(
@@ -43,8 +47,12 @@ fun AppNavHost(
         navController = navController,
         startDestination = SessionsTabScreen,
     ) {
-        composable<SessionsTabScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<SessionsTabViewModel>(backStackEntry)
+        composable<SessionsTabScreen> {
+            val viewModel = viewModel<SessionsTabViewModel>(
+                factory = viewModelFactory {
+                    SessionsTabViewModel(TagTimerApp.appModule.appDao)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             SessionsTabScaffold(
                 state = state,
@@ -52,8 +60,12 @@ fun AppNavHost(
                 navController = navController,
             )
         }
-        composable<LabelsTabScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<LabelsTabViewModel>(backStackEntry)
+        composable<LabelsTabScreen> {
+            val viewModel = viewModel<LabelsTabViewModel>(
+                factory = viewModelFactory {
+                    LabelsTabViewModel(TagTimerApp.appModule.appDao)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             LabelsScaffold(
                 state = state,
@@ -62,7 +74,12 @@ fun AppNavHost(
             )
         }
         composable<TrashTabScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<TrashTabViewModel>(backStackEntry)
+            val screen: TrashTabScreen = backStackEntry.toRoute()
+            val viewModel = viewModel<TrashTabViewModel>(
+                factory = viewModelFactory {
+                    TrashTabViewModel(TagTimerApp.appModule.appDao, screen.sessionId)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             TrashTabScaffold(
                 state = state,
@@ -71,7 +88,13 @@ fun AppNavHost(
             )
         }
         composable<ActiveSessionScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
+            Log.d(TAG, "From NavHost. savedStateHandle keys: ${backStackEntry.savedStateHandle.keys()}")
+            val screen: ActiveSessionScreen = backStackEntry.toRoute()
+            val viewModel = viewModel<ActiveSessionViewModel>(
+                factory = viewModelFactory {
+                    ActiveSessionViewModel(TagTimerApp.appModule.appDao, screen.sessionId)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             ActiveSessionScaffold(
                 navController = navController,
@@ -80,7 +103,12 @@ fun AppNavHost(
             )
         }
         composable<LabelSelectionScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<LabelSelectionViewModel>(backStackEntry)
+            val screen: LabelSelectionScreen = backStackEntry.toRoute()
+            val viewModel = viewModel<LabelSelectionViewModel>(
+                factory = viewModelFactory {
+                    LabelSelectionViewModel(TagTimerApp.appModule.appDao, screen.sessionId)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             LabelSelectionScaffold(
                 navController = navController,
@@ -89,7 +117,12 @@ fun AppNavHost(
             )
         }
         composable<EventFilterScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<EventFilterViewModel>(backStackEntry)
+            val screen: EventFilterScreen = backStackEntry.toRoute()
+            val viewModel = viewModel<EventFilterViewModel>(
+                factory = viewModelFactory {
+                    EventFilterViewModel(TagTimerApp.appModule.appDao, screen.sessionId)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             EventFilterScaffold(
                 navController = navController,
@@ -98,7 +131,12 @@ fun AppNavHost(
             )
         }
         composable<EventTrashScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
+            val screen: EventTrashScreen = backStackEntry.toRoute()
+            val viewModel = viewModel<EventTrashViewModel>(
+                factory = viewModelFactory {
+                    EventTrashViewModel(TagTimerApp.appModule.appDao, screen.sessionId)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             EventTrashScaffold(
                 navController = navController,
@@ -106,8 +144,12 @@ fun AppNavHost(
                 onAction = viewModel::onAction,
             )
         }
-        composable<BackupScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<BackupViewModel>(backStackEntry)
+        composable<BackupScreen> {
+            val viewModel = viewModel<BackupViewModel>(
+                factory = viewModelFactory {
+                    BackupViewModel(TagTimerApp.appModule.appContext, TagTimerApp.appModule.appDao)
+                }
+            )
             val state by viewModel.state.collectAsStateWithLifecycle()
             BackupScaffold(
                 navController = navController,

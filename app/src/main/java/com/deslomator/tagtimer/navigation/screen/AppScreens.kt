@@ -45,7 +45,6 @@ data class TrashTabScreen(
     val sessionId: Long?
 )
 
-
 @Serializable
 object BackupScreen
 
