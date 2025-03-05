@@ -40,12 +40,6 @@ fun SessionsTabScaffold(
                 snackbarHostState = snackbarHostState
             )
         },
-        bottomBar = {
-            BottomNavigationBar(
-                navController = navController,
-                selected = MyBottomScreens.SESSIONS,
-            )
-        }
     )
 }
 
