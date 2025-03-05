@@ -5,8 +5,6 @@
     <string name="cancel">Cancelar</string>
     <string name="accept">Aceptar</string>
     <string name="new_session">Nueva Sesión</string>
-    <string name="name">Nombre</string>
-    <string name="color">Color</string>
     <string name="manage_tags">Gestionar Etiquetas</string>
     <string name="session_sent_to_trash">Sesión enviada a la papelera</string>
     <string name="sessions_trash">Sesiones Eliminadas</string>
@@ -66,10 +64,14 @@
     <string name="place_checked">Lugar seleccionado</string>
     <string name="place_unchecked">Lugar no seleccionado</string>
     <string name="populate_db">datos de ejemplo</string>
+    <string name="events">Eventos</string>
     <string name="event_trash">Eventos eliminados</string>
     <string name="share_session">Compartir Sesión</string>
     <string name="show_archived">mostrar archivadas</string>
     <string name="tap_to_select_unselect">Toca para seleccionar, pulsación larga para editar</string>
+    <string name="sort">Ordenar</string>
+    <string name="color">color</string>
+    <string name="name">nombre</string>
     <string name="sort_by_name">ordenar por nombre</string>
     <string name="sort_by_color">ordenar por color</string>
     <string name="sort_by_session_date">Ordenar por fecha</string>

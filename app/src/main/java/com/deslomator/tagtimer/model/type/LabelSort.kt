@@ -10,6 +10,6 @@ import com.deslomator.tagtimer.model.COLUMN_LABEL_NAME
  */
 @Keep
 enum class LabelSort(val stringId: Int, val sortId: String) {
-    COLOR(R.string.sort_by_color, COLUMN_LABEL_COLOR),
-    NAME(R.string.sort_by_name, COLUMN_LABEL_NAME)
+    COLOR(R.string.color, COLUMN_LABEL_COLOR),
+    NAME(R.string.name, COLUMN_LABEL_NAME)
 }

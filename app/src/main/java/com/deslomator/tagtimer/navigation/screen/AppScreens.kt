@@ -15,13 +15,35 @@ enum class MyBottomScreens(
 }
 
 @Serializable
+enum class MyTopScreens(
+    val stringId: Int,
+    val iconId: Int,
+) {
+    ACTIVE(R.string.session, R.drawable.document_and_ray),
+    LABELS(R.string.labels, R.drawable.tag),
+    FILTER(R.string.filter_events, R.drawable.filter),
+    TRASH(R.string.trash, R.drawable.delete);
+
+    fun getRoute(sessionId: Long?): Any {
+        return when (this) {
+            ACTIVE -> ActiveSessionScreen(sessionId = sessionId)
+            LABELS -> LabelSelectionScreen(sessionId = sessionId)
+            FILTER -> EventFilterScreen(sessionId = sessionId)
+            TRASH -> TrashTabScreen(sessionId = sessionId)
+        }
+    }
+}
+
+@Serializable
 object SessionsTabScreen
 
 @Serializable
 object LabelsTabScreen
 
 @Serializable
-object TrashTabScreen
+data class TrashTabScreen(
+    val sessionId: Long?
+)
 
 
 @Serializable

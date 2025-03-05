@@ -60,9 +60,10 @@ fun LabelSelectionContent(
     ) {
         Column {
             TabRow(
+                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
                 containerColor = MaterialTheme.colorScheme.background,
                 selectedTabIndex = pagerState.currentPage,
-                divider = { HorizontalDivider() },
+                divider = { },
                 indicator = { tabPositions ->
                     TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
                 }
@@ -84,6 +85,7 @@ fun LabelSelectionContent(
                     }
                 }
             }
+            HorizontalDivider()
             HorizontalPager(
                 modifier = Modifier.weight(1F),
                 state = pagerState,

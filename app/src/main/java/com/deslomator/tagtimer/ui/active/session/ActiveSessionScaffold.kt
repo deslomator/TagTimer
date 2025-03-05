@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.active.session
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -13,11 +14,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
-import com.deslomator.tagtimer.navigation.screen.EventTrashScreen
-import com.deslomator.tagtimer.navigation.screen.LabelSelectionScreen
+import com.deslomator.tagtimer.navigation.screen.MyTopScreens
 import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
+import com.deslomator.tagtimer.ui.active.TopNavigationBar
 
 @Composable
 fun ActiveSessionScaffold(
@@ -52,47 +52,13 @@ fun ActiveSessionScaffold(
     }
     Scaffold(
         topBar = {
-            ActiveSessionTopBar(
-                state = state,
-                onBackClicked = {
-                    if (state.showEventEditionDialog) {
-                        onAction(ActiveSessionAction.DismissEventEditionDialog)
-                    } else if (state.showTimeDialog) {
-                        onAction(ActiveSessionAction.DismissTimeDialog)
-                    } else {
-                        onAction(ActiveSessionAction.ExitSession)
-                        navController.navigate(SessionsTabScreen) {
-                            popUpTo(SessionsTabScreen) {
-                                inclusive = false
-                            }
-                        }
-                    }
-                },
-                onShareSessionClick = {
-                    fileName = state.currentSession.name
-                    onAction(ActiveSessionAction.ShareSessionClicked)
-                },
-                onAddLabelClick = {
-                    onAction(ActiveSessionAction.ExitSession)
-                    navController.navigate(
-                        LabelSelectionScreen(
-                            sessionId = state.currentSession.id
-                        )
-                    )
-                },
-                onEventTrashClick = {
-                    onAction(ActiveSessionAction.ExitSession)
-                    navController.navigate(
-                        EventTrashScreen(sessionId = state.currentSession.id)
-                    )
-                },
-                onFilterClick = {
-                    onAction(ActiveSessionAction.ExitSession)
-                    navController.navigate(
-                        EventFilterScreen(sessionId = state.currentSession.id)
-                    )
-                },
-            )
+            Column {
+                TopNavigationBar(
+                    sessionId = state.currentSession.id?: 0L,
+                    navController = navController,
+                    selected = MyTopScreens.ACTIVE
+                )
+            }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->

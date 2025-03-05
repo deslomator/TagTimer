@@ -43,33 +43,30 @@ fun AppNavHost(
         navController = navController,
         startDestination = SessionsTabScreen,
     ) {
-        composable<SessionsTabScreen> { stackEntry ->
-            val viewModel = hiltViewModel<SessionsTabViewModel>(stackEntry)
+        composable<SessionsTabScreen> { backStackEntry ->
+            val viewModel = hiltViewModel<SessionsTabViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
-            val onAction = viewModel::onAction
             SessionsTabScaffold(
                 state = state,
-                onAction = onAction,
+                onAction = viewModel::onAction,
                 navController = navController,
             )
         }
-        composable<LabelsTabScreen> { stackEntry ->
-            val viewModel = hiltViewModel<LabelsTabViewModel>(stackEntry)
+        composable<LabelsTabScreen> { backStackEntry ->
+            val viewModel = hiltViewModel<LabelsTabViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
-            val onAction = viewModel::onAction
             LabelsScaffold(
                 state = state,
-                onAction = onAction,
+                onAction = viewModel::onAction,
                 navController = navController,
             )
         }
-        composable<TrashTabScreen> { stackEntry ->
-            val viewModel = hiltViewModel<TrashTabViewModel>(stackEntry)
+        composable<TrashTabScreen> { backStackEntry ->
+            val viewModel = hiltViewModel<TrashTabViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
-            val onAction = viewModel::onAction
             TrashTabScaffold(
                 state = state,
-                onAction = onAction,
+                onAction = viewModel::onAction,
                 navController = navController,
             )
         }
@@ -77,9 +74,18 @@ fun AppNavHost(
             val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             ActiveSessionScaffold(
+                navController = navController,
                 state = state,
                 onAction = viewModel::onAction,
+            )
+        }
+        composable<LabelSelectionScreen> { backStackEntry ->
+            val viewModel = hiltViewModel<LabelSelectionViewModel>(backStackEntry)
+            val state by viewModel.state.collectAsStateWithLifecycle()
+            LabelSelectionScaffold(
                 navController = navController,
+                state = state,
+                onAction = viewModel::onAction,
             )
         }
         composable<EventFilterScreen> { backStackEntry ->
@@ -95,15 +101,6 @@ fun AppNavHost(
             val viewModel = hiltViewModel<EventTrashViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             EventTrashScaffold(
-                navController = navController,
-                state = state,
-                onAction = viewModel::onAction,
-            )
-        }
-        composable<LabelSelectionScreen> { backStackEntry ->
-            val viewModel = hiltViewModel<LabelSelectionViewModel>(backStackEntry)
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            LabelSelectionScaffold(
                 navController = navController,
                 state = state,
                 onAction = viewModel::onAction,

@@ -1,24 +1,37 @@
 package com.deslomator.tagtimer.viewmodel
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.state.TrashTabState
+import com.deslomator.tagtimer.util.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class TrashTabViewModel @Inject constructor(
-    private val appDao: AppDao,
+    private val appDao: AppDao, savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
+    private val _sessionId = MutableStateFlow(0L)
     private val _state = MutableStateFlow(TrashTabState())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _trashedEvents = _sessionId
+        .flatMapLatest {
+            appDao.getTrashedEventsForDisplay(_sessionId.value)
+        }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     private val _sessions = appDao.getTrashedSessions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -31,9 +44,11 @@ class TrashTabViewModel @Inject constructor(
     private val _tags = appDao.getTrashedTags()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val state = combine(_state, _sessions, _tags, _persons, _places) { state, sessions, tags, persons, places ->
+    val state = combine(_state, _trashedEvents, _sessions, _tags, _persons, _places) {
+        state, trashedEvents, sessions, tags, persons, places ->
         state.copy(
             sessions = sessions,
+            trashedEvents = trashedEvents,
             tags = tags,
             persons = persons,
             places = places
@@ -42,7 +57,9 @@ class TrashTabViewModel @Inject constructor(
 
     fun onAction(action: TrashTabAction) {
         when(action) {
-
+            /*
+            SESSION
+             */
             is TrashTabAction.DeleteSessionClicked -> {
                 viewModelScope.launch { appDao.purgeSession(action.session) }
             }
@@ -52,7 +69,9 @@ class TrashTabViewModel @Inject constructor(
                     appDao.upsertSession(trashed)
                 }
             }
-
+            /*
+            LABEL
+             */
             is TrashTabAction.DeleteLabelClicked -> {
                 viewModelScope.launch {
                     appDao.deleteLabel(action.tag)
@@ -63,6 +82,37 @@ class TrashTabViewModel @Inject constructor(
                     val trashed = action.tag.copy(inTrash = false)
                     appDao.upsertLabel(trashed)
                 }
+            }
+            /*
+            EVENT
+             */
+            is TrashTabAction.DeleteEventClicked -> {
+                viewModelScope.launch { appDao.deleteEvent(action.event4d.event) }
+            }
+            is TrashTabAction.RestoreEventClicked -> {
+                viewModelScope.launch {
+                    val e = action.event4d.event.copy(inTrash = false)
+                    appDao.upsertEvent(e) }
+            }
+            is TrashTabAction.EventInTrashClicked -> {
+                _state.update { it.copy(
+                    eventForDialog = action.event,
+                    showEventInTrashDialog = true
+                ) }
+            }
+
+            is TrashTabAction.DismissEventInTrashDialog -> {
+                _state.update { it.copy(showEventInTrashDialog = false) }
+            }
+        }
+    }
+
+    init {
+        val sessionId = savedStateHandle.get<Long>("sessionId") ?: 0
+        _sessionId.update { sessionId }
+        viewModelScope.launch {
+            _state.update {
+                it.copy(currentSession = appDao.getSession(sessionId))
             }
         }
     }

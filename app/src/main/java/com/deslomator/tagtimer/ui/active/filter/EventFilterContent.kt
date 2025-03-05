@@ -41,7 +41,8 @@ fun EventFilterContent(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues),
+            .padding(paddingValues)
+            .padding(top = 10.dp),
     ) {
         Column {
             PreSelectedLabelsList(

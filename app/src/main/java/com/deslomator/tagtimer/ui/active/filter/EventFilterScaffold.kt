@@ -1,12 +1,15 @@
 package com.deslomator.tagtimer.ui.active.filter
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.EventFilterAction
+import com.deslomator.tagtimer.navigation.screen.MyTopScreens
 import com.deslomator.tagtimer.state.EventFilterState
+import com.deslomator.tagtimer.ui.active.TopNavigationBar
 
 @Composable
 fun EventFilterScaffold(
@@ -32,16 +35,23 @@ fun EventFilterScaffold(
     }
     Scaffold(
         topBar = {
-            EventFilterTopBar(
-                title = state.currentSession.name,
-                onBackClicked = {
-                    navController.navigateUp()
-                },
-                onShareFilteredEventsClick = {
-                    onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
-                },
-                totalEvents = state.filteredEvents.size
-            )
+            Column {
+                TopNavigationBar(
+                    sessionId = state.currentSession.id ?: 0L,
+                    navController = navController,
+                    selected = MyTopScreens.FILTER
+                )
+                EventFilterTopBar(
+                    title = state.currentSession.name,
+                    onBackClicked = {
+                        navController.navigateUp()
+                    },
+                    onShareFilteredEventsClick = {
+                        onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
+                    },
+                    totalEvents = state.filteredEvents.size
+                )
+            }
         },
     ) { paddingValues ->
         EventFilterContent(

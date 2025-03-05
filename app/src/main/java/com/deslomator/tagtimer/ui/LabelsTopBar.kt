@@ -1,7 +1,13 @@
 package com.deslomator.tagtimer.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -17,21 +23,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
-import com.deslomator.tagtimer.ui.theme.topBarColors
+import com.deslomator.tagtimer.ui.theme.largeTopBarColors
 import kotlin.enums.EnumEntries
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LabelsTopBar(
-    title: String,
-    onBackClicked: (() -> Unit)?,
     pages: EnumEntries<LabelType>,
     currentPage: Int,
     onAddLabelClick: (LabelType) -> Unit,
@@ -45,60 +50,78 @@ fun LabelsTopBar(
     showArchived: Boolean,
     onShowArchivedChanged: (Boolean) -> Unit,
 ) {
-    TopAppBar(
-        navigationIcon = {
-            onBackClicked?.let {
-                IconButton(
-                    onClick = it
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.arrow_back),
-                        contentDescription = "navigate back"
-                    )
-                }
-            }
-        },
-        title = {
-            Text(
-                text = title,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
-        actions = {
-            if (dialogState == DialogState.HIDDEN) {
-                AnimatedContent(pages[currentPage]) { current ->
-                    Row {
-                        IconButton(
-                            onClick = { onAddLabelClick(current) }
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        TopAppBar(
+            modifier = Modifier.height(80.dp),
+            actions = {
+                if (dialogState == DialogState.HIDDEN) {
+                    AnimatedContent(pages[currentPage]) { current ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround
                         ) {
-                            Icon(
-                                painter = painterResource(current.addIconId),
-                                contentDescription = stringResource(id = current.addStringId)
-                            )
-                        }
-                        SortMenu(
-                            currentSort = when (current) {
-                                LabelType.TAG -> tagSort
-                                LabelType.PERSON -> personSort
-                                LabelType.PLACE -> placeSort
-                            },
-                            onItemClick = {
-                                when (current) {
-                                    LabelType.TAG -> onTagSort(it)
-                                    LabelType.PERSON -> onPersonSort(it)
-                                    LabelType.PLACE -> onPlaceSort(it)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    painter = painterResource(R.drawable.sort),
+                                    contentDescription = null
+                                )
+                                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                    LabelSort.entries.forEach {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            RadioButton(
+                                                selected =
+                                                    it == when (current) {
+                                                        LabelType.TAG -> tagSort
+                                                        LabelType.PERSON -> personSort
+                                                        LabelType.PLACE -> placeSort
+                                                    },
+                                                onClick = {
+                                                    when (current) {
+                                                        LabelType.TAG -> onTagSort(it)
+                                                        LabelType.PERSON -> onPersonSort(it)
+                                                        LabelType.PLACE -> onPlaceSort(it)
+                                                    }
+                                                }
+                                            )
+                                            Text(text = stringResource(it.stringId))
+                                        }
+                                    }
                                 }
-                            },
-                            showArchived = showArchived,
-                            onShowArchivedChanged = { onShowArchivedChanged(it) }
-                        )
+                            }
+                            Column(
+                                modifier = Modifier.fillMaxHeight(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.SpaceAround
+                            ) {
+                                Text(text = stringResource(R.string.show_archived))
+                                Checkbox(
+                                    checked = showArchived,
+                                    onCheckedChange = {
+                                        onShowArchivedChanged(it)
+                                    }
+                                )
+                            }
+                            IconButton(
+                                onClick = { onAddLabelClick(current) }
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(40.dp),
+                                    painter = painterResource(current.addIconId),
+                                    contentDescription = stringResource(id = current.addStringId)
+                                )
+                            }
+                        }
                     }
                 }
-            }
-        },
-        colors = topBarColors()
-    )
+            },
+            colors = largeTopBarColors(),
+            title = {},
+        )
+    }
 }
 
 @Composable

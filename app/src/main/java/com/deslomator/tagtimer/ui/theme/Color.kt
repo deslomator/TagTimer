@@ -75,7 +75,17 @@ val colorPickerColors: List<Color> = listOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun topBarColors() = TopAppBarDefaults.topAppBarColors(
-    containerColor = MaterialTheme.colorScheme.background,
+    containerColor = MaterialTheme.colorScheme.primaryContainer,
+    navigationIconContentColor = MaterialTheme.colorScheme.primary,
+    titleContentColor = MaterialTheme.colorScheme.primary,
+    actionIconContentColor = MaterialTheme.colorScheme.primary,
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun largeTopBarColors() = TopAppBarDefaults.topAppBarColors(
+    containerColor = MaterialTheme.colorScheme.primaryContainer,
+    scrolledContainerColor = MaterialTheme.colorScheme.background,
     navigationIconContentColor = MaterialTheme.colorScheme.primary,
     titleContentColor = MaterialTheme.colorScheme.primary,
     actionIconContentColor = MaterialTheme.colorScheme.primary,
@@ -201,7 +211,7 @@ fun Colors() {
 
 val md_theme_light_primary = Color(0xFF056D37)
 val md_theme_light_onPrimary = Color(0xFFFFFFFF)
-val md_theme_light_primaryContainer = Color(0xFF9CF6B1)
+val md_theme_light_primaryContainer = Color(0xFFBBD063)
 val md_theme_light_onPrimaryContainer = Color(0xFF00210C)
 val md_theme_light_secondary = Color(0xFF506352)
 val md_theme_light_onSecondary = Color(0xFFFFFFFF)

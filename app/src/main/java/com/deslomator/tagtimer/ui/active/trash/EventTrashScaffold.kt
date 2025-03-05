@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.trash
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -7,7 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.EventTrashAction
+import com.deslomator.tagtimer.navigation.screen.MyTopScreens
 import com.deslomator.tagtimer.state.EventTrashState
+import com.deslomator.tagtimer.ui.active.TopNavigationBar
 
 @Composable
 fun EventTrashScaffold(
@@ -18,16 +21,13 @@ fun EventTrashScaffold(
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
-            EventTrashTopBar(
-                title = state.currentSession.name,
-                onBackClicked = {
-                    if (state.showEventInTrashDialog) {
-                        onAction(EventTrashAction.DismissEventInTrashDialog)
-                    } else {
-                        navController.navigateUp()
-                    }
-                },
-            )
+            Column {
+                TopNavigationBar(
+                    sessionId = state.currentSession.id ?: 0L,
+                    navController = navController,
+                    selected = MyTopScreens.TRASH
+                )
+            }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
     ) { paddingValues ->

@@ -5,8 +5,6 @@
     <string name="cancel">Cancel</string>
     <string name="accept">Accept</string>
     <string name="new_session">New Session</string>
-    <string name="name">Name</string>
-    <string name="color">Color</string>
     <string name="manage_tags">Manage Tags</string>
     <string name="session_sent_to_trash">Session sent to trash</string>
     <string name="sessions_trash">Sessions Trash</string>
@@ -68,10 +66,14 @@
     <string name="place_unchecked">Place unchecked</string>
     <string name="populate_db">populate DB</string>
     <string name="event_trash">Event Trash</string>
+    <string name="events">Events</string>
     <string name="share_session">Share Session</string>
     <string name="show_archived">show archived</string>
     <string name="tap_to_select_unselect">Tap to select, Long press to edit label</string>
     <string name="sort_by_name">sort by name</string>
+    <string name="sort">Sort</string>
+    <string name="color">color</string>
+    <string name="name">name</string>
     <string name="sort_by_color">sort by color</string>
     <string name="sort_by_session_date">Sort by session date</string>
     <string name="sort_by_session_name">Sort by session name</string>

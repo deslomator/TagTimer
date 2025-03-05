@@ -59,7 +59,8 @@ class EventTrashViewModel @Inject constructor(
                     showEventInTrashDialog = true
                 ) }
             }
-            EventTrashAction.DismissEventInTrashDialog -> {
+
+            is EventTrashAction.DismissEventInTrashDialog -> {
                 _state.update { it.copy(showEventInTrashDialog = false) }
             }
         }

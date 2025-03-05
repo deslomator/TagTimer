@@ -26,8 +26,6 @@ fun LabelsScaffold(
     Scaffold(
         topBar = {
             LabelsTopBar(
-                title = "",
-                onBackClicked = null,
                 pages = pages,
                 currentPage = pagerState.currentPage,
                 dialogState = state.dialogState,

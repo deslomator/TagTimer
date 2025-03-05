@@ -38,7 +38,7 @@ fun TrashTabContent(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val pages = remember { listOf(Trash.Session, Trash.Tag, Trash.Person, Trash.Place) }
+    val pages = remember { listOf(Trash.Event, Trash.Session, Trash.Tag, Trash.Person, Trash.Place) }
     val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     Box(
         modifier = Modifier
@@ -47,9 +47,10 @@ fun TrashTabContent(
     ) {
         Column {
             TabRow(
+                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
                 containerColor = MaterialTheme.colorScheme.background,
                 selectedTabIndex = pagerState.currentPage,
-                divider = { HorizontalDivider() },
+                divider = { },
                 indicator = { tabPositions ->
                     TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
                 }
@@ -75,6 +76,9 @@ fun TrashTabContent(
                 beyondViewportPageCount = 1
             ) { page ->
                 when (pages[page]) {
+                    Trash.Event -> {
+                        EventTrash(state, scope, snackbarHostState, context, onAction)
+                    }
                     Trash.Session -> {
                         SessionTrash(state, onAction, scope, snackbarHostState, context)
                     }
@@ -149,5 +153,4 @@ fun TrashTabContent(
         }
     }
 }
-
 
