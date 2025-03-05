@@ -8,14 +8,15 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.navigation.screen.BackupScreen
+import com.deslomator.tagtimer.navigation.screen.MyBottomScreens
 import com.deslomator.tagtimer.state.SessionsTabState
+import com.deslomator.tagtimer.ui.main.BottomNavigationBar
 
 @Composable
 fun SessionsTabScaffold(
-    navController: NavHostController,
     state: SessionsTabState,
     onAction: (SessionsTabAction) -> Unit,
-    bottomBar: @Composable () -> Unit
+    navController: NavHostController,
 ) {
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -39,7 +40,12 @@ fun SessionsTabScaffold(
                 snackbarHostState = snackbarHostState
             )
         },
-        bottomBar = bottomBar
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                selected = MyBottomScreens.SESSIONS,
+            )
+        }
     )
 }
 

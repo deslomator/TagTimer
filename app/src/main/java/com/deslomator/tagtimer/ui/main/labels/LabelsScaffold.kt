@@ -6,16 +6,19 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.LabelsTabAction
 import com.deslomator.tagtimer.model.type.LabelType
+import com.deslomator.tagtimer.navigation.screen.MyBottomScreens
 import com.deslomator.tagtimer.state.LabelsTabState
 import com.deslomator.tagtimer.ui.LabelsTopBar
+import com.deslomator.tagtimer.ui.main.BottomNavigationBar
 
 @Composable
 fun LabelsScaffold(
     state: LabelsTabState,
     onAction: (LabelsTabAction) -> Unit,
-    bottomBar: @Composable () -> Unit
+    navController: NavHostController
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val pages = remember { LabelType.entries }
@@ -51,7 +54,12 @@ fun LabelsScaffold(
                 showArchived = state.showArchived,
             )
         },
-        bottomBar = bottomBar
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                selected = MyBottomScreens.LABELS,
+            )
+        }
     )
 }
 

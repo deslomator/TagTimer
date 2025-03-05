@@ -14,7 +14,6 @@ import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
 import com.deslomator.tagtimer.navigation.screen.EventTrashScreen
 import com.deslomator.tagtimer.navigation.screen.LabelSelectionScreen
 import com.deslomator.tagtimer.navigation.screen.LabelsTabScreen
-import com.deslomator.tagtimer.navigation.screen.MyBottomScreens
 import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
 import com.deslomator.tagtimer.navigation.screen.TrashTabScreen
 import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
@@ -22,7 +21,6 @@ import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.active.trash.EventTrashScaffold
 import com.deslomator.tagtimer.ui.backup.BackupScaffold
-import com.deslomator.tagtimer.ui.main.BottomNavigationBar
 import com.deslomator.tagtimer.ui.main.labels.LabelsScaffold
 import com.deslomator.tagtimer.ui.main.sessions.SessionsTabScaffold
 import com.deslomator.tagtimer.ui.main.trash.TrashTabScaffold
@@ -50,15 +48,10 @@ fun AppNavHost(
             val state by viewModel.state.collectAsStateWithLifecycle()
             val onAction = viewModel::onAction
             SessionsTabScaffold(
-                navController = navController,
                 state = state,
                 onAction = onAction,
-            ) {
-                BottomNavigationBar(
-                    navController = navController,
-                    selected = MyBottomScreens.SESSIONS,
-                )
-            }
+                navController = navController,
+            )
         }
         composable<LabelsTabScreen> { stackEntry ->
             val viewModel = hiltViewModel<LabelsTabViewModel>(stackEntry)
@@ -67,12 +60,8 @@ fun AppNavHost(
             LabelsScaffold(
                 state = state,
                 onAction = onAction,
-            ) {
-                BottomNavigationBar(
-                    navController = navController,
-                    selected = MyBottomScreens.LABELS,
-                )
-            }
+                navController = navController,
+            )
         }
         composable<TrashTabScreen> { stackEntry ->
             val viewModel = hiltViewModel<TrashTabViewModel>(stackEntry)
@@ -81,20 +70,16 @@ fun AppNavHost(
             TrashTabScaffold(
                 state = state,
                 onAction = onAction,
-            ) {
-                BottomNavigationBar(
-                    navController = navController,
-                    selected = MyBottomScreens.TRASH,
-                )
-            }
+                navController = navController,
+            )
         }
         composable<ActiveSessionScreen> { backStackEntry ->
             val viewModel = hiltViewModel<ActiveSessionViewModel>(backStackEntry)
             val state by viewModel.state.collectAsStateWithLifecycle()
             ActiveSessionScaffold(
-                navController = navController,
                 state = state,
                 onAction = viewModel::onAction,
+                navController = navController,
             )
         }
         composable<EventFilterScreen> { backStackEntry ->

@@ -5,14 +5,17 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.TrashTabAction
+import com.deslomator.tagtimer.navigation.screen.MyBottomScreens
 import com.deslomator.tagtimer.state.TrashTabState
+import com.deslomator.tagtimer.ui.main.BottomNavigationBar
 
 @Composable
 fun TrashTabScaffold(
     state: TrashTabState,
     onAction: (TrashTabAction) -> Unit,
-    bottomBar: @Composable () -> Unit
+    navController: NavHostController
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
@@ -28,7 +31,12 @@ fun TrashTabScaffold(
                 snackbarHostState = snackbarHostState
             )
         },
-        bottomBar = bottomBar
+        bottomBar = {
+            BottomNavigationBar(
+                navController = navController,
+                selected = MyBottomScreens.TRASH,
+            )
+        }
     )
 }
 
