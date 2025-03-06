@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
 import kotlinx.serialization.SerialName
@@ -43,13 +44,15 @@ data class Session(
     @ColumnInfo(name = "start_timestamp_millis")
     val startTimestampMillis: Long = -1,
 
-    @SerialName("in_trash")
+   /* @SerialName("in_trash")
     @ColumnInfo(name = "in_trash")
-    val inTrash: Boolean = false,
+    val inTrash: Boolean = false,*/
 
     @SerialName("running")
     @ColumnInfo(name = "running")
     val running: Boolean = false,
+
+    val state: ItemState = ItemState.ENABLED,
 
     @PrimaryKey(autoGenerate = true)
     val id: Long? = null,

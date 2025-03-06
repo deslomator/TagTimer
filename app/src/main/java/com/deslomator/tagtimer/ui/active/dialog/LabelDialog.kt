@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.LabelArchiveState
+import com.deslomator.tagtimer.model.type.DialogArchiveState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -28,7 +28,7 @@ fun LabelDialog(
     onDismiss: () -> Unit,
     onAccept: (Label) -> Unit,
     onTrash: (Label) -> Unit,
-    archiveState: LabelArchiveState,
+    archiveState: DialogArchiveState,
     onArchiveClicked: (Label) -> Unit = {},
     @StringRes title: Int,
     @DrawableRes icon: Int,

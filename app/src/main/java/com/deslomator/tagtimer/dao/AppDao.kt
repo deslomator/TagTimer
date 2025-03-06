@@ -11,6 +11,7 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Selected
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.LabelType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -90,17 +91,17 @@ interface AppDao {
     @Query("SELECT * FROM sessions ORDER BY last_access_millis DESC")
     suspend fun getSessionsList(): List<Session>
 
-    @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY last_access_millis DESC")
-    fun getSessionsByLastAccess(): Flow<List<Session>>
+    @Query("SELECT * FROM sessions WHERE state = :state ORDER BY last_access_millis DESC")
+    fun getSessionsByLastAccess(state: String = ItemState.ENABLED.name): Flow<List<Session>>
 
-    @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY session_date_millis DESC")
-    fun getSessionsByDate(): Flow<List<Session>>
+    @Query("SELECT * FROM sessions WHERE state = :state ORDER BY session_date_millis DESC")
+    fun getSessionsByDate(state: String = ItemState.ENABLED.name): Flow<List<Session>>
 
-    @Query("SELECT * FROM sessions WHERE in_trash = 0 ORDER BY name ASC")
-    fun getSessionsByName(): Flow<List<Session>>
+    @Query("SELECT * FROM sessions WHERE state = :state ORDER BY name ASC")
+    fun getSessionsByName(state: String = ItemState.ENABLED.name): Flow<List<Session>>
 
-    @Query("SELECT * FROM sessions WHERE in_trash = 1 ORDER BY last_access_millis DESC")
-    fun getTrashedSessions(): Flow<List<Session>>
+    @Query("SELECT * FROM sessions WHERE state = :state ORDER BY last_access_millis DESC")
+    fun getTrashedSessions(state: String = ItemState.TRASHED.name): Flow<List<Session>>
 
     suspend fun purgeSession(session: Session) {
         deleteEventsForSession(session.id!!)

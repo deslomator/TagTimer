@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.util.combine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,7 +63,7 @@ class TrashTabViewModel(
             }
             is TrashTabAction.RestoreSessionClicked -> {
                 viewModelScope.launch {
-                    val trashed = action.session.copy(inTrash = false)
+                    val trashed = action.session.copy(state = ItemState.ENABLED)
                     appDao.upsertSession(trashed)
                 }
             }

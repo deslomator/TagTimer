@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelSelectionAction
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.LabelArchiveState
+import com.deslomator.tagtimer.model.type.DialogArchiveState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.EmptyListText
@@ -145,8 +145,8 @@ fun LabelSelectionContent(
                 onAction(LabelSelectionAction.DeleteLabelClicked(state.currentLabel))
             },
             archiveState = when (state.dialogState) {
-                DialogState.HIDDEN, DialogState.NEW_ITEM -> LabelArchiveState.HIDDEN
-                else -> if (state.currentLabel.archived) LabelArchiveState.UNARCHIVE else LabelArchiveState.ARCHIVE
+                DialogState.HIDDEN, DialogState.NEW_ITEM -> DialogArchiveState.HIDDEN
+                else -> if (state.currentLabel.archived) DialogArchiveState.UNARCHIVE else DialogArchiveState.ARCHIVE
             },
             onArchiveClicked = { onAction(LabelSelectionAction.ArchiveLabelClicked(it)) },
             title =

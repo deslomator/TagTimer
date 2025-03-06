@@ -7,6 +7,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
@@ -78,7 +79,7 @@ class SessionsTabViewModel(
                     _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
                     val trashed = state.value.currentSession.copy(
                         running = false,
-                        inTrash = true
+                        state = ItemState.TRASHED
                     )
                     appDao.upsertSession(trashed)
                 }
