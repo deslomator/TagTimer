@@ -30,8 +30,25 @@ interface AppDao {
     @Delete
     suspend fun deleteEvent(event: Event)
 
+    @Query("DELETE FROM events WHERE id = :eventId")
+    suspend fun deleteEvent(eventId: Long)
+
     @Query("DELETE FROM events WHERE session_id = :sessionId")
     suspend fun deleteEventsForSession(sessionId: Long)
+
+    /**
+     The swipeable list item in Active Session doesn't update when
+     its child event item does, so we get an stale Event when swiping it.
+     The solution is to first remove the item from the list
+     and then insert it that's what updateEventForList() does
+     @Transaction annotation is not used because compose would not
+     register the change
+     **/
+//    @Transaction
+    suspend fun updateEventForList(event: Event) {
+        deleteEvent(event.id!!)
+        upsertEvent(event)
+    }
 
     @Query("SELECT * FROM events WHERE id = :eventId")
     suspend fun getEvent(eventId: Long): Event

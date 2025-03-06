@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -38,13 +37,6 @@ class ActiveSessionViewModel(
     private val _tagSort = SortProvider.getTagSort(appDao, viewModelScope)
     private val _personSort = SortProvider.getPersonSort(appDao, viewModelScope)
     private val _placeSort = SortProvider.getPlaceSort(appDao, viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _events = _sessionId
-        .flatMapLatest {
-            appDao.getActiveEventsForSession(_sessionId.value)
-        }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _eventsForDisplay = _sessionId
@@ -106,12 +98,11 @@ class ActiveSessionViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
-        _state, _events, _eventsForDisplay, _selectedTags, _tags, _selectedPersons, _persons,
+        _state, _eventsForDisplay, _selectedTags, _tags, _selectedPersons, _persons,
         _selectedPlaces, _places
-    ) { state, events, eventsForDisplay, selectedTags, tags, selectedPersons, persons,
+    ) { state, eventsForDisplay, selectedTags, tags, selectedPersons, persons,
         selectedPlaces, places ->
         state.copy(
-            events = events,
             eventsForDisplay = eventsForDisplay,
             selectedTags = selectedTags,
             tags = tags,
@@ -152,7 +143,7 @@ class ActiveSessionViewModel(
                 val session = state.value.currentSession.copy(
                     lastAccessMillis = time,
                     durationMillis = getSessionDuration(),
-                    eventCount = state.value.events.size,
+                    eventCount = state.value.eventsForDisplay.size,
                 )
                 viewModelScope.launch { appDao.upsertSession(session) }
             }
@@ -167,19 +158,23 @@ class ActiveSessionViewModel(
             is ActiveSessionAction.EventClicked -> {
                 _state.update {
                     it.copy(
-                        eventForDialog = action.event,
+                        eventForDialog = action.event4d,
                         showEventEditionDialog = true
                     )
                 }
             }
-
+            // the swipeable list item doesn't update when its child event item does,
+            // so we get an stale Event when swiping it. The solution is to
+            // first remove the item from the list and then insert it
+            // that's what updateEventForlist() does
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 viewModelScope.launch {
-                    appDao.upsertEvent(action.event)
+//                    appDao.upsertEvent(action.event4d.event)
+                    appDao.updateEventForList(action.event4d.event)
                     _state.update {
                         it.copy(
                             showEventEditionDialog = false,
-//                            eventForScrollTo = action.event4d
+                            eventForScrollTo = action.event4d,
                         )
                     }
                 }
@@ -289,7 +284,7 @@ class ActiveSessionViewModel(
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))
             }
-            if (state.value.events.isNotEmpty())
+            if (state.value.eventsForDisplay.isNotEmpty())
                 _state.update { it.copy(eventForScrollTo = state.value.eventsForDisplay.last()) }
             val s = state.value.currentSession
             if (s.running) {

@@ -1,12 +1,10 @@
 package com.deslomator.tagtimer.state
 
-import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Session
 
 data class ActiveSessionState(
-    val events: List<Event> = emptyList(),
     val eventsForDisplay: List<EventForDisplay> = emptyList(),
     val selectedPersons: List<Label> = emptyList(),
     val selectedPlaces: List<Label> = emptyList(),

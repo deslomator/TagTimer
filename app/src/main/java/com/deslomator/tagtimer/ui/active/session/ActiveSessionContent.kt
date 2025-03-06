@@ -52,8 +52,8 @@ fun ActiveSessionContent(
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
-    LaunchedEffect(state.eventForScrollTo, state.events) {
-        val index = state.events.map { it.id }.indexOf(state.eventForScrollTo.event.id)
+    LaunchedEffect(state.eventForScrollTo, state.eventsForDisplay) {
+        val index = state.eventsForDisplay.map { it.event.id }.indexOf(state.eventForScrollTo.event.id)
         if (index >= 0) {
             listState.animateScrollToItem(index, 0)
         }

@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.session
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
@@ -30,9 +30,9 @@ fun EventList(
     onItemSwiped: (EventForDisplay) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val empty by remember(events.size) { derivedStateOf { events.isEmpty() } }
+    val message = stringResource(R.string.event_sent_to_trash)
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(6.dp),
@@ -50,10 +50,11 @@ fun EventList(
         ) { event4d ->
             SwipeableListItem(
                 onDismiss = {
+                    Log.d(TAG, "event list onDismiss() e4d: $event4d")
                     showSnackbar(
                         scope,
                         snackbarHostState,
-                        context.getString(R.string.event_sent_to_trash)
+                        message
                     )
                     onItemSwiped(event4d)
                 },
