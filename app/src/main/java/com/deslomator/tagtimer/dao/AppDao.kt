@@ -3,6 +3,7 @@ package com.deslomator.tagtimer.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
@@ -44,9 +45,11 @@ interface AppDao {
     /*
     EVENTS FOR DISPLAY
      */
+    @Transaction
     @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 0 ORDER BY elapsed_time_millis ASC")
     fun getEventsForDisplay(sessionId: Long): Flow<List<EventForDisplay>>
 
+    @Transaction
     @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 1 ORDER BY elapsed_time_millis ASC")
     fun getTrashedEventsForDisplay(sessionId: Long): Flow<List<EventForDisplay>>
 
