@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main.trash
+package com.deslomator.tagtimer.ui.active.trash
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

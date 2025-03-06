@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main.trash
+package com.deslomator.tagtimer.ui.active.trash
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -12,7 +12,7 @@ import com.deslomator.tagtimer.state.TrashTabState
 import com.deslomator.tagtimer.ui.active.TopNavigationBar
 
 @Composable
-fun TrashTabScaffold(
+fun TrashScaffold(
     state: TrashTabState,
     onAction: (TrashTabAction) -> Unit,
     navController: NavHostController
@@ -21,7 +21,7 @@ fun TrashTabScaffold(
     Scaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
-            TrashTabContent(
+            TrashContent(
                 paddingValues = paddingValues,
                 state = state,
                 onAction = onAction,

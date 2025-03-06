@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.main.trash
+package com.deslomator.tagtimer.ui.active.trash
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
@@ -30,7 +29,7 @@ import com.deslomator.tagtimer.ui.showSnackbar
 import kotlinx.coroutines.launch
 
 @Composable
-fun TrashTabContent(
+fun TrashContent(
     paddingValues: PaddingValues,
     state: TrashTabState,
     onAction: (TrashTabAction) -> Unit,
