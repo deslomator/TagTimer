@@ -13,10 +13,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.ActiveSessionAction
-import com.deslomator.tagtimer.navigation.screen.MyTopScreens
+import com.deslomator.tagtimer.navigation.screen.BottomScreens
 import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.active.TopNavigationBar
+import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun ActiveSessionScaffold(
@@ -54,10 +54,10 @@ fun ActiveSessionScaffold(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
-            TopNavigationBar(
+            BottomNavigationBar(
                 sessionId = state.currentSession.id?: 0L,
                 navController = navController,
-                selected = MyTopScreens.ACTIVE
+                selected = BottomScreens.ACTIVE
             )
         }
     ) { paddingValues ->

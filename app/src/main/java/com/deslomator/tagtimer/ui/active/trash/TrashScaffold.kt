@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.navigation.screen.MyTopScreens
+import com.deslomator.tagtimer.navigation.screen.BottomScreens
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.ui.active.TopNavigationBar
+import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun TrashScaffold(
@@ -29,10 +29,10 @@ fun TrashScaffold(
             )
         },
         bottomBar = {
-            TopNavigationBar(
+            BottomNavigationBar(
                 sessionId = state.currentSession.id ?: 0L,
                 navController = navController,
-                selected = MyTopScreens.TRASH
+                selected = BottomScreens.TRASH
             )
         },
     )

@@ -4,7 +4,7 @@ import com.deslomator.tagtimer.R
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class MyTopScreens(
+enum class BottomScreens(
     val stringId: Int,
     val iconId: Int,
 ) {

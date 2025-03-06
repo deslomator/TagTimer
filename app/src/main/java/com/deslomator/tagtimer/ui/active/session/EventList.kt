@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.SwipeableListItem
 import com.deslomator.tagtimer.ui.active.EventListItem
 import com.deslomator.tagtimer.ui.showSnackbar
 

@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.active.trash
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -92,3 +93,5 @@ fun EventTrash(
         }
     }
 }
+
+private const val TAG = "EventTrash"

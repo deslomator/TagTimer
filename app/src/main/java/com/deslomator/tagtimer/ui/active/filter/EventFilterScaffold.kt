@@ -6,9 +6,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.EventFilterAction
-import com.deslomator.tagtimer.navigation.screen.MyTopScreens
+import com.deslomator.tagtimer.navigation.screen.BottomScreens
 import com.deslomator.tagtimer.state.EventFilterState
-import com.deslomator.tagtimer.ui.active.TopNavigationBar
+import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun EventFilterScaffold(
@@ -42,10 +42,10 @@ fun EventFilterScaffold(
             )
         },
         bottomBar =  {
-            TopNavigationBar(
+            BottomNavigationBar(
                 sessionId = state.currentSession.id ?: 0L,
                 navController = navController,
-                selected = MyTopScreens.FILTER
+                selected = BottomScreens.FILTER
             )
         }
     ) { paddingValues ->

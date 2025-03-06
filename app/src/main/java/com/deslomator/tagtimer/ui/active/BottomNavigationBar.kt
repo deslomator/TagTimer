@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active
 
-import android.util.Log
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -12,19 +11,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
-import com.deslomator.tagtimer.navigation.screen.MyTopScreens
+import com.deslomator.tagtimer.navigation.screen.BottomScreens
 
 @Composable
-fun TopNavigationBar(
+fun BottomNavigationBar(
     navController: NavHostController,
     sessionId: Long,
-    selected: MyTopScreens,
+    selected: BottomScreens,
 ) {
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         contentColor = MaterialTheme.colorScheme.secondary
     ) {
-        MyTopScreens.entries.forEach { tab ->
+        BottomScreens.entries.forEach { tab ->
             NavigationBarItem(
                 icon = {
                     Icon(
@@ -37,7 +36,6 @@ fun TopNavigationBar(
                 },
                 selected = tab == selected,
                 onClick = {
-                    Log.d(TAG,"tab.getRoute(): ${tab.getRoute(sessionId)}")
                     navController.navigate(tab.getRoute(sessionId)) {
                         // Pop up to the start destination of the graph to
                         // avoid building up a large stack of destinations

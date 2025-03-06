@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.ui.LabelButton
+import com.deslomator.tagtimer.ui.active.LabelButton
 
 @Composable
 fun LabelTrash(

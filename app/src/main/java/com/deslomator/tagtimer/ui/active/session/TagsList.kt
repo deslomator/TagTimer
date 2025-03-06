@@ -16,7 +16,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.LabelButton
+import com.deslomator.tagtimer.ui.active.LabelButton
 
 @Composable
 fun TagsList(

@@ -15,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Checked
-import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
 fun SelectedLabelsList(

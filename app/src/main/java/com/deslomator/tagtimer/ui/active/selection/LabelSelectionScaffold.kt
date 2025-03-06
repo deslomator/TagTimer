@@ -13,10 +13,9 @@ import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.LabelSelectionAction
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelType
-import com.deslomator.tagtimer.navigation.screen.MyTopScreens
+import com.deslomator.tagtimer.navigation.screen.BottomScreens
 import com.deslomator.tagtimer.state.LabelSelectionState
-import com.deslomator.tagtimer.ui.LabelsTopBar
-import com.deslomator.tagtimer.ui.active.TopNavigationBar
+import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun LabelSelectionScaffold(
@@ -56,10 +55,10 @@ fun LabelSelectionScaffold(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
-            TopNavigationBar(
+            BottomNavigationBar(
                 sessionId = state.currentSession.id ?: 0L,
                 navController = navController,
-                selected = MyTopScreens.LABELS
+                selected = BottomScreens.LABELS
             )
         }
     ) { paddingValues ->

@@ -31,7 +31,7 @@ import com.deslomator.tagtimer.model.type.LabelArchiveState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.LabelDialog
+import com.deslomator.tagtimer.ui.active.dialog.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
 import com.deslomator.tagtimer.ui.showSnackbar
 import kotlinx.coroutines.launch

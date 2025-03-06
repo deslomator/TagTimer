@@ -69,7 +69,6 @@ fun AppNavHost(
             )
         }
         composable<ActiveSessionScreen> { backStackEntry ->
-            Log.d(TAG, "From NavHost. savedStateHandle keys: ${backStackEntry.savedStateHandle.keys()}")
             val screen: ActiveSessionScreen = backStackEntry.toRoute()
             val viewModel = viewModel<ActiveSessionViewModel>(
                 factory = viewModelFactory {
