@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -67,8 +68,8 @@ fun TimeNumberPicker(
         } else {
             TextField(
                 value = "${hours.toString().padStart(2, '0')} : " +
-                    "${hours.toString().padStart(2, '0')} : " +
-                    hours.toString().padStart(2, '0'),
+                    "${minutes.toString().padStart(2, '0')} : " +
+                    seconds.toString().padStart(2, '0'),
                 onValueChange = {},
                 enabled = false
             )
@@ -76,3 +77,4 @@ fun TimeNumberPicker(
     }
 }
 
+private const val TAG = "TimeNumberPicker"
