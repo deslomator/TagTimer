@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.ui.active.selection
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
@@ -34,35 +33,35 @@ fun LabelSelectionScaffold(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            Column {
-                TopNavigationBar(
-                    sessionId = state.currentSession.id ?: 0L,
-                    navController = navController,
-                    selected = MyTopScreens.LABELS
-                )
-                LabelsTopBar(
-                    pages = pages,
-                    currentPage = pagerState.currentPage,
-                    onAddLabelClick = { onAction(LabelPreselectionAction.AddNewLabelClicked(it)) },
-                    dialogState = state.dialogState,
-                    tagSort = state.tagSort,
-                    personSort = state.personSort,
-                    placeSort = state.placeSort,
-                    onTagSort = { onAction(LabelPreselectionAction.SortTagsClicked(it)) },
-                    onPersonSort = { onAction(LabelPreselectionAction.SortPersonsClicked(it)) },
-                    onPlaceSort = { onAction(LabelPreselectionAction.SortPlacesClicked(it)) },
-                    showArchived = state.showArchived,
-                    onShowArchivedChanged = {
-                        onAction(
-                            LabelPreselectionAction.ShowArchivedClicked(
-                                it
-                            )
+            LabelsTopBar(
+                pages = pages,
+                currentPage = pagerState.currentPage,
+                onAddLabelClick = { onAction(LabelPreselectionAction.AddNewLabelClicked(it)) },
+                dialogState = state.dialogState,
+                tagSort = state.tagSort,
+                personSort = state.personSort,
+                placeSort = state.placeSort,
+                onTagSort = { onAction(LabelPreselectionAction.SortTagsClicked(it)) },
+                onPersonSort = { onAction(LabelPreselectionAction.SortPersonsClicked(it)) },
+                onPlaceSort = { onAction(LabelPreselectionAction.SortPlacesClicked(it)) },
+                showArchived = state.showArchived,
+                onShowArchivedChanged = {
+                    onAction(
+                        LabelPreselectionAction.ShowArchivedClicked(
+                            it
                         )
-                    }
-                )
-            }
+                    )
+                }
+            )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        bottomBar = {
+            TopNavigationBar(
+                sessionId = state.currentSession.id ?: 0L,
+                navController = navController,
+                selected = MyTopScreens.LABELS
+            )
+        }
     ) { paddingValues ->
         LabelSelectionContent(
             paddingValues = paddingValues,

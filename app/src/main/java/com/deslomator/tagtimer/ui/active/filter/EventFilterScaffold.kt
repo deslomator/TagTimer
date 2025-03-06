@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.ui.active.filter
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
@@ -35,24 +34,20 @@ fun EventFilterScaffold(
     }
     Scaffold(
         topBar = {
-            Column {
-                TopNavigationBar(
-                    sessionId = state.currentSession.id ?: 0L,
-                    navController = navController,
-                    selected = MyTopScreens.FILTER
-                )
-                EventFilterTopBar(
-                    title = state.currentSession.name,
-                    onBackClicked = {
-                        navController.navigateUp()
-                    },
-                    onShareFilteredEventsClick = {
-                        onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
-                    },
-                    totalEvents = state.filteredEvents.size
-                )
-            }
+            EventFilterTopBar(
+                onShareFilteredEventsClick = {
+                    onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
+                },
+                totalEvents = state.filteredEvents.size
+            )
         },
+        bottomBar =  {
+            TopNavigationBar(
+                sessionId = state.currentSession.id ?: 0L,
+                navController = navController,
+                selected = MyTopScreens.FILTER
+            )
+        }
     ) { paddingValues ->
         EventFilterContent(
             paddingValues = paddingValues,

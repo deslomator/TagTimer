@@ -19,13 +19,6 @@ fun TrashTabScaffold(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
-        topBar = {
-            TopNavigationBar(
-                sessionId = state.currentSession.id ?: 0L,
-                navController = navController,
-                selected = MyTopScreens.TRASH
-            )
-        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
             TrashTabContent(
@@ -33,6 +26,13 @@ fun TrashTabScaffold(
                 state = state,
                 onAction = onAction,
                 snackbarHostState = snackbarHostState
+            )
+        },
+        bottomBar = {
+            TopNavigationBar(
+                sessionId = state.currentSession.id ?: 0L,
+                navController = navController,
+                selected = MyTopScreens.TRASH
             )
         },
     )

@@ -1,7 +1,6 @@
 package com.deslomator.tagtimer.ui.active.session
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -52,15 +51,15 @@ fun ActiveSessionScaffold(
     }
     Scaffold(
         topBar = {
-            Column {
-                TopNavigationBar(
-                    sessionId = state.currentSession.id?: 0L,
-                    navController = navController,
-                    selected = MyTopScreens.ACTIVE
-                )
-            }
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        bottomBar = {
+            TopNavigationBar(
+                sessionId = state.currentSession.id?: 0L,
+                navController = navController,
+                selected = MyTopScreens.ACTIVE
+            )
+        }
     ) { paddingValues ->
         ActiveSessionContent(
             paddingValues = paddingValues,
