@@ -15,7 +15,7 @@ sealed interface ActiveSessionAction {
     data object TimeClicked : ActiveSessionAction
     class AcceptTimeDialog(val newTime: Long): ActiveSessionAction
     data object DismissTimeDialog: ActiveSessionAction
-    class PreSelectedTagClicked(val tag: Label) : ActiveSessionAction
-    class PreSelectedPersonClicked(val person: Label) : ActiveSessionAction
-    class PreSelectedPlaceClicked(val place: Label) : ActiveSessionAction
+    class SelectedTagClicked(val tag: Label) : ActiveSessionAction
+    class SelectedPersonClicked(val person: Label) : ActiveSessionAction
+    class SelectedPlaceClicked(val place: Label) : ActiveSessionAction
 }

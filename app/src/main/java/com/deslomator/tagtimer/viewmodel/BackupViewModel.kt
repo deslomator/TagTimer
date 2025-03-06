@@ -312,13 +312,13 @@ private suspend fun getDbBackup(appDao: AppDao, labelsOnly: Boolean): DbBackup {
             false -> {
                 val labels = async { appDao.getAllLabelsList() }
                 val events = async { appDao.getAllEventsList() }
-                val preselectedLabels = async { appDao.getAllPreselectedLabelsList() }
+                val selectedLabels = async { appDao.getAllSelectedLabelsList() }
                 val sessions = async { appDao.getAllSessionsList() }
                 val prefs = async { appDao.getAllPreferencesList() }
                 dbBackup = DbBackup(
                     labels = labels.await(),
                     events = events.await(),
-                    preselected = preselectedLabels.await(),
+                    selected = selectedLabels.await(),
                     sessions = sessions.await(),
                     prefs = prefs.await()
                 )

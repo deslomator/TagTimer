@@ -10,7 +10,7 @@ data class DbBackup(
     @Embedded
     val labels: List<Label> = emptyList(),
     @Embedded
-    val preselected: List<Preselected> = emptyList(),
+    val selected: List<Selected> = emptyList(),
     @Embedded
     val sessions: List<Session> = emptyList(),
     @Embedded
@@ -21,7 +21,7 @@ data class DbBackup(
     fun isEmpty(): Boolean {
         return this.labels.isEmpty() &&
                 this.events.isEmpty() &&
-                this.preselected.isEmpty() &&
+                this.selected.isEmpty() &&
                 this.sessions.isEmpty() &&
                 this.prefs.isEmpty()
     }
@@ -29,7 +29,7 @@ data class DbBackup(
     fun isLabelsOnly(): Boolean {
         return this.labels.isNotEmpty() &&
                 this.events.isEmpty() &&
-                this.preselected.isEmpty() &&
+                this.selected.isEmpty() &&
                 this.sessions.isEmpty() &&
                 this.prefs.isEmpty()
     }

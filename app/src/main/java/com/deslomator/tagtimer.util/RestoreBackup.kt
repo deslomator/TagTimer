@@ -41,7 +41,7 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
                     }
                     runBlocking {
                         launch { appDao.upsertLabels(dbBackup.labels) }
-                        launch { appDao.upsertPreSelectedLabels(dbBackup.preselected) }
+                        launch { appDao.upsertSelectedLabels(dbBackup.selected) }
                         launch {  appDao.upsertEvents(dbBackup.events) }
                         launch { appDao.upsertSessions(dbBackup.sessions) }
                         launch { appDao.upsertPreferences(dbBackup.prefs) }

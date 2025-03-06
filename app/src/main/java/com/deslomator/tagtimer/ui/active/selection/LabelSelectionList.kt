@@ -20,7 +20,7 @@ import com.deslomator.tagtimer.ui.LabelButton
 @Composable
 fun LabelSelectionList(
     labels: List<Label>,
-    preSelected: List<Label>,
+    selected: List<Label>,
     onLongClick: (Label) -> Unit,
     onItemClick: (Label, Boolean) -> Unit
 ) {
@@ -37,8 +37,8 @@ fun LabelSelectionList(
             items = labels,
             key = { it.id!! }
         ) { label ->
-            val checked by remember(preSelected) {
-                derivedStateOf { preSelected.map { it.id }.contains(label.id) }
+            val checked by remember(selected) {
+                derivedStateOf { selected.map { it.id }.contains(label.id) }
             }
             LabelButton(
                 label = label,

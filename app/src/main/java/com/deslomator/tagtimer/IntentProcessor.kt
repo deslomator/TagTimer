@@ -259,7 +259,7 @@ fun IntentProcessor(
                 }
                 runBlocking {
                     launch { appDao.upsertLabels(backup.labels) }
-                    launch { appDao.upsertPreSelectedLabels(backup.preselected) }
+                    launch { appDao.upsertSelectedLabels(backup.selected) }
                     launch { appDao.upsertEvents(backup.events) }
                     launch { appDao.upsertSessions(backup.sessions) }
                     launch { appDao.upsertPreferences(backup.prefs) }

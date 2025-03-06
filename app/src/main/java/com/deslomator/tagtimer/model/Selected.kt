@@ -9,10 +9,10 @@ import kotlinx.serialization.Serializable
 @Keep
 @Serializable
 @Entity(
-    tableName = "preselected",
+    tableName = "selected",
     primaryKeys = ["session_id", "label_id"]
 )
-data class Preselected(
+data class Selected(
     @SerialName("session_id")
     @ColumnInfo(name = "session_id")
     val sessionId: Long = 0,

@@ -22,7 +22,7 @@ import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.backup.BackupScaffold
 import com.deslomator.tagtimer.ui.main.sessions.SessionsTabScaffold
-import com.deslomator.tagtimer.ui.main.trash.TrashTabScaffold
+import com.deslomator.tagtimer.ui.active.trash.TrashScaffold
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.BackupViewModel
 import com.deslomator.tagtimer.viewmodel.EventFilterViewModel
@@ -62,7 +62,7 @@ fun AppNavHost(
                 }
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
-            TrashTabScaffold(
+            TrashScaffold(
                 state = state,
                 onAction = viewModel::onAction,
                 navController = navController,

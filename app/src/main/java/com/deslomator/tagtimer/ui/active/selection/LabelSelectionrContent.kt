@@ -25,11 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
-import com.deslomator.tagtimer.action.LabelPreselectionAction
+import com.deslomator.tagtimer.action.LabelSelectionAction
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelArchiveState
 import com.deslomator.tagtimer.model.type.LabelType
-import com.deslomator.tagtimer.state.LabelPreselectionState
+import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
@@ -40,8 +40,8 @@ import kotlin.enums.EnumEntries
 @Composable
 fun LabelSelectionContent(
     paddingValues: PaddingValues,
-    state: LabelPreselectionState,
-    onAction: (LabelPreselectionAction) -> Unit,
+    state: LabelSelectionState,
+    onAction: (LabelSelectionAction) -> Unit,
     snackbarHostState: SnackbarHostState,
     pagerState: PagerState,
     pages: EnumEntries<LabelType>,
@@ -51,7 +51,7 @@ fun LabelSelectionContent(
     BackHandler(
         enabled = state.dialogState != DialogState.HIDDEN
     ) {
-        onAction(LabelPreselectionAction.DismissLabelDialog)
+        onAction(LabelSelectionAction.DismissLabelDialog)
     }
     Box(
         modifier = Modifier
@@ -100,10 +100,10 @@ fun LabelSelectionContent(
                         LabelType.PERSON -> state.persons.filter { if(showArchived) true else !it.archived }
                         LabelType.PLACE -> state.places.filter { if(showArchived) true else !it.archived }
                     },
-                    preSelected = when (current) {
-                        LabelType.TAG -> state.preSelectedTags
-                        LabelType.PERSON -> state.preSelectedPersons
-                        LabelType.PLACE -> state.preSelectedPlaces
+                    selected = when (current) {
+                        LabelType.TAG -> state.selectedTags
+                        LabelType.PERSON -> state.selectedPersons
+                        LabelType.PLACE -> state.selectedPlaces
                     },
                     onItemClick = { tag, checked ->
                         showSnackbar(
@@ -112,11 +112,11 @@ fun LabelSelectionContent(
                             message = if (checked) checkedMessage else unCheckedMessage,
                         )
                         onAction(
-                            LabelPreselectionAction.SelectTagCheckedChange(tag,checked)
+                            LabelSelectionAction.SelectTagCheckedChange(tag,checked)
                         )
                     },
                     onLongClick = {
-                        onAction(LabelPreselectionAction.EditLabelClicked(it))
+                        onAction(LabelSelectionAction.EditLabelClicked(it))
                     }
                 )
             }
@@ -131,9 +131,9 @@ fun LabelSelectionContent(
         val message = stringResource(id = state.currentLabel.getLabelType().messageId)
         LabelDialog(
             currentLabel = state.currentLabel,
-            onDismiss = { onAction(LabelPreselectionAction.DismissLabelDialog) },
+            onDismiss = { onAction(LabelSelectionAction.DismissLabelDialog) },
             onAccept = {
-                onAction(LabelPreselectionAction.AcceptLabelEditionClicked(it))
+                onAction(LabelSelectionAction.AcceptLabelEditionClicked(it))
             },
             dialogState = state.dialogState,
             onTrash = {
@@ -142,13 +142,13 @@ fun LabelSelectionContent(
                     snackbarHostState,
                     message
                 )
-                onAction(LabelPreselectionAction.DeleteLabelClicked(state.currentLabel))
+                onAction(LabelSelectionAction.DeleteLabelClicked(state.currentLabel))
             },
             archiveState = when (state.dialogState) {
                 DialogState.HIDDEN, DialogState.NEW_ITEM -> LabelArchiveState.HIDDEN
                 else -> if (state.currentLabel.archived) LabelArchiveState.UNARCHIVE else LabelArchiveState.ARCHIVE
             },
-            onArchiveClicked = { onAction(LabelPreselectionAction.ArchiveLabelClicked(it)) },
+            onArchiveClicked = { onAction(LabelSelectionAction.ArchiveLabelClicked(it)) },
             title =
             if (
                 state.dialogState == DialogState.EDIT_NO_DELETE ||

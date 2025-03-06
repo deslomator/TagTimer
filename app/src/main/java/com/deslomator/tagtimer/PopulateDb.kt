@@ -76,12 +76,12 @@ suspend fun populateDb (dao: AppDao) {
             )
             dao.upsertEvent(eventT)
 
-            val preselectedTag = Preselected.Tag(i, i + idx)
-            dao.upsertPreSelectedTag(preselectedTag)
-            val preselectedPlace = Preselected.Place(i, i + idx)
-            dao.upsertPreSelectedPlace(preselectedPlace)
-            val preselectedPerson = Preselected.Person(i, i + idx)
-            dao.upsertPreSelectedPerson(preselectedPerson)
+            val selectedTag = Selected.Tag(i, i + idx)
+            dao.upsertSelectedTag(selectedTag)
+            val selectedPlace = Selected.Place(i, i + idx)
+            dao.upsertSelectedPlace(selectedPlace)
+            val selectedPerson = Selected.Person(i, i + idx)
+            dao.upsertSelectedPerson(selectedPerson)
         }
     }*/
 }

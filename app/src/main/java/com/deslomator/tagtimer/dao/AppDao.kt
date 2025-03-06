@@ -9,7 +9,7 @@ import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
-import com.deslomator.tagtimer.model.Preselected
+import com.deslomator.tagtimer.model.Selected
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.LabelType
 import kotlinx.coroutines.Dispatchers
@@ -87,7 +87,7 @@ interface AppDao {
 
     suspend fun purgeSession(session: Session) {
         deleteEventsForSession(session.id!!)
-        deletePreselectedForSession(session.id!!)
+        deleteSelectedLabelsForSession(session.id!!)
         deleteSession(session)
     }
 
@@ -142,46 +142,49 @@ interface AppDao {
     fun getUsedPlaces(sessionId: Long): Flow<List<Label>>
 
     /*
-    PRESELECTED
+    SELECTED
      */
     @Upsert
-    suspend fun upsertPreSelectedLabel(preSelectedLabel: Preselected)
+    suspend fun upsertSelectedLabel(selectedLabel: Selected)
 
     @Upsert
-    suspend fun upsertPreSelectedLabels(preSelectedLabels: List<Preselected>)
+    suspend fun upsertSelectedLabels(selectedLabels: List<Selected>)
 
     @Delete
-    suspend fun deletePreSelectedLabel(preSelectedLabel: Preselected)
+    suspend fun deleteSelectedLabel(selectedLabel: Selected)
 
-    @Query("SELECT name, color, in_trash, archived, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
-    fun getPreSelectedLabelsForSession(sessionId: Long, type: Int): Flow<List<Label>>
+    @Query("SELECT name, color, in_trash, archived, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    fun getSelectedLabelsForSession(sessionId: Long, type: Int): Flow<List<Label>>
 
-    @Query("SELECT name, color, in_trash, archived, type, id FROM preselected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
-    suspend fun getPreSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
+    @Query("SELECT name, color, in_trash, archived, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    suspend fun getSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
 
-    @Query("SELECT session_id, label_id FROM preselected WHERE session_id = :sessionId")
-    suspend fun getPreSelectedListForSession(sessionId: Long): List<Preselected>
+    @Query("SELECT session_id, label_id FROM selected WHERE session_id = :sessionId")
+    suspend fun getSelectedLabelsListForSession(sessionId: Long): List<Selected>
 
-    @Query("DELETE FROM preselected WHERE session_id = :sessionId")
-    suspend fun  deletePreselectedForSession(sessionId: Long)
-
-    /*
-    PRESELECTED TAGS
-     */
-    //fun getPreSelectedTagsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
-    suspend fun getPreSelectedTagsListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId)
+    @Query("DELETE FROM selected WHERE session_id = :sessionId")
+    suspend fun  deleteSelectedLabelsForSession(sessionId: Long)
 
     /*
-    PRESELECTED PERSONS
+    SELECTED TAGS
      */
-    //fun getPreSelectedPersonsForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
-    suspend fun getPreSelectedPersonsListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId)
+    //fun getSelectedTagsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
+    suspend fun getSelectedTagsListForSession(sessionId: Long) =
+        getSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId)
 
     /*
-    PRESELECTED PLACES
+    SELECTED PERSONS
      */
-    //fun getPreSelectedPlacesForSession(sessionId: Long) = getPreSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
-    suspend fun getPreSelectedPlacesListForSession(sessionId: Long) = getPreSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId)
+    //fun getSelectedPersonsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
+    suspend fun getSelectedPersonsListForSession(sessionId: Long) =
+        getSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId)
+
+    /*
+    SELECTED PLACES
+     */
+    //fun getSelectedPlacesForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
+    suspend fun getSelectedPlacesListForSession(sessionId: Long) =
+        getSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId)
 
     /*
     ORPHANS
@@ -189,8 +192,8 @@ interface AppDao {
     @Query("DELETE FROM events WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE events.session_id = sessions.id)")
     suspend fun clearOrphanEvents(): Int
 
-    @Query("DELETE FROM preselected WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE preselected.session_id = sessions.id)")
-    suspend fun clearOrphanPreSelected(): Int
+    @Query("DELETE FROM selected WHERE NOT EXISTS (SELECT NULL FROM sessions WHERE selected.session_id = sessions.id)")
+    suspend fun clearOrphanSelected(): Int
 
     /*
     BACKUP AND RESTORE
@@ -201,8 +204,8 @@ interface AppDao {
     @Query("SELECT * FROM labels")
     suspend fun getAllLabelsList(): List<Label>
 
-    @Query("SELECT * FROM preselected")
-    suspend fun getAllPreselectedLabelsList(): List<Preselected>
+    @Query("SELECT * FROM selected")
+    suspend fun getAllSelectedLabelsList(): List<Selected>
 
     @Query("SELECT * FROM sessions")
     suspend fun getAllSessionsList(): List<Session>
@@ -220,8 +223,8 @@ interface AppDao {
     suspend fun deleteAllLabels()
 
 
-    @Query("DELETE FROM preselected")
-    suspend fun deleteAllPreselectedLabels()
+    @Query("DELETE FROM selected")
+    suspend fun deleteAllSelectedLabels()
 
     @Query("DELETE FROM sessions")
     suspend fun deleteAllSessions()
@@ -233,7 +236,7 @@ interface AppDao {
         withContext(Dispatchers.IO) {
             launch { deleteAllEvents() }
             launch { deleteAllLabels() }
-            launch { deleteAllPreselectedLabels() }
+            launch { deleteAllSelectedLabels() }
             launch { deleteAllSessions() }
             launch { deleteAllPreferences() }
         }

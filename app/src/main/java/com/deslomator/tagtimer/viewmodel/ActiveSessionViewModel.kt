@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.ActiveSessionAction
@@ -62,10 +61,10 @@ class ActiveSessionViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _preSelectedTags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
+    private val _selectedTags = _tagSort.flatMapLatest { sort ->
+        if (sort == LabelSort.NAME.sortId) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
+        else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -79,10 +78,10 @@ class ActiveSessionViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _preSelectedPersons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
+    private val _selectedPersons = _personSort.flatMapLatest { sort ->
+        if (sort == LabelSort.NAME.sortId) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
+        else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -97,27 +96,27 @@ class ActiveSessionViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _preSelectedPlaces = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
+    private val _selectedPlaces = _placeSort.flatMapLatest { sort ->
+        if (sort == LabelSort.NAME.sortId) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getPreSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
+        else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(
-        _state, _events, _eventsForDisplay, _preSelectedTags, _tags, _preSelectedPersons, _persons,
-        _preSelectedPlaces, _places
-    ) { state, events, eventsForDisplay, preSelectedTags, tags, preSelectedPersons, persons,
-        preSelectedPlaces, places ->
+        _state, _events, _eventsForDisplay, _selectedTags, _tags, _selectedPersons, _persons,
+        _selectedPlaces, _places
+    ) { state, events, eventsForDisplay, selectedTags, tags, selectedPersons, persons,
+        selectedPlaces, places ->
         state.copy(
             events = events,
             eventsForDisplay = eventsForDisplay,
-            preSelectedTags = preSelectedTags,
+            selectedTags = selectedTags,
             tags = tags,
-            preSelectedPersons = preSelectedPersons,
+            selectedPersons = selectedPersons,
             persons = persons,
-            preSelectedPlaces = preSelectedPlaces,
+            selectedPlaces = selectedPlaces,
             places = places,
         )
     }.stateIn(
@@ -126,7 +125,7 @@ class ActiveSessionViewModel(
 
     fun onAction(action: ActiveSessionAction) {
         when (action) {
-            is ActiveSessionAction.PreSelectedTagClicked -> {
+            is ActiveSessionAction.SelectedTagClicked -> {
                 viewModelScope.launch {
                     val event = Event(
                         sessionId = _sessionId.value, // the value in state can be null
@@ -229,13 +228,13 @@ class ActiveSessionViewModel(
                 _state.update { it.copy(showTimeDialog = false) }
             }
 
-            is ActiveSessionAction.PreSelectedPersonClicked -> {
+            is ActiveSessionAction.SelectedPersonClicked -> {
                 val person = if (action.person == state.value.currentPerson) null
                 else action.person
                 _state.update { it.copy(currentPerson = person) }
             }
 
-            is ActiveSessionAction.PreSelectedPlaceClicked -> {
+            is ActiveSessionAction.SelectedPlaceClicked -> {
                 val place = if (action.place == state.value.currentPlace) null
                 else action.place
                 _state.update { it.copy(currentPlace = place) }

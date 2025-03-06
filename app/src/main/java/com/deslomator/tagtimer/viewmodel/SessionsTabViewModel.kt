@@ -11,7 +11,6 @@ import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsTabState
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,7 +19,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class SessionsTabViewModel(
     private val appDao: AppDao,
@@ -119,11 +117,11 @@ class SessionsTabViewModel(
             )
             val newId = appDao.upsertSession(newSession)
             launch {
-                appDao.getPreSelectedListForSession(s.id!!)
+                appDao.getSelectedLabelsListForSession(s.id!!)
                     .map{
                         it.copy(sessionId = newId)
                     }
-                    .let { appDao.upsertPreSelectedLabels(it) }
+                    .let { appDao.upsertSelectedLabels(it) }
             }
         }
     }

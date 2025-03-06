@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
-import com.deslomator.tagtimer.model.Preselected
+import com.deslomator.tagtimer.model.Selected
 import com.deslomator.tagtimer.model.Session
 
 @Database(
@@ -13,7 +13,7 @@ import com.deslomator.tagtimer.model.Session
         Event::class,
         Session::class,
         Label::class,
-        Preselected::class,
+        Selected::class,
         Preference::class,
     ],
     version = 1

@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
-import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
+import com.deslomator.tagtimer.ui.active.SelectedLabelsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
@@ -86,7 +86,7 @@ fun ActiveSessionContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .weight(0.6f),
-                tags = state.preSelectedTags,
+                tags = state.selectedTags,
                 onItemClicked = {
                     if (!state.currentSession.running) {
                         showSnackbar(
@@ -96,25 +96,25 @@ fun ActiveSessionContent(
                         )
                     } else {
                         onAction(
-                            ActiveSessionAction.PreSelectedTagClicked(it)
+                            ActiveSessionAction.SelectedTagClicked(it)
                         )
                     }
                 },
             )
             HorizontalDivider()
-            PreSelectedLabelsList(
-                labels = state.preSelectedPersons,
+            SelectedLabelsList(
+                labels = state.selectedPersons,
                 currentLabel = state.currentPerson,
                 onItemClick = {
-                    onAction(ActiveSessionAction.PreSelectedPersonClicked(it))
+                    onAction(ActiveSessionAction.SelectedPersonClicked(it))
                 }
             )
             HorizontalDivider()
-            PreSelectedLabelsList(
-                labels = state.preSelectedPlaces,
+            SelectedLabelsList(
+                labels = state.selectedPlaces,
                 currentLabel = state.currentPlace,
                 onItemClick = {
-                    onAction(ActiveSessionAction.PreSelectedPlaceClicked(it))
+                    onAction(ActiveSessionAction.SelectedPlaceClicked(it))
                 }
             )
         }

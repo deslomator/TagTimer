@@ -18,7 +18,7 @@ import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.LabelButton
 
 @Composable
-fun PreSelectedLabelsList(
+fun SelectedLabelsList(
     labels: List<Label>,
     currentLabel: Label?,
     onItemClick: (Label) -> Unit
@@ -65,4 +65,4 @@ fun PreSelectedLabelsList(
     }
 }
 
-private const val TAG = "PreSelectedPersonsList"
+private const val TAG = "SelectedLabelsList"

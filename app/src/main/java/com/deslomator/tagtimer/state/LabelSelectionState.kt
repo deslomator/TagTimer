@@ -5,10 +5,10 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelSort
 
-data class LabelPreselectionState(
-    val preSelectedPersons: List<Label> = emptyList(),
-    val preSelectedPlaces: List<Label> = emptyList(),
-    val preSelectedTags: List<Label> = emptyList(),
+data class LabelSelectionState(
+    val selectedPersons: List<Label> = emptyList(),
+    val selectedPlaces: List<Label> = emptyList(),
+    val selectedTags: List<Label> = emptyList(),
     val tags: List<Label> = emptyList(),
     val persons: List<Label> = emptyList(),
     val places: List<Label> = emptyList(),

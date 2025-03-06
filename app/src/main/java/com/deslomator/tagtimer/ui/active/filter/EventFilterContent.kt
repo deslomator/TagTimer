@@ -24,7 +24,7 @@ import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.active.EventListItem
-import com.deslomator.tagtimer.ui.active.PreSelectedLabelsList
+import com.deslomator.tagtimer.ui.active.SelectedLabelsList
 import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.active.session.TagsList
 
@@ -45,13 +45,13 @@ fun EventFilterContent(
             .padding(top = 10.dp),
     ) {
         Column {
-            PreSelectedLabelsList(
+            SelectedLabelsList(
                 labels = state.persons,
                 currentLabel = state.currentPerson,
                 onItemClick = { onAction(EventFilterAction.UsedPersonClicked(it)) }
             )
             HorizontalDivider()
-            PreSelectedLabelsList(
+            SelectedLabelsList(
                 labels = state.places,
                 currentLabel = state.currentPlace,
                 onItemClick = { onAction(EventFilterAction.UsedPlaceClicked(it)) }
