@@ -14,25 +14,19 @@ import com.deslomator.tagtimer.TagTimerApp
 import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
 import com.deslomator.tagtimer.navigation.screen.BackupScreen
 import com.deslomator.tagtimer.navigation.screen.EventFilterScreen
-import com.deslomator.tagtimer.navigation.screen.EventTrashScreen
 import com.deslomator.tagtimer.navigation.screen.LabelSelectionScreen
-import com.deslomator.tagtimer.navigation.screen.LabelsTabScreen
 import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
 import com.deslomator.tagtimer.navigation.screen.TrashTabScreen
 import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
 import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
-import com.deslomator.tagtimer.ui.active.trash.EventTrashScaffold
 import com.deslomator.tagtimer.ui.backup.BackupScaffold
-import com.deslomator.tagtimer.ui.main.labels.LabelsScaffold
 import com.deslomator.tagtimer.ui.main.sessions.SessionsTabScaffold
 import com.deslomator.tagtimer.ui.main.trash.TrashTabScaffold
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.BackupViewModel
 import com.deslomator.tagtimer.viewmodel.EventFilterViewModel
-import com.deslomator.tagtimer.viewmodel.EventTrashViewModel
 import com.deslomator.tagtimer.viewmodel.LabelSelectionViewModel
-import com.deslomator.tagtimer.viewmodel.LabelsTabViewModel
 import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
 import com.deslomator.tagtimer.viewmodel.viewModelFactory
@@ -55,19 +49,6 @@ fun AppNavHost(
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
             SessionsTabScaffold(
-                state = state,
-                onAction = viewModel::onAction,
-                navController = navController,
-            )
-        }
-        composable<LabelsTabScreen> {
-            val viewModel = viewModel<LabelsTabViewModel>(
-                factory = viewModelFactory {
-                    LabelsTabViewModel(TagTimerApp.appModule.appDao)
-                }
-            )
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            LabelsScaffold(
                 state = state,
                 onAction = viewModel::onAction,
                 navController = navController,
@@ -125,20 +106,6 @@ fun AppNavHost(
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
             EventFilterScaffold(
-                navController = navController,
-                state = state,
-                onAction = viewModel::onAction,
-            )
-        }
-        composable<EventTrashScreen> { backStackEntry ->
-            val screen: EventTrashScreen = backStackEntry.toRoute()
-            val viewModel = viewModel<EventTrashViewModel>(
-                factory = viewModelFactory {
-                    EventTrashViewModel(TagTimerApp.appModule.appDao, screen.sessionId)
-                }
-            )
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            EventTrashScaffold(
                 navController = navController,
                 state = state,
                 onAction = viewModel::onAction,
