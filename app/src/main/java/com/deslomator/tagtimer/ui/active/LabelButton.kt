@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui
+package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState

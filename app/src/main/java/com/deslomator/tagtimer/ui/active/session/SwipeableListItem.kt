@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui
+package com.deslomator.tagtimer.ui.active.session
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.SwipeToDismissBox
@@ -10,6 +10,7 @@ import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.util.toDateTime
 
 @Composable
@@ -33,7 +34,7 @@ fun SwipeableListItem(
     SwipeToDismissBox(
         state = dismissState,
         enableDismissFromEndToStart = false,
-        backgroundContent = { DismissBackground(dismissState)},
+        backgroundContent = { DismissBackground(dismissState) },
         content = {
             content()
         })

@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui
+package com.deslomator.tagtimer.ui.active.dialog
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -15,6 +15,9 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelArchiveState
+import com.deslomator.tagtimer.ui.ColorPicker
+import com.deslomator.tagtimer.ui.DialogTextField
+import com.deslomator.tagtimer.ui.MyDialog
 import com.deslomator.tagtimer.ui.theme.toHex
 import com.deslomator.tagtimer.util.toColor
 
