@@ -114,7 +114,7 @@ class EventFilterViewModel(
             }
 
             is EventFilterAction.AcceptEventEditionClicked -> {
-                viewModelScope.launch { appDao.upsertEvent(action.event4d.event) }
+                viewModelScope.launch { appDao.upsertEvent(action.event) }
                 /*
                  state takes some time to update after upserting the event;
                  workaround: we take the updated event out of the list and
@@ -122,15 +122,15 @@ class EventFilterViewModel(
                 */
                 // TODO understand this
                 val maxInList = state.value.filteredEvents
-                    .filter { it.event.id != action.event4d.event.id }
+                    .filter { it.event.id != action.event.id }
                     .maxOfOrNull { it.event.elapsedTimeMillis } ?: 0
-                val duration = maxOf(maxInList, action.event4d.event.elapsedTimeMillis)
+                val duration = maxOf(maxInList, action.event.elapsedTimeMillis)
                 val session = state.value.currentSession.copy(durationMillis = duration)
                 _state.update {
                     it.copy(
                         currentSession = session,
                         showEventEditionDialog = false,
-                        eventForScrollTo = action.event4d
+//                        eventForScrollTo = action.event
                     )
                 }
             }

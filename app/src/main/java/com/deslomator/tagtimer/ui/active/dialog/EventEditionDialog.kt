@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.LabelArchiveState
@@ -24,7 +25,7 @@ import com.deslomator.tagtimer.util.toColor
 @Composable
 fun EventEditionDialog(
     event4d: EventForDisplay,
-    onAccept: (EventForDisplay) -> Unit,
+    onAccept: (Event) -> Unit,
     onDismiss: () -> Unit,
     enabled: Boolean = true,
 ) {
@@ -50,14 +51,12 @@ fun EventEditionDialog(
     MyDialog(
         onDismiss = onDismiss,
         onAccept = {
-            val e4d = event4d.copy(
-                event = event4d.event.copy(
-                    elapsedTimeMillis = elapsed,
-                    note = note.trim(),
-                    color = color
-                )
+            val ev = event4d.event.copy(
+                elapsedTimeMillis = elapsed,
+                note = note.trim(),
+                color = color
             )
-            onAccept(e4d)
+            onAccept(ev)
         },
         dialogState = DialogState.NEW_ITEM,
         archiveState = LabelArchiveState.HIDDEN,

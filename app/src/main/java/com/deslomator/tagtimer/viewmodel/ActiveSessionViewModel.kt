@@ -175,12 +175,11 @@ class ActiveSessionViewModel(
 
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 viewModelScope.launch {
-                    val ev = action.event4d.event
-                    appDao.upsertEvent(ev)
+                    appDao.upsertEvent(action.event)
                     _state.update {
                         it.copy(
                             showEventEditionDialog = false,
-                            eventForScrollTo = action.event4d
+//                            eventForScrollTo = action.event4d
                         )
                     }
                 }
