@@ -28,6 +28,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelSelectionAction
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.DialogArchiveState
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.EmptyListText
@@ -45,7 +46,6 @@ fun LabelSelectionContent(
     snackbarHostState: SnackbarHostState,
     pagerState: PagerState,
     pages: EnumEntries<LabelType>,
-    showArchived: Boolean,
 ) {
     val scope = rememberCoroutineScope()
     BackHandler(
@@ -96,9 +96,9 @@ fun LabelSelectionContent(
                 val unCheckedMessage = stringResource(current.unCheckedStringId)
                 LabelSelectionList(
                     labels = when (current) {
-                        LabelType.TAG -> state.tags.filter { if(showArchived) true else !it.archived }
-                        LabelType.PERSON -> state.persons.filter { if(showArchived) true else !it.archived }
-                        LabelType.PLACE -> state.places.filter { if(showArchived) true else !it.archived }
+                        LabelType.TAG -> state.tags
+                        LabelType.PERSON -> state.persons
+                        LabelType.PLACE -> state.places
                     },
                     selected = when (current) {
                         LabelType.TAG -> state.selectedTags
@@ -146,7 +146,7 @@ fun LabelSelectionContent(
             },
             archiveState = when (state.dialogState) {
                 DialogState.HIDDEN, DialogState.NEW_ITEM -> DialogArchiveState.HIDDEN
-                else -> if (state.currentLabel.archived) DialogArchiveState.UNARCHIVE else DialogArchiveState.ARCHIVE
+                else -> if (state.currentLabel.state == ItemState.ARCHIVED) DialogArchiveState.UNARCHIVE else DialogArchiveState.ARCHIVE
             },
             onArchiveClicked = { onAction(LabelSelectionAction.ArchiveLabelClicked(it)) },
             title =

@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,13 +20,13 @@ import com.deslomator.tagtimer.ui.active.filter.EventFilterScaffold
 import com.deslomator.tagtimer.ui.active.selection.LabelSelectionScaffold
 import com.deslomator.tagtimer.ui.active.session.ActiveSessionScaffold
 import com.deslomator.tagtimer.ui.backup.BackupScaffold
-import com.deslomator.tagtimer.ui.main.sessions.SessionsTabScaffold
+import com.deslomator.tagtimer.ui.main.sessions.SessionsScreenScaffold
 import com.deslomator.tagtimer.ui.active.trash.TrashScaffold
 import com.deslomator.tagtimer.viewmodel.ActiveSessionViewModel
 import com.deslomator.tagtimer.viewmodel.BackupViewModel
 import com.deslomator.tagtimer.viewmodel.EventFilterViewModel
 import com.deslomator.tagtimer.viewmodel.LabelSelectionViewModel
-import com.deslomator.tagtimer.viewmodel.SessionsTabViewModel
+import com.deslomator.tagtimer.viewmodel.SessionsScreenViewModel
 import com.deslomator.tagtimer.viewmodel.TrashTabViewModel
 import com.deslomator.tagtimer.viewmodel.viewModelFactory
 
@@ -42,13 +41,13 @@ fun AppNavHost(
         startDestination = SessionsTabScreen,
     ) {
         composable<SessionsTabScreen> {
-            val viewModel = viewModel<SessionsTabViewModel>(
+            val viewModel = viewModel<SessionsScreenViewModel>(
                 factory = viewModelFactory {
-                    SessionsTabViewModel(TagTimerApp.appModule.appDao)
+                    SessionsScreenViewModel(TagTimerApp.appModule.appDao)
                 }
             )
             val state by viewModel.state.collectAsStateWithLifecycle()
-            SessionsTabScaffold(
+            SessionsScreenScaffold(
                 state = state,
                 onAction = viewModel::onAction,
                 navController = navController,

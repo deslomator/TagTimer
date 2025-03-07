@@ -30,6 +30,8 @@ sealed interface LabelSelectionAction {
     data class SelectPlaceCheckedChange(val place: Label, val checked: Boolean): LabelSelectionAction
     class SortPlacesClicked(val placeSort: LabelSort): LabelSelectionAction
 
+    class ShowEnabledClicked(val show: Boolean): LabelSelectionAction
     class ShowArchivedClicked(val show: Boolean): LabelSelectionAction
+    class ShowTrashedClicked(val show: Boolean): LabelSelectionAction
 
 }

@@ -42,6 +42,9 @@
     <string name="tap_play_to_add_event">Tap Play button to add Events</string>
     <string name="event_sent_to_trash">Event sent to Trash</string>
     <string name="persons">Persons</string>
+    <string name="show_active">show active</string>
+    <string name="show_archived">show archived</string>
+    <string name="show_trashed">show trashed</string>
     <string name="places">Places</string>
     <string name="add_person">Add Person</string>
     <string name="new_person">New Person</string>
@@ -68,7 +71,6 @@
     <string name="event_trash">Event Trash</string>
     <string name="events">Events</string>
     <string name="share_session">Share Session</string>
-    <string name="show_archived">show archived</string>
     <string name="tap_to_select_unselect">Tap to select, Long press to edit label</string>
     <string name="sort_by_name">sort by name</string>
     <string name="sort">Sort</string>

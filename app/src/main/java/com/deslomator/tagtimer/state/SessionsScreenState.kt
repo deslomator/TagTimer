@@ -2,11 +2,11 @@ package com.deslomator.tagtimer.state
 
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.SessionSort
+import com.deslomator.tagtimer.model.type.PreferenceProvider
 
-data class SessionsTabState(
+data class SessionsScreenState(
     val sessions: List<Session> = emptyList(),
-    val sessionSort: SessionSort = SessionSort.LAST_ACCESS,
+    val preferenceProvider: PreferenceProvider = PreferenceProvider(),
     val currentSession: Session = Session(),
     val sessionDialogState: DialogState = DialogState.HIDDEN,
 )

@@ -9,41 +9,62 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.PrefKey
+import com.deslomator.tagtimer.model.type.PreferenceProvider
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
-import com.deslomator.tagtimer.state.SessionsTabState
+import com.deslomator.tagtimer.state.SessionsScreenState
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SessionsTabViewModel(
+class SessionsScreenViewModel(
     private val appDao: AppDao,
 ) : ViewModel() {
 
-    private val _sort = SortProvider.getSessionSort(appDao, viewModelScope)
+//    private val _sort = SortProvider.getSessionSort(appDao, viewModelScope)
 
-    private val _state = MutableStateFlow(SessionsTabState())
+    private val _state = MutableStateFlow(SessionsScreenState())
+
+    private val _prefs = appDao.getPreferences()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _sessions = _sort.flatMapLatest { sSort ->
+    private val _prefProvider = _prefs.mapLatest { prefs ->
+        PreferenceProvider(prefs)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PreferenceProvider())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _sessions = _prefProvider.flatMapLatest { prefProvider ->
 //        Log.d(TAG, "choosing sorted session list")
-        when (sSort) {
-            SessionSort.DATE -> appDao.getSessionsByDate()
-            SessionSort.LAST_ACCESS -> appDao.getSessionsByLastAccess()
-            else -> appDao.getSessionsByName()
+        appDao.getSessions().map { sessions ->
+            val enabled = if (prefProvider.showEnabledSessions()) sessions.filter { it.state == ItemState.ENABLED } else emptyList()
+            val archived = if (prefProvider.showArchivedSessions()) sessions.filter { it.state == ItemState.ARCHIVED } else emptyList()
+            val trashed = if (prefProvider.showTrashedSessions()) sessions.filter { it.state == ItemState.TRASHED } else emptyList()
+            (enabled + archived + trashed).run {
+                when (prefProvider.sessionSort()) {
+                    SessionSort.NAME -> sortedBy { it.name }
+                    SessionSort.DATE -> sortedByDescending { it.sessionDateMillis }
+                    else -> sortedByDescending { it.lastAccessMillis }
+                }
+            }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    val state = combine(_state, _sort, _sessions) { state, sort, sessions ->
+
+
+    val state = combine(_state, _sessions, _prefProvider) { state, sessions, prefProvider ->
         state.copy(
             sessions = sessions,
-            sessionSort = sort
+            preferenceProvider = prefProvider
         )
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsTabState())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), SessionsScreenState())
+
 
     fun onAction(action: SessionsTabAction) {
         when (action) {
@@ -74,6 +95,17 @@ class SessionsTabViewModel(
                 _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
             }
 
+            is SessionsTabAction.ArchiveSessionClicked -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                    val trashed = state.value.currentSession.copy(
+                        running = false,
+                        state = ItemState.ARCHIVED
+                    )
+                    appDao.upsertSession(trashed)
+                }
+            }
+
             is SessionsTabAction.TrashSessionClicked -> {
                 viewModelScope.launch {
                     _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
@@ -96,7 +128,32 @@ class SessionsTabViewModel(
 
             is SessionsTabAction.SessionSortClicked -> {
                 val pref = Preference(
-                    prefKey = PrefKey.SESSION_SORT.name, value = action.sessionSort.name
+                    prefKey = PrefKey.SESSION_SORT,
+                    value = action.sessionSort.name
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
+
+            is SessionsTabAction.ShowEnabledClicked -> {
+                val pref = Preference(
+                    prefKey = PrefKey.SHOW_ENABLED_SESSIONS,
+                    value = action.show.toString()
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
+
+            is SessionsTabAction.ShowArchivedClicked -> {
+                val pref = Preference(
+                    prefKey = PrefKey.SHOW_ARCHIVED_SESSIONS,
+                    value = action.show.toString()
+                )
+                viewModelScope.launch { appDao.upsertPreference(pref) }
+            }
+
+            is SessionsTabAction.ShowTrashedClicked -> {
+                val pref = Preference(
+                    prefKey = PrefKey.SHOW_TRASHED_SESSIONS, value =
+                        action.show.toString()
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }

@@ -77,7 +77,7 @@ class TrashTabViewModel(
             }
             is TrashTabAction.RestoreLabelClicked -> {
                 viewModelScope.launch {
-                    val trashed = action.tag.copy(inTrash = false)
+                    val trashed = action.tag.copy(state = ItemState.TRASHED)
                     appDao.upsertLabel(trashed)
                 }
             }

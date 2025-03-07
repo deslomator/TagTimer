@@ -41,6 +41,7 @@
     <string name="events_count">Eventos: %1d</string>
     <string name="load_backup">Cargar fichero de Copia:\n%1s</string>
     <string name="persons">Personas</string>
+    <string name="show_trashed">mostrar eliminadas</string>
     <string name="places">Lugares</string>
     <string name="labels">Marcadores</string>
     <string name="person_sent_to_trash">Persona enviada a la Papelera</string>
@@ -67,6 +68,7 @@
     <string name="events">Eventos</string>
     <string name="event_trash">Eventos eliminados</string>
     <string name="share_session">Compartir Sesión</string>
+    <string name="show_active">mostrar activas</string>
     <string name="show_archived">mostrar archivadas</string>
     <string name="tap_to_select_unselect">Toca para seleccionar, pulsación larga para editar</string>
     <string name="sort">Ordenar</string>

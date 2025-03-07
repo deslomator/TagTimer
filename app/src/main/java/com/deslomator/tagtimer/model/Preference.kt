@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.PrefKey
 import com.deslomator.tagtimer.model.type.SessionSort
 import kotlinx.serialization.Serializable
 
@@ -11,7 +12,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @Entity(tableName = "preferences")
 data class Preference(
-    @PrimaryKey val prefKey: String,
+    @PrimaryKey val prefKey: PrefKey,
     val value: String
 ) {
     fun getLabelSort(): LabelSort? = when (value) {
@@ -19,10 +20,17 @@ data class Preference(
         LabelSort.NAME.name -> LabelSort.NAME
         else -> null
     }
+
     fun getSessionSort(): SessionSort? = when (value) {
         SessionSort.DATE.name -> SessionSort.DATE
         SessionSort.LAST_ACCESS.name -> SessionSort.LAST_ACCESS
         SessionSort.NAME.name -> SessionSort.NAME
+        else -> null
+    }
+
+    fun getBoolean(): Boolean? = when (value) {
+        "true" -> true
+        "false" -> false
         else -> null
     }
 }

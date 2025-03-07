@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.state.SessionsTabState
+import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -45,7 +45,7 @@ import java.util.TimeZone
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SessionDialog(
-    state: SessionsTabState,
+    state: SessionsScreenState,
     onAction: (SessionsTabAction) -> Unit,
     scope: CoroutineScope,
     snackbarHostState: SnackbarHostState,

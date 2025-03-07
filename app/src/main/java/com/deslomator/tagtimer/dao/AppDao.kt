@@ -121,10 +121,13 @@ interface AppDao {
     @Delete
     suspend fun deleteLabel(label: Label)
 
-    @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 0")
+    @Query("SELECT * FROM labels WHERE type = :type")
+    fun getLabels(type: Int): Flow<List<Label>>
+
+    @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED'")
     fun getActiveLabels(type: Int): Flow<List<Label>>
 
-    @Query("SELECT * FROM labels WHERE type = :type AND in_trash = 1 ORDER BY name ASC")
+    @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED' ORDER BY name ASC")
     fun getTrashedLabels(type: Int): Flow<List<Label>>
 
     /*
@@ -171,10 +174,10 @@ interface AppDao {
     @Delete
     suspend fun deleteSelectedLabel(selectedLabel: Selected)
 
-    @Query("SELECT name, color, in_trash, archived, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    @Query("SELECT name, color, state, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
     fun getSelectedLabelsForSession(sessionId: Long, type: Int): Flow<List<Label>>
 
-    @Query("SELECT name, color, in_trash, archived, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
+    @Query("SELECT name, color, state, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
     suspend fun getSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
 
     @Query("SELECT session_id, label_id FROM selected WHERE session_id = :sessionId")
@@ -216,7 +219,7 @@ interface AppDao {
     /*
     BACKUP AND RESTORE
      */
-    @Query("SELECT * FROM labels WHERE in_trash = 0")
+    @Query("SELECT * FROM labels WHERE state = 'ENABLED'")
     suspend fun getActiveLabelsList(): List<Label>
 
     @Query("SELECT * FROM labels")
@@ -269,9 +272,6 @@ interface AppDao {
     @Upsert
     suspend fun upsertPreferences(preference: List<Preference>)
 
-    @Delete
-    suspend fun deletePreference(preference: Preference)
-
     @Query("SELECT * FROM preferences")
     fun getPreferences(): Flow<List<Preference>>
 
@@ -281,8 +281,6 @@ interface AppDao {
     @Query("SELECT * FROM preferences")
     fun getAllPreferencesList(): List<Preference>
 
-    @Query("SELECT * FROM preferences WHERE prefKey = :key")
-    suspend fun getPreference(key: String): Preference
 }
 
 private const val TAG ="AppDao"

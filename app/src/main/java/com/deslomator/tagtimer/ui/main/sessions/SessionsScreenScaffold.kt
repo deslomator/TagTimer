@@ -8,11 +8,11 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.navigation.screen.BackupScreen
-import com.deslomator.tagtimer.state.SessionsTabState
+import com.deslomator.tagtimer.state.SessionsScreenState
 
 @Composable
-fun SessionsTabScaffold(
-    state: SessionsTabState,
+fun SessionsScreenScaffold(
+    state: SessionsScreenState,
     onAction: (SessionsTabAction) -> Unit,
     navController: NavHostController,
 ) {
@@ -20,17 +20,23 @@ fun SessionsTabScaffold(
     val snackbarHostState = remember { SnackbarHostState() }
     Scaffold(
         topBar = {
-            SessionsTabTopBar(
+            SessionsScreenTopBar(
                 onNewSessionClick = { onAction(SessionsTabAction.AddNewSessionClicked) },
                 onPopulateDbClick = { onAction(SessionsTabAction.PopulateDbClicked) },
                 onBackupClick = { navController.navigate(BackupScreen) },
                 onSessionSortClick = { onAction(SessionsTabAction.SessionSortClicked(it)) },
-                currentSort = state.sessionSort
+                currentSort = state.preferenceProvider.sessionSort(),
+                showEnabled = state.preferenceProvider.showEnabledSessions(),
+                onShowEnabledClick = { onAction(SessionsTabAction.ShowEnabledClicked(it)) },
+                showArchived = state.preferenceProvider.showArchivedSessions(),
+                onShowArchivedClick = { onAction(SessionsTabAction.ShowArchivedClicked(it)) },
+                showTrashed = state.preferenceProvider.showTrashedSessions(),
+                onShowTrashedClick = { onAction(SessionsTabAction.ShowTrashedClicked(it)) },
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         content = { paddingValues ->
-            SessionsTabContent(
+            SessionsScreenContent(
                 paddingValues = paddingValues,
                 outerNavHostController = navController,
                 state = state,

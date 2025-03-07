@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.dao.AppDao
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
@@ -24,11 +25,7 @@ data class Label(
     @ColumnInfo(name = COLUMN_LABEL_COLOR)
     val color: String = colorPickerColors[7].toHex(),
 
-    @SerialName("in_trash")
-    @ColumnInfo(name = "in_trash")
-    val inTrash: Boolean = false,
-
-    val archived: Boolean = false,
+    val state: ItemState = ItemState.ENABLED,
 
     val type: Int = LabelType.TAG.typeId,
 

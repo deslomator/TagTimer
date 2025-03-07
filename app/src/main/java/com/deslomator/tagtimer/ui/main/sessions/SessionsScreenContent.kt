@@ -37,17 +37,17 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.SessionsTabAction
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.navigation.screen.ActiveSessionScreen
-import com.deslomator.tagtimer.state.SessionsTabState
+import com.deslomator.tagtimer.state.SessionsScreenState
 import com.deslomator.tagtimer.ui.MyListItem
 import com.deslomator.tagtimer.ui.theme.contrasted
 import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toDateTime
 
 @Composable
-fun SessionsTabContent(
+fun SessionsScreenContent(
     paddingValues: PaddingValues,
     outerNavHostController: NavHostController,
-    state: SessionsTabState,
+    state: SessionsScreenState,
     onAction: (SessionsTabAction) -> Unit,
     snackbarHostState: SnackbarHostState
 ) {

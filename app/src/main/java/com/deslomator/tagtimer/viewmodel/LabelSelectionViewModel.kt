@@ -8,13 +8,15 @@ import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Selected
 import com.deslomator.tagtimer.model.type.DialogState
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.model.type.PrefKey
+import com.deslomator.tagtimer.model.type.PreferenceProvider
+import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
-import com.deslomator.tagtimer.util.getSort
 import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -35,72 +37,122 @@ class LabelSelectionViewModel(
     private val _sessionId = MutableStateFlow(0L)
     private val _state = MutableStateFlow(LabelSelectionState())
 
-    private val _tagSort = SortProvider.getTagSort(appDao, viewModelScope)
-    private val _personSort = SortProvider.getPersonSort(appDao, viewModelScope)
-    private val _placeSort = SortProvider.getPlaceSort(appDao, viewModelScope)
+    private val _prefs = appDao.getPreferences()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _tags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.TAG.typeId)
+    private val _prefProvider = _prefs.mapLatest { prefs ->
+        PreferenceProvider(prefs)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PreferenceProvider())
+
+    /*@OptIn(ExperimentalCoroutinesApi::class)
+    private val _tags = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getActiveLabels(LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())*/
+
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _selectedTags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
+    private val _tags = _prefProvider.flatMapLatest { prefProvider ->
+//        Log.d(TAG, "choosing sorted session list")
+        appDao.getLabels(LabelType.TAG.typeId).map { labels ->
+            val enabled = if (prefProvider.showEnabledLabels()) labels.filter { it.type == LabelType.TAG.typeId && it.state == ItemState.ENABLED } else emptyList()
+            val archived = if (prefProvider.showArchivedLabels()) labels.filter {  it.type == LabelType.TAG.typeId && it.state == ItemState.ARCHIVED } else emptyList()
+            val trashed = if (prefProvider.showTrashedLabels()) labels.filter {  it.type == LabelType.TAG.typeId && it.state == ItemState.TRASHED } else emptyList()
+            (enabled + archived + trashed).run {
+                when (prefProvider.tagSort()) {
+                    LabelSort.NAME -> sortedBy { it.name }
+                    LabelSort.COLOR -> sortedBy { it.color.toColor().hue() }
+                }
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _persons = _prefProvider.flatMapLatest { prefProvider ->
+//        Log.d(TAG, "choosing sorted session list")
+        appDao.getLabels(LabelType.PERSON.typeId).map { labels ->
+            val enabled = if (prefProvider.showEnabledLabels()) labels.filter {  it.type == LabelType.PERSON.typeId && it.state == ItemState.ENABLED } else emptyList()
+            val archived = if (prefProvider.showArchivedLabels()) labels.filter { it.type == LabelType.PERSON.typeId && it.state == ItemState.ARCHIVED } else emptyList()
+            val trashed = if (prefProvider.showTrashedLabels()) labels.filter { it.type == LabelType.PERSON.typeId && it.state == ItemState.TRASHED } else emptyList()
+            (enabled + archived + trashed).run {
+                when (prefProvider.tagSort()) {
+                    LabelSort.NAME -> sortedBy { it.name }
+                    LabelSort.COLOR -> sortedBy { it.color.toColor().hue() }
+                }
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _places = _prefProvider.flatMapLatest { prefProvider ->
+//        Log.d(TAG, "choosing sorted session list")
+        appDao.getLabels(LabelType.PLACE.typeId).map { labels ->
+            val enabled = if (prefProvider.showEnabledLabels()) labels.filter { it.type == LabelType.PLACE.typeId && it.state == ItemState.ENABLED } else emptyList()
+            val archived = if (prefProvider.showArchivedLabels()) labels.filter { it.type == LabelType.PLACE.typeId && it.state == ItemState.ARCHIVED } else emptyList()
+            val trashed = if (prefProvider.showTrashedLabels()) labels.filter { it.type == LabelType.PLACE.typeId && it.state == ItemState.TRASHED } else emptyList()
+            (enabled + archived + trashed).run {
+                when (prefProvider.tagSort()) {
+                    LabelSort.NAME -> sortedBy { it.name }
+                    LabelSort.COLOR -> sortedBy { it.color.toColor().hue() }
+                }
+            }
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+
+
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _selectedTags = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _persons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PERSON.typeId)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
+    private val _persons = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getActiveLabels(LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getActiveLabels(LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _selectedPersons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
+    private val _selectedPersons = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _places = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getActiveLabels(LabelType.PLACE.typeId)
+    /*@OptIn(ExperimentalCoroutinesApi::class)
+    private val _places = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getActiveLabels(LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())*/
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _selectedPlaces = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME.sortId) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
+    private val _selectedPlaces = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE.typeId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _showArchived = appDao.getPreferenceValue(PrefKey.SHOW_ARCHIVED.name)
-        .mapLatest { it == true.toString() }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
-
     val state = combine(
         _state, _selectedTags, _tags, _selectedPersons, _persons,
-        _selectedPlaces, _places, _tagSort, _personSort, _placeSort, _showArchived
+        _selectedPlaces, _places, _prefProvider
     ) { state, selectedTags, tags, selectedPersons, persons,
-        selectedPlaces, places, tagSort, personSort, placeSort, showArchived ->
+        selectedPlaces, places, prefProvider ->
         state.copy(
             selectedTags = selectedTags,
             tags = tags,
@@ -108,10 +160,7 @@ class LabelSelectionViewModel(
             persons = persons,
             selectedPlaces = selectedPlaces,
             places = places,
-            tagSort = tagSort.getSort(),
-            personSort = personSort.getSort(),
-            placeSort = placeSort.getSort(),
-            showArchived = showArchived
+            preferenceProvider = prefProvider,
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), LabelSelectionState()
@@ -164,21 +213,21 @@ class LabelSelectionViewModel(
                     dialogState = DialogState.HIDDEN,
                 ) }
                 viewModelScope.launch {
-                    val trashed = action.label.copy(inTrash = true)
+                    val trashed = action.label.copy(state = ItemState.TRASHED)
                     appDao.upsertLabel(trashed)
                 }
             }
 
             is LabelSelectionAction.ArchiveLabelClicked -> {
-                val newValue = !action.label.archived
+                val newValue = if (action.label.state == ItemState.ARCHIVED) ItemState.ENABLED else ItemState.ARCHIVED
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
                 viewModelScope.launch {
-                    val archived = action.label.copy(archived = newValue)
+                    val archived = action.label.copy(state = newValue)
                     appDao.upsertLabel(archived)
                     // remove selection if we are archiving a label
-                    if (newValue) {
+                    if (newValue == ItemState.ARCHIVED) {
                         val pst = Selected(
                             sessionId = _sessionId.value,
                             labelId = action.label.id!!
@@ -200,8 +249,8 @@ class LabelSelectionViewModel(
                     if (action.checked) {
                         appDao.upsertSelectedLabel(pst)
                         // unarchive the label if necessary
-                        if (action.tag.archived) {
-                            val lbl = action.tag.copy(archived = false)
+                        if (action.tag.state == ItemState.ARCHIVED) {
+                            val lbl = action.tag.copy(state = ItemState.ENABLED)
                             appDao.upsertLabel(lbl)
                         }
                     } else {
@@ -212,8 +261,8 @@ class LabelSelectionViewModel(
 
             is LabelSelectionAction.SortTagsClicked -> {
                 val pref = Preference(
-                    prefKey = PrefKey.TAG_SORT.name,
-                    value = action.tagSort.sortId
+                    prefKey = PrefKey.TAG_SORT,
+                    value = action.tagSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -230,8 +279,8 @@ class LabelSelectionViewModel(
                     if (action.checked) {
                         appDao.upsertSelectedLabel(pst)
                         // unarchive the label if necessary
-                        if (action.person.archived) {
-                            val lbl = action.person.copy(archived = false)
+                        if (action.person.state == ItemState.ARCHIVED) {
+                            val lbl = action.person.copy(state = ItemState.ENABLED)
                             appDao.upsertLabel(lbl)
                         }
                     } else {
@@ -242,8 +291,8 @@ class LabelSelectionViewModel(
 
             is LabelSelectionAction.SortPersonsClicked -> {
                 val pref = Preference(
-                    prefKey = PrefKey.PERSON_SORT.name,
-                    value = action.personSort.sortId
+                    prefKey = PrefKey.PERSON_SORT,
+                    value = action.personSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
@@ -260,8 +309,8 @@ class LabelSelectionViewModel(
                     if (action.checked) {
                         appDao.upsertSelectedLabel(pst)
                         // unarchive the label if necessary
-                        if (action.place.archived) {
-                            val lbl = action.place.copy(archived = false)
+                        if (action.place.state == ItemState.ARCHIVED) {
+                            val lbl = action.place.copy(state = ItemState.ENABLED)
                             appDao.upsertLabel(lbl)
                         }
                     } else {
@@ -272,15 +321,27 @@ class LabelSelectionViewModel(
 
             is LabelSelectionAction.SortPlacesClicked -> {
                 val pref = Preference(
-                    prefKey = PrefKey.PLACE_SORT.name,
-                    value = action.placeSort.sortId
+                    prefKey = PrefKey.PLACE_SORT,
+                    value = action.placeSort.name
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
 
+            is LabelSelectionAction.ShowEnabledClicked -> {
+                viewModelScope.launch {
+                    appDao.upsertPreference(Preference(PrefKey.SHOW_ENABLED_LABELS, action.show.toString()))
+                }
+            }
+
             is LabelSelectionAction.ShowArchivedClicked -> {
                 viewModelScope.launch {
-                    appDao.upsertPreference(Preference(PrefKey.SHOW_ARCHIVED.name, action.show.toString()))
+                    appDao.upsertPreference(Preference(PrefKey.SHOW_ARCHIVED_LABELS, action.show.toString()))
+                }
+            }
+
+            is LabelSelectionAction.ShowTrashedClicked -> {
+                viewModelScope.launch {
+                    appDao.upsertPreference(Preference(PrefKey.SHOW_TRASHED_LABELS, action.show.toString()))
                 }
             }
         }

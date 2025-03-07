@@ -32,25 +32,23 @@ fun LabelSelectionScaffold(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            LabelsTopBar(
+            LabelSelectionTopBar(
                 pages = pages,
                 currentPage = pagerState.currentPage,
                 onAddLabelClick = { onAction(LabelSelectionAction.AddNewLabelClicked(it)) },
                 dialogState = state.dialogState,
-                tagSort = state.tagSort,
-                personSort = state.personSort,
-                placeSort = state.placeSort,
+                tagSort = state.preferenceProvider.tagSort(),
                 onTagSort = { onAction(LabelSelectionAction.SortTagsClicked(it)) },
+                personSort = state.preferenceProvider.personSort(),
                 onPersonSort = { onAction(LabelSelectionAction.SortPersonsClicked(it)) },
+                placeSort = state.preferenceProvider.placeSort(),
                 onPlaceSort = { onAction(LabelSelectionAction.SortPlacesClicked(it)) },
-                showArchived = state.showArchived,
-                onShowArchivedChanged = {
-                    onAction(
-                        LabelSelectionAction.ShowArchivedClicked(
-                            it
-                        )
-                    )
-                }
+                showEnabled = state.preferenceProvider.showEnabledLabels(),
+                onShowEnabledClick = { onAction(LabelSelectionAction.ShowEnabledClicked(it)) },
+                showArchived = state.preferenceProvider.showArchivedLabels(),
+                onShowArchivedClick = { onAction(LabelSelectionAction.ShowArchivedClicked(it)) },
+                showTrashed = state.preferenceProvider.showTrashedLabels(),
+                onShowTrashedClick = { onAction(LabelSelectionAction.ShowTrashedClicked(it)) },
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
@@ -69,7 +67,6 @@ fun LabelSelectionScaffold(
             snackbarHostState = snackbarHostState,
             pagerState = pagerState,
             pages = pages,
-            showArchived = state.showArchived,
         )
     }
 }

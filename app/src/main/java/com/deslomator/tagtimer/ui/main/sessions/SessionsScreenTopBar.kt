@@ -1,6 +1,7 @@
 package com.deslomator.tagtimer.ui.main.sessions
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,12 +25,18 @@ import com.deslomator.tagtimer.ui.theme.topBarColors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SessionsTabTopBar(
+fun SessionsScreenTopBar(
     onNewSessionClick: () -> Unit,
     onPopulateDbClick: () -> Unit,
     onBackupClick: () -> Unit,
+    currentSort: SessionSort,
     onSessionSortClick: (SessionSort) -> Unit,
-    currentSort: SessionSort
+    showEnabled: Boolean,
+    onShowEnabledClick: (Boolean) -> Unit,
+    showArchived: Boolean,
+    onShowArchivedClick: (Boolean) -> Unit,
+    showTrashed: Boolean,
+    onShowTrashedClick: (Boolean) -> Unit,
 ) {
     var showMenu by rememberSaveable { mutableStateOf(false) }
     TopAppBar(
@@ -104,6 +111,67 @@ fun SessionsTabTopBar(
                         },
                     )
                 }
+                HorizontalDivider()
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = showEnabled,
+                                onCheckedChange = {
+                                    showMenu = false
+                                    onShowEnabledClick(it)
+                                }
+                            )
+                            Text(text = stringResource(R.string.show_active))
+                        }
+                    },
+                    onClick = {
+                        showMenu = false
+                        onShowEnabledClick(!showEnabled)
+                    },
+                )
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = showArchived,
+                                onCheckedChange = {
+                                    showMenu = false
+                                    onShowArchivedClick(it)
+                                }
+                            )
+                            Text(text = stringResource(R.string.show_archived))
+                        }
+                    },
+                    onClick = {
+                        showMenu = false
+                        onShowArchivedClick(!showArchived)
+                    },
+                )
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Checkbox(
+                                checked = showTrashed,
+                                onCheckedChange = {
+                                    showMenu = false
+                                    onShowTrashedClick(it)
+                                }
+                            )
+                            Text(text = stringResource(R.string.show_trashed))
+                        }
+                    },
+                    onClick = {
+                        showMenu = false
+                        onShowTrashedClick(!showTrashed)
+                    },
+                )
             }
         },
         colors = topBarColors()

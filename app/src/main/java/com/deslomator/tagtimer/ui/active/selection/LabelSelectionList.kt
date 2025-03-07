@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Checked
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.ui.active.LabelButton
 
 @Composable
@@ -48,7 +49,7 @@ fun LabelSelectionList(
                 onLongClick = { onLongClick(label) },
                 checked = checked,
                 checkType = Checked.TRAILING,
-                archived = label.archived
+                archived = label.state == ItemState.ARCHIVED
             )
         }
     }
