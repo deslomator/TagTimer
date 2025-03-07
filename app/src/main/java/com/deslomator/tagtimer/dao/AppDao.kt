@@ -122,30 +122,30 @@ interface AppDao {
     suspend fun deleteLabel(label: Label)
 
     @Query("SELECT * FROM labels WHERE type = :type")
-    fun getLabels(type: Int): Flow<List<Label>>
+    fun getLabels(type: LabelType): Flow<List<Label>>
 
     @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED'")
-    fun getActiveLabels(type: Int): Flow<List<Label>>
+    fun getActiveLabels(type: LabelType): Flow<List<Label>>
 
     @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED' ORDER BY name ASC")
-    fun getTrashedLabels(type: Int): Flow<List<Label>>
+    fun getTrashedLabels(type: LabelType): Flow<List<Label>>
 
     /*
     TAGS
      */
     //fun getActiveTags() = getActiveLabels(LabelType.TAG.typeId)
-    fun getTrashedTags() = getTrashedLabels(LabelType.TAG.typeId)
+    fun getTrashedTags() = getTrashedLabels(LabelType.TAG)
     /*
     PERSONS
      */
     //fun getActivePersons() = getActiveLabels(LabelType.PERSON.typeId)
-    fun getTrashedPersons() = getTrashedLabels(LabelType.PERSON.typeId)
+    fun getTrashedPersons() = getTrashedLabels(LabelType.PERSON)
 
     /*
     PLACES
      */
     //fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
-    fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE.typeId)
+    fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE)
 
     @Query("SELECT COUNT(*) FROM events WHERE tagId = :labelId OR personId = :labelId OR placeId = :labelId")
     suspend fun getSEventsForTag(labelId: Long): Int
@@ -175,10 +175,10 @@ interface AppDao {
     suspend fun deleteSelectedLabel(selectedLabel: Selected)
 
     @Query("SELECT name, color, state, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
-    fun getSelectedLabelsForSession(sessionId: Long, type: Int): Flow<List<Label>>
+    fun getSelectedLabelsForSession(sessionId: Long, type: LabelType): Flow<List<Label>>
 
     @Query("SELECT name, color, state, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
-    suspend fun getSelectedLabelsListForSession(sessionId: Long, type: Int): List<Label>
+    suspend fun getSelectedLabelsListForSession(sessionId: Long, type: LabelType): List<Label>
 
     @Query("SELECT session_id, label_id FROM selected WHERE session_id = :sessionId")
     suspend fun getSelectedLabelsListForSession(sessionId: Long): List<Selected>
@@ -191,21 +191,21 @@ interface AppDao {
      */
     //fun getSelectedTagsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
     suspend fun getSelectedTagsListForSession(sessionId: Long) =
-        getSelectedLabelsListForSession(sessionId, LabelType.TAG.typeId)
+        getSelectedLabelsListForSession(sessionId, LabelType.TAG)
 
     /*
     SELECTED PERSONS
      */
     //fun getSelectedPersonsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
     suspend fun getSelectedPersonsListForSession(sessionId: Long) =
-        getSelectedLabelsListForSession(sessionId, LabelType.PERSON.typeId)
+        getSelectedLabelsListForSession(sessionId, LabelType.PERSON)
 
     /*
     SELECTED PLACES
      */
     //fun getSelectedPlacesForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
     suspend fun getSelectedPlacesListForSession(sessionId: Long) =
-        getSelectedLabelsListForSession(sessionId, LabelType.PLACE.typeId)
+        getSelectedLabelsListForSession(sessionId, LabelType.PLACE)
 
     /*
     ORPHANS

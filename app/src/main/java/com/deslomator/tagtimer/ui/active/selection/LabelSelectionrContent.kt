@@ -128,7 +128,7 @@ fun LabelSelectionContent(
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        val message = stringResource(id = state.currentLabel.getLabelType().messageId)
+        val message = stringResource(id = state.currentLabel.type.messageId)
         LabelDialog(
             currentLabel = state.currentLabel,
             onDismiss = { onAction(LabelSelectionAction.DismissLabelDialog) },
@@ -153,9 +153,9 @@ fun LabelSelectionContent(
             if (
                 state.dialogState == DialogState.EDIT_NO_DELETE ||
                 state.dialogState == DialogState.EDIT_CAN_DELETE
-            ) state.currentLabel.getLabelType().editTitleId
-            else state.currentLabel.getLabelType().newTitleId,
-            icon = state.currentLabel.getLabelType().iconId
+            ) state.currentLabel.type.editTitleId
+            else state.currentLabel.type.newTitleId,
+            icon = state.currentLabel.type.iconId
         )
     }
 }

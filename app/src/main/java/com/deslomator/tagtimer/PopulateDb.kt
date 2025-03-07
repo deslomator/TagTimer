@@ -15,7 +15,12 @@ suspend fun populateDb (dao: AppDao) {
         val names = listOf("fs", "sf", "hfg", "kk", "aff", "gss", "sf", "fsh", "gds", "dg", "ff", "gs",)
         val maxName = names.size - 1
         val name = names[(0..maxName).random()]
-        val type = (0..2).random()
+        val randType = (0..2).random()
+        val type = when (randType) {
+            0 -> LabelType.TAG
+            1 -> LabelType.PERSON
+            else -> LabelType.PLACE
+        }
         val rndtag = Label(
             name = name + (0..12).random(),
             color = color.toHex(),

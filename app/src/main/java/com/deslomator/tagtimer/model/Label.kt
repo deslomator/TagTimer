@@ -27,25 +27,19 @@ data class Label(
 
     val state: ItemState = ItemState.ENABLED,
 
-    val type: Int = LabelType.TAG.typeId,
+    val type: LabelType = LabelType.TAG,
 
     @PrimaryKey(autoGenerate = true) val id: Long? = null,
 ) {
     @delegate:Ignore
     val longColor: Long by lazy { color.toLong(16) }
 
-    fun isPerson(): Boolean = type == LabelType.PERSON.typeId
+    fun isPerson(): Boolean = type == LabelType.PERSON
 
     fun getIcon() = when (type) {
-        LabelType.TAG.typeId -> LabelType.TAG.iconId
-        LabelType.PERSON.typeId -> LabelType.PERSON.iconId
+        LabelType.TAG -> LabelType.TAG.iconId
+        LabelType.PERSON -> LabelType.PERSON.iconId
         else -> LabelType.PLACE.iconId
-    }
-
-    fun getLabelType() = when (type) {
-        LabelType.TAG.typeId -> LabelType.TAG
-        LabelType.PERSON.typeId -> LabelType.PERSON
-        else -> LabelType.PLACE
     }
 
     suspend fun canBeDeleted(appDao: AppDao) =
