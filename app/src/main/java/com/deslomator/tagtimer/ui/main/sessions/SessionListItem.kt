@@ -105,14 +105,14 @@ fun SessionListItem(
             Spacer(modifier = Modifier.width(10.dp))
         }
 
-        when (session.state) {
+        when (val s = session.state) {
             ItemState.ENABLED -> {}
             ItemState.ARCHIVED -> {
                 Icon(
                 modifier = Modifier.offset(x = 5.dp, y = -10.dp)
                     .size(40.dp)
                     .alpha(.6F),
-                    painter = painterResource(R.drawable.folder),
+                    painter = painterResource(s.iconId),
                     contentDescription = "running",
                 )
             }
@@ -122,7 +122,7 @@ fun SessionListItem(
                     modifier = Modifier.offset(x = 5.dp, y = -10.dp)
                         .size(40.dp)
                         .alpha(.6F),
-                    painter = painterResource(R.drawable.trash),
+                    painter = painterResource(s.iconId),
                     contentDescription = "running",
                 )
             }

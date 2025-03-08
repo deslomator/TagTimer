@@ -28,7 +28,6 @@ fun LabelTrash(
         ) { label ->
             LabelButton(
                 label = label,
-                isTrash = true,
                 onLeadingClick = { onRestoreClick(it) },
                 onTrailingClick = { onPurgeClick(it) },
             )

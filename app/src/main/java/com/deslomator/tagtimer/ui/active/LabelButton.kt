@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Checked
+import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.ui.theme.VeryLightGray
 import com.deslomator.tagtimer.ui.theme.brightness
 import com.deslomator.tagtimer.ui.theme.contrasted
@@ -40,7 +41,6 @@ import com.deslomator.tagtimer.ui.theme.contrasted
 fun LabelButton(
     modifier: Modifier = Modifier,
     label: Label,
-    isTrash: Boolean = false,
     iconSize: Dp = 26.dp,
     onLeadingClick: ((Label) -> Unit)? = null,
     onItemClick: ((Label) -> Unit)? = null,
@@ -48,7 +48,6 @@ fun LabelButton(
     onTrailingClick: ((Label) -> Unit)? = null,
     checked: Boolean = true,
     checkType: Checked = Checked.NONE,
-    archived: Boolean = false,
 ) {
     val borderWidth =  if (label.isPerson()) 5.dp else 1.dp
     val borderColor = if (label.isPerson()) {
@@ -71,21 +70,12 @@ fun LabelButton(
             else containerColor.contrasted()
         }
     }
-    val leadingIcon = if (isTrash) {
-        R.drawable.untrash
-    } else {
-        label.getIcon()
-    }
-    val trailingIcon = when {
-        isTrash -> R.drawable.delete_forever
-        archived -> R.drawable.folder
-        else -> null
-    }
-    val iconPadding = if (isTrash) 9.dp else 0.dp
     val containerPadding by animateDpAsState(
         targetValue = if (checked && checkType == Checked.LEADING) 12.dp else 5.dp
     )
-    Box {
+    Box(
+        contentAlignment = Alignment.CenterEnd
+    ) {
         Row(
             modifier = modifier
                 .then(onItemClick?.let {
@@ -106,9 +96,8 @@ fun LabelButton(
                     .then(onLeadingClick?.let {
                         Modifier.clickable(onClick = { it(label) })
                     } ?: Modifier)
-                    .padding(iconPadding)
                     .size(iconSize),
-                painter = painterResource(id = leadingIcon),
+                painter = painterResource(id = label.getIcon()),
                 contentDescription = "restore",
                 tint = contentColor
             )
@@ -120,30 +109,38 @@ fun LabelButton(
                 maxLines = 1,
                 overflow = TextOverflow.Clip
             )
-            trailingIcon?.let {
-                Icon(
-                    modifier = Modifier
-                        .clickable(
-                            onClick = { onTrailingClick?.invoke(label) }
-                        )
-                        .padding(iconPadding)
-                        .size(iconSize),
-                    painter = painterResource(id = it),
-                    contentDescription = "delete forever",
-                    tint = contentColor
-                )
+            when (val s = label.state) {
+                ItemState.ENABLED -> { }
+                ItemState.ARCHIVED -> {
+                    Icon(
+                        modifier = Modifier.size(iconSize),
+                        painter = painterResource(id = s.iconId),
+                        contentDescription = "delete forever",
+                        tint = contentColor
+                    )
+                }
+                ItemState.TRASHED -> {
+                    Icon(
+                        modifier = Modifier.size(iconSize),
+                        painter = painterResource(id = s.iconId),
+                        contentDescription = "delete forever",
+                        tint = contentColor
+                    )
+                }
             }
-            AnimatedVisibility(visible = checked && checkType == Checked.TRAILING) {
-                Icon(
-                    modifier = Modifier
-                        .size(iconSize),
-                    painter = painterResource(id = R.drawable.check),
-                    contentDescription = "checked",
-                    tint = contentColor
-                )
-            }
+        }
+        AnimatedVisibility(visible = checked && checkType == Checked.TRAILING) {
+            Icon(
+                modifier = Modifier
+                    .size(iconSize)
+                    .padding(end = 4.dp),
+                painter = painterResource(id = R.drawable.check),
+                contentDescription = "checked",
+                tint = contentColor
+            )
         }
     }
 }
+
 
 private const val TAG = "LabelButton"

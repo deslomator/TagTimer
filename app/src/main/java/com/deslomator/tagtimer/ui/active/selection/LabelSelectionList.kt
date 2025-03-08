@@ -49,7 +49,6 @@ fun LabelSelectionList(
                 onLongClick = { onLongClick(label) },
                 checked = checked,
                 checkType = Checked.TRAILING,
-                archived = label.state == ItemState.ARCHIVED
             )
         }
     }

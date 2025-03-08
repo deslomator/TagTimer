@@ -1,6 +1,5 @@
 package com.deslomator.tagtimer.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelSelectionAction
@@ -260,10 +259,8 @@ class LabelSelectionViewModel(
                     if (action.checked) {
                         appDao.upsertSelected(pst)
                         // unarchive the label if necessary
-                        if (action.tag.state == ItemState.ARCHIVED) {
-                            val lbl = action.tag.copy(state = ItemState.ENABLED)
-                            appDao.upsertLabel(lbl)
-                        }
+                        val checked = action.tag.copy(state = ItemState.ENABLED)
+                        appDao.upsertLabel(checked)
                     } else {
                         appDao.deleteSelected(pst)
                     }
@@ -359,7 +356,7 @@ class LabelSelectionViewModel(
     }
 
     init {
-        
+
         viewModelScope.launch {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))
