@@ -109,21 +109,23 @@ fun SessionListItem(
             ItemState.ENABLED -> {}
             ItemState.ARCHIVED -> {
                 Icon(
-                modifier = Modifier.offset(x = 5.dp, y = -10.dp)
-                    .size(40.dp)
-                    .alpha(.6F),
+                    modifier = Modifier.offset(x = 5.dp, y = -10.dp)
+                        .size(35.dp)
+                        .alpha(.85F),
                     painter = painterResource(s.iconId),
                     contentDescription = "running",
-                )
+                    tint = session.color.toColor().contrasted()
+                    )
             }
 
             ItemState.TRASHED -> {
                 Icon(
                     modifier = Modifier.offset(x = 5.dp, y = -10.dp)
                         .size(40.dp)
-                        .alpha(.6F),
+                        .alpha(.85F),
                     painter = painterResource(s.iconId),
                     contentDescription = "running",
+                    tint = session.color.toColor().contrasted()
                 )
             }
         }
