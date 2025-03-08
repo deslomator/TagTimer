@@ -1,32 +1,31 @@
 package com.deslomator.tagtimer.ui.active.trash
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
-import com.deslomator.tagtimer.model.type.Trash
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.ui.TabIndicator
+import com.deslomator.tagtimer.ui.active.EventListItem
+import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 import com.deslomator.tagtimer.ui.showSnackbar
-import kotlinx.coroutines.launch
 
 @Composable
 fun TrashContent(
@@ -37,119 +36,69 @@ fun TrashContent(
 ) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-    val pages = remember { listOf(Trash.Event, Trash.Session, Trash.Tag, Trash.Person, Trash.Place) }
-    val pagerState = rememberPagerState(initialPage = 1) { pages.size }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues),
+            .padding(paddingValues)
     ) {
-        Column {
-            TabRow(
-                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
-                containerColor = MaterialTheme.colorScheme.background,
-                selectedTabIndex = pagerState.currentPage,
-                divider = { },
-                indicator = { tabPositions ->
-                    TabIndicator(tabPositions = tabPositions, pagerState = pagerState)
-                }
-            ) {
-                pages.forEachIndexed { index, page ->
-                    Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } }
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(bottom = 7.dp, top = 7.dp),
-                            text = stringResource(id = page.stringId),
-                            fontWeight = if (pagerState.currentPage == index) FontWeight.Bold
-                            else FontWeight.Normal,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth(),
+            contentPadding = PaddingValues(6.dp),
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
+            if (state.trashedEvents.isEmpty()) {
+                item {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        text = stringResource(id = R.string.event_trash_is_empty)
+                    )
                 }
             }
-            HorizontalPager(
-                modifier = Modifier.weight(1F),
-                state = pagerState,
-                beyondViewportPageCount = 1
-            ) { page ->
-                when (pages[page]) {
-                    Trash.Event -> {
-                        EventTrash(state, scope, snackbarHostState, context, onAction)
-                    }
-                    Trash.Session -> {
-                        SessionTrash(state, onAction, scope, snackbarHostState, context)
-                    }
-                    Trash.Tag -> {
-                        LabelTrash(
-                            items = state.tags,
-                            onRestoreClick = {
-                                onAction(TrashTabAction.RestoreLabelClicked(it))
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    context.getString(R.string.tag_untrashed)
-                                )
-                            },
-                            onPurgeClick = {
-                                onAction(
-                                    TrashTabAction.DeleteLabelClicked(it))
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    context.getString(R.string.tag_purged)
-                                )
-                            },
+            items(
+                items = state.trashedEvents,
+                key = { it.event.id!! }
+            ) { event4d ->
+                EventListItem(
+                    event4d = event4d,
+                    leadingIcon = R.drawable.untrash,
+                    onLeadingClick = {
+                        showSnackbar(
+                            scope,
+                            snackbarHostState,
+                            context.getString(R.string.event_restored)
                         )
-                    }
-                    Trash.Person -> {
-                        LabelTrash(
-                            items = state.persons,
-                            onRestoreClick = {
-                                onAction(TrashTabAction.RestoreLabelClicked(it))
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    context.getString(R.string.person_untrashed)
-                                )
-                            },
-                            onPurgeClick = {
-                                onAction(
-                                    TrashTabAction.DeleteLabelClicked(it))
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    context.getString(R.string.person_purged)
-                                )
-                            },
+                        onAction(TrashTabAction.RestoreEventClicked(event4d))
+                    },
+                    trailingIcon = R.drawable.delete_forever,
+                    onTrailingClick = {
+                        showSnackbar(
+                            scope,
+                            snackbarHostState,
+                            context.getString(R.string.event_deleted)
                         )
-                    }
-                    Trash.Place -> {
-                        LabelTrash(
-                            items = state.places,
-                            onRestoreClick = {
-                                onAction(TrashTabAction.RestoreLabelClicked(it))
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    context.getString(R.string.place_untrashed)
-                                )
-                            },
-                            onPurgeClick = {
-                                onAction(
-                                    TrashTabAction.DeleteLabelClicked(it))
-                                showSnackbar(
-                                    scope,
-                                    snackbarHostState,
-                                    context.getString(R.string.place_purged)
-                                )
-                            },
-                        )
-                    }
-                }
+                        onAction(TrashTabAction.DeleteEventClicked(event4d))
+                    },
+                    onItemClick = { onAction(TrashTabAction.EventInTrashClicked(event4d)) },
+                )
             }
         }
+        AnimatedVisibility(
+            visible = state.showEventInTrashDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            EventEditionDialog(
+                event4d = state.eventForDialog,
+                onAccept = { onAction(TrashTabAction.DismissEventInTrashDialog) },
+                onDismiss = { onAction(TrashTabAction.DismissEventInTrashDialog) },
+                enabled = false
+            )
+        }
     }
+
+
+
 }
 

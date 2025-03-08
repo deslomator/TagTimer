@@ -1,8 +1,7 @@
 package com.deslomator.tagtimer.state
 
-import com.deslomator.tagtimer.model.ancillary.EventForDisplay
-import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Session
+import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 
 data class TrashTabState(
     val currentSession: Session = Session(),
@@ -10,8 +9,4 @@ data class TrashTabState(
     val eventForDialog: EventForDisplay = EventForDisplay(),
     val showEventInTrashDialog: Boolean = false,
     val trashedEvents: List<EventForDisplay> = emptyList(),
-    val sessions: List<Session> = emptyList(),
-    val tags: List<Label> = emptyList(),
-    val persons: List<Label> = emptyList(),
-    val places: List<Label> = emptyList(),
 )
