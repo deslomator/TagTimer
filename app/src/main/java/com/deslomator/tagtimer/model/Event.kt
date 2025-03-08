@@ -27,7 +27,10 @@ import kotlinx.serialization.Serializable
 )
 data class Event(
     @SerialName("session_id")
-    @ColumnInfo(name = "session_id")
+    @ColumnInfo(
+        name = "session_id",
+        index = true
+    )
     val sessionId: Long = 0,
 
     @SerialName("elapsed_time_millis")
@@ -37,8 +40,13 @@ data class Event(
     val note: String = "",
     val color: String = colorPickerColors[7].toHex(),
 
+    @ColumnInfo(name = "tag_id")
     val tagId: Long? = null,
+
+    @ColumnInfo(name = "person_id")
     val personId: Long? = null,
+
+    @ColumnInfo(name = "place_id")
     val placeId: Long? = null,
 
     @SerialName("in_trash")

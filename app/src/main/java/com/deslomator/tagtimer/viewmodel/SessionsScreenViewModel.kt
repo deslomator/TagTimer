@@ -9,7 +9,7 @@ import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.DialogState
 import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.PrefKey
-import com.deslomator.tagtimer.model.type.PreferenceProvider
+import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsScreenState

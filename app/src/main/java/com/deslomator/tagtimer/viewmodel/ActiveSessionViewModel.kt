@@ -7,7 +7,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.type.LabelSort
 import com.deslomator.tagtimer.model.type.LabelType
-import com.deslomator.tagtimer.model.type.PreferenceProvider
+import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine

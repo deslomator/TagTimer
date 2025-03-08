@@ -3,7 +3,7 @@ package com.deslomator.tagtimer.state
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.PreferenceProvider
+import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 
 data class LabelSelectionState(
     val selectedPersons: List<Label> = emptyList(),

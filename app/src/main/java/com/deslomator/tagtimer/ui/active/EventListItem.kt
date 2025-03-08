@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.util.toElapsedTime
 import com.deslomator.tagtimer.ui.MyListItem

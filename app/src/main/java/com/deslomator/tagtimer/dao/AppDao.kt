@@ -6,8 +6,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
-import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.ancillary.LabelForDisplay
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Selected
 import com.deslomator.tagtimer.model.Session
@@ -144,6 +145,10 @@ interface AppDao {
     @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED' ORDER BY name ASC")
     fun getTrashedLabels(type: LabelType): Flow<List<Label>>
 
+    @Transaction
+    @Query("Select * from labels")
+    fun getLabelsForDisplay(): Flow<LabelForDisplay>
+
     /**
     Updating a label's state does not update the item in the list,
     so we get an stale Label when trashing it.
@@ -175,19 +180,19 @@ interface AppDao {
     //fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
     fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE)
 
-    @Query("SELECT COUNT(*) FROM events WHERE tagId = :labelId OR personId = :labelId OR placeId = :labelId")
+    @Query("SELECT COUNT(*) FROM events WHERE tag_id = :labelId OR person_id = :labelId OR place_id = :labelId")
     suspend fun getSEventsForTag(labelId: Long): Int
 
     /*
     USED LABELS
      */
-    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT tagId FROM events WHERE session_id = :sessionId)")
+    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT tag_id FROM events WHERE session_id = :sessionId)")
     fun getUsedTags(sessionId: Long): Flow<List<Label>>
 
-    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT personId FROM events WHERE session_id = :sessionId)")
+    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT person_id FROM events WHERE session_id = :sessionId)")
     fun getUsedPersons(sessionId: Long): Flow<List<Label>>
 
-    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT placeId FROM events WHERE session_id = :sessionId)")
+    @Query("SELECT * FROM labels WHERE id IN (SELECT DISTINCT place_id FROM events WHERE session_id = :sessionId)")
     fun getUsedPlaces(sessionId: Long): Flow<List<Label>>
 
     /*
@@ -309,6 +314,9 @@ interface AppDao {
     @Query("SELECT * FROM preferences")
     fun getAllPreferencesList(): List<Preference>
 
+//    @Transaction
+//    @Query("Select * from preferences")
+//    fun getPreferencesForDisplay(): Flow<PreferenceProvider>
 }
 
 private const val TAG ="AppDao"

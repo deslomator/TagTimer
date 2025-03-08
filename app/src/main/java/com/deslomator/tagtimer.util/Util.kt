@@ -2,7 +2,7 @@ package com.deslomator.tagtimer.util
 
 import android.icu.text.SimpleDateFormat
 import androidx.compose.ui.graphics.Color
-import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Session
 import com.deslomator.tagtimer.model.type.LabelSort
 import java.util.Locale

@@ -44,10 +44,6 @@ data class Session(
     @ColumnInfo(name = "start_timestamp_millis")
     val startTimestampMillis: Long = -1,
 
-   /* @SerialName("in_trash")
-    @ColumnInfo(name = "in_trash")
-    val inTrash: Boolean = false,*/
-
     @SerialName("running")
     @ColumnInfo(name = "running")
     val running: Boolean = false,

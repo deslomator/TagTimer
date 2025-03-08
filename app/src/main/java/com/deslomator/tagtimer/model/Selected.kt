@@ -31,10 +31,14 @@ import kotlinx.serialization.Serializable
 )
 data class Selected(
     @SerialName("session_id")
-    @ColumnInfo(name = "session_id")
+    @ColumnInfo(
+        name = "session_id",
+        index = true)
     val sessionId: Long = 0,
 
     @SerialName("label_id")
-    @ColumnInfo(name = "label_id")
+    @ColumnInfo(
+        name = "label_id",
+        index = true)
     val labelId: Long = 0,
 )

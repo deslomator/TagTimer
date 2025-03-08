@@ -1,6 +1,6 @@
 package com.deslomator.tagtimer.action
 
-import com.deslomator.tagtimer.model.EventForDisplay
+import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.Session
 
