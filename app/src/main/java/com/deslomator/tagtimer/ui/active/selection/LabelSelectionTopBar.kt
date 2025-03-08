@@ -124,7 +124,6 @@ fun LabelSelectionTopBar(
                                             Checkbox(
                                                 checked = showEnabled,
                                                 onCheckedChange = {
-                                                    showMenu = false
                                                     onShowEnabledClick(it)
                                                 }
                                             )
@@ -132,7 +131,6 @@ fun LabelSelectionTopBar(
                                         }
                                     },
                                     onClick = {
-                                        showMenu = false
                                         onShowEnabledClick(!showEnabled)
                                     },
                                 )
@@ -144,7 +142,6 @@ fun LabelSelectionTopBar(
                                             Checkbox(
                                                 checked = showArchived,
                                                 onCheckedChange = {
-                                                    showMenu = false
                                                     onShowArchivedClick(it)
                                                 }
                                             )
@@ -152,7 +149,6 @@ fun LabelSelectionTopBar(
                                         }
                                     },
                                     onClick = {
-                                        showMenu = false
                                         onShowArchivedClick(!showArchived)
                                     },
                                 )
@@ -164,7 +160,6 @@ fun LabelSelectionTopBar(
                                             Checkbox(
                                                 checked = showTrashed,
                                                 onCheckedChange = {
-                                                    showMenu = false
                                                     onShowTrashedClick(it)
                                                 }
                                             )
@@ -172,7 +167,6 @@ fun LabelSelectionTopBar(
                                         }
                                     },
                                     onClick = {
-                                        showMenu = false
                                         onShowTrashedClick(!showTrashed)
                                     },
                                 )

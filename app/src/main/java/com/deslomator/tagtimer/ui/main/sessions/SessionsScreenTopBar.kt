@@ -120,7 +120,6 @@ fun SessionsScreenTopBar(
                             Checkbox(
                                 checked = showEnabled,
                                 onCheckedChange = {
-                                    showMenu = false
                                     onShowEnabledClick(it)
                                 }
                             )
@@ -128,7 +127,6 @@ fun SessionsScreenTopBar(
                         }
                     },
                     onClick = {
-                        showMenu = false
                         onShowEnabledClick(!showEnabled)
                     },
                 )
@@ -140,7 +138,6 @@ fun SessionsScreenTopBar(
                             Checkbox(
                                 checked = showArchived,
                                 onCheckedChange = {
-                                    showMenu = false
                                     onShowArchivedClick(it)
                                 }
                             )
@@ -148,7 +145,6 @@ fun SessionsScreenTopBar(
                         }
                     },
                     onClick = {
-                        showMenu = false
                         onShowArchivedClick(!showArchived)
                     },
                 )
@@ -160,7 +156,6 @@ fun SessionsScreenTopBar(
                             Checkbox(
                                 checked = showTrashed,
                                 onCheckedChange = {
-                                    showMenu = false
                                     onShowTrashedClick(it)
                                 }
                             )
@@ -168,7 +163,6 @@ fun SessionsScreenTopBar(
                         }
                     },
                     onClick = {
-                        showMenu = false
                         onShowTrashedClick(!showTrashed)
                     },
                 )
