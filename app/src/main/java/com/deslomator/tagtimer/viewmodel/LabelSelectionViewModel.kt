@@ -154,10 +154,11 @@ class LabelSelectionViewModel(
                     ItemState.TRASHED -> DialogState.TRASHED
                 }
                 viewModelScope.launch {
-                    val cbd = action.label.canBeDeleted(appDao) //TODO implement this condition in dialog
+                    val cbd = action.label.canBeDeleted(appDao)
                     _state.update {
                         it.copy(
                             currentLabel = action.label,
+                            canBeDeleted = cbd,
                             dialogState = dialogState,
                         )
                     }

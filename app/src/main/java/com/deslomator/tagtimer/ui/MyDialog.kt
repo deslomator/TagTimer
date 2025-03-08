@@ -36,6 +36,7 @@ fun MyDialog(
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
     dialogState: DialogState,
+    canBeDeleted: Boolean = true,
     showCopy: Boolean = true,
     onCopyClicked: () -> Unit,
     onArchiveClicked: () -> Unit,
@@ -106,7 +107,10 @@ fun MyDialog(
                             )
                         }
                     }
-                    if (dialogState == DialogState.ENABLED || dialogState == DialogState.ARCHIVED) {
+                    if (
+                        (dialogState == DialogState.ENABLED || dialogState == DialogState.ARCHIVED) &&
+                        canBeDeleted
+                    ) {
                         IconButton(onClick = onTrashClicked) {
                             Icon(
                                 painter = painterResource(id = R.drawable.trash),

@@ -16,6 +16,7 @@ data class LabelSelectionState(
     val currentSession: Session = Session(),
 
     val currentLabel: Label = Label(),
+    val canBeDeleted: Boolean = false,
     val dialogState: DialogState = DialogState.HIDDEN,
 
     val preferenceProvider: PreferenceProvider = PreferenceProvider()

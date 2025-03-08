@@ -24,6 +24,7 @@ import com.deslomator.tagtimer.util.toColor
 fun LabelDialog(
     currentLabel: Label,
     dialogState: DialogState, //TODO deny deletion of selected labels?
+    canBeDeleted: Boolean,
     onDismiss: () -> Unit,
     onAccept: (Label) -> Unit,
     onArchiveClicked: () -> Unit,
@@ -38,6 +39,7 @@ fun LabelDialog(
     var color by rememberSaveable { mutableStateOf(currentLabel.color) }
     MyDialog(
         dialogState = dialogState,
+        canBeDeleted = canBeDeleted,
         showCopy = false,
         onDismiss = onDismiss,
         onAccept = {

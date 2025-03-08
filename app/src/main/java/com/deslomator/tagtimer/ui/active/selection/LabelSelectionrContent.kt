@@ -138,6 +138,7 @@ fun LabelSelectionContent(
                 onAction(LabelSelectionAction.AcceptLabelEditionClicked(it))
             },
             dialogState = state.dialogState,
+            canBeDeleted = state.canBeDeleted,
             onArchiveClicked = {
                 showSnackbar(
                     scope,
