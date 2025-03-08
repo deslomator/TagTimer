@@ -45,7 +45,6 @@ fun LabelButton(
     onLeadingClick: ((Label) -> Unit)? = null,
     onItemClick: ((Label) -> Unit)? = null,
     onLongClick: ((Label) -> Unit)? = null,
-    onTrailingClick: ((Label) -> Unit)? = null,
     checked: Boolean = true,
     checkType: Checked = Checked.NONE,
 ) {
