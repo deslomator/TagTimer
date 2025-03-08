@@ -8,7 +8,6 @@ import androidx.room.Upsert
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Label
-import com.deslomator.tagtimer.model.ancillary.LabelForDisplay
 import com.deslomator.tagtimer.model.Preference
 import com.deslomator.tagtimer.model.Selected
 import com.deslomator.tagtimer.model.Session
@@ -92,9 +91,6 @@ interface AppDao {
     @Query("SELECT * FROM sessions ORDER BY last_access_millis DESC")
     fun getSessions(): Flow<List<Session>>
 
-    @Query("SELECT * FROM sessions ORDER BY last_access_millis DESC")
-    suspend fun getSessionsList(): List<Session>
-
     @Query("SELECT * FROM sessions WHERE state = :state ORDER BY last_access_millis DESC")
     fun getSessionsByLastAccess(state: String = ItemState.ENABLED.name): Flow<List<Session>>
 
@@ -139,16 +135,6 @@ interface AppDao {
     @Query("SELECT * FROM labels WHERE type = :type")
     fun getLabels(type: LabelType): Flow<List<Label>>
 
-    @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED'")
-    fun getActiveLabels(type: LabelType): Flow<List<Label>>
-
-    @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED' ORDER BY name ASC")
-    fun getTrashedLabels(type: LabelType): Flow<List<Label>>
-
-    @Transaction
-    @Query("Select * from labels")
-    fun getLabelsForDisplay(): Flow<LabelForDisplay>
-
     /**
     Updating a label's state does not update the item in the list,
     so we get an stale Label when trashing it.
@@ -166,19 +152,16 @@ interface AppDao {
     /*
     TAGS
      */
-    //fun getActiveTags() = getActiveLabels(LabelType.TAG.typeId)
-    fun getTrashedTags() = getTrashedLabels(LabelType.TAG)
+    fun getTags() = getLabels(LabelType.TAG)
     /*
     PERSONS
      */
-    //fun getActivePersons() = getActiveLabels(LabelType.PERSON.typeId)
-    fun getTrashedPersons() = getTrashedLabels(LabelType.PERSON)
+    fun getPersons() = getLabels(LabelType.PERSON)
 
     /*
     PLACES
      */
-    //fun getActivePLaces() = getActiveLabels(LabelType.PLACE.typeId)
-    fun getTrashedPlaces() = getTrashedLabels(LabelType.PLACE)
+    fun getPLaces() = getLabels(LabelType.PLACE)
 
     @Query("SELECT COUNT(*) FROM events WHERE tag_id = :labelId OR person_id = :labelId OR place_id = :labelId")
     suspend fun getSEventsForTag(labelId: Long): Int
@@ -222,21 +205,24 @@ interface AppDao {
     /*
     SELECTED TAGS
      */
-    //fun getSelectedTagsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.TAG.typeId)
+    fun getSelectedTagsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.TAG)
+
     suspend fun getSelectedTagsListForSession(sessionId: Long) =
         getSelectedLabelsListForSession(sessionId, LabelType.TAG)
 
     /*
     SELECTED PERSONS
      */
-    //fun getSelectedPersonsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PERSON.typeId)
+    fun getSelectedPersonsForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PERSON)
+
     suspend fun getSelectedPersonsListForSession(sessionId: Long) =
         getSelectedLabelsListForSession(sessionId, LabelType.PERSON)
 
     /*
     SELECTED PLACES
      */
-    //fun getSelectedPlacesForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PLACE.typeId)
+    fun getSelectedPlacesForSession(sessionId: Long) = getSelectedLabelsForSession(sessionId, LabelType.PLACE)
+
     suspend fun getSelectedPlacesListForSession(sessionId: Long) =
         getSelectedLabelsListForSession(sessionId, LabelType.PLACE)
 
@@ -252,8 +238,6 @@ interface AppDao {
     /*
     BACKUP AND RESTORE
      */
-    @Query("SELECT * FROM labels WHERE state = 'ENABLED'")
-    suspend fun getActiveLabelsList(): List<Label>
 
     @Query("SELECT * FROM labels")
     suspend fun getAllLabelsList(): List<Label>
@@ -314,9 +298,6 @@ interface AppDao {
     @Query("SELECT * FROM preferences")
     fun getAllPreferencesList(): List<Preference>
 
-//    @Transaction
-//    @Query("Select * from preferences")
-//    fun getPreferencesForDisplay(): Flow<PreferenceProvider>
 }
 
 private const val TAG ="AppDao"

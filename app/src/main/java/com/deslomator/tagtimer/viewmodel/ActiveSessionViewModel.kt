@@ -44,26 +44,26 @@ class ActiveSessionViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedTags = _prefProvider.flatMapLatest { prefProvider ->
-        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(sessionId, LabelType.TAG)
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getSelectedTagsForSession(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getSelectedLabelsForSession(sessionId, LabelType.TAG)
+        else appDao.getSelectedTagsForSession(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedPersons = _prefProvider.flatMapLatest { prefProvider ->
-        if (prefProvider.personSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(sessionId, LabelType.PERSON)
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getSelectedPersonsForSession(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getSelectedLabelsForSession(sessionId, LabelType.PERSON)
+        else appDao.getSelectedPersonsForSession(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedPlaces = _prefProvider.flatMapLatest { prefProvider ->
-        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(sessionId, LabelType.PLACE)
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getSelectedPlacesForSession(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getSelectedLabelsForSession(sessionId, LabelType.PLACE)
+        else appDao.getSelectedPlacesForSession(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
