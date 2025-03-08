@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.LabelSelectionAction
@@ -30,10 +31,9 @@ import kotlinx.coroutines.launch
 
 class LabelSelectionViewModel(
     private val appDao: AppDao,
-    seshId: Long?
+    private val sessionId: Long
 ): ViewModel() {
 
-    private val _sessionId = MutableStateFlow(0L)
     private val _state = MutableStateFlow(LabelSelectionState())
 
     private val _prefs = appDao.getPreferences()
@@ -75,7 +75,7 @@ class LabelSelectionViewModel(
             }
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-    
+
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _places = _prefProvider.flatMapLatest { prefProvider ->
 //        Log.d(TAG, "choosing sorted session list")
@@ -94,26 +94,26 @@ class LabelSelectionViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedTags = _prefProvider.flatMapLatest { prefProvider ->
-        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG)
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(sessionId, LabelType.TAG)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.TAG)
+        else appDao.getSelectedLabelsForSession(sessionId, LabelType.TAG)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedPersons = _prefProvider.flatMapLatest { prefProvider ->
-        if (prefProvider.personSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON)
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(sessionId, LabelType.PERSON)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PERSON)
+        else appDao.getSelectedLabelsForSession(sessionId, LabelType.PERSON)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedPlaces = _prefProvider.flatMapLatest { prefProvider ->
-        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE)
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getSelectedLabelsForSession(sessionId, LabelType.PLACE)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getSelectedLabelsForSession(_sessionId.value, LabelType.PLACE)
+        else appDao.getSelectedLabelsForSession(sessionId, LabelType.PLACE)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -195,10 +195,10 @@ class LabelSelectionViewModel(
                     appDao.upsertLabel(archived)
                     // remove selection
                     val selected = Selected(
-                        sessionId = _sessionId.value,
+                        sessionId = sessionId,
                         labelId = state.value.currentLabel.id!!
                     )
-                    appDao.deleteSelectedLabel(selected)
+                    appDao.deleteSelected(selected)
                 }
             }
 
@@ -221,10 +221,10 @@ class LabelSelectionViewModel(
                     appDao.upsertLabel(trashed)
                     // remove selection
                     val selected = Selected(
-                        sessionId = _sessionId.value,
+                        sessionId = sessionId,
                         labelId = state.value.currentLabel.id!!
                     )
-                    appDao.deleteSelectedLabel(selected)
+                    appDao.deleteSelected(selected)
                 }
             }
 
@@ -239,9 +239,12 @@ class LabelSelectionViewModel(
             }
 
             is LabelSelectionAction.PurgeLabelClicked -> {
+                _state.update { it.copy(
+                    dialogState = DialogState.HIDDEN,
+                ) }
                 viewModelScope.launch {
                     val cbd = state.value.currentLabel.canBeDeleted(appDao)
-                    if (cbd) appDao.purgeSession(state.value.currentSession)
+                    if (cbd) appDao.deleteLabel(state.value.currentLabel)
                 }
             }
             /*
@@ -250,19 +253,19 @@ class LabelSelectionViewModel(
             is LabelSelectionAction.SelectTagCheckedChange -> {
                 viewModelScope.launch {
                     val pst = Selected(
-                        sessionId = _sessionId.value,
+                        sessionId = sessionId,
                         labelId = action.tag.id!!
                     )
                     delay(UPSERT_DELAY_MS) // TODO what's this delay
                     if (action.checked) {
-                        appDao.upsertSelectedLabel(pst)
+                        appDao.upsertSelected(pst)
                         // unarchive the label if necessary
                         if (action.tag.state == ItemState.ARCHIVED) {
                             val lbl = action.tag.copy(state = ItemState.ENABLED)
                             appDao.upsertLabel(lbl)
                         }
                     } else {
-                        appDao.deleteSelectedLabel(pst)
+                        appDao.deleteSelected(pst)
                     }
                 }
             }
@@ -280,19 +283,19 @@ class LabelSelectionViewModel(
             is LabelSelectionAction.SelectPersonCheckedChange -> {
                 viewModelScope.launch {
                     val pst = Selected(
-                        sessionId = _sessionId.value,
+                        sessionId = sessionId,
                         labelId = action.person.id!!
                     )
                     delay(UPSERT_DELAY_MS) // TODO what's this delay
                     if (action.checked) {
-                        appDao.upsertSelectedLabel(pst)
+                        appDao.upsertSelected(pst)
                         // unarchive the label if necessary
                         if (action.person.state == ItemState.ARCHIVED) {
                             val lbl = action.person.copy(state = ItemState.ENABLED)
                             appDao.upsertLabel(lbl)
                         }
                     } else {
-                        appDao.deleteSelectedLabel(pst)
+                        appDao.deleteSelected(pst)
                     }
                 }
             }
@@ -310,19 +313,19 @@ class LabelSelectionViewModel(
             is LabelSelectionAction.SelectPlaceCheckedChange -> {
                 viewModelScope.launch {
                     val pst = Selected(
-                        sessionId = _sessionId.value,
+                        sessionId = sessionId,
                         labelId = action.place.id!!
                     )
                     delay(UPSERT_DELAY_MS) // TODO what's this delay
                     if (action.checked) {
-                        appDao.upsertSelectedLabel(pst)
+                        appDao.upsertSelected(pst)
                         // unarchive the label if necessary
                         if (action.place.state == ItemState.ARCHIVED) {
                             val lbl = action.place.copy(state = ItemState.ENABLED)
                             appDao.upsertLabel(lbl)
                         }
                     } else {
-                        appDao.deleteSelectedLabel(pst)
+                        appDao.deleteSelected(pst)
                     }
                 }
             }
@@ -356,8 +359,7 @@ class LabelSelectionViewModel(
     }
 
     init {
-        val sessionId = seshId ?: 0
-        _sessionId.update { sessionId }
+        
         viewModelScope.launch {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))

@@ -81,7 +81,7 @@ fun SessionsScreenContent(
                     onLeadingClick = { },
                     onItemClick = {
                         outerNavHostController.navigate(
-                            ActiveSessionScreen(sessionId = session.id)
+                            ActiveSessionScreen(sessionId = session.id!!)
                         )
                     },
                     onLongClick = {

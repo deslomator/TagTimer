@@ -4,6 +4,7 @@ import androidx.annotation.Keep
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Ignore
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.deslomator.tagtimer.ui.theme.colorPickerColors
 import com.deslomator.tagtimer.ui.theme.toHex
@@ -12,7 +13,18 @@ import kotlinx.serialization.Serializable
 
 @Keep
 @Serializable
-@Entity(tableName = "events")
+@Entity(
+    tableName = "events",
+    foreignKeys = [
+        ForeignKey(
+            entity = Session::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("session_id"),
+            onUpdate = ForeignKey.CASCADE,
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class Event(
     @SerialName("session_id")
     @ColumnInfo(name = "session_id")

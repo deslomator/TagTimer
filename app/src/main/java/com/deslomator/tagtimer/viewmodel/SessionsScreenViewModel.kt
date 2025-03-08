@@ -145,7 +145,7 @@ class SessionsScreenViewModel(
             is SessionsTabAction.PurgeSessionClicked -> {
                 viewModelScope.launch {
                     _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                    appDao.purgeSession(state.value.currentSession)
+                    appDao.deleteSession(state.value.currentSession)
                 }
             }
 
@@ -212,7 +212,7 @@ class SessionsScreenViewModel(
                     .map{
                         it.copy(sessionId = newId)
                     }
-                    .let { appDao.upsertSelectedLabels(it) }
+                    .let { appDao.upsertSelected(it) }
             }
         }
     }

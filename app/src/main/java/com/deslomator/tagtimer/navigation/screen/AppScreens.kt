@@ -13,7 +13,7 @@ enum class BottomScreens(
     FILTER(R.string.filter_events, R.drawable.filter),
     TRASH(R.string.trash, R.drawable.trash);
 
-    fun getRoute(sessionId: Long?): Any {
+    fun getRoute(sessionId: Long): Any {
         return when (this) {
             ACTIVE -> ActiveSessionScreen(sessionId = sessionId)
             LABELS -> LabelSelectionScreen(sessionId = sessionId)
@@ -28,7 +28,7 @@ object SessionsTabScreen
 
 @Serializable
 data class TrashTabScreen(
-    val sessionId: Long?
+    val sessionId: Long
 )
 
 @Serializable
@@ -36,15 +36,15 @@ object BackupScreen
 
 @Serializable
 data class ActiveSessionScreen(
-    val sessionId: Long?
+    val sessionId: Long
 )
 
 @Serializable
 data class LabelSelectionScreen(
-    val sessionId: Long?
+    val sessionId: Long
 )
 
 @Serializable
 data class EventFilterScreen(
-    val sessionId: Long?
+    val sessionId: Long
 )

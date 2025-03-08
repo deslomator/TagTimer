@@ -23,10 +23,9 @@ import kotlinx.coroutines.launch
 
 class EventFilterViewModel(
     private val appDao: AppDao,
-    seshId: Long?
+    private val sessionId: Long
 ): ViewModel() {
 
-    private val _sessionId = MutableStateFlow(0L)
     private val _currentTags = MutableStateFlow(emptyList<Label>())
     private val _currentPerson = MutableStateFlow(Label())
     private val _currentPlace = MutableStateFlow(Label())
@@ -37,11 +36,8 @@ class EventFilterViewModel(
     private val _placeSort = MutableStateFlow(LabelSort.NAME)
     private val _state = MutableStateFlow(EventFilterState())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _eventsForDisplay = _sessionId
-        .flatMapLatest {
-            appDao.getEventsForDisplay(_sessionId.value)
-        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _eventsForDisplay = appDao.getEventsForDisplay(sessionId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _filteredEvents = combine(
         _eventsForDisplay, _currentPerson, _currentPlace, _currentTags
@@ -56,25 +52,25 @@ class EventFilterViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _usedTags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getUsedTags(_sessionId.value)
+        if (sort == LabelSort.NAME) appDao.getUsedTags(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getUsedTags(_sessionId.value)
+        else appDao.getUsedTags(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _usedPersons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getUsedPersons(_sessionId.value)
+        if (sort == LabelSort.NAME) appDao.getUsedPersons(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getUsedPersons(_sessionId.value)
+        else appDao.getUsedPersons(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _usedPlaces = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getUsedPlaces(_sessionId.value)
+        if (sort == LabelSort.NAME) appDao.getUsedPlaces(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
-        else appDao.getUsedPlaces(_sessionId.value)
+        else appDao.getUsedPlaces(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
@@ -187,8 +183,7 @@ class EventFilterViewModel(
     }
 
     init {
-        val sessionId = seshId ?: 0
-        _sessionId.update { sessionId }
+        
         viewModelScope.launch {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))

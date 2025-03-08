@@ -12,6 +12,7 @@ import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun EventFilterScaffold(
+    sessionId: Long,
     navController: NavHostController,
     state: EventFilterState,
     onAction: (EventFilterAction) -> Unit,
@@ -43,7 +44,7 @@ fun EventFilterScaffold(
         },
         bottomBar =  {
             BottomNavigationBar(
-                sessionId = state.currentSession.id ?: 0L,
+                sessionId = sessionId,
                 navController = navController,
                 selected = BottomScreens.FILTER
             )

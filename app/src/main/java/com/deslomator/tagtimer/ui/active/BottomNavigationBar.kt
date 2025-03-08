@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active
 
+import android.util.Log
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -47,7 +48,8 @@ fun BottomNavigationBar(
                         // reselecting the same item
                         launchSingleTop = true
                         // Restore state when reselecting a previously selected item
-                        restoreState = true
+                        // this must be false or we are getting stale sessionIds
+//                        restoreState = true
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(

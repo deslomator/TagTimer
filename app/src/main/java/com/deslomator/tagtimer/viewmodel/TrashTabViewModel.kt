@@ -10,24 +10,18 @@ import com.deslomator.tagtimer.util.combine
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class TrashTabViewModel(
     private val appDao: AppDao,
-    seshId: Long?
+    sessionId: Long
 ): ViewModel() {
 
-    private val _sessionId = MutableStateFlow(0L)
     private val _state = MutableStateFlow(TrashTabState())
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val _trashedEvents = _sessionId
-        .flatMapLatest {
-            appDao.getTrashedEventsForDisplay(_sessionId.value)
-        }
+    private val _trashedEvents = appDao.getTrashedEventsForDisplay(sessionId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     private val _sessions = appDao.getTrashedSessions()
@@ -43,7 +37,7 @@ class TrashTabViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val state = combine(_state, _trashedEvents, _sessions, _tags, _persons, _places) {
-        state, trashedEvents, sessions, tags, persons, places ->
+            state, trashedEvents, sessions, tags, persons, places ->
         state.copy(
             sessions = sessions,
             trashedEvents = trashedEvents,
@@ -59,7 +53,7 @@ class TrashTabViewModel(
             SESSION
              */
             is TrashTabAction.DeleteSessionClicked -> {
-                viewModelScope.launch { appDao.purgeSession(action.session) }
+                viewModelScope.launch { appDao.deleteSession(action.session) }
             }
             is TrashTabAction.RestoreSessionClicked -> {
                 viewModelScope.launch {
@@ -106,8 +100,7 @@ class TrashTabViewModel(
     }
 
     init {
-        val sessionId = seshId ?: 0
-        _sessionId.update { sessionId }
+
         viewModelScope.launch {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))

@@ -20,13 +20,14 @@ import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun ActiveSessionScaffold(
+    sessionId: Long,
     navController: NavHostController,
     state: ActiveSessionState,
     onAction: (ActiveSessionAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    var fileName by remember {
+    var fileName by remember { //TODO share file
         mutableStateOf("")
     }
     BackHandler(enabled = state.showTimeDialog || state.showEventEditionDialog) {
@@ -55,7 +56,7 @@ fun ActiveSessionScaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             BottomNavigationBar(
-                sessionId = state.currentSession.id?: 0L,
+                sessionId = sessionId,
                 navController = navController,
                 selected = BottomScreens.ACTIVE
             )

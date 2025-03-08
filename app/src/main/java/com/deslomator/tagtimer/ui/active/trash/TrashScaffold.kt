@@ -13,6 +13,7 @@ import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun TrashScaffold(
+    sessionId: Long,
     state: TrashTabState,
     onAction: (TrashTabAction) -> Unit,
     navController: NavHostController
@@ -30,7 +31,7 @@ fun TrashScaffold(
         },
         bottomBar = {
             BottomNavigationBar(
-                sessionId = state.currentSession.id ?: 0L,
+                sessionId = sessionId,
                 navController = navController,
                 selected = BottomScreens.TRASH
             )

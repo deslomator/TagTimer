@@ -106,12 +106,6 @@ interface AppDao {
     @Query("SELECT * FROM sessions WHERE state = :state ORDER BY last_access_millis DESC")
     fun getTrashedSessions(state: String = ItemState.TRASHED.name): Flow<List<Session>>
 
-    suspend fun purgeSession(session: Session) {
-        deleteEventsForSession(session.id!!)
-        deleteSelectedLabelsForSession(session.id!!)
-        deleteSession(session)
-    }
-
     /**
     Updating a session's state does not update the item in the list,
     so we get an stale Session when trashing it.
@@ -200,13 +194,13 @@ interface AppDao {
     SELECTED
      */
     @Upsert
-    suspend fun upsertSelectedLabel(selectedLabel: Selected)
+    suspend fun upsertSelected(selectedLabel: Selected)
 
     @Upsert
-    suspend fun upsertSelectedLabels(selectedLabels: List<Selected>)
+    suspend fun upsertSelected(selectedLabels: List<Selected>)
 
     @Delete
-    suspend fun deleteSelectedLabel(selectedLabel: Selected)
+    suspend fun deleteSelected(selectedLabel: Selected)
 
     @Query("SELECT name, color, state, type, id FROM selected JOIN labels ON label_id = labels.id WHERE session_id = :sessionId AND type = :type")
     fun getSelectedLabelsForSession(sessionId: Long, type: LabelType): Flow<List<Label>>

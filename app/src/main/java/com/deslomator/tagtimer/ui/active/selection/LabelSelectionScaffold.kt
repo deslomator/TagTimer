@@ -19,6 +19,7 @@ import com.deslomator.tagtimer.ui.active.BottomNavigationBar
 
 @Composable
 fun LabelSelectionScaffold(
+    sessionId: Long,
     navController: NavHostController,
     state: LabelSelectionState,
     onAction: (LabelSelectionAction) -> Unit,
@@ -53,7 +54,7 @@ fun LabelSelectionScaffold(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             BottomNavigationBar(
-                sessionId = state.currentSession.id ?: 0L,
+                sessionId = sessionId,
                 navController = navController,
                 selected = BottomScreens.LABELS
             )
