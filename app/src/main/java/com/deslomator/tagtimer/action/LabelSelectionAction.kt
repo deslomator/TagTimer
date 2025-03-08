@@ -11,9 +11,13 @@ sealed interface LabelSelectionAction {
     data class EditLabelClicked(val label: Label): LabelSelectionAction
     data class AcceptLabelEditionClicked(val label: Label): LabelSelectionAction
     data class AddNewLabelClicked(val type: LabelType): LabelSelectionAction
-    data class ArchiveLabelClicked(val label: Label): LabelSelectionAction
     data object DismissLabelDialog: LabelSelectionAction
-    data class DeleteLabelClicked(val label: Label): LabelSelectionAction
+
+    data object ArchiveLabelClicked: LabelSelectionAction
+    data object UnArchiveLabelClicked: LabelSelectionAction
+    data object TrashLabelClicked: LabelSelectionAction
+    data object UnTrashLabelClicked: LabelSelectionAction
+    data object PurgeLabelClicked: LabelSelectionAction
     /*
     TAG
      */

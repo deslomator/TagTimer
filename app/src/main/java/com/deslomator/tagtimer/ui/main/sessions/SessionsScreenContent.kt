@@ -85,7 +85,7 @@ fun SessionsScreenContent(
                         )
                     },
                     onLongClick = {
-                        onAction(SessionsTabAction.ItemClicked(session))
+                        onAction(SessionsTabAction.EditSessionClicked(session))
                     },
                 ) { item ->
                     Spacer(modifier = Modifier.width(10.dp))

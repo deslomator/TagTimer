@@ -56,7 +56,12 @@ fun SessionDialog(
     var eventDate by rememberSaveable {
         mutableLongStateOf(state.currentSession.sessionDateMillis)
     }
-    val message = stringResource(id = R.string.session_sent_to_trash)
+    val copiedMessage = stringResource(id = R.string.session_copied)
+    val archivedMessage = stringResource(id = R.string.session_archived)
+    val unArchivedMessage = stringResource(id = R.string.session_unarchived)
+    val trashedMessage = stringResource(id = R.string.session_trashed)
+    val unTrashedMessage = stringResource(id = R.string.session_untrashed)
+    val purgedMessage = stringResource(id = R.string.session_purged)
     var name by rememberSaveable {
         mutableStateOf(state.currentSession.name)
     }
@@ -66,8 +71,9 @@ fun SessionDialog(
     var color by rememberSaveable {
         mutableStateOf(state.currentSession.color)
     }
-    val copy = stringResource(id = R.string.copy)
+    val copyString = stringResource(id = R.string.copy)
     MyDialog(
+        dialogState = state.sessionDialogState,
         onDismiss = {
             onAction(SessionsTabAction.DismissSessionDialog)
         },
@@ -81,22 +87,57 @@ fun SessionDialog(
             )
             onAction(SessionsTabAction.DialogAcceptClicked(s))
         },
-        dialogState = state.sessionDialogState,
-        onTrash = {
+        onCopyClicked = {
             showSnackbar(
                 scope,
                 snackbarHostState,
-                message
+                copiedMessage
+            )
+            onAction(SessionsTabAction.CopySessionClicked(copyString))
+        },
+        onArchiveClicked = {
+            showSnackbar(
+                scope,
+                snackbarHostState,
+                archivedMessage
+            )
+            onAction(SessionsTabAction.ArchiveSessionClicked)
+        },
+        onUnArchiveClicked = {
+            showSnackbar(
+                scope,
+                snackbarHostState,
+                unArchivedMessage
+            )
+            onAction(SessionsTabAction.UnArchiveSessionClicked)
+        },
+        onTrashClicked = {
+            showSnackbar(
+                scope,
+                snackbarHostState,
+                trashedMessage
             )
             onAction(SessionsTabAction.TrashSessionClicked)
         },
-        showCopy = state.sessionDialogState == DialogState.EDIT_CAN_DELETE,
-        onCopy = {
-            onAction(SessionsTabAction.CopySessionClicked(copy))
+        onUnTrashClicked = {
+            showSnackbar(
+                scope,
+                snackbarHostState,
+                unTrashedMessage
+            )
+            onAction(SessionsTabAction.UnTrashSessionClicked)
+        },
+        onPurgeClicked = {
+            showSnackbar(
+                scope,
+                snackbarHostState,
+                purgedMessage
+            )
+            onAction(SessionsTabAction.PurgeSessionClicked)
         },
         title = if (
             state.sessionDialogState == DialogState.NEW_ITEM
-        ) R.string.new_session else R.string.edit_session
+        ) R.string.new_session else R.string.edit_session,
     ) {
         AnimatedContent(targetState = show) { s ->
             when (s) {

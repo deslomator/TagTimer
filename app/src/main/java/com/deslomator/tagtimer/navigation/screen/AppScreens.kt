@@ -11,7 +11,7 @@ enum class BottomScreens(
     ACTIVE(R.string.session, R.drawable.document_and_ray),
     LABELS(R.string.labels, R.drawable.tag),
     FILTER(R.string.filter_events, R.drawable.filter),
-    TRASH(R.string.trash, R.drawable.delete);
+    TRASH(R.string.trash, R.drawable.trash);
 
     fun getRoute(sessionId: Long?): Any {
         return when (this) {

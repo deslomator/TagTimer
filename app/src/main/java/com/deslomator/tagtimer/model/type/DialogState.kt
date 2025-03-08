@@ -7,5 +7,9 @@ import androidx.annotation.Keep
  */
 @Keep
 enum class DialogState {
-    HIDDEN, NEW_ITEM, EDIT_CAN_DELETE, EDIT_NO_DELETE
+    HIDDEN,
+    NEW_ITEM,
+    ENABLED,
+    ARCHIVED,
+    TRASHED
 }

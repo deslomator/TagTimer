@@ -82,6 +82,9 @@ interface AppDao {
     @Delete
     suspend fun deleteSession(session: Session)
 
+    @Query("DELETE FROM sessions WHERE id = :sessionId")
+    suspend fun deleteSession(sessionId: Long)
+
     @Query("SELECT * FROM sessions WHERE id = :id")
     suspend fun getSession(id: Long): Session
 
@@ -109,6 +112,20 @@ interface AppDao {
         deleteSession(session)
     }
 
+    /**
+    Updating a session's state does not update the item in the list,
+    so we get an stale Session when trashing it.
+    The solution is to first remove the item from the list
+    and then insert it that's what updateSessionForList() does
+    @Transaction annotation is not used because compose would not
+    register the change
+     **/
+//    @Transaction
+    suspend fun updateSessionForList(session: Session) {
+        deleteSession(session.id!!)
+        upsertSession(session)
+    }
+
     /*
     LABELS
      */
@@ -121,6 +138,9 @@ interface AppDao {
     @Delete
     suspend fun deleteLabel(label: Label)
 
+    @Query("DELETE FROM labels WHERE id = :labelId")
+    suspend fun deleteLabel(labelId: Long)
+
     @Query("SELECT * FROM labels WHERE type = :type")
     fun getLabels(type: LabelType): Flow<List<Label>>
 
@@ -129,6 +149,20 @@ interface AppDao {
 
     @Query("SELECT * FROM labels WHERE type = :type AND state = 'ENABLED' ORDER BY name ASC")
     fun getTrashedLabels(type: LabelType): Flow<List<Label>>
+
+    /**
+    Updating a label's state does not update the item in the list,
+    so we get an stale Label when trashing it.
+    The solution is to first remove the item from the list
+    and then insert it that's what updateLabelForList() does
+    @Transaction annotation is not used because compose would not
+    register the change
+     **/
+//    @Transaction
+    suspend fun updateLabelForList(label: Label) {
+        deleteLabel(label.id!!)
+        upsertLabel(label)
+    }
 
     /*
     TAGS

@@ -30,18 +30,19 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.DialogArchiveState
 
 @Composable
 fun MyDialog(
     onDismiss: () -> Unit,
     onAccept: () -> Unit,
     dialogState: DialogState,
-    onTrash: (() -> Unit)? = null,
-    showCopy: Boolean = false,
-    onCopy: (() -> Unit)? = null,
-    archiveState: DialogArchiveState = DialogArchiveState.HIDDEN,
-    onArchiveClicked: () -> Unit = {},
+    showCopy: Boolean = true,
+    onCopyClicked: () -> Unit,
+    onArchiveClicked: () -> Unit,
+    onUnArchiveClicked: () -> Unit,
+    onTrashClicked: () -> Unit,
+    onUnTrashClicked: () -> Unit,
+    onPurgeClicked: () -> Unit,
     @StringRes title: Int? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
@@ -74,17 +75,12 @@ fun MyDialog(
                             color = MaterialTheme.colorScheme.secondary
                         )
                     }
-                    if (archiveState != DialogArchiveState.HIDDEN) {
-                        IconButton(onClick = onArchiveClicked) {
-                            Icon(
-                                painter = painterResource(id = archiveState.iconId),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
-                        }
-                    }
-                    if (showCopy) {
-                        IconButton(onClick = { onCopy?.invoke() }) {
+                    if (
+                        (dialogState == DialogState.ENABLED ||
+                                dialogState == DialogState.ARCHIVED) &&
+                        showCopy
+                    ) {
+                        IconButton(onClick = onCopyClicked) {
                             Icon(
                                 painter = painterResource(id = R.drawable.copy),
                                 contentDescription = null,
@@ -92,21 +88,48 @@ fun MyDialog(
                             )
                         }
                     }
-                    when (dialogState) {
-                        DialogState.NEW_ITEM, DialogState.HIDDEN -> { }
-                        DialogState.EDIT_CAN_DELETE -> {
-                            IconButton(onClick = { onTrash?.invoke() }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.delete),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.secondary
-                                )
-                            }
-                        }
-                        DialogState.EDIT_NO_DELETE -> {
+                    if (dialogState == DialogState.ENABLED) {
+                        IconButton(onClick = onArchiveClicked) {
                             Icon(
-                                painter = painterResource(id = R.drawable.do_not_delete),
+                                painter = painterResource(id = R.drawable.archive),
                                 contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                    if (dialogState == DialogState.ARCHIVED) {
+                        IconButton(onClick = onUnArchiveClicked) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.unarchive),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                    if (dialogState == DialogState.ENABLED || dialogState == DialogState.ARCHIVED) {
+                        IconButton(onClick = onTrashClicked) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.trash),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                    if (dialogState == DialogState.TRASHED) {
+                        IconButton(onClick = onUnTrashClicked) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.untrash),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
+                    if (dialogState == DialogState.TRASHED) {
+                        IconButton(onClick = onPurgeClicked) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.purge),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.error
                             )
                         }
                     }

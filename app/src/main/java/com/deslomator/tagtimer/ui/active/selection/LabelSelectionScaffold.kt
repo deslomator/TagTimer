@@ -33,8 +33,7 @@ fun LabelSelectionScaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             LabelSelectionTopBar(
-                pages = pages,
-                currentPage = pagerState.currentPage,
+                labelType = pages[pagerState.currentPage],
                 onAddLabelClick = { onAction(LabelSelectionAction.AddNewLabelClicked(it)) },
                 dialogState = state.dialogState,
                 tagSort = state.preferenceProvider.tagSort(),

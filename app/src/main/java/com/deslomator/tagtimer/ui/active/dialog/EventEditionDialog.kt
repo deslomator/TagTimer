@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.EventForDisplay
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.DialogArchiveState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -60,7 +59,12 @@ fun EventEditionDialog(
             onAccept(ev4d)
         },
         dialogState = DialogState.NEW_ITEM,
-        archiveState = DialogArchiveState.HIDDEN,
+        onCopyClicked = { },
+        onArchiveClicked = { },
+        onUnArchiveClicked = { },
+        onTrashClicked = { },
+        onUnTrashClicked = { },
+        onPurgeClicked = { },
     ) {
         TimeNumberPicker(
             timeMillis = elapsed,

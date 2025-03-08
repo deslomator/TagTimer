@@ -95,7 +95,7 @@ fun ActiveSessionTopBar(
                         text = { Text(text = stringResource(R.string.event_trash)) },
                         leadingIcon = {
                             Icon(
-                                painter = painterResource(R.drawable.delete),
+                                painter = painterResource(R.drawable.trash),
                                 contentDescription = "event trash"
                             )
                         },

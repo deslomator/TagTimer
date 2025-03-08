@@ -27,13 +27,11 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.LabelSelectionAction
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.DialogArchiveState
-import com.deslomator.tagtimer.model.type.ItemState
 import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.active.dialog.LabelDialog
 import com.deslomator.tagtimer.ui.TabIndicator
+import com.deslomator.tagtimer.ui.active.dialog.LabelDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import kotlinx.coroutines.launch
 import kotlin.enums.EnumEntries
@@ -128,7 +126,11 @@ fun LabelSelectionContent(
         enter = fadeIn(),
         exit = fadeOut()
     ) {
-        val message = stringResource(id = state.currentLabel.type.messageId)
+        val archivedMessage = stringResource(id = state.currentLabel.type.archiveMessageId)
+        val unarchivedMessage = stringResource(id = state.currentLabel.type.unArchiveMessageId)
+        val trashedMessage = stringResource(id = state.currentLabel.type.trashMessageId)
+        val unTrashedMessage = stringResource(id = state.currentLabel.type.unTrashMessageId)
+        val purgedMessage = stringResource(id = state.currentLabel.type.purgeMessageId)
         LabelDialog(
             currentLabel = state.currentLabel,
             onDismiss = { onAction(LabelSelectionAction.DismissLabelDialog) },
@@ -136,26 +138,50 @@ fun LabelSelectionContent(
                 onAction(LabelSelectionAction.AcceptLabelEditionClicked(it))
             },
             dialogState = state.dialogState,
-            onTrash = {
+            onArchiveClicked = {
                 showSnackbar(
                     scope,
                     snackbarHostState,
-                    message
+                    archivedMessage
                 )
-                onAction(LabelSelectionAction.DeleteLabelClicked(state.currentLabel))
+                onAction(LabelSelectionAction.ArchiveLabelClicked)
             },
-            archiveState = when (state.dialogState) {
-                DialogState.HIDDEN, DialogState.NEW_ITEM -> DialogArchiveState.HIDDEN
-                else -> if (state.currentLabel.state == ItemState.ARCHIVED) DialogArchiveState.UNARCHIVE else DialogArchiveState.ARCHIVE
+            onUnArchiveClicked = {
+                onAction(LabelSelectionAction.UnArchiveLabelClicked)
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    unarchivedMessage
+                )
             },
-            onArchiveClicked = { onAction(LabelSelectionAction.ArchiveLabelClicked(it)) },
+            onTrashClicked = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    trashedMessage
+                )
+                onAction(LabelSelectionAction.TrashLabelClicked)
+            },
+            onUnTrashClicked = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    unTrashedMessage
+                )
+                onAction(LabelSelectionAction.UnTrashLabelClicked)
+            },
+            onPurgeClicked = {
+                showSnackbar(
+                    scope,
+                    snackbarHostState,
+                    purgedMessage
+                )
+                onAction(LabelSelectionAction.PurgeLabelClicked)
+            },
             title =
-            if (
-                state.dialogState == DialogState.EDIT_NO_DELETE ||
-                state.dialogState == DialogState.EDIT_CAN_DELETE
-            ) state.currentLabel.type.editTitleId
-            else state.currentLabel.type.newTitleId,
-            icon = state.currentLabel.type.iconId
+                if (state.dialogState == DialogState.NEW_ITEM) state.currentLabel.type.newTitleId
+                else state.currentLabel.type.editTitleId,
+            icon = state.currentLabel.type.iconId,
         )
     }
 }

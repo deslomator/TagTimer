@@ -25,7 +25,13 @@ fun TimeDialog(
     MyDialog(
         onDismiss = onDismiss,
         onAccept = { onAccept(value) },
-        dialogState = DialogState.EDIT_NO_DELETE
+        dialogState = DialogState.NEW_ITEM,
+        onCopyClicked = { },
+        onArchiveClicked = { },
+        onUnArchiveClicked = { },
+        onTrashClicked = { },
+        onUnTrashClicked = { },
+        onPurgeClicked = { },
     ) {
         Text(
             modifier = Modifier.fillMaxWidth() ,

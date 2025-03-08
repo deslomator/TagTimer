@@ -89,7 +89,7 @@ fun TrashContent(
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
-                                    context.getString(R.string.tag_restored)
+                                    context.getString(R.string.tag_untrashed)
                                 )
                             },
                             onPurgeClick = {
@@ -98,7 +98,7 @@ fun TrashContent(
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
-                                    context.getString(R.string.tag_deleted)
+                                    context.getString(R.string.tag_purged)
                                 )
                             },
                         )
@@ -111,7 +111,7 @@ fun TrashContent(
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
-                                    context.getString(R.string.person_restored)
+                                    context.getString(R.string.person_untrashed)
                                 )
                             },
                             onPurgeClick = {
@@ -120,7 +120,7 @@ fun TrashContent(
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
-                                    context.getString(R.string.person_deleted)
+                                    context.getString(R.string.person_purged)
                                 )
                             },
                         )
@@ -133,7 +133,7 @@ fun TrashContent(
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
-                                    context.getString(R.string.place_restored)
+                                    context.getString(R.string.place_untrashed)
                                 )
                             },
                             onPurgeClick = {
@@ -142,7 +142,7 @@ fun TrashContent(
                                 showSnackbar(
                                     scope,
                                     snackbarHostState,
-                                    context.getString(R.string.place_deleted)
+                                    context.getString(R.string.place_purged)
                                 )
                             },
                         )

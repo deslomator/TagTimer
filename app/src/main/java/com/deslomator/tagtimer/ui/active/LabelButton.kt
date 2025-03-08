@@ -72,7 +72,7 @@ fun LabelButton(
         }
     }
     val leadingIcon = if (isTrash) {
-        R.drawable.restore_from_trash
+        R.drawable.untrash
     } else {
         label.getIcon()
     }

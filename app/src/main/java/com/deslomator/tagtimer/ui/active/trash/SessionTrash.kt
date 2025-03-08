@@ -51,7 +51,7 @@ fun SessionTrash(
                 item = session,
                 shape = RoundedCornerShape(25.dp),
                 border = BorderStroke(1.dp, Color.LightGray),
-                leadingIcon = R.drawable.restore_from_trash,
+                leadingIcon = R.drawable.untrash,
                 onLeadingClick = {
                     onAction(
                         TrashTabAction.RestoreSessionClicked(
@@ -61,7 +61,7 @@ fun SessionTrash(
                     showSnackbar(
                         scope,
                         snackbarHostState,
-                        context.getString(R.string.session_restored)
+                        context.getString(R.string.session_untrashed)
                     )
                 },
                 trailingIcon = R.drawable.delete_forever,
@@ -74,7 +74,7 @@ fun SessionTrash(
                     showSnackbar(
                         scope,
                         snackbarHostState,
-                        context.getString(R.string.session_deleted)
+                        context.getString(R.string.session_purged)
                     )
                 },
             ) { item ->

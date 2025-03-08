@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.DialogState
-import com.deslomator.tagtimer.model.type.DialogArchiveState
 import com.deslomator.tagtimer.ui.ColorPicker
 import com.deslomator.tagtimer.ui.DialogTextField
 import com.deslomator.tagtimer.ui.MyDialog
@@ -27,27 +26,33 @@ fun LabelDialog(
     dialogState: DialogState, //TODO deny deletion of selected labels?
     onDismiss: () -> Unit,
     onAccept: (Label) -> Unit,
-    onTrash: (Label) -> Unit,
-    archiveState: DialogArchiveState,
-    onArchiveClicked: (Label) -> Unit = {},
+    onArchiveClicked: () -> Unit,
+    onUnArchiveClicked: () -> Unit,
+    onTrashClicked: () -> Unit,
+    onUnTrashClicked: () -> Unit,
+    onPurgeClicked: () -> Unit,
     @StringRes title: Int,
     @DrawableRes icon: Int,
 ) {
     var name by rememberSaveable { mutableStateOf(currentLabel.name) }
     var color by rememberSaveable { mutableStateOf(currentLabel.color) }
     MyDialog(
+        dialogState = dialogState,
+        showCopy = false,
         onDismiss = onDismiss,
         onAccept = {
             val editedLabel = currentLabel.copy(
                 name = name,
-                color= color
+                color = color
             )
             onAccept(editedLabel)
         },
-        dialogState = dialogState,
-        onTrash = { onTrash(currentLabel) },
-        archiveState = archiveState,
-        onArchiveClicked = { onArchiveClicked(currentLabel) },
+        onCopyClicked = { },
+        onArchiveClicked = onArchiveClicked,
+        onUnArchiveClicked = onUnArchiveClicked,
+        onTrashClicked = onTrashClicked,
+        onUnTrashClicked = onUnTrashClicked,
+        onPurgeClicked = onPurgeClicked,
         title = title,
     ) {
         DialogTextField(

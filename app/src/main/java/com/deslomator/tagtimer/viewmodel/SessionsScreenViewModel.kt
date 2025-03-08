@@ -28,8 +28,6 @@ class SessionsScreenViewModel(
     private val appDao: AppDao,
 ) : ViewModel() {
 
-//    private val _sort = SortProvider.getSessionSort(appDao, viewModelScope)
-
     private val _state = MutableStateFlow(SessionsScreenState())
 
     private val _prefs = appDao.getPreferences()
@@ -77,11 +75,16 @@ class SessionsScreenViewModel(
                 }
             }
 
-            is SessionsTabAction.ItemClicked -> {
+            is SessionsTabAction.EditSessionClicked -> {
+                val dialogState = when (action.session.state) {
+                    ItemState.ENABLED -> DialogState.ENABLED
+                    ItemState.ARCHIVED -> DialogState.ARCHIVED
+                    ItemState.TRASHED -> DialogState.TRASHED
+                }
                 _state.update {
                     it.copy(
                         currentSession = action.session,
-                        sessionDialogState = DialogState.EDIT_CAN_DELETE
+                        sessionDialogState = dialogState
                     )
                 }
             }
@@ -98,11 +101,22 @@ class SessionsScreenViewModel(
             is SessionsTabAction.ArchiveSessionClicked -> {
                 viewModelScope.launch {
                     _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                    val trashed = state.value.currentSession.copy(
+                    val archived = state.value.currentSession.copy(
                         running = false,
                         state = ItemState.ARCHIVED
                     )
-                    appDao.upsertSession(trashed)
+                    appDao.upsertSession(archived)
+                }
+            }
+
+            is SessionsTabAction.UnArchiveSessionClicked -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                    val unarchived = state.value.currentSession.copy(
+                        running = false,
+                        state = ItemState.ENABLED
+                    )
+                    appDao.upsertSession(unarchived)
                 }
             }
 
@@ -114,6 +128,24 @@ class SessionsScreenViewModel(
                         state = ItemState.TRASHED
                     )
                     appDao.upsertSession(trashed)
+                }
+            }
+
+            is SessionsTabAction.UnTrashSessionClicked -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                    val untrashed = state.value.currentSession.copy(
+                        running = false,
+                        state = ItemState.ENABLED
+                    )
+                    appDao.upsertSession(untrashed)
+                }
+            }
+
+            is SessionsTabAction.PurgeSessionClicked -> {
+                viewModelScope.launch {
+                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                    appDao.purgeSession(state.value.currentSession)
                 }
             }
 
@@ -157,6 +189,7 @@ class SessionsScreenViewModel(
                 )
                 viewModelScope.launch { appDao.upsertPreference(pref) }
             }
+
         }
     }
 
