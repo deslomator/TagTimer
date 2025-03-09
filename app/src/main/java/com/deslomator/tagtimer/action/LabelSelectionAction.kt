@@ -38,4 +38,5 @@ sealed interface LabelSelectionAction {
     class ShowArchivedClicked(val show: Boolean): LabelSelectionAction
     class ShowTrashedClicked(val show: Boolean): LabelSelectionAction
 
+    data object DismissDeleteDialog: LabelSelectionAction
 }

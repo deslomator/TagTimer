@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -107,16 +109,29 @@ fun MyDialog(
                             )
                         }
                     }
-                    if (
-                        (dialogState == DialogState.ENABLED || dialogState == DialogState.ARCHIVED) &&
-                        canBeDeleted
+                    Box(
+                        modifier = Modifier.wrapContentSize()
                     ) {
-                        IconButton(onClick = onTrashClicked) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.trash),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
+                        if (dialogState == DialogState.ENABLED || dialogState == DialogState.ARCHIVED) {
+                            IconButton(onClick = onTrashClicked) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.trash),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.secondary
+                                )
+                            }
+                        }
+                        if (!canBeDeleted) {
+                            IconButton(
+                                onClick = onTrashClicked
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(35.dp),
+                                    painter = painterResource(id = R.drawable.forbidden),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error,
+                                )
+                            }
                         }
                     }
                     if (dialogState == DialogState.TRASHED) {

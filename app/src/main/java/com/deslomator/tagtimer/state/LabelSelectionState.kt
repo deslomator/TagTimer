@@ -19,5 +19,7 @@ data class LabelSelectionState(
     val canBeDeleted: Boolean = false,
     val dialogState: DialogState = DialogState.HIDDEN,
 
-    val preferenceProvider: PreferenceProvider = PreferenceProvider()
+    val preferenceProvider: PreferenceProvider = PreferenceProvider(),
+
+    val showMessage: Boolean = false
 )

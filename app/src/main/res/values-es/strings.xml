@@ -114,4 +114,5 @@
     <string name="session_copied">Sesión copiada</string>
     <string name="session_archived">Sesión archivada</string>
     <string name="session_unarchived">Sesión habilitada</string>
+    <string name="cant_delete_label">Esta Tarjeta no puede eliminarse porque forma parte de algún Evento.</string>
 </resources>

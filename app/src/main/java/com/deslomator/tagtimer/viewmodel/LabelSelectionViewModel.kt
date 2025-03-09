@@ -213,18 +213,24 @@ class LabelSelectionViewModel(
             }
 
             is LabelSelectionAction.TrashLabelClicked -> {
+                val cur = state.value.currentLabel
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
                 viewModelScope.launch {
-                    val trashed = state.value.currentLabel.copy(state = ItemState.TRASHED)
-                    appDao.upsertLabel(trashed)
-                    // remove selection
-                    val selected = Selected(
-                        sessionId = sessionId,
-                        labelId = state.value.currentLabel.id!!
-                    )
-                    appDao.deleteSelected(selected)
+                    val cbd = cur.canBeDeleted(appDao)
+                    if (cbd) {
+                        val trashed = cur.copy(state = ItemState.TRASHED)
+                        appDao.upsertLabel(trashed)
+                        // remove selection
+                        val selected = Selected(
+                            sessionId = sessionId,
+                            labelId = state.value.currentLabel.id!!
+                        )
+                        appDao.deleteSelected(selected)
+                    } else {
+                        _state.update { it.copy(showMessage = true) }
+                    }
                 }
             }
 
@@ -352,6 +358,10 @@ class LabelSelectionViewModel(
                 viewModelScope.launch {
                     appDao.upsertPreference(Preference(PrefKey.SHOW_TRASHED_LABELS, action.show.toString()))
                 }
+            }
+
+            is LabelSelectionAction.DismissDeleteDialog -> {
+                _state.update { it.copy(showMessage = false) }
             }
         }
     }

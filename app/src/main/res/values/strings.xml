@@ -114,4 +114,5 @@
     <string name="session_copied">Session copied</string>
     <string name="session_archived">Session archived</string>
     <string name="session_unarchived">Session enabled</string>
+    <string name="cant_delete_label">This Label can\'t be deleted because it\'s part of an existing Event.</string>
 </resources>
