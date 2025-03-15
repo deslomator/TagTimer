@@ -27,6 +27,7 @@ interface AppDao {
     */
     @Upsert
     suspend fun upsertEvent(event: Event): Long
+
     @Upsert
     suspend fun upsertEvents(events: List<Event>): List<Long>
 
@@ -39,20 +40,6 @@ interface AppDao {
     @Query("DELETE FROM events WHERE session_id = :sessionId")
     suspend fun deleteEventsForSession(sessionId: Long)
 
-    /**
-    The swipeable list item in Active Session doesn't update when
-    its child event item does, so we get an stale Event when swiping it.
-    The solution is to first remove the item from the list
-    and then insert it, that's what updateEventForList() does
-    @Transaction annotation is not used because compose would not
-    register the change
-     **/
-//    @Transaction
-    suspend fun updateEventForList(event: Event) {
-        deleteEvent(event.id!!)
-        upsertEvent(event)
-    }
-
     @Query("SELECT * FROM events WHERE id = :eventId")
     suspend fun getEvent(eventId: Long): Event
 
@@ -61,6 +48,13 @@ interface AppDao {
 
     @Query("SELECT * FROM events WHERE session_id = :sessionId AND in_trash = 1 ORDER BY elapsed_time_millis ASC")
     fun getTrashedEventsForSession(sessionId: Long): Flow<List<Event>>
+
+    /**
+     * when an Event is swiped to trash, the EventForDisplay
+     * provided in the action is stale, so we retrieve the
+     * updated one from the database
+    **/
+    suspend fun trashEvent(id: Long) { upsertEvent(getEvent(id).copy(inTrash = true)) }
 
     /*
     EVENTS FOR DISPLAY
@@ -280,17 +274,6 @@ interface AppDao {
 
     @Query("DELETE FROM preferences")
     suspend fun deleteAllPreferences()
-
-    /*@Transaction
-    suspend fun deleteAllData() {
-        withContext(Dispatchers.IO) {
-            launch { deleteAllEvents() }
-            launch { deleteAllLabels() }
-            launch { deleteAllSelectedLabels() }
-            launch { deleteAllSessions() }
-            launch { deleteAllPreferences() }
-        }
-    }*/
 
     /*
     PREFERENCES

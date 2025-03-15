@@ -6,7 +6,6 @@ import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.type.LabelSort
-import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.theme.hue
@@ -117,10 +116,7 @@ class ActiveSessionViewModel(
             }
 
             is ActiveSessionAction.TrashEventSwiped -> {
-                viewModelScope.launch {
-                    val e = action.event4d.event.copy(inTrash = true)
-                    appDao.upsertEvent(e)
-                }
+                viewModelScope.launch { appDao.trashEvent(action.event4d.event.id!!) }
             }
 
             is ActiveSessionAction.EventClicked -> {
@@ -131,14 +127,9 @@ class ActiveSessionViewModel(
                     )
                 }
             }
-            // the swipeable list item doesn't update when its child event item does,
-            // so we get an stale Event when swiping it. The solution is to
-            // first remove the item from the list and then insert it
-            // that's what updateEventForlist() does
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 viewModelScope.launch {
-//                    appDao.upsertEvent(action.event4d.event)
-                    appDao.updateEventForList(action.event4d.event)
+                    appDao.upsertEvent(action.event4d.event)
                     _state.update {
                         it.copy(
                             showEventEditionDialog = false,

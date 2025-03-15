@@ -50,7 +50,6 @@ fun EventList(
         ) { event4d ->
             SwipeableListItem(
                 onDismiss = {
-                    Log.d(TAG, "event list onDismiss() e4d: $event4d")
                     showSnackbar(
                         scope,
                         snackbarHostState,
