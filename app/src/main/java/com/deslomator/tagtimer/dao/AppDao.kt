@@ -43,7 +43,7 @@ interface AppDao {
     The swipeable list item in Active Session doesn't update when
     its child event item does, so we get an stale Event when swiping it.
     The solution is to first remove the item from the list
-    and then insert it that's what updateEventForList() does
+    and then insert it, that's what updateEventForList() does
     @Transaction annotation is not used because compose would not
     register the change
      **/
@@ -105,20 +105,6 @@ interface AppDao {
     @Query("SELECT * FROM sessions WHERE state = :state ORDER BY last_access_millis DESC")
     fun getTrashedSessions(state: String = ItemState.TRASHED.name): Flow<List<Session>>
 
-    /**
-    Updating a session's state does not update the item in the list,
-    so we get an stale Session when trashing it.
-    The solution is to first remove the item from the list
-    and then insert it that's what updateSessionForList() does
-    @Transaction annotation is not used because compose would not
-    register the change
-     **/
-//    @Transaction
-    suspend fun updateSessionForList(session: Session) {
-        deleteSession(session.id!!)
-        upsertSession(session)
-    }
-
     /*
     LABELS
      */
@@ -136,20 +122,6 @@ interface AppDao {
 
     @Query("SELECT * FROM labels WHERE type = :type")
     fun getLabels(type: LabelType): Flow<List<Label>>
-
-    /**
-    Updating a label's state does not update the item in the list,
-    so we get an stale Label when trashing it.
-    The solution is to first remove the item from the list
-    and then insert it that's what updateLabelForList() does
-    @Transaction annotation is not used because compose would not
-    register the change
-     **/
-//    @Transaction
-    suspend fun updateLabelForList(label: Label) {
-        deleteLabel(label.id!!)
-        upsertLabel(label)
-    }
 
     @Query("SELECT COUNT(*) FROM events WHERE tag_id = :labelId OR person_id = :labelId OR place_id = :labelId")
     suspend fun getEventCountForLabel(labelId: Long): Int

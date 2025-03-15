@@ -176,7 +176,7 @@ class LabelSelectionViewModel(
                     id = action.label.id
                 )
                 viewModelScope.launch {
-                    appDao.updateLabelForList(edited)
+                    appDao.upsertLabel(edited)
                 }
             }
 
