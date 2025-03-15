@@ -23,7 +23,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -112,16 +111,18 @@ class BackupViewModel(
     private fun topButtonAction(button: BackupButton) {
         when (button) {
             BackupButton.LABELS, BackupButton.FULL -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val lbOnly = button == BackupButton.LABELS
-                    val result = backupInternally(
-                        labelsOnly = lbOnly,
-                        appDao = appDao,
-                        backupDir = backupDir,
-                    )
+                    val result = async {
+                        backupInternally(
+                            labelsOnly = lbOnly,
+                            appDao = appDao,
+                            backupDir = backupDir,
+                        )
+                    }
                     _state.update {
                         it.copy(
-                            result = result,
+                            result = result.await(),
                         )
                     }
                     reloadFiles()
@@ -138,10 +139,10 @@ class BackupViewModel(
         when (button) {
             FileItemButton.RESTORE -> {
                 viewModelScope.launch {
-                    val result = restoreBackup(appDao, Uri.fromFile(file))
+                    val result = async { restoreBackup(appDao, Uri.fromFile(file)) }
                     _state.update {
                         it.copy(
-                            result = result,
+                            result = result.await(),
                             restoreBackup = true
                         )
                     }
@@ -190,7 +191,7 @@ class BackupViewModel(
         }
     }
 
-    private fun loadFromStorage(uri: Uri, tempFile: File): Result {
+    private suspend fun loadFromStorage(uri: Uri, tempFile: File): Result {
         uri.let { contentResolver.openInputStream(it) }.use { input ->
             tempFile.outputStream().use { output ->
                 input?.copyTo(output)
@@ -247,53 +248,53 @@ class BackupViewModel(
     }
 }
 
-private fun backupInternally(
+private suspend fun backupInternally(
     labelsOnly: Boolean = false,
     appDao: AppDao,
     backupDir: File,
 ): Result {
     var result: Result = Result.BackupFailed
-    runBlocking(Dispatchers.IO) {
-        val timestamp = SimpleDateFormat(
-            "yyyyMMdd_HHmmss", Locale.getDefault()
-        ).format(Date())
-        val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
-        val fileName = "${prefix}_${timestamp}.json"
-        val file = File(backupDir, fileName)
-        if (file.createNewFile()) {
-            val dbBackup = getDbBackup(appDao, labelsOnly)
-            if (dbBackup.isEmpty()) {
-                Log.e("backupInternally()", "Nothing to backup, database is empty")
-                result = Result.NothingToBackup
-            } else {
-                try {
-                    Json.encodeToString(dbBackup)
-                        .encodeToByteArray()
-                        .inputStream().use { bis ->
-                            FileOutputStream(file).use { fos ->
-                                val buf = ByteArray(bis.available())
-                                bis.read(buf)
-                                do {
-                                    fos.write(buf)
-                                } while (bis.read(buf) != -1)
-                            }
-                        }
-                    result = Result.Backed
-                    Log.i("backupInternally()", "Backup success")
-                } catch (e: SerializationException) {
-                    Log.e("backupInternally()", "Serialization failed: $e")
-                } catch (e: IllegalArgumentException) {
-                    Log.e("backupInternally()", "Serialization failed: $e")
-                } catch (e: FileNotFoundException) {
-                    Log.e("backupInternally()", "Could not save backup file: $e")
-                    result = Result.SaveFailed
-                } catch (e: Exception) {
-                    Log.e("backupInternally()", e.message.toString())
-                }
-            }
+    val timestamp = SimpleDateFormat(
+        "yyyyMMdd_HHmmss", Locale.getDefault()
+    ).format(Date())
+    val prefix = if (labelsOnly) Backup.LABELS.type else Backup.FULL.type
+    val fileName = "${prefix}_${timestamp}.json"
+    val file = File(backupDir, fileName)
+    if (withContext(Dispatchers.IO) {
+            file.createNewFile()
+        }) {
+        val dbBackup = getDbBackup(appDao, labelsOnly)
+        if (dbBackup.isEmpty()) {
+            Log.e("backupInternally()", "Nothing to backup, database is empty")
+            result = Result.NothingToBackup
         } else {
-            Log.e("backupInternally()", "Failed, backup file already exists")
+            try {
+                Json.encodeToString(dbBackup)
+                    .encodeToByteArray()
+                    .inputStream().use { bis ->
+                        FileOutputStream(file).use { fos ->
+                            val buf = ByteArray(bis.available())
+                            bis.read(buf)
+                            do {
+                                fos.write(buf)
+                            } while (bis.read(buf) != -1)
+                        }
+                    }
+                result = Result.Backed
+                Log.i("backupInternally()", "Backup success")
+            } catch (e: SerializationException) {
+                Log.e("backupInternally()", "Serialization failed: $e")
+            } catch (e: IllegalArgumentException) {
+                Log.e("backupInternally()", "Serialization failed: $e")
+            } catch (e: FileNotFoundException) {
+                Log.e("backupInternally()", "Could not save backup file: $e")
+                result = Result.SaveFailed
+            } catch (e: Exception) {
+                Log.e("backupInternally()", e.message.toString())
+            }
         }
+    } else {
+        Log.e("backupInternally()", "Failed, backup file already exists")
     }
     return result
 }

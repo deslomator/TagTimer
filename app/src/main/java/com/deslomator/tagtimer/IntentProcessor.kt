@@ -40,6 +40,7 @@ import com.deslomator.tagtimer.util.EmptyDatabaseException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.FileNotFoundException
@@ -255,14 +256,7 @@ fun IntentProcessor(
             } else {
                 runBlocking {
                     Log.i(TAG, "FromString() Deleting current data")
-                    appDao.deleteAllData()
-                }
-                runBlocking {
-                    launch { appDao.upsertLabels(backup.labels) }
-                    launch { appDao.upsertSelected(backup.selected) }
-                    launch { appDao.upsertEvents(backup.events) }
-                    launch { appDao.upsertSessions(backup.sessions) }
-                    launch { appDao.upsertPreferences(backup.prefs) }
+                    appDao.fullRestore(backup)
                 }
                 Log.i(TAG, "FromString() Restore of full backup success")
             }

@@ -1,10 +1,12 @@
 package com.deslomator.tagtimer.dao
 
+import android.util.Log
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Upsert
+import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Label
@@ -38,12 +40,12 @@ interface AppDao {
     suspend fun deleteEventsForSession(sessionId: Long)
 
     /**
-     The swipeable list item in Active Session doesn't update when
-     its child event item does, so we get an stale Event when swiping it.
-     The solution is to first remove the item from the list
-     and then insert it that's what updateEventForList() does
-     @Transaction annotation is not used because compose would not
-     register the change
+    The swipeable list item in Active Session doesn't update when
+    its child event item does, so we get an stale Event when swiping it.
+    The solution is to first remove the item from the list
+    and then insert it that's what updateEventForList() does
+    @Transaction annotation is not used because compose would not
+    register the change
      **/
 //    @Transaction
     suspend fun updateEventForList(event: Event) {
@@ -251,6 +253,28 @@ interface AppDao {
     @Query("SELECT * FROM events")
     suspend fun getAllEventsList(): List<Event>
 
+    @Transaction
+    suspend fun fullRestore(dbBackup: DbBackup) {
+        withContext(Dispatchers.IO) {
+            launch {
+                val job = launch {
+                    deleteAllSessions()
+                    deleteAllLabels()
+                }
+                job.join()
+                launch { upsertSessions(dbBackup.sessions) }
+                launch { upsertLabels(dbBackup.labels) }
+                launch { upsertEvents(dbBackup.events) }
+                launch { upsertSelected(dbBackup.selected) }
+            }
+            launch {
+                val job = launch { deleteAllPreferences() }
+                job.join()
+                upsertPreferences(dbBackup.prefs)
+            }
+        }
+    }
+
     /*
     DELETE
      */
@@ -270,6 +294,7 @@ interface AppDao {
     @Query("DELETE FROM preferences")
     suspend fun deleteAllPreferences()
 
+    /*@Transaction
     suspend fun deleteAllData() {
         withContext(Dispatchers.IO) {
             launch { deleteAllEvents() }
@@ -278,7 +303,7 @@ interface AppDao {
             launch { deleteAllSessions() }
             launch { deleteAllPreferences() }
         }
-    }
+    }*/
 
     /*
     PREFERENCES

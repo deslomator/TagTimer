@@ -8,7 +8,7 @@ import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.type.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import java.io.FileInputStream
@@ -19,46 +19,37 @@ import java.io.FileInputStream
  * on a file in a file manager, for example),
  * It also can receive the string from its own overload below
  */
-fun restoreBackup(appDao: AppDao, json: String): Result {
+suspend fun restoreBackup(appDao: AppDao, json: String): Result {
     var result: Result = Result.RestoreFailed
-    runBlocking(Dispatchers.IO) {
-        try {
-            val dbBackup = Json.decodeFromString<DbBackup>(json)
-            if (dbBackup.isEmpty()) {
-                Log.e(TAG, "FromString(). Failed, backup class is empty")
-                result = Result.NothingToBackup
-            } else { // do not erase anything if it's a labels only backup
-                if (dbBackup.isLabelsOnly()) {
-                    Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
-                    runBlocking {
-                        launch { appDao.upsertLabels(dbBackup.labels) }
-                    }
-                    Log.i(TAG, "FromString() Restore of labels success")
-                } else {
-                    runBlocking {
-                        Log.i(TAG, "restoreBackup() Deleting current data")
-                        appDao.deleteAllData()
-                    }
-                    runBlocking {
-                        launch { appDao.upsertLabels(dbBackup.labels) }
-                        launch { appDao.upsertSelected(dbBackup.selected) }
-                        launch {  appDao.upsertEvents(dbBackup.events) }
-                        launch { appDao.upsertSessions(dbBackup.sessions) }
-                        launch { appDao.upsertPreferences(dbBackup.prefs) }
-                    }
-                    Log.i(TAG, "restoreBackup() Restore of full backup success")
+    try {
+        val dbBackup = Json.decodeFromString<DbBackup>(json)
+        if (dbBackup.isEmpty()) {
+            Log.e(TAG, "FromString(). Failed, backup class is empty")
+            result = Result.NothingToBackup
+        } else { // do not erase anything if it's a labels only backup
+            if (dbBackup.isLabelsOnly()) {
+                Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
+                withContext(Dispatchers.IO) {
+                    launch { appDao.upsertLabels(dbBackup.labels) }
                 }
-                result = Result.Restored
+                Log.i(TAG, "FromString() Restore of labels success")
+            } else {
+                withContext(Dispatchers.IO) {
+                    Log.i(TAG, "restoreBackup() Deleting current data")
+                    appDao.fullRestore(dbBackup)
+                }
+                Log.i(TAG, "restoreBackup() Restore of full backup success")
             }
-        } catch (e: SerializationException) {
-            result = Result.BadFile
-            Log.e(TAG, "FromString() SerializationException: $e")
-        } catch (e: IllegalArgumentException) {
-            result = Result.BadFile
-            Log.e(TAG, "FromString() IllegalArgumentException: $e")
-        } catch (e: Exception) {
-            Log.e(TAG, "FromString() Exception: $e")
+            result = Result.Restored
         }
+    } catch (e: SerializationException) {
+        result = Result.BadFile
+        Log.e(TAG, "FromString() SerializationException: $e")
+    } catch (e: IllegalArgumentException) {
+        result = Result.BadFile
+        Log.e(TAG, "FromString() IllegalArgumentException: $e")
+    } catch (e: Exception) {
+        Log.e(TAG, "FromString() Exception: $e")
     }
     return result
 }
@@ -69,9 +60,9 @@ fun restoreBackup(appDao: AppDao, json: String): Result {
  * the file is retrieved by contentProvider
  * and converted into a string
  */
-fun restoreBackup(appDao: AppDao, uri: Uri): Result {
+suspend fun restoreBackup(appDao: AppDao, uri: Uri): Result {
     var result: Result = Result.RestoreFailed
-    runBlocking(Dispatchers.IO) {
+    withContext(Dispatchers.IO) {
         try {
             val json = FileInputStream(uri.toFile()).use { fis ->
                 fis.readBytes()
