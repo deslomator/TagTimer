@@ -38,8 +38,6 @@ import com.deslomator.tagtimer.model.DbBackup
 import com.deslomator.tagtimer.model.type.Result
 import com.deslomator.tagtimer.util.EmptyDatabaseException
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
@@ -78,7 +76,7 @@ fun IntentProcessor(
                 Log.d(TAG, "loadBackup() opening Uri")
                 try {
                     var bytes: String?
-                    runBlocking(Dispatchers.IO) {
+                    withContext(Dispatchers.IO) {
                         bytes = activity.contentResolver.openInputStream(uri).use { fis ->
                             fis?.readBytes()!!.decodeToString()
                         }
@@ -246,23 +244,25 @@ fun IntentProcessor(
         }
     }
 
-    if (insertBackupIntoDb) {
-        Log.e(TAG, "loadBackup() Inserting backup into DB")
-        dbBackup?.let { backup ->
-            if (backup.isLabelsOnly()) {
-                Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
-                runBlocking { launch { appDao.upsertLabels(backup.labels) } }
-                Log.i(TAG, "FromString() Restore of labels success")
-            } else {
-                runBlocking {
-                    Log.i(TAG, "FromString() Deleting current data")
-                    appDao.fullRestore(backup)
+    LaunchedEffect(insertBackupIntoDb) {
+        if (insertBackupIntoDb) {
+            Log.e(TAG, "loadBackup() Inserting backup into DB")
+            dbBackup?.let { backup ->
+                if (backup.isLabelsOnly()) {
+                    Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
+                    withContext(Dispatchers.IO) { appDao.upsertLabels(backup.labels) }
+                    Log.i(TAG, "FromString() Restore of labels success")
+                } else {
+                    withContext(Dispatchers.IO) {
+                        Log.i(TAG, "FromString() Deleting current data")
+                        appDao.fullRestore(backup)
+                    }
+                    Log.i(TAG, "FromString() Restore of full backup success")
                 }
-                Log.i(TAG, "FromString() Restore of full backup success")
+                dbBackup = null
+                showSuccessDialog = true
+                insertBackupIntoDb = false
             }
-            dbBackup = null
-            showSuccessDialog = true
-            insertBackupIntoDb = false
         }
     }
 
