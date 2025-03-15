@@ -253,23 +253,38 @@ interface AppDao {
     @Query("SELECT * FROM events")
     suspend fun getAllEventsList(): List<Event>
 
+
+    /**
+     * Sessions and Labels must be inserted before events
+     * and selected to make sure there aren't any
+     * foreign key constraint violations
+     */
     @Transaction
     suspend fun fullRestore(dbBackup: DbBackup) {
         withContext(Dispatchers.IO) {
             launch {
                 val job = launch {
+                    Log.i(TAG, "deleting sessions and labels")
                     deleteAllSessions()
                     deleteAllLabels()
                 }
                 job.join()
-                launch { upsertSessions(dbBackup.sessions) }
-                launch { upsertLabels(dbBackup.labels) }
-                launch { upsertEvents(dbBackup.events) }
-                launch { upsertSelected(dbBackup.selected) }
+                Log.i(TAG, "inserting sessions")
+                upsertSessions(dbBackup.sessions)
+                Log.i(TAG, "inserting labels")
+                upsertLabels(dbBackup.labels)
+                Log.i(TAG, "inserting events")
+                upsertEvents(dbBackup.events)
+                Log.i(TAG, "inserting selected")
+                upsertSelected(dbBackup.selected)
             }
             launch {
-                val job = launch { deleteAllPreferences() }
+                val job = launch {
+                    Log.i(TAG, "deleting preferences")
+                    deleteAllPreferences()
+                }
                 job.join()
+                Log.i(TAG, "inserting preferences")
                 upsertPreferences(dbBackup.prefs)
             }
         }
