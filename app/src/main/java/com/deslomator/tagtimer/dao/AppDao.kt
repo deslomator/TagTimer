@@ -149,6 +149,9 @@ interface AppDao {
         upsertLabel(label)
     }
 
+    @Query("SELECT COUNT(*) FROM events WHERE tag_id = :labelId OR person_id = :labelId OR place_id = :labelId")
+    suspend fun getEventCountForLabel(labelId: Long): Int
+
     /*
     TAGS
      */
@@ -162,9 +165,6 @@ interface AppDao {
     PLACES
      */
     fun getPLaces() = getLabels(LabelType.PLACE)
-
-    @Query("SELECT COUNT(*) FROM events WHERE tag_id = :labelId OR person_id = :labelId OR place_id = :labelId")
-    suspend fun getSEventsForTag(labelId: Long): Int
 
     /*
     USED LABELS

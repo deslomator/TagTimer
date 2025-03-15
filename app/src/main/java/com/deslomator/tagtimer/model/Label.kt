@@ -43,7 +43,7 @@ data class Label(
     }
 
     suspend fun canBeDeleted(appDao: AppDao) =
-        appDao.getSEventsForTag(this.id!!) == 0
+        appDao.getEventCountForLabel(this.id!!) == 0
 }
 
 const val COLUMN_LABEL_NAME = "name"
