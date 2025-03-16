@@ -17,8 +17,8 @@ import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toColor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
@@ -248,32 +248,33 @@ class LabelSelectionViewModel(
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val cbd = state.value.currentLabel.canBeDeleted(appDao)
                     if (cbd) appDao.deleteLabel(state.value.currentLabel)
+                }
+            }
+
+            is LabelSelectionAction.SelectLabelCheckedChange -> {
+                viewModelScope.launch {
+                    val pst = Selected(
+                        sessionId = sessionId,
+                        labelId = action.label.id!!
+                    )
+                    if (action.checked) {
+                        launch(Dispatchers.IO) { appDao.upsertSelected(pst) }
+                        // unarchive-untrash the label if necessary
+                        if (action.label.state != ItemState.ENABLED) {
+                            val checked = action.label.copy(state = ItemState.ENABLED)
+                            launch(Dispatchers.IO) { appDao.upsertLabel(checked) }
+                        }
+                    } else {
+                        launch(Dispatchers.IO) { appDao.deleteSelected(pst) }
+                    }
                 }
             }
             /*
             TAG
              */
-            is LabelSelectionAction.SelectTagCheckedChange -> {
-                viewModelScope.launch {
-                    val pst = Selected(
-                        sessionId = sessionId,
-                        labelId = action.tag.id!!
-                    )
-                    delay(UPSERT_DELAY_MS) // TODO what's this delay
-                    if (action.checked) {
-                        appDao.upsertSelected(pst)
-                        // unarchive the label if necessary
-                        val checked = action.tag.copy(state = ItemState.ENABLED)
-                        appDao.upsertLabel(checked)
-                    } else {
-                        appDao.deleteSelected(pst)
-                    }
-                }
-            }
-
             is LabelSelectionAction.SortTagsClicked -> {
                 val pref = Preference(
                     prefKey = PrefKey.TAG_SORT,
@@ -284,26 +285,6 @@ class LabelSelectionViewModel(
             /*
             PERSON
              */
-            is LabelSelectionAction.SelectPersonCheckedChange -> {
-                viewModelScope.launch {
-                    val pst = Selected(
-                        sessionId = sessionId,
-                        labelId = action.person.id!!
-                    )
-                    delay(UPSERT_DELAY_MS) // TODO what's this delay
-                    if (action.checked) {
-                        appDao.upsertSelected(pst)
-                        // unarchive the label if necessary
-                        if (action.person.state == ItemState.ARCHIVED) {
-                            val lbl = action.person.copy(state = ItemState.ENABLED)
-                            appDao.upsertLabel(lbl)
-                        }
-                    } else {
-                        appDao.deleteSelected(pst)
-                    }
-                }
-            }
-
             is LabelSelectionAction.SortPersonsClicked -> {
                 val pref = Preference(
                     prefKey = PrefKey.PERSON_SORT,
@@ -314,26 +295,6 @@ class LabelSelectionViewModel(
             /*
             PLACE
              */
-            is LabelSelectionAction.SelectPlaceCheckedChange -> {
-                viewModelScope.launch {
-                    val pst = Selected(
-                        sessionId = sessionId,
-                        labelId = action.place.id!!
-                    )
-                    delay(UPSERT_DELAY_MS) // TODO what's this delay
-                    if (action.checked) {
-                        appDao.upsertSelected(pst)
-                        // unarchive the label if necessary
-                        if (action.place.state == ItemState.ARCHIVED) {
-                            val lbl = action.place.copy(state = ItemState.ENABLED)
-                            appDao.upsertLabel(lbl)
-                        }
-                    } else {
-                        appDao.deleteSelected(pst)
-                    }
-                }
-            }
-
             is LabelSelectionAction.SortPlacesClicked -> {
                 val pref = Preference(
                     prefKey = PrefKey.PLACE_SORT,
@@ -376,7 +337,6 @@ class LabelSelectionViewModel(
     }
 
     companion object {
-        private const val UPSERT_DELAY_MS = 300L
         private const val TAG = "LabelSelectionViewModel"
     }
 }

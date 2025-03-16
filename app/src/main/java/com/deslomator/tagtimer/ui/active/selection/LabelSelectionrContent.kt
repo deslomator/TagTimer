@@ -1,9 +1,6 @@
 package com.deslomator.tagtimer.ui.active.selection
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,7 +28,6 @@ import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.LabelSelectionState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.TabIndicator
-import com.deslomator.tagtimer.ui.active.dialog.LabelDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import kotlinx.coroutines.launch
 import kotlin.enums.EnumEntries
@@ -103,14 +99,14 @@ fun LabelSelectionContent(
                         LabelType.PERSON -> state.selectedPersons
                         LabelType.PLACE -> state.selectedPlaces
                     },
-                    onItemClick = { tag, checked ->
+                    onItemClick = { label, checked ->
                         showSnackbar(
                             scope,
                             snackbarHostState,
                             message = if (checked) checkedMessage else unCheckedMessage,
                         )
                         onAction(
-                            LabelSelectionAction.SelectTagCheckedChange(tag,checked)
+                            LabelSelectionAction.SelectLabelCheckedChange(label,checked)
                         )
                     },
                     onLongClick = {

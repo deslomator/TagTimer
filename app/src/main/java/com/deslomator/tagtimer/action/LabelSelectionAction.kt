@@ -18,20 +18,18 @@ sealed interface LabelSelectionAction {
     data object TrashLabelClicked: LabelSelectionAction
     data object UnTrashLabelClicked: LabelSelectionAction
     data object PurgeLabelClicked: LabelSelectionAction
+    data class SelectLabelCheckedChange(val label: Label, val checked: Boolean): LabelSelectionAction
     /*
     TAG
      */
-    data class SelectTagCheckedChange(val tag: Label, val checked: Boolean): LabelSelectionAction
     data class SortTagsClicked(val tagSort: LabelSort): LabelSelectionAction
     /*
     PERSON
      */
-    data class SelectPersonCheckedChange(val person: Label, val checked: Boolean): LabelSelectionAction
     data class SortPersonsClicked(val personSort: LabelSort): LabelSelectionAction
     /*
     PLACE
      */
-    data class SelectPlaceCheckedChange(val place: Label, val checked: Boolean): LabelSelectionAction
     class SortPlacesClicked(val placeSort: LabelSort): LabelSelectionAction
 
     class ShowEnabledClicked(val show: Boolean): LabelSelectionAction
