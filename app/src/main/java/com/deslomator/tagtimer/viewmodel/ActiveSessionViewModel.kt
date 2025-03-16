@@ -110,11 +110,13 @@ class ActiveSessionViewModel(
                     durationMillis = getSessionDuration(),
                     eventCount = state.value.eventsForDisplay.size,
                 )
-                viewModelScope.launch { appDao.upsertSession(session) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertSession(session) }
             }
 
             is ActiveSessionAction.TrashEventSwiped -> {
-                viewModelScope.launch { appDao.trashEvent(action.event4d.event.id!!) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    appDao.trashEvent(action.event4d.event.id!!)
+                }
             }
 
             is ActiveSessionAction.EventClicked -> {
@@ -125,6 +127,7 @@ class ActiveSessionViewModel(
                     )
                 }
             }
+
             is ActiveSessionAction.AcceptEventEditionClicked -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
                 viewModelScope.launch {

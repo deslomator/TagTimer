@@ -88,7 +88,7 @@ class BackupViewModel(
 
             is BackupAction.LoadFromStorageUriReceived -> {
                 if (action.uri != null && action.tempFile != null) {
-                    viewModelScope.launch(Dispatchers.IO) {
+                    viewModelScope.launch {
                         val result = loadFromStorage(action.uri, action.tempFile)
                         _state.update {
                             it.copy(

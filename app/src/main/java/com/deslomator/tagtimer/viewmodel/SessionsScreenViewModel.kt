@@ -13,7 +13,9 @@ import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 import com.deslomator.tagtimer.model.type.SessionSort
 import com.deslomator.tagtimer.populateDb
 import com.deslomator.tagtimer.state.SessionsScreenState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -91,7 +93,9 @@ class SessionsScreenViewModel(
 
             is SessionsTabAction.DialogAcceptClicked -> {
                 _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                viewModelScope.launch { appDao.upsertSession(action.session) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    appDao.upsertSession(action.session)
+                }
             }
 
             is SessionsTabAction.DismissSessionDialog -> {
@@ -99,58 +103,58 @@ class SessionsScreenViewModel(
             }
 
             is SessionsTabAction.ArchiveSessionClicked -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                    val archived = state.value.currentSession.copy(
-                        running = false,
-                        state = ItemState.ARCHIVED
-                    )
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                val archived = state.value.currentSession.copy(
+                    running = false,
+                    state = ItemState.ARCHIVED
+                )
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertSession(archived)
                 }
             }
 
             is SessionsTabAction.UnArchiveSessionClicked -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                    val unarchived = state.value.currentSession.copy(
-                        running = false,
-                        state = ItemState.ENABLED
-                    )
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                val unarchived = state.value.currentSession.copy(
+                    running = false,
+                    state = ItemState.ENABLED
+                )
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertSession(unarchived)
                 }
             }
 
             is SessionsTabAction.TrashSessionClicked -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                    val trashed = state.value.currentSession.copy(
-                        running = false,
-                        state = ItemState.TRASHED
-                    )
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                val trashed = state.value.currentSession.copy(
+                    running = false,
+                    state = ItemState.TRASHED
+                )
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertSession(trashed)
                 }
             }
 
             is SessionsTabAction.UnTrashSessionClicked -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
-                    val untrashed = state.value.currentSession.copy(
-                        running = false,
-                        state = ItemState.ENABLED
-                    )
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                val untrashed = state.value.currentSession.copy(
+                    running = false,
+                    state = ItemState.ENABLED
+                )
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertSession(untrashed)
                 }
             }
 
             is SessionsTabAction.PurgeSessionClicked -> {
-                viewModelScope.launch {
-                    _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                _state.update { it.copy(sessionDialogState = DialogState.HIDDEN) }
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.deleteSession(state.value.currentSession)
                 }
             }
 
             is SessionsTabAction.PopulateDbClicked -> {
-                viewModelScope.launch { populateDb(appDao) }
+                viewModelScope.launch(Dispatchers.IO) { populateDb(appDao) }
             }
 
             is SessionsTabAction.CopySessionClicked -> {
@@ -163,7 +167,7 @@ class SessionsScreenViewModel(
                     prefKey = PrefKey.SESSION_SORT,
                     value = action.sessionSort.name
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
 
             is SessionsTabAction.ShowEnabledClicked -> {
@@ -171,7 +175,7 @@ class SessionsScreenViewModel(
                     prefKey = PrefKey.SHOW_ENABLED_SESSIONS,
                     value = action.show.toString()
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
 
             is SessionsTabAction.ShowArchivedClicked -> {
@@ -179,7 +183,7 @@ class SessionsScreenViewModel(
                     prefKey = PrefKey.SHOW_ARCHIVED_SESSIONS,
                     value = action.show.toString()
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
 
             is SessionsTabAction.ShowTrashedClicked -> {
@@ -187,7 +191,7 @@ class SessionsScreenViewModel(
                     prefKey = PrefKey.SHOW_TRASHED_SESSIONS, value =
                         action.show.toString()
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
 
         }
@@ -206,8 +210,8 @@ class SessionsScreenViewModel(
                 running = false,
                 lastAccessMillis = System.currentTimeMillis()
             )
-            val newId = appDao.upsertSession(newSession)
-            launch {
+            launch(Dispatchers.IO) {
+                val newId = appDao.upsertSession(newSession)
                 appDao.getSelectedLabelsListForSession(s.id!!)
                     .map{
                         it.copy(sessionId = newId)

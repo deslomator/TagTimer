@@ -19,6 +19,7 @@ import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toColor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.flatMapLatest
@@ -154,7 +155,9 @@ class LabelSelectionViewModel(
                     ItemState.TRASHED -> DialogState.TRASHED
                 }
                 viewModelScope.launch {
-                    val cbd = action.label.canBeDeleted(appDao)
+                    val cbd = async(Dispatchers.IO) {
+                        action.label.canBeDeleted(appDao)
+                    }.await()
                     _state.update {
                         it.copy(
                             currentLabel = action.label,
@@ -175,7 +178,7 @@ class LabelSelectionViewModel(
                     type = action.label.type,
                     id = action.label.id
                 )
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertLabel(edited)
                 }
             }
@@ -190,7 +193,7 @@ class LabelSelectionViewModel(
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val archived = state.value.currentLabel.copy(state = ItemState.ARCHIVED)
                     appDao.upsertLabel(archived)
                     // remove selection
@@ -206,7 +209,7 @@ class LabelSelectionViewModel(
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val unArchived = state.value.currentLabel.copy(state = ItemState.ENABLED)
                     appDao.upsertLabel(unArchived)
                 }
@@ -217,7 +220,7 @@ class LabelSelectionViewModel(
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val cbd = cur.canBeDeleted(appDao)
                     if (cbd) {
                         val trashed = cur.copy(state = ItemState.TRASHED)
@@ -238,7 +241,7 @@ class LabelSelectionViewModel(
                 _state.update { it.copy(
                     dialogState = DialogState.HIDDEN,
                 ) }
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val unTrashed = state.value.currentLabel.copy(state = ItemState.ENABLED)
                     appDao.upsertLabel(unTrashed)
                 }
@@ -280,7 +283,7 @@ class LabelSelectionViewModel(
                     prefKey = PrefKey.TAG_SORT,
                     value = action.tagSort.name
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
             /*
             PERSON
@@ -290,7 +293,7 @@ class LabelSelectionViewModel(
                     prefKey = PrefKey.PERSON_SORT,
                     value = action.personSort.name
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
             /*
             PLACE
@@ -300,23 +303,23 @@ class LabelSelectionViewModel(
                     prefKey = PrefKey.PLACE_SORT,
                     value = action.placeSort.name
                 )
-                viewModelScope.launch { appDao.upsertPreference(pref) }
+                viewModelScope.launch(Dispatchers.IO) { appDao.upsertPreference(pref) }
             }
 
             is LabelSelectionAction.ShowEnabledClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertPreference(Preference(PrefKey.SHOW_ENABLED_LABELS, action.show.toString()))
                 }
             }
 
             is LabelSelectionAction.ShowArchivedClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertPreference(Preference(PrefKey.SHOW_ARCHIVED_LABELS, action.show.toString()))
                 }
             }
 
             is LabelSelectionAction.ShowTrashedClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     appDao.upsertPreference(Preference(PrefKey.SHOW_TRASHED_LABELS, action.show.toString()))
                 }
             }
@@ -329,7 +332,7 @@ class LabelSelectionViewModel(
 
     init {
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))
             }

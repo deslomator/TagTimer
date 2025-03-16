@@ -11,6 +11,7 @@ import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toCsv
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -110,7 +111,9 @@ class EventFilterViewModel(
             }
 
             is EventFilterAction.AcceptEventEditionClicked -> {
-                viewModelScope.launch { appDao.upsertEvent(action.event4d.event) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    appDao.upsertEvent(action.event4d.event)
+                }
                 /*
                  the list state doesn't update when an item state changes
                  workaround: we take the updated event out of the list and
@@ -129,10 +132,12 @@ class EventFilterViewModel(
                     )
                 }
             }
-            EventFilterAction.DismissEventEditionDialog -> {
+
+            is EventFilterAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
             }
-            EventFilterAction.EventsExported -> {
+
+            is EventFilterAction.EventsExported -> {
                 _state.update { it.copy(exportEvents = false) }
             }
 
@@ -184,7 +189,7 @@ class EventFilterViewModel(
 
     init {
         
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))
             }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.state.TrashTabState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,13 +36,17 @@ class TrashTabViewModel(
             EVENT
              */
             is TrashTabAction.DeleteEventClicked -> {
-                viewModelScope.launch { appDao.deleteEvent(action.event4d.event) }
+                viewModelScope.launch(Dispatchers.IO) {
+                    appDao.deleteEvent(action.event4d.event)
+                }
             }
+
             is TrashTabAction.RestoreEventClicked -> {
-                viewModelScope.launch {
+                viewModelScope.launch(Dispatchers.IO) {
                     val e = action.event4d.event.copy(inTrash = false)
                     appDao.upsertEvent(e) }
             }
+
             is TrashTabAction.EventInTrashClicked -> {
                 _state.update { it.copy(
                     eventForDialog = action.event,
@@ -57,7 +62,7 @@ class TrashTabViewModel(
 
     init {
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))
             }
