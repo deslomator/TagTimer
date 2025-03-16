@@ -27,11 +27,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -60,13 +56,11 @@ fun BackupContent(
     context: Context
 ) {
     val scope = rememberCoroutineScope()
-    var showSnackbar by rememberSaveable { mutableStateOf(false) }
 
     val saveToStorageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
         onAction(BackupAction.SaveToStorageUriReceived(uri))
-        showSnackbar = true
     }
     LaunchedEffect(state.saveFileToStorage) {
         if (state.saveFileToStorage)
@@ -78,18 +72,10 @@ fun BackupContent(
     ) { uri ->
         val tempFile = if (uri != null) File(context.cacheDir, "tempFile") else null
         onAction(BackupAction.LoadFromStorageUriReceived(uri, tempFile))
-        showSnackbar = true
     }
     LaunchedEffect(state.loadFileFromStorage) {
         if (state.loadFileFromStorage)
             loadFromStorageLauncher.launch(arrayOf("application/json"))
-    }
-
-    LaunchedEffect(state.restoreBackup) {
-        if (state.restoreBackup) showSnackbar = true
-    }
-    LaunchedEffect(state.deleteBackup) {
-        if (state.deleteBackup) showSnackbar = true
     }
 
     if (state.shareFile && state.currentFile != null && state.currentString.isNotEmpty()) {
@@ -104,15 +90,15 @@ fun BackupContent(
         )
     }
 
-    LaunchedEffect(state.result, showSnackbar) {
-        if (showSnackbar) {
+    LaunchedEffect(state.showSnackbar) {
+        if (state.showSnackbar) {
             val r = showSnackbar(
                 scope = scope,
                 snackbarHostState = snackbarHostState,
                 message = context.getString(state.result.stringId)
             )
+            onAction(BackupAction.SnackbarShown)
         }
-        showSnackbar = false
     }
     Box(
         modifier = Modifier
@@ -135,7 +121,6 @@ fun BackupContent(
                             .fillMaxHeight(),
                         colors = ButtonDefaults.buttonColors(containerColor = colorResource(button.colorID)),
                         onClick = {
-                            showSnackbar = button.showSnackBar
                             onAction(BackupAction.TopButtonClicked(button))
                         }) {
                         Column(

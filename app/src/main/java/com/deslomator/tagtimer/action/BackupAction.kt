@@ -12,4 +12,5 @@ sealed interface BackupAction {
     class SaveToStorageUriReceived(val uri: Uri?) : BackupAction
     class LoadFromStorageUriReceived(val uri: Uri?, val tempFile: File?) : BackupAction
     class BackupShared(val result: Result) : BackupAction
+    data object SnackbarShown: BackupAction
 }

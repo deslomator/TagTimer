@@ -17,7 +17,6 @@ import com.deslomator.tagtimer.state.BackupState
 import com.deslomator.tagtimer.util.restoreBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -70,8 +69,9 @@ class BackupViewModel(
                 if (action.uri == null) {
                     _state.update {
                         it.copy(
+                            result = Result.NothingSaved,
                             saveFileToStorage = false,
-                            result = Result.NothingSaved
+                            showSnackbar = true,
                         )
                     }
                 } else {
@@ -79,7 +79,8 @@ class BackupViewModel(
                     _state.update {
                         it.copy(
                             result = result,
-                            saveFileToStorage = false
+                            saveFileToStorage = false,
+                            showSnackbar = true,
                         )
                     }
                 }
@@ -92,18 +93,24 @@ class BackupViewModel(
                         _state.update {
                             it.copy(
                                 result = result,
-                                loadFileFromStorage = false
+                                loadFileFromStorage = false,
+                                showSnackbar = true,
                             )
                         }
                     }
                 } else {
                     _state.update {
                         it.copy(
+                            result = Result.NothingRestored,
                             loadFileFromStorage = false,
-                            result = Result.NothingRestored
+                            showSnackbar = true,
                         )
                     }
                 }
+            }
+
+            is BackupAction.SnackbarShown -> {
+                _state.update { it.copy(showSnackbar = false) }
             }
         }
     }
@@ -119,10 +126,11 @@ class BackupViewModel(
                             appDao = appDao,
                             backupDir = backupDir,
                         )
-                    }
+                    }.await()
                     _state.update {
                         it.copy(
-                            result = result.await(),
+                            result = result,
+                            showSnackbar = true
                         )
                     }
                     reloadFiles()
@@ -139,16 +147,14 @@ class BackupViewModel(
         when (button) {
             FileItemButton.RESTORE -> {
                 viewModelScope.launch {
-                    val result = async { restoreBackup(appDao, Uri.fromFile(file)) }
+                    val result = async(Dispatchers.IO) {
+                        restoreBackup(appDao, Uri.fromFile(file))
+                    }.await()
                     _state.update {
                         it.copy(
-                            result = result.await(),
-                            restoreBackup = true
+                            result = result,
+                            showSnackbar = true
                         )
-                    }
-                    delay(100)
-                    _state.update {
-                        it.copy(restoreBackup = false)
                     }
                 }
             }
@@ -175,17 +181,17 @@ class BackupViewModel(
             }
 
             FileItemButton.DELETE -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    file.delete()
-                    reloadFiles()
+                viewModelScope.launch {
+                    launch(Dispatchers.IO) {
+                        file.delete()
+                        reloadFiles()
+                    }.join()
                     _state.update {
                         it.copy(
                             result = Result.Deleted,
-                            deleteBackup = true
+                            showSnackbar = true
                         )
                     }
-                    delay(100)
-                    _state.update { it.copy(deleteBackup = false) }
                 }
             }
         }

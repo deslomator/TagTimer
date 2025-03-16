@@ -7,9 +7,8 @@ data class BackupState(
     val files: List<File> = emptyList(),
     val shareFile: Boolean = false,
     val loadFileFromStorage: Boolean = false,
-    val restoreBackup: Boolean = false,
     val saveFileToStorage: Boolean = false,
-    val deleteBackup: Boolean = false,
+    val showSnackbar: Boolean = false,
     val result: Result = Result.Restored,
     val currentString: String = "",
     val currentFile: File? = null
