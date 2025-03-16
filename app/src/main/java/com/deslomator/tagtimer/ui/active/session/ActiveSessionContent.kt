@@ -1,5 +1,6 @@
 package com.deslomator.tagtimer.ui.active.session
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -52,10 +53,9 @@ fun ActiveSessionContent(
     snackbarHostState: SnackbarHostState
 ) {
     val listState = rememberLazyListState()
-    LaunchedEffect(state.eventForScrollTo, state.eventsForDisplay) {
-        val index = state.eventsForDisplay.map { it.event.id }.indexOf(state.eventForScrollTo.event.id)
-        if (index >= 0) {
-            listState.animateScrollToItem(index, 0)
+    LaunchedEffect(state.indexForScrollTo) {
+        state.indexForScrollTo?.let {
+            listState.animateScrollToItem(it, 0)
         }
     }
     val scope = rememberCoroutineScope()
