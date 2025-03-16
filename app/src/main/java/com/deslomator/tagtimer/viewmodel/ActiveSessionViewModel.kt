@@ -13,7 +13,9 @@ import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toColor
 import com.deslomator.tagtimer.util.toCsv
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,6 +25,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ActiveSessionViewModel(
     private val appDao: AppDao,
@@ -95,11 +98,8 @@ class ActiveSessionViewModel(
                         personId = state.value.currentPerson?.id,
                         placeId = state.value.currentPlace?.id,
                     )
-                    val id = appDao.upsertEvent(event)
-                    delay(UPSERTING_DELAY) //TODO get rid of this delay()
-                    val index = state.value.eventsForDisplay.map { it.event.id }.indexOf(id)
-//                    Log.d(TAG, "the new EventForDisplay has an index $index")
-                    if (index >= 0) _state.update { it.copy(indexForScrollTo = index) }
+                    val id = async(Dispatchers.IO) { appDao.upsertEvent(event) }.await()
+                    scrollToIndex(id)
                 }
             }
 
@@ -126,14 +126,14 @@ class ActiveSessionViewModel(
                 }
             }
             is ActiveSessionAction.AcceptEventEditionClicked -> {
+                _state.update { it.copy(showEventEditionDialog = false) }
                 viewModelScope.launch {
-                    _state.update { it.copy(showEventEditionDialog = false) }
-                    val eventId = action.event4d.event.id
-                    appDao.upsertEvent(action.event4d.event)
-                    delay(UPSERTING_DELAY)
-                    val events = state.value.eventsForDisplay.map { it.event.id }
-                    val index = events.indexOf(eventId)
-                    _state.update { it.copy(indexForScrollTo = index) }
+                    val event = action.event4d.event
+                    val job = launch(Dispatchers.IO) { appDao.upsertEvent(event) }
+                    job.join()
+                    // upsertEvent() returns -1 instead of the index on
+                    // successful update, so we pass event.id to scrollToIndex()
+                    scrollToIndex(event.id)
                 }
             }
 
@@ -212,6 +212,27 @@ class ActiveSessionViewModel(
         }
     }
 
+    /**
+     * we retrieve a current list of event ids from the database
+     * because we can't rely on state.value.eventsForDisplay
+     * to be updated quickly enough after upserting an Event
+     */
+    private suspend fun scrollToIndex(eventId: Long? = null) {
+        withContext(Dispatchers.Default) {
+            val eventIds = async(Dispatchers.IO) {
+                appDao.getEventsForDisplayList(sessionId).map { it.event.id }
+            }.await()
+            val index = if (eventIds.isEmpty()) {
+                null
+            } else if (eventId != null) {
+                eventIds.indexOf(eventId)
+            } else {
+                eventIds.lastIndex
+            }
+            _state.update { it.copy(indexForScrollTo = index) }
+        }
+    }
+
     private fun getSessionDuration(): Long {
         val s = state.value.currentSession
         return when {
@@ -220,7 +241,7 @@ class ActiveSessionViewModel(
         }
     }
 
-    private suspend fun updateDuration() {
+    private suspend fun runTimer() {
         while (true) {
             val s = state.value.currentSession
             if (s.running) {
@@ -236,29 +257,22 @@ class ActiveSessionViewModel(
     init {
 
         viewModelScope.launch {
+            val s = async(Dispatchers.IO) { appDao.getSession(sessionId) }.await()
             _state.update {
-                it.copy(currentSession = appDao.getSession(sessionId))
+                it.copy(currentSession = s)
             }
-            launch {
-                delay(UPSERTING_DELAY)
-                if (state.value.eventsForDisplay.isNotEmpty()) {
-                    val index = state.value.eventsForDisplay.lastIndex
-                    _state.update { it.copy(indexForScrollTo = index) }
-                }
-            }
-            val s = state.value.currentSession
             if (s.running) {
                 val updated = s.copy(
                     startTimestampMillis = System.currentTimeMillis() - s.durationMillis
                 )
                 _state.update { it.copy(currentSession = updated) }
             }
-            updateDuration()
+            launch { runTimer() }
+            launch { scrollToIndex() }
         }
     }
 
     companion object {
         private const val TAG = "ActiveSessionViewModel"
-        private const val UPSERTING_DELAY = 200L
     }
 }
