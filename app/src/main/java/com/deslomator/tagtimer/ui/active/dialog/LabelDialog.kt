@@ -23,7 +23,7 @@ import com.deslomator.tagtimer.util.toColor
 @Composable
 fun LabelDialog(
     currentLabel: Label,
-    dialogState: DialogState, //TODO deny deletion of selected labels?
+    dialogState: DialogState,
     canBeDeleted: Boolean,
     onDismiss: () -> Unit,
     onAccept: (Label) -> Unit,
