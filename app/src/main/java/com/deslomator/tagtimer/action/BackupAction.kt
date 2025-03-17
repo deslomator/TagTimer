@@ -7,10 +7,12 @@ import com.deslomator.tagtimer.model.type.Result
 import java.io.File
 
 sealed interface BackupAction {
-    class TopButtonClicked(val button: BackupButton) : BackupAction
-    class FileItemActionClicked(val button: FileItemButton, val file: File) : BackupAction
-    class SaveToStorageUriReceived(val uri: Uri?) : BackupAction
-    class LoadFromStorageUriReceived(val uri: Uri?, val tempFile: File?) : BackupAction
-    class BackupShared(val result: Result) : BackupAction
+    data class TopButtonClicked(val button: BackupButton) : BackupAction
+    data class FileItemActionClicked(val button: FileItemButton, val file: File) : BackupAction
+    data class SaveToStorageUriReceived(val uri: Uri?) : BackupAction
+    data class LoadFromStorageUriReceived(val uri: Uri?, val tempFile: File?) : BackupAction
+    data class BackupShared(val result: Result) : BackupAction
     data object SnackbarShown: BackupAction
+    data object FullRestoreAccepted: BackupAction
+    data object FullRestoreDismissed: BackupAction
 }

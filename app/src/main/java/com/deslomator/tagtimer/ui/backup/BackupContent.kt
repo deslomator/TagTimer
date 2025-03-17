@@ -70,7 +70,9 @@ fun BackupContent(
     val loadFromStorageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument()
     ) { uri ->
-        val tempFile = if (uri != null) File(context.cacheDir, "tempFile") else null
+        val tempFile = if (uri != null)
+            File.createTempFile("tempFile", null, context.cacheDir)
+        else null
         onAction(BackupAction.LoadFromStorageUriReceived(uri, tempFile))
     }
     LaunchedEffect(state.loadFileFromStorage) {

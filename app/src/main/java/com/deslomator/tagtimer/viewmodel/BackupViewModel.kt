@@ -3,6 +3,7 @@ package com.deslomator.tagtimer.viewmodel
 import android.content.Context
 import android.icu.text.SimpleDateFormat
 import android.net.Uri
+import android.provider.OpenableColumns
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,7 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.FileReader
+import java.io.IOException
 import java.util.Date
 import java.util.Locale
 
@@ -87,15 +89,25 @@ class BackupViewModel(
             }
 
             is BackupAction.LoadFromStorageUriReceived -> {
+                _state.update { it.copy(loadFileFromStorage = false) }
+
                 if (action.uri != null && action.tempFile != null) {
                     viewModelScope.launch {
                         val result = loadFromStorage(action.uri, action.tempFile)
-                        _state.update {
-                            it.copy(
-                                result = result,
-                                loadFileFromStorage = false,
-                                showSnackbar = true,
-                            )
+                        if (result is Result.WarnFullDeletion) {
+                            _state.update {
+                                it.copy(
+                                    showFullRestoreDialog = true,
+                                    dbBackup = result.dbBackup,
+                                )
+                            }
+                        } else {
+                            _state.update {
+                                it.copy(
+                                    result = result,
+                                    showSnackbar = true
+                                )
+                            }
                         }
                     }
                 } else {
@@ -111,6 +123,31 @@ class BackupViewModel(
 
             is BackupAction.SnackbarShown -> {
                 _state.update { it.copy(showSnackbar = false) }
+            }
+
+            is BackupAction.FullRestoreAccepted -> {
+                _state.update {
+                    it.copy(
+                        showFullRestoreDialog = false,
+                        result = Result.Restored,
+                        showSnackbar = true,
+                    )
+                }
+                viewModelScope.launch(Dispatchers.IO) {
+                    Log.i(TAG, "restoreBackup() Deleting current data")
+                    state.value.dbBackup?.let { appDao.fullRestore(it) }
+                }
+                Log.i(TAG, "restoreBackup() Restore of full backup success")
+            }
+
+            is BackupAction.FullRestoreDismissed -> {
+                _state.update {
+                    it.copy(
+                        showFullRestoreDialog = false,
+                        result = Result.NothingRestored,
+                        showSnackbar = true,
+                    )
+                }
             }
         }
     }
@@ -146,15 +183,27 @@ class BackupViewModel(
     private fun fileAction(button: FileItemButton, file: File) {
         when (button) {
             FileItemButton.RESTORE -> {
+                _state.update {
+                    it.copy(currentFile = file)
+                }
                 viewModelScope.launch {
                     val result = async(Dispatchers.IO) {
                         restoreBackup(appDao, Uri.fromFile(file))
                     }.await()
-                    _state.update {
-                        it.copy(
-                            result = result,
-                            showSnackbar = true
-                        )
+                    if (result is Result.WarnFullDeletion) {
+                        _state.update {
+                            it.copy(
+                                showFullRestoreDialog = true,
+                                dbBackup = result.dbBackup
+                            )
+                        }
+                    } else {
+                        _state.update {
+                            it.copy(
+                                result = result,
+                                showSnackbar = true
+                            )
+                        }
                     }
                 }
             }
@@ -198,12 +247,46 @@ class BackupViewModel(
     }
 
     private suspend fun loadFromStorage(uri: Uri, tempFile: File): Result {
-        uri.let { contentResolver.openInputStream(it) }.use { input ->
-            tempFile.outputStream().use { output ->
-                input?.copyTo(output)
+        try {
+            lateinit var fileName: String
+            contentResolver.apply {
+                query(uri, null, null, null, null)?.use { cursor ->
+                    val nameIndex =
+                        cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    cursor.moveToFirst()
+                    fileName = cursor.getString(nameIndex)
+                }
             }
+            _state.update { it.copy(currentFile = File(sanitizeFilename(fileName))) }
+            withContext(Dispatchers.IO) {
+                val inputStream = contentResolver.openInputStream(uri)
+                val outputStream = FileOutputStream(tempFile)
+                val buf = ByteArray(1024)
+                var len: Int
+                len = inputStream!!.read(buf)
+                while (len > 0) {
+                    outputStream.write(buf, 0, len)
+                    len = inputStream.read(buf)
+                }
+                inputStream.close()
+                outputStream.close()
+            }
+            return restoreBackup(appDao, Uri.fromFile(tempFile))
+        } catch (e: IOException) {
+            e.printStackTrace()
+            Log.e(TAG, "File copy error.")
+            return Result.FileOpenError
         }
-        return restoreBackup(appDao, Uri.fromFile(tempFile))
+    }
+
+    private fun sanitizeFilename(displayName: String): String {
+        val badCharacters = arrayOf("..", "/")
+        val segments = displayName.split("/")
+        var fileName = segments[segments.size - 1]
+        for (suspString in badCharacters) {
+            fileName = fileName.replace(suspString, "_")
+        }
+        return fileName
     }
 
     /**

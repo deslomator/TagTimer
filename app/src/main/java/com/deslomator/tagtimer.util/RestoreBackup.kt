@@ -14,18 +14,23 @@ import kotlinx.serialization.json.Json
 import java.io.FileInputStream
 
 /**
- * [json] is a string previously decoded from an Uri
- * processed by contentResolver (from the user tapping
- * on a file in a file manager, for example),
- * It also can receive the string from its own overload below
+ * @param uri is a reference to a file in the
+ * app's FilesDir; when the uri comes from an Intent
+ * the file is retrieved by contentResolver
+ * and copied into a tempFile in cacheDir
  */
-suspend fun restoreBackup(appDao: AppDao, json: String): Result {
+suspend fun restoreBackup(appDao: AppDao, uri: Uri): Result {
     var result: Result = Result.RestoreFailed
     try {
-        val dbBackup = Json.decodeFromString<DbBackup>(json)
+        var bytes: String?
+        withContext(Dispatchers.IO) {
+            bytes = FileInputStream(uri.toFile()).use { fis ->
+                fis.readBytes()
+            }.decodeToString()
+        }
+        val dbBackup = Json.decodeFromString<DbBackup>(bytes!!)
         if (dbBackup.isEmpty()) {
-            Log.e(TAG, "FromString(). Failed, backup class is empty")
-            result = Result.NothingToBackup
+            throw EmptyDatabaseException()
         } else { // do not erase anything if it's a labels only backup
             if (dbBackup.isLabelsOnly()) {
                 Log.i(TAG, "restoreBackup(). Inserting labels, nothing is deleted")
@@ -33,15 +38,14 @@ suspend fun restoreBackup(appDao: AppDao, json: String): Result {
                     launch { appDao.upsertLabels(dbBackup.labels) }
                 }
                 Log.i(TAG, "FromString() Restore of labels success")
+                result = Result.Restored
             } else {
-                withContext(Dispatchers.IO) {
-                    Log.i(TAG, "restoreBackup() Deleting current data")
-                    appDao.fullRestore(dbBackup)
-                }
-                Log.i(TAG, "restoreBackup() Restore of full backup success")
+                result = Result.WarnFullDeletion(dbBackup)
             }
-            result = Result.Restored
         }
+    } catch (e: EmptyDatabaseException) {
+        Log.e(TAG, "FromString() $e")
+        result = Result.NothingToRestore
     } catch (e: SerializationException) {
         result = Result.BadFile
         Log.e(TAG, "FromString() SerializationException: $e")
@@ -50,27 +54,6 @@ suspend fun restoreBackup(appDao: AppDao, json: String): Result {
         Log.e(TAG, "FromString() IllegalArgumentException: $e")
     } catch (e: Exception) {
         Log.e(TAG, "FromString() Exception: $e")
-    }
-    return result
-}
-
-/**
- * [uri] for now is a reference to a file in the
- * app's FilesDir, when the uri comes from an Intent
- * the file is retrieved by contentProvider
- * and converted into a string
- */
-suspend fun restoreBackup(appDao: AppDao, uri: Uri): Result {
-    var result: Result = Result.RestoreFailed
-    withContext(Dispatchers.IO) {
-        try {
-            val json = FileInputStream(uri.toFile()).use { fis ->
-                fis.readBytes()
-            }.decodeToString()
-            result = restoreBackup(appDao, json)
-        } catch (e: Exception) {
-            Log.e("$TAG FromUri()", e.message.toString())
-        }
     }
     return result
 }

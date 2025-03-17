@@ -2,6 +2,7 @@ package com.deslomator.tagtimer.model.type
 
 import androidx.annotation.StringRes
 import com.deslomator.tagtimer.R
+import com.deslomator.tagtimer.model.DbBackup
 
 sealed class Result(
     val name: String,
@@ -15,6 +16,7 @@ sealed class Result(
     data object NothingToBackup : Result("Nothing To Backup", R.string.nothing_to_backup)
     data object NothingToRestore : Result("Nothing To Restore", R.string.nothing_to_restore)
     data object RestoreFailed : Result("Restore Failed", R.string.restore_failed)
+    data class WarnFullDeletion(val dbBackup: DbBackup) : Result("Warn Full Restore Deletion", R.string.warning_this_will_erase)
     data object Saved : Result("Saved", R.string.backup_saved)
     data object SaveFailed : Result("Save Failed", R.string.save_failed)
     data object FileOpenError : Result("File Open Error", R.string.open_file_error)
