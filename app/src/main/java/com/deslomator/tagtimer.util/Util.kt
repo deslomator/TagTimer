@@ -2,9 +2,8 @@ package com.deslomator.tagtimer.util
 
 import android.icu.text.SimpleDateFormat
 import androidx.compose.ui.graphics.Color
-import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.model.Session
-import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import java.util.Locale
 
 
@@ -31,11 +30,6 @@ fun Long.toElapsedTime(): String {
         "%02d:%02d:%02d",
         hours, minutes, seconds
     )
-}
-
-fun String?.getSort() = when (this) {
-    LabelSort.NAME.sortId -> LabelSort.NAME
-    else -> LabelSort.COLOR
 }
 
 fun List<EventForDisplay>.toCsv(session: Session, filtered: Boolean = false): String {
