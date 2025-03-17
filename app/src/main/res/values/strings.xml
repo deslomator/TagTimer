@@ -55,13 +55,13 @@
     <string name="timestamp">Timestamp</string>
     <string name="events_count">Events: %1d</string>
     <string name="load_backup">Load Backup file:\n%1s</string>
-    <string name="error_loading_backup">Error loading Backup file \n%1s\n%2s</string>
+    <string name="error_loading_backup">Error loading Backup file \n%1$s\n%2$s</string>
     <string name="person">Person</string>
     <string name="place">Place</string>
     <string name="filter_events">Filter</string>
     <string name="search_for_tag">search for tag</string>
     <string name="total_events">Total: %1d</string>
-    <string name="tag_checked">Tag cheked</string>
+    <string name="tag_checked">Tag checked</string>
     <string name="tag_unchecked">Tag unchecked</string>
     <string name="person_checked">Person checked</string>
     <string name="person_unchecked">Person_unchecked</string>
