@@ -1,7 +1,13 @@
 package com.deslomator.tagtimer.ui.active.filter
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.deslomator.tagtimer.ShareData
@@ -9,6 +15,7 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.navigation.screen.BottomScreens
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.active.BottomNavigationBar
+import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
 
 @Composable
 fun EventFilterScaffold(
@@ -33,29 +40,45 @@ fun EventFilterScaffold(
             onDataShared = { onAction(EventFilterAction.EventsExported) }
         )
     }
-    Scaffold(
-        topBar = {
-            EventFilterTopBar(
-                onShareFilteredEventsClick = {
-                    onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
-                },
-                totalEvents = state.filteredEvents.size
-            )
-        },
-        bottomBar =  {
-            BottomNavigationBar(
-                sessionId = sessionId,
-                navController = navController,
-                selected = BottomScreens.FILTER
+    Box(
+        modifier = Modifier
+            .fillMaxSize(),
+    ) {
+        Scaffold(
+            topBar = {
+                EventFilterTopBar(
+                    onShareFilteredEventsClick = {
+                        onAction(EventFilterAction.ExportFilteredEventsClicked(state.filteredEvents))
+                    },
+                    totalEvents = state.filteredEvents.size
+                )
+            },
+            bottomBar = {
+                BottomNavigationBar(
+                    sessionId = sessionId,
+                    navController = navController,
+                    selected = BottomScreens.FILTER
+                )
+            }
+        ) { paddingValues ->
+            EventFilterContent(
+                paddingValues = paddingValues,
+                state = state,
+                onAction = onAction,
+                filteredEvents = state.filteredEvents
             )
         }
-    ) { paddingValues ->
-        EventFilterContent(
-            paddingValues = paddingValues,
-            state = state,
-            onAction = onAction,
-            filteredEvents = state.filteredEvents
-        )
+        AnimatedVisibility(
+            visible = state.showEventEditionDialog,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            EventEditionDialog(
+                event4d = state.eventForDialog,
+                onAccept = { onAction(EventFilterAction.AcceptEventEditionClicked(it)) },
+                onDismiss = { onAction(EventFilterAction.DismissEventEditionDialog) },
+            )
+        }
     }
 }
 

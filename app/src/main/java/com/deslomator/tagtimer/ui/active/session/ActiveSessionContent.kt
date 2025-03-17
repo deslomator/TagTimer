@@ -1,12 +1,7 @@
 package com.deslomator.tagtimer.ui.active.session
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,8 +35,6 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.active.SelectedLabelsList
-import com.deslomator.tagtimer.ui.active.dialog.EventEditionDialog
-import com.deslomator.tagtimer.ui.active.dialog.TimeDialog
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.util.toElapsedTime
 
@@ -60,86 +53,60 @@ fun ActiveSessionContent(
     }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
-
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            HorizontalDivider()
-            EventList(
-                modifier = Modifier
-                    .weight(0.5F),
-                events = state.eventsForDisplay,
-                listState = listState,
-                onItemClicked = { onAction(ActiveSessionAction.EventClicked(it)) },
-                onItemSwiped = { onAction(ActiveSessionAction.TrashEventSwiped(it)) },
-                snackbarHostState = snackbarHostState
-            )
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(4.dp))
-            TimeBar(onAction, state)
-            TagsList(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.6f),
-                tags = state.selectedTags,
-                onItemClicked = {
-                    if (!state.currentSession.running) {
-                        showSnackbar(
-                            scope,
-                            snackbarHostState,
-                            context.getString(R.string.tap_play_to_add_event)
-                        )
-                    } else {
-                        onAction(
-                            ActiveSessionAction.SelectedTagClicked(it)
-                        )
-                    }
-                },
-            )
-            HorizontalDivider()
-            SelectedLabelsList(
-                labels = state.selectedPersons,
-                currentLabel = state.currentPerson,
-                onItemClick = {
-                    onAction(ActiveSessionAction.SelectedPersonClicked(it))
+        HorizontalDivider()
+        EventList(
+            modifier = Modifier
+                .weight(0.5F),
+            events = state.eventsForDisplay,
+            listState = listState,
+            onItemClicked = { onAction(ActiveSessionAction.EventClicked(it)) },
+            onItemSwiped = { onAction(ActiveSessionAction.TrashEventSwiped(it)) },
+            snackbarHostState = snackbarHostState
+        )
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(4.dp))
+        TimeBar(onAction, state)
+        TagsList(
+            modifier = Modifier
+                .fillMaxSize()
+                .weight(0.6f),
+            tags = state.selectedTags,
+            onItemClicked = {
+                if (!state.currentSession.running) {
+                    showSnackbar(
+                        scope,
+                        snackbarHostState,
+                        context.getString(R.string.tap_play_to_add_event)
+                    )
+                } else {
+                    onAction(
+                        ActiveSessionAction.SelectedTagClicked(it)
+                    )
                 }
-            )
-            HorizontalDivider()
-            SelectedLabelsList(
-                labels = state.selectedPlaces,
-                currentLabel = state.currentPlace,
-                onItemClick = {
-                    onAction(ActiveSessionAction.SelectedPlaceClicked(it))
-                }
-            )
-        }
-        AnimatedVisibility(
-            visible = state.showEventEditionDialog,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            EventEditionDialog(
-                event4d = state.eventForDialog,
-                onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
-                onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
-            )
-        }
-        AnimatedVisibility(
-            visible = state.showTimeDialog,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            TimeDialog(
-                current = state.currentSession.durationMillis,
-                onDismiss = { onAction(ActiveSessionAction.DismissTimeDialog) },
-                onAccept = { onAction(ActiveSessionAction.AcceptTimeDialog(it)) }
-            )
-        }
+            },
+        )
+        HorizontalDivider()
+        SelectedLabelsList(
+            labels = state.selectedPersons,
+            currentLabel = state.currentPerson,
+            onItemClick = {
+                onAction(ActiveSessionAction.SelectedPersonClicked(it))
+            }
+        )
+        HorizontalDivider()
+        SelectedLabelsList(
+            labels = state.selectedPlaces,
+            currentLabel = state.currentPlace,
+            onItemClick = {
+                onAction(ActiveSessionAction.SelectedPlaceClicked(it))
+            }
+        )
     }
 }
 
