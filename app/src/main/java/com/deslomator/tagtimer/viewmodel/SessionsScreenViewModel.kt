@@ -33,12 +33,12 @@ class SessionsScreenViewModel(
     private val _state = MutableStateFlow(SessionsScreenState())
 
     private val _prefs = appDao.getPreferences()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _prefProvider = _prefs.mapLatest { prefs ->
         PreferenceProvider(prefs)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PreferenceProvider())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), PreferenceProvider())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _sessions = _prefProvider.flatMapLatest { prefProvider ->
@@ -55,7 +55,7 @@ class SessionsScreenViewModel(
                 }
             }
         }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
 
     val state = combine(_state, _sessions, _prefProvider) { state, sessions, prefProvider ->

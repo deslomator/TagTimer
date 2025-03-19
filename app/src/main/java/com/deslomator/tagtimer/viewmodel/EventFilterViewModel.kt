@@ -38,7 +38,7 @@ class EventFilterViewModel(
     private val _state = MutableStateFlow(EventFilterState())
 
     private val _eventsForDisplay = appDao.getEventsForDisplay(sessionId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _filteredEvents = combine(
         _eventsForDisplay, _currentPerson, _currentPlace, _currentTags
@@ -49,7 +49,7 @@ class EventFilterViewModel(
                         (if (currentPerson.name.isEmpty()) true else event4d.person?.name == currentPerson.name) &&
                         (if (currentTags.isEmpty()) true else currentTags.map{ it.name }.contains(event4d.tag?.name))
             }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _usedTags = _tagSort.flatMapLatest { sort ->
@@ -57,7 +57,7 @@ class EventFilterViewModel(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getUsedTags(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _usedPersons = _personSort.flatMapLatest { sort ->
@@ -65,7 +65,7 @@ class EventFilterViewModel(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getUsedPersons(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _usedPlaces = _placeSort.flatMapLatest { sort ->
@@ -73,7 +73,7 @@ class EventFilterViewModel(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getUsedPlaces(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     private val _query = combine(
         _currentPerson, _currentPlace, _currentTags
@@ -82,7 +82,7 @@ class EventFilterViewModel(
         ts.add(currentPerson.name)
         ts.add(currentPlace.name)
         ts.filter { it.isNotEmpty() }.joinToString(", ")
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "")
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
     val state = combine(
         _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTags

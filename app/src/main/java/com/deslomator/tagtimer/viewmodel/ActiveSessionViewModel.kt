@@ -35,15 +35,15 @@ class ActiveSessionViewModel(
     private val _state = MutableStateFlow(ActiveSessionState())
 
     private val _prefs = appDao.getPreferences()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _prefProvider = _prefs.mapLatest { prefs ->
         PreferenceProvider(prefs)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PreferenceProvider())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), PreferenceProvider())
 
     private val _eventsForDisplay = appDao.getEventsForDisplay(sessionId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedTags = _prefProvider.flatMapLatest { prefProvider ->
@@ -51,7 +51,7 @@ class ActiveSessionViewModel(
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getSelectedTagsForSession(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedPersons = _prefProvider.flatMapLatest { prefProvider ->
@@ -60,7 +60,7 @@ class ActiveSessionViewModel(
         else appDao.getSelectedPersonsForSession(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val _selectedPlaces = _prefProvider.flatMapLatest { prefProvider ->
@@ -69,7 +69,7 @@ class ActiveSessionViewModel(
         else appDao.getSelectedPlacesForSession(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() }
             }
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val state = combine(
         _state, _eventsForDisplay, _selectedTags, _selectedPersons,

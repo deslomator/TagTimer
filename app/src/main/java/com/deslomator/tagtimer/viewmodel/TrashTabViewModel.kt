@@ -21,7 +21,7 @@ class TrashTabViewModel(
     private val _state = MutableStateFlow(TrashTabState())
 
     private val _trashedEvents = appDao.getTrashedEventsForDisplay(sessionId)
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     val state = combine(_state, _trashedEvents) {
             state, trashedEvents ->
