@@ -74,7 +74,7 @@ fun EventListItem(
                         text = listOf(item.tag?.name, item.place?.name,item.person?.name)
                             .filter { !it.isNullOrEmpty() }.joinToString(separator = ","),
                         maxLines = 1,
-                        overflow = TextOverflow.Clip
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
             }.map { it.measure(constraints) }.first()
