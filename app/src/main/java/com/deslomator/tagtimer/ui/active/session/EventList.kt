@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.active.EventListItem
+import com.deslomator.tagtimer.ui.active.EventListItem2
 import com.deslomator.tagtimer.ui.showSnackbar
 
 @Composable
@@ -58,7 +58,7 @@ fun EventList(
                     onItemSwiped(event4d)
                 },
             ) {
-                EventListItem(
+                EventListItem2(
                     event4d = event4d,
                     trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
                     onTrailingClick = { onItemClicked(event4d) },

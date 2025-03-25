@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,13 +13,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.SubcomposeLayout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Event
@@ -112,8 +120,8 @@ fun EventListItem(
 fun EventListItemPreview() {
     val event4d = EventForDisplay(
         event = Event(
-        note = "fff",
-        elapsedTimeMillis = 25_000L,),
+            note = "fff",
+            elapsedTimeMillis = 25_000L,),
         Label(name = "tag 1"),
         Label(name = "person 1"),
         Label(name = "place 1"),
@@ -127,12 +135,12 @@ fun EventListItemPreview() {
         Label(name = "place 4"),
     )
     Column {
-        EventListItem(
+        EventListItem2(
             trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
             event4d = event4d,
             onItemClick = { },
         )
-        EventListItem(
+        EventListItem2(
             trailingIcon = if (event2.event.note.isEmpty()) null else R.drawable.note,
             event4d = event2,
             onItemClick = { },
@@ -141,3 +149,83 @@ fun EventListItemPreview() {
 }
 
 private const val TAG = "EventListItem"
+
+
+@Composable
+fun EventListItem2(
+    event4d: EventForDisplay,
+    leadingIcon: Int? = null,
+    onLeadingClick: ((EventForDisplay) -> Unit)? = null,
+    trailingIcon: Int? = null,
+    onTrailingClick: ((EventForDisplay) -> Unit)? = null,
+    onItemClick: () -> Unit,
+    persons: List<String> = emptyList()
+) {
+//    Log.d(TAG, "recomposing event, id: ${event.id}")
+    val borderColor =
+        if (Color(event4d.event.longColor).brightness() > 0.9f) OnDarkBackground.toArgb().toLong()
+        else event4d.event.longColor
+    val density = LocalDensity.current
+    var widthPx by remember { mutableIntStateOf(0) }
+    val offsetPx by remember {
+        derivedStateOf {
+            val itemWidthPx = with(density) { ITEM_WIDTH.toPx() }
+            val freeWidth = widthPx - itemWidthPx
+            val stepPx = if (persons.size < 2) 0F else freeWidth / (persons.size - 1)
+            val index = maxOf(persons.indexOf(event4d.person?.name), 0)
+            index * stepPx
+        }
+    }
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            modifier = Modifier
+                .weight(1F)
+                .onGloballyPositioned {
+                    widthPx = it.size.width
+                }
+        ) {
+            MyListItem(
+                modifier = Modifier
+                    .width(ITEM_WIDTH)
+                    .offset {
+                        IntOffset(x = offsetPx.toInt(), y = 0)
+                    },
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                    contentColor = OnLightBackground,
+                ),
+                shape = RoundedCornerShape(15.dp),
+                border = BorderStroke(4.dp, Color(borderColor)),
+                item = event4d,
+                onItemClick = { onItemClick() },
+                iconSize = 22.dp,
+                leadingIcon = leadingIcon,
+                onLeadingClick = onLeadingClick,
+                trailingIcon = trailingIcon,
+                onTrailingClick = onTrailingClick
+            ) { item ->
+                Text(
+                    modifier = Modifier.graphicsLayer(translationX = -offsetPx),
+                    text = listOf(item.tag?.name, item.place?.name,item.person?.name)
+                        .filter { !it.isNullOrEmpty() }.joinToString(separator = ","),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+        Text(
+            modifier = Modifier
+                .padding(start = 7.dp)
+                .width(70.dp),
+            text = event4d.event.elapsedTimeMillis.toElapsedTime(),
+            maxLines = 1,
+            overflow = TextOverflow.Clip
+        )
+
+    }
+}
+
+private val ITEM_WIDTH = 190.dp

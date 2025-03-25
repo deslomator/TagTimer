@@ -19,7 +19,7 @@ import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.model.ancillary.EventForDisplay
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.active.EventListItem
+import com.deslomator.tagtimer.ui.active.EventListItem2
 import com.deslomator.tagtimer.ui.active.SelectedLabelsList
 import com.deslomator.tagtimer.ui.active.session.TagsList
 
@@ -67,7 +67,7 @@ fun EventFilterContent(
                 items = filteredEvents,
                 key = { it.event.id!! }
             ) { event4d ->
-                EventListItem(
+                EventListItem2(
                     event4d = event4d,
                     trailingIcon = if (event4d.event.note.isEmpty()) null else R.drawable.note,
                     onTrailingClick = { onAction(EventFilterAction.EventClicked(event4d)) },

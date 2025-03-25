@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.TrashTabAction
 import com.deslomator.tagtimer.state.TrashTabState
-import com.deslomator.tagtimer.ui.active.EventListItem
+import com.deslomator.tagtimer.ui.active.EventListItem2
 import com.deslomator.tagtimer.ui.showSnackbar
 
 @Composable
@@ -52,7 +52,7 @@ fun TrashContent(
             items = state.trashedEvents,
             key = { it.event.id!! }
         ) { event4d ->
-            EventListItem(
+            EventListItem2(
                 event4d = event4d,
                 leadingIcon = R.drawable.untrash,
                 onLeadingClick = {
