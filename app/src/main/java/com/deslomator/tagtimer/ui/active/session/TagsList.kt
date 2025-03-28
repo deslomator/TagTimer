@@ -26,7 +26,7 @@ fun TagsList(
     onItemClicked: (Label) -> Unit,
     showChecked: Boolean = false
 ) {
-    if (tags.isEmpty() && !showChecked) {
+    if (tags.isEmpty()) {
         EmptyListText(stringResource(id = R.string.tap_toolbar_icon_add_pst))
     }
     LazyVerticalGrid(
@@ -34,20 +34,22 @@ fun TagsList(
         contentPadding = PaddingValues(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        columns = GridCells.Adaptive(minSize = 150.dp)
+        columns = GridCells.Adaptive(minSize = 100.dp)
     ) {
         items(
             items = tags,
             key = { it.id!! }
         ) { tag ->
-            val checked by remember(currentTags) {
+            /*val checked by remember(currentTags) {
                 derivedStateOf { currentTags.contains(tag) }
-            }
+            }*/
             LabelButton(
                 label = tag,
                 onItemClick = { onItemClicked(tag) },
-                checked = checked && showChecked,
-                checkType = Checked.LEADING,
+//                checked = checked && showChecked,
+                checked = false,
+                checkType = Checked.NONE,
+                square = true
             )
         }
     }
