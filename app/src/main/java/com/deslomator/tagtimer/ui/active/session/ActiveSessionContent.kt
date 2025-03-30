@@ -35,6 +35,7 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.active.SelectedLabelsList
+import com.deslomator.tagtimer.ui.active.TagsList
 import com.deslomator.tagtimer.ui.showSnackbar
 import com.deslomator.tagtimer.util.toElapsedTime
 

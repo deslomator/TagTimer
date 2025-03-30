@@ -21,7 +21,7 @@ import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.EmptyListText
 import com.deslomator.tagtimer.ui.active.EventListItem2
 import com.deslomator.tagtimer.ui.active.SelectedLabelsList
-import com.deslomator.tagtimer.ui.active.session.TagsList
+import com.deslomator.tagtimer.ui.active.TagsList
 
 @Composable
 fun EventFilterContent(

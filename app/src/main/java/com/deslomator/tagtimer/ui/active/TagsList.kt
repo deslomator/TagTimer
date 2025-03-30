@@ -1,4 +1,4 @@
-package com.deslomator.tagtimer.ui.active.session
+package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +13,6 @@ import com.deslomator.tagtimer.R
 import com.deslomator.tagtimer.model.Label
 import com.deslomator.tagtimer.model.type.Checked
 import com.deslomator.tagtimer.ui.EmptyListText
-import com.deslomator.tagtimer.ui.active.LabelButton
 
 @Composable
 fun TagsList(
