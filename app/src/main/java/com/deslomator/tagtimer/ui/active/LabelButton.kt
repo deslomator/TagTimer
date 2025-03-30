@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -80,12 +79,11 @@ fun LabelButton(
             else containerColor.contrasted()
         }
     }
-    val alpha by animateFloatAsState(
-        targetValue = if (checkType == Checked.ALPHA && !checked) .4F else 1F
+    val checkSize by animateDpAsState(
+        targetValue = if (checkType == Checked.SIZE && checked) 90.dp else 70.dp
     )
     Box(
         modifier = modifier
-            .alpha(alpha)
             .then(onItemClick?.let {
                 Modifier.combinedClickable(
                     onClick = { onItemClick(label) },
@@ -94,7 +92,7 @@ fun LabelButton(
             } ?: Modifier)
             .then(
                 if (square) Modifier
-                    .width(70.dp)
+                    .width(checkSize)
                     .aspectRatio(1F) else Modifier
             )
             .clip(RoundedCornerShape(if (square) 20 else 50))

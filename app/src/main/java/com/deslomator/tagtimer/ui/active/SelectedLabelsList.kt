@@ -25,7 +25,7 @@ fun SelectedLabelsList(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 5.dp, end = 5.dp),
-        verticalAlignment = Alignment.CenterVertically,
+        verticalAlignment = Alignment.Bottom,
         horizontalArrangement = Arrangement.SpaceEvenly
     ) {
         items(
@@ -40,7 +40,7 @@ fun SelectedLabelsList(
                 label = label,
                 onItemClick = { onItemClick(label) },
                 checked = checked,
-                checkType = Checked.ALPHA,
+                checkType = Checked.SIZE,
                 square = true,
             )
         }
