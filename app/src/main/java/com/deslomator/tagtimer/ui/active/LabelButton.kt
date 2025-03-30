@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -58,7 +59,7 @@ fun LabelButton(
     checkType: Checked = Checked.NONE,
     square: Boolean = false
 ) {
-    val borderWidth =  if (label.isPerson()) 5.dp else 1.dp
+    val borderWidth = if (label.isPerson()) 5.dp else 1.dp
     val borderColor = if (label.isPerson()) {
         if (Color(label.longColor).brightness() > .9F) VeryLightGray
         else Color(label.longColor)
@@ -82,86 +83,108 @@ fun LabelButton(
     val checkSize by animateDpAsState(
         targetValue = if (checkType == Checked.SIZE && checked) 90.dp else 70.dp
     )
-    Box(
-        modifier = modifier
-            .then(onItemClick?.let {
-                Modifier.combinedClickable(
-                    onClick = { onItemClick(label) },
-                    onLongClick = { onLongClick?.invoke(label) }
-                )
-            } ?: Modifier)
-            .then(
-                if (square) Modifier
-                    .width(checkSize)
-                    .aspectRatio(1F) else Modifier
-            )
-            .clip(RoundedCornerShape(if (square) 20 else 50))
-            .background(containerColor)
-            .border(borderWidth, borderColor, RoundedCornerShape(if (square) 20 else 50)),
-        contentAlignment = if (square) Alignment.Center else Alignment.CenterEnd
-    ) {
-        Row(modifier = Modifier
-            .padding(start = 5.dp, end = 5.dp)
-            .padding(top = 5.dp, bottom = 5.dp),
-            verticalAlignment = Alignment.CenterVertically
+    Column {
+        AnimatedVisibility(
+            visible = square && checkType == Checked.SIZE && checked
         ) {
-            if (!square) {
-                Icon(
-                    modifier = Modifier
-                        .then(onLeadingClick?.let {
-                            Modifier.clickable(onClick = { it(label) })
-                        } ?: Modifier)
-                        .size(iconSize),
-                    painter = painterResource(id = label.getIcon()),
-                    contentDescription = "restore",
-                    tint = contentColor
-                )
-            }
-            Text(
-                modifier = Modifier.weight(1F),
-                color = contentColor,
-                fontSize = if (square) 20.sp else TextUnit.Unspecified,
-                text = label.name,
-                textAlign = TextAlign.Center,
-                maxLines = if (square) 2 else 1,
-                overflow = TextOverflow.Clip
+            Box(
+                modifier = Modifier
+                    .width(70.dp)
+                    .height(16.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(containerColor)
+                    .border(borderWidth, borderColor, RoundedCornerShape(50))
             )
-            if (!square) {
-                when (val s = label.state) {
-                    ItemState.ENABLED -> {}
-                    ItemState.ARCHIVED -> {
-                        Icon(
-                            modifier = Modifier.size(iconSize),
-                            painter = painterResource(id = s.iconId),
-                            contentDescription = "delete forever",
-                            tint = contentColor
-                        )
-                    }
+            /*Icon(
+                painter = painterResource(R.drawable.expand_less),
+                tint = contentColor,
+                contentDescription = "checked",
+            )*/
+        }
+        Box(
+            modifier = modifier
+                .then(onItemClick?.let {
+                    Modifier.combinedClickable(
+                        onClick = { onItemClick(label) },
+                        onLongClick = { onLongClick?.invoke(label) }
+                    )
+                } ?: Modifier)
+                .then(
+                    if (square) Modifier
+//                        .width(checkSize)
+                        .width(70.dp)
+                        .aspectRatio(1F) else Modifier
+                )
+                .clip(RoundedCornerShape(if (square) 20 else 50))
+                .background(containerColor)
+                .border(borderWidth, borderColor, RoundedCornerShape(if (square) 20 else 50)),
+            contentAlignment = if (square) Alignment.Center else Alignment.CenterEnd
+        ) {
 
-                    ItemState.TRASHED -> {
-                        Icon(
-                            modifier = Modifier.size(iconSize),
-                            painter = painterResource(id = s.iconId),
-                            contentDescription = "delete forever",
-                            tint = contentColor
-                        )
+            Row(
+                modifier = Modifier
+                    .padding(start = 5.dp, end = 5.dp)
+                    .padding(top = 5.dp, bottom = 5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (!square) {
+                    Icon(
+                        modifier = Modifier
+                            .then(onLeadingClick?.let {
+                                Modifier.clickable(onClick = { it(label) })
+                            } ?: Modifier)
+                            .size(iconSize),
+                        painter = painterResource(id = label.getIcon()),
+                        contentDescription = "restore",
+                        tint = contentColor
+                    )
+                }
+                Text(
+                    modifier = Modifier.weight(1F),
+                    color = contentColor,
+                    fontSize = if (square) 20.sp else TextUnit.Unspecified,
+                    text = label.name,
+                    textAlign = TextAlign.Center,
+                    maxLines = if (square) 2 else 1,
+                    overflow = TextOverflow.Clip
+                )
+                if (!square) {
+                    when (val s = label.state) {
+                        ItemState.ENABLED -> {}
+                        ItemState.ARCHIVED -> {
+                            Icon(
+                                modifier = Modifier.size(iconSize),
+                                painter = painterResource(id = s.iconId),
+                                contentDescription = "delete forever",
+                                tint = contentColor
+                            )
+                        }
+
+                        ItemState.TRASHED -> {
+                            Icon(
+                                modifier = Modifier.size(iconSize),
+                                painter = painterResource(id = s.iconId),
+                                contentDescription = "delete forever",
+                                tint = contentColor
+                            )
+                        }
                     }
+                }
+
+                AnimatedVisibility(visible = checked && checkType == Checked.TRAILING) {
+                    Icon(
+                        modifier = Modifier
+                            .size(iconSize)
+                            .padding(end = 4.dp),
+                        painter = painterResource(id = R.drawable.check),
+                        contentDescription = "checked",
+                        tint = contentColor
+                    )
                 }
             }
         }
-        AnimatedVisibility(visible = checked && checkType == Checked.TRAILING) {
-            Icon(
-                modifier = Modifier
-                    .size(iconSize)
-                    .padding(end = 4.dp),
-                painter = painterResource(id = R.drawable.check),
-                contentDescription = "checked",
-                tint = contentColor
-            )
-        }
     }
 }
-
 
 private const val TAG = "LabelButton"
 
