@@ -6,9 +6,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -22,9 +19,7 @@ import com.deslomator.tagtimer.ui.active.LabelButton
 fun TagsList(
     modifier: Modifier,
     tags: List<Label>,
-    currentTags: List<Label> = emptyList(),
     onItemClicked: (Label) -> Unit,
-    showChecked: Boolean = false
 ) {
     if (tags.isEmpty()) {
         EmptyListText(stringResource(id = R.string.tap_toolbar_icon_add_pst))
@@ -34,19 +29,15 @@ fun TagsList(
         contentPadding = PaddingValues(6.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
-        columns = GridCells.Adaptive(minSize = 100.dp)
+        columns = GridCells.Fixed(5)
     ) {
         items(
             items = tags,
             key = { it.id!! }
         ) { tag ->
-            /*val checked by remember(currentTags) {
-                derivedStateOf { currentTags.contains(tag) }
-            }*/
             LabelButton(
                 label = tag,
                 onItemClick = { onItemClicked(tag) },
-//                checked = checked && showChecked,
                 checked = false,
                 checkType = Checked.NONE,
                 square = true

@@ -53,9 +53,7 @@ fun EventFilterContent(
         TagsList(
             modifier = Modifier.weight(.28F),
             tags = state.tags,
-            currentTags = state.currentTags,
             onItemClicked = { onAction(EventFilterAction.UsedTagClicked(it)) },
-            showChecked = true
         )
         HorizontalDivider()
         LazyColumn(

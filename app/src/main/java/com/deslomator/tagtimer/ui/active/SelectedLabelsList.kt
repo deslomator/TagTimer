@@ -1,9 +1,8 @@
 package com.deslomator.tagtimer.ui.active
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -22,44 +21,28 @@ fun SelectedLabelsList(
     currentLabel: Label?,
     onItemClick: (Label) -> Unit
 ) {
-    if (labels.size in 1..3) {
-        Row(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            labels.forEachIndexed { index, label ->
-                val checked by remember(currentLabel) {
-                    derivedStateOf { currentLabel == label }
-                }
-                LabelButton(
-                    modifier = Modifier.fillMaxWidth(1F / (labels.size -index)),
-                    label = label,
-                    onItemClick = { onItemClick(label) },
-                    checked = checked,
-                    checkType = Checked.LEADING,
-                )
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 5.dp, end = 5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        items(
+            items = labels,
+            key = { it.id!! }
+        ) { label ->
+            val checked by remember(currentLabel) {
+                derivedStateOf { currentLabel == label }
             }
-        }
-    } else if (labels.size > 3) {
-        LazyRow(
-            modifier = Modifier.padding(start = 5.dp, end = 5.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            items(
-                items = labels,
-                key = { it.id!! }
-            ) { label ->
-                val checked by remember(currentLabel) {
-                    derivedStateOf { currentLabel == label }
-                }
 //            Log.d(TAG, "recomposing PersonButton, id: ${person.id}")
-                LabelButton(
-                    modifier = Modifier.width(120.dp),
-                    label = label,
-                    onItemClick = { onItemClick(label) },
-                    checked = checked,
-                    checkType = Checked.LEADING,
-                )
-            }
+            LabelButton(
+                label = label,
+                onItemClick = { onItemClick(label) },
+                checked = checked,
+                checkType = Checked.ALPHA,
+                square = true,
+            )
         }
     }
 }

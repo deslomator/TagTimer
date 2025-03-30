@@ -7,5 +7,5 @@ import androidx.annotation.Keep
  */
 @Keep
 enum class Checked {
-    NONE, LEADING, TRAILING
+    NONE, ALPHA, TRAILING
 }

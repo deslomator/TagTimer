@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,8 +10,10 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -77,25 +80,31 @@ fun LabelButton(
             else containerColor.contrasted()
         }
     }
-    val containerPadding by animateDpAsState(
-        targetValue = if (checked && checkType == Checked.LEADING) 12.dp else 5.dp
+    val alpha by animateFloatAsState(
+        targetValue = if (checkType == Checked.ALPHA && !checked) .4F else 1F
     )
     Box(
-        contentAlignment = Alignment.CenterEnd
+        modifier = modifier
+            .alpha(alpha)
+            .then(onItemClick?.let {
+                Modifier.combinedClickable(
+                    onClick = { onItemClick(label) },
+                    onLongClick = { onLongClick?.invoke(label) }
+                )
+            } ?: Modifier)
+            .then(
+                if (square) Modifier
+                    .width(70.dp)
+                    .aspectRatio(1F) else Modifier
+            )
+            .clip(RoundedCornerShape(if (square) 20 else 50))
+            .background(containerColor)
+            .border(borderWidth, borderColor, RoundedCornerShape(if (square) 20 else 50)),
+        contentAlignment = if (square) Alignment.Center else Alignment.CenterEnd
     ) {
-        Row(
-            modifier = modifier
-                .then(onItemClick?.let {
-                    Modifier.combinedClickable(
-                        onClick = { onItemClick(label) },
-                        onLongClick = { onLongClick?.invoke(label) }
-                    )
-                } ?: Modifier)
-                .clip(RoundedCornerShape(50))
-                .background(containerColor)
-                .border(borderWidth, borderColor, RoundedCornerShape(50))
-                .padding(start = 5.dp, end = 5.dp)
-                .padding(top = containerPadding, bottom = containerPadding),
+        Row(modifier = Modifier
+            .padding(start = 5.dp, end = 5.dp)
+            .padding(top = 5.dp, bottom = 5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (!square) {
@@ -113,7 +122,7 @@ fun LabelButton(
             Text(
                 modifier = Modifier.weight(1F),
                 color = contentColor,
-                fontSize = if (square) 25.sp else TextUnit.Unspecified,
+                fontSize = if (square) 20.sp else TextUnit.Unspecified,
                 text = label.name,
                 textAlign = TextAlign.Center,
                 maxLines = if (square) 2 else 1,
