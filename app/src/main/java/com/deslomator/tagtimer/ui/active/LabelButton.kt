@@ -1,7 +1,7 @@
 package com.deslomator.tagtimer.ui.active
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -80,27 +79,19 @@ fun LabelButton(
             else containerColor.contrasted()
         }
     }
-    val checkSize by animateDpAsState(
-        targetValue = if (checkType == Checked.SIZE && checked) 90.dp else 70.dp
+    val ratio by animateFloatAsState(
+        targetValue = if (checkType == Checked.SIZE && checked) 1.15F else 1.4F
     )
-    Column {
-        AnimatedVisibility(
-            visible = square && checkType == Checked.SIZE && checked
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(70.dp)
-                    .height(16.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(containerColor)
-                    .border(borderWidth, borderColor, RoundedCornerShape(50))
-            )
-            /*Icon(
-                painter = painterResource(R.drawable.expand_less),
-                tint = contentColor,
-                contentDescription = "checked",
-            )*/
-        }
+    Box(
+        modifier = modifier
+            .then(
+                if (square) Modifier
+                    .width(85.dp)
+                    .aspectRatio(if (checkType == Checked.NONE) 1.45F else 1.15F)
+                else Modifier
+            ),
+        contentAlignment = if (checkType == Checked.NONE) Alignment.Center else Alignment.BottomCenter
+    ) {
         Box(
             modifier = modifier
                 .then(onItemClick?.let {
@@ -109,22 +100,18 @@ fun LabelButton(
                         onLongClick = { onLongClick?.invoke(label) }
                     )
                 } ?: Modifier)
-                .then(
-                    if (square) Modifier
-//                        .width(checkSize)
-                        .width(70.dp)
-                        .aspectRatio(1F) else Modifier
-                )
                 .clip(RoundedCornerShape(if (square) 20 else 50))
                 .background(containerColor)
-                .border(borderWidth, borderColor, RoundedCornerShape(if (square) 20 else 50)),
+                .border(borderWidth, borderColor, RoundedCornerShape(if (square) 20 else 50))
+                .then(
+                    if (square) Modifier.width(85.dp).aspectRatio(ratio)
+                    else Modifier
+                ),
             contentAlignment = if (square) Alignment.Center else Alignment.CenterEnd
         ) {
-
             Row(
                 modifier = Modifier
-                    .padding(start = 5.dp, end = 5.dp)
-                    .padding(top = 5.dp, bottom = 5.dp),
+                    .padding(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (!square) {
@@ -142,7 +129,7 @@ fun LabelButton(
                 Text(
                     modifier = Modifier.weight(1F),
                     color = contentColor,
-                    fontSize = if (square) 20.sp else TextUnit.Unspecified,
+                    fontSize = if (square) 18.sp else TextUnit.Unspecified,
                     text = label.name,
                     textAlign = TextAlign.Center,
                     maxLines = if (square) 2 else 1,
@@ -170,7 +157,6 @@ fun LabelButton(
                         }
                     }
                 }
-
                 AnimatedVisibility(visible = checked && checkType == Checked.TRAILING) {
                     Icon(
                         modifier = Modifier

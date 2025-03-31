@@ -53,6 +53,7 @@ fun EventFilterContent(
         TagsList(
             modifier = Modifier.weight(.28F),
             tags = state.tags,
+            selectedTags = state.currentTags,
             onItemClicked = { onAction(EventFilterAction.UsedTagClicked(it)) },
         )
         HorizontalDivider()
