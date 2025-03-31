@@ -45,9 +45,9 @@ class EventFilterViewModel(
     ) { eventsForDisplay, currentPerson, currentPlace, currentTags ->
         eventsForDisplay
             .filter { event4d ->
-                (if (currentPlace.name.isEmpty()) true else event4d.place?.name == currentPlace.name) &&
-                        (if (currentPerson.name.isEmpty()) true else event4d.person?.name == currentPerson.name) &&
-                        (if (currentTags.isEmpty()) true else currentTags.map{ it.name }.contains(event4d.tag?.name))
+                (if (currentPlace.name.isEmpty()) true else event4d.place?.id === currentPlace.id) &&
+                        (if (currentPerson.name.isEmpty()) true else event4d.person?.id == currentPerson.id) &&
+                        (if (currentTags.isEmpty()) true else event4d.tag in currentTags)
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
@@ -155,7 +155,7 @@ class EventFilterViewModel(
 
             is EventFilterAction.UsedTagClicked -> {
                 val newCurrentTags = state.value.currentTags.toMutableList()
-                if (newCurrentTags.map{ it.name }.contains(action.tag.name) ) {
+                if (action.tag in newCurrentTags) {
                     newCurrentTags.remove(action.tag)
                 } else {
                     newCurrentTags.add(action.tag)
