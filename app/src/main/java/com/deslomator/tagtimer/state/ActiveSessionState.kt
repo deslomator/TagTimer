@@ -18,8 +18,6 @@ data class ActiveSessionState(
     val indexForScrollTo: Int? = null,
     val showEventEditionDialog: Boolean = false,
     val showTimeDialog: Boolean = false,
-    val shareData: Boolean = false,
-    val dataToShare: String = "",
     val currentPerson: Label? = null,
     val currentPlace: Label? = null,
 )

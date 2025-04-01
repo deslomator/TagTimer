@@ -13,7 +13,6 @@ import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
 import com.deslomator.tagtimer.util.toColor
-import com.deslomator.tagtimer.util.toCsv
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -170,19 +169,6 @@ class ActiveSessionViewModel(
 
             ActiveSessionAction.DismissEventEditionDialog -> {
                 _state.update { it.copy(showEventEditionDialog = false) }
-            }
-
-            ActiveSessionAction.ShareSessionClicked -> {
-                _state.update {
-                    it.copy(
-                        dataToShare = state.value.eventsForDisplay.toCsv(state.value.currentSession),
-                        shareData = true
-                    )
-                }
-            }
-
-            ActiveSessionAction.SessionShared -> {
-                _state.update { it.copy(shareData = false) }
             }
 
             is ActiveSessionAction.TimeClicked -> {

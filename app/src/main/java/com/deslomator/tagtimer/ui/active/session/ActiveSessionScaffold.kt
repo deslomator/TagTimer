@@ -10,14 +10,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
-import com.deslomator.tagtimer.ShareData
 import com.deslomator.tagtimer.action.ActiveSessionAction
 import com.deslomator.tagtimer.navigation.screen.BottomScreens
 import com.deslomator.tagtimer.navigation.screen.SessionsTabScreen
@@ -34,10 +29,6 @@ fun ActiveSessionScaffold(
     onAction: (ActiveSessionAction) -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
-    var fileName by remember { //TODO share file
-        mutableStateOf("")
-    }
     BackHandler(enabled = state.showTimeDialog || state.showEventEditionDialog) {
         onAction(ActiveSessionAction.DismissTimeDialog)
         onAction(ActiveSessionAction.DismissEventEditionDialog)
@@ -49,14 +40,6 @@ fun ActiveSessionScaffold(
                 inclusive = false
             }
         }
-    }
-    if (state.shareData) {
-        ShareData(
-            context = context,
-            fileName = fileName,
-            data = state.dataToShare,
-            onDataShared = { onAction(ActiveSessionAction.SessionShared) },
-        )
     }
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
