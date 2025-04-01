@@ -77,6 +77,9 @@ fun EventFilterScaffold(
                 event4d = state.eventForDialog,
                 onAccept = { onAction(EventFilterAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(EventFilterAction.DismissEventEditionDialog) },
+                activeTags = state.activeTags,
+                activePersons = state.activePersons,
+                activePlaces = state.activePlaces,
             )
         }
     }

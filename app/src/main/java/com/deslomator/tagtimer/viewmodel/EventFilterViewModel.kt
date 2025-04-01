@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.deslomator.tagtimer.action.EventFilterAction
 import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Label
+import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.EventFilterState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,12 +33,16 @@ class EventFilterViewModel(
     private val _currentTags = MutableStateFlow(emptyList<Label>())
     private val _currentPerson = MutableStateFlow(Label())
     private val _currentPlace = MutableStateFlow(Label())
-    // sorting in this screen is independent from global sorting preference
-    // so we don't get it from the AppDao
-    private val _tagSort = MutableStateFlow(LabelSort.COLOR)
-    private val _personSort = MutableStateFlow(LabelSort.NAME)
-    private val _placeSort = MutableStateFlow(LabelSort.NAME)
+
     private val _state = MutableStateFlow(EventFilterState())
+
+    private val _prefs = appDao.getPreferences()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val _prefProvider = _prefs.mapLatest { prefs ->
+        PreferenceProvider(prefs)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), PreferenceProvider())
 
     private val _eventsForDisplay = appDao.getEventsForDisplay(sessionId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
@@ -52,24 +59,24 @@ class EventFilterViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _usedTags = _tagSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getUsedTags(sessionId)
+    private val _usedTags = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getUsedTags(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getUsedTags(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _usedPersons = _personSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getUsedPersons(sessionId)
+    private val _usedPersons = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getUsedPersons(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getUsedPersons(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val _usedPlaces = _placeSort.flatMapLatest { sort ->
-        if (sort == LabelSort.NAME) appDao.getUsedPlaces(sessionId)
+    private val _usedPlaces = _prefProvider.flatMapLatest { prefProvider ->
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getUsedPlaces(sessionId)
             .map { lst -> lst.sortedBy { it.name } }
         else appDao.getUsedPlaces(sessionId)
             .map { lst -> lst.sortedBy { it.color.toColor().hue() } }
@@ -84,9 +91,35 @@ class EventFilterViewModel(
         ts.filter { it.isNotEmpty() }.joinToString(", ")
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), "")
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private  val _activeTags = _prefProvider.mapLatest { prefProvider ->
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getAllActiveTagsList()
+            .filter { it.type == LabelType.TAG }.sortedBy { it.name }
+        else appDao.getAllActiveTagsList()
+            .filter { it.type == LabelType.TAG }.sortedBy { it.color.toColor().hue() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private  val _activePersons = _prefProvider.mapLatest { prefProvider ->
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getAllActivePersonsList()
+            .filter { it.type == LabelType.PERSON }.sortedBy { it.name }
+        else appDao.getAllActivePersonsList()
+            .filter { it.type == LabelType.PERSON }.sortedBy { it.color.toColor().hue() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private  val _activePlaces = _prefProvider.mapLatest { prefProvider ->
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getAllActivePlacesList()
+            .filter { it.type == LabelType.PLACE }.sortedBy { it.name }
+        else appDao.getAllActivePlacesList()
+            .filter { it.type == LabelType.PLACE }.sortedBy { it.color.toColor().hue() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     val state = combine(
-        _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson, _currentPlace, _currentTags
-    ) { state, filteredEvents, tags, persons, places, query, currentPerson, currentPlace, currentTags ->
+        _state, _filteredEvents, _usedTags, _usedPersons, _usedPlaces, _query, _currentPerson,
+        _currentPlace, _currentTags, _activeTags, _activePersons, _activePlaces
+    ) { state, filteredEvents, tags, persons, places, query, currentPerson, currentPlace,
+        currentTags, activeTags, activePersons, activePlaces ->
         state.copy(
             filteredEvents = filteredEvents,
             tags = tags,
@@ -95,7 +128,10 @@ class EventFilterViewModel(
             query = query,
             currentPerson = currentPerson,
             currentPlace = currentPlace,
-            currentTags = currentTags
+            currentTags = currentTags,
+            activeTags = activeTags,
+            activePersons = activePersons,
+            activePlaces = activePlaces,
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), EventFilterState()
@@ -111,19 +147,15 @@ class EventFilterViewModel(
             }
 
             is EventFilterAction.AcceptEventEditionClicked -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    appDao.upsertEvent(action.event4d.event)
-                }
-                /*
-                 the list state doesn't update when an item state changes
-                 workaround: we take the updated event out of the list and
-                 compare it with the rest of the list to set the new duration
-                */
                 val maxInList = state.value.filteredEvents
                     .filter { it.event.id != action.event4d.event.id }
                     .maxOfOrNull { it.event.elapsedTimeMillis } ?: 0
                 val duration = maxOf(maxInList, action.event4d.event.elapsedTimeMillis)
                 val session = state.value.currentSession.copy(durationMillis = duration)
+                viewModelScope.launch(Dispatchers.IO) {
+                    appDao.upsertEvent(action.event4d.event)
+                    appDao.upsertSession(session)
+                }
                 _state.update {
                     it.copy(
                         currentSession = session,
@@ -172,23 +204,11 @@ class EventFilterViewModel(
                     exportEvents = true
                 ) }
             }
-
-            is EventFilterAction.SetPersonSort -> {
-                _personSort.update { action.personSort }
-            }
-
-            is EventFilterAction.SetPlaceSort -> {
-                _placeSort.update { action.placeSort }
-            }
-
-            is EventFilterAction.SetTagSort -> {
-                _tagSort.update { action.labelSort }
-            }
         }
     }
 
     init {
-        
+
         viewModelScope.launch(Dispatchers.IO) {
             _state.update {
                 it.copy(currentSession = appDao.getSession(sessionId))

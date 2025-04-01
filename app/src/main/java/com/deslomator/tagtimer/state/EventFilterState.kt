@@ -20,4 +20,7 @@ data class EventFilterState(
     val currentPerson: Label = Label(),
     val currentPlace: Label = Label(),
     val currentTags: List<Label> = emptyList(),
+    val activeTags: List<Label> = emptyList(),
+    val activePersons: List<Label> = emptyList(),
+    val activePlaces: List<Label> = emptyList(),
 )
