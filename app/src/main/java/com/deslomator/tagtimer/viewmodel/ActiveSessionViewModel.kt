@@ -8,6 +8,7 @@ import com.deslomator.tagtimer.dao.AppDao
 import com.deslomator.tagtimer.model.Event
 import com.deslomator.tagtimer.model.ancillary.PreferenceProvider
 import com.deslomator.tagtimer.model.type.LabelSort
+import com.deslomator.tagtimer.model.type.LabelType
 import com.deslomator.tagtimer.state.ActiveSessionState
 import com.deslomator.tagtimer.ui.theme.hue
 import com.deslomator.tagtimer.util.combine
@@ -71,16 +72,43 @@ class ActiveSessionViewModel(
             }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private  val _activeTags = _prefProvider.mapLatest { prefProvider ->
+        if (prefProvider.tagSort() == LabelSort.NAME) appDao.getAllActiveTagsList()
+            .filter { it.type == LabelType.TAG }.sortedBy { it.name }
+        else appDao.getAllActiveTagsList()
+            .filter { it.type == LabelType.TAG }.sortedBy { it.color.toColor().hue() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private  val _activePersons = _prefProvider.mapLatest { prefProvider ->
+        if (prefProvider.personSort() == LabelSort.NAME) appDao.getAllActivePersonsList()
+            .filter { it.type == LabelType.PERSON }.sortedBy { it.name }
+        else appDao.getAllActivePersonsList()
+            .filter { it.type == LabelType.PERSON }.sortedBy { it.color.toColor().hue() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private  val _activePlaces = _prefProvider.mapLatest { prefProvider ->
+        if (prefProvider.placeSort() == LabelSort.NAME) appDao.getAllActivePlacesList()
+            .filter { it.type == LabelType.PLACE }.sortedBy { it.name }
+        else appDao.getAllActivePlacesList()
+            .filter { it.type == LabelType.PLACE }.sortedBy { it.color.toColor().hue() }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(), emptyList())
+
     val state = combine(
         _state, _eventsForDisplay, _selectedTags, _selectedPersons,
-        _selectedPlaces
+        _selectedPlaces, _activeTags, _activePersons, _activePlaces
     ) { state, eventsForDisplay, selectedTags, selectedPersons,
-        selectedPlaces ->
+        selectedPlaces, activeTags, activePersons, activePlaces ->
         state.copy(
             eventsForDisplay = eventsForDisplay,
             selectedTags = selectedTags,
             selectedPersons = selectedPersons,
             selectedPlaces = selectedPlaces,
+            activeTags = activeTags,
+            activePersons = activePersons,
+            activePlaces = activePlaces,
         )
     }.stateIn(
         viewModelScope, SharingStarted.WhileSubscribed(5000), ActiveSessionState()

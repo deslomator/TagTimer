@@ -98,6 +98,9 @@
     <string name="import_data">Importar datos</string>
     <string name="save_failed">No se pudo guardar el fichero</string>
     <string name="open_file_error">No se pudo abrir el fichero</string>
+    <string name="no_tag">Sin etiqueta</string>
+    <string name="no_person">Sin persona</string>
+    <string name="no_place">Sin lugar</string>
     <string name="nothing_restored">Nada que restaurar</string>
     <string name="nothing_saved">No se guardó el fichero</string>
     <string name="warning_this_will_erase">ATENCIÓN: se borrarán todos los datos actuales</string>

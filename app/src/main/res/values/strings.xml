@@ -98,6 +98,9 @@
     <string name="save_failed">The file could not be saved</string>
     <string name="open_file_error">The file could not be opened</string>
     <string name="nothing_restored">Nothing was restored</string>
+    <string name="no_tag">No tag</string>
+    <string name="no_person">No person</string>
+    <string name="no_place">No place</string>
     <string name="nothing_saved">Nothing was saved</string>
     <string name="backup_shared">Backup shared</string>
     <string name="nothing_shared">Nothing shared</string>

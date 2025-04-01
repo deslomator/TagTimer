@@ -124,6 +124,13 @@ interface AppDao {
     @Query("SELECT COUNT(*) FROM events WHERE tag_id = :labelId OR person_id = :labelId OR place_id = :labelId")
     suspend fun getEventCountForLabel(labelId: Long): Int
 
+    @Query("SELECT * FROM labels WHERE state = :state AND type = :type")
+    suspend fun getAllActiveLabelsList(state: ItemState, type: LabelType): List<Label>
+
+    suspend fun getAllActiveTagsList() = getAllActiveLabelsList(ItemState.ENABLED, LabelType.TAG)
+    suspend fun getAllActivePersonsList() = getAllActiveLabelsList(ItemState.ENABLED, LabelType.PERSON)
+    suspend fun getAllActivePlacesList() = getAllActiveLabelsList(ItemState.ENABLED, LabelType.PLACE)
+
     /*
     TAGS
      */
@@ -295,7 +302,7 @@ interface AppDao {
     fun getPreferenceValue(prefKey: String): Flow<String>
 
     @Query("SELECT * FROM preferences")
-    fun getAllPreferencesList(): List<Preference>
+    suspend fun getAllPreferencesList(): List<Preference>
 
 }
 

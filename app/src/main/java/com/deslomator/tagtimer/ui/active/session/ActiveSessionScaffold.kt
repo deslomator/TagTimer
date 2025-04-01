@@ -87,6 +87,9 @@ fun ActiveSessionScaffold(
                 event4d = state.eventForDialog,
                 onAccept = { onAction(ActiveSessionAction.AcceptEventEditionClicked(it)) },
                 onDismiss = { onAction(ActiveSessionAction.DismissEventEditionDialog) },
+                activeTags = state.activeTags,
+                activePersons = state.activePersons,
+                activePlaces = state.activePlaces,
             )
         }
         AnimatedVisibility(

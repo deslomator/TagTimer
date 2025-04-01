@@ -27,9 +27,9 @@ fun EventEditionDialog(
     onAccept: (EventForDisplay) -> Unit,
     onDismiss: () -> Unit,
     enabled: Boolean = true,
-    selectedTags: List<Label>? = null,
-    selectedPersons: List<Label>? = null,
-    selectedPlaces: List<Label>? = null,
+    activeTags: List<Label>? = null,
+    activePersons: List<Label>? = null,
+    activePlaces: List<Label>? = null,
 ) {
     var elapsed by rememberSaveable {
         mutableLongStateOf(event4d.event.elapsedTimeMillis)
@@ -40,15 +40,16 @@ fun EventEditionDialog(
     var color by rememberSaveable {
         mutableStateOf(event4d.event.color)
     }
-    var tag by rememberSaveable {
+    var tagId by rememberSaveable {
         mutableStateOf(event4d.tag?.id)
     }
-    var person by rememberSaveable {
+    var personId by rememberSaveable {
         mutableStateOf(event4d.person?.id)
     }
-    var place by rememberSaveable {
+    var placeId by rememberSaveable {
         mutableStateOf(event4d.place?.id)
     }
+
     MyDialog(
         onDismiss = onDismiss,
         onAccept = {
@@ -57,9 +58,9 @@ fun EventEditionDialog(
                     elapsedTimeMillis = elapsed,
                     note = note.trim(),
                     color = color,
-                    tagId = tag,
-                    personId = person,
-                    placeId = place,
+                    tagId = tagId,
+                    personId = personId,
+                    placeId = placeId,
                 )
             )
             onAccept(ev4d)
@@ -77,13 +78,25 @@ fun EventEditionDialog(
             onValueChange = { elapsed = it },
             enabled = enabled
         )
-        DialogTextField(
-            value = tag?.name ?: "",
-            onValueChange = { tag = tag?.copy(name = it) },
-            placeholder = R.string.tags,
-            icon = R.drawable.tag,
-            list = selectedTags
-        )
+        if (activeTags != null) {
+            DialogComboBox(
+                label = event4d.tag,
+                onValueChange = { tagId = it.id },
+                icon = R.drawable.tag,
+                activeLabels = activeTags,
+                noLabel = R.string.no_tag
+            )
+        } else {
+            event4d.tag?.let { t ->
+                DialogTextField(
+                    value = t.name,
+                    onValueChange = {},
+                    placeholder = R.string.tags,
+                    icon = R.drawable.tag,
+                    enabled = false
+                )
+            }
+        }
         DialogTextField(
             value = note,
             onValueChange = { note = it },
@@ -91,23 +104,43 @@ fun EventEditionDialog(
             icon = R.drawable.note,
             enabled = enabled
         )
-        event4d.person?.let { pr ->
-            DialogTextField(
-                value = pr.name,
-                onValueChange = { person = person?.copy(name = it) },
-                placeholder = R.string.person,
+        if (activePersons != null) {
+            DialogComboBox(
+                label = event4d.person,
+                onValueChange = { personId = it.id },
                 icon = R.drawable.person,
-                list = selectedPersons
+                activeLabels = activePersons,
+                noLabel = R.string.no_person
             )
+        } else {
+            event4d.person?.let { pr ->
+                DialogTextField(
+                    value = pr.name,
+                    onValueChange = {},
+                    placeholder = R.string.persons,
+                    icon = R.drawable.person,
+                    enabled = false
+                )
+            }
         }
-        event4d.place?.let { p ->
-            DialogTextField(
-                value = p.name,
-                onValueChange = { place = place?.copy(name = it) },
-                placeholder = R.string.place,
+        if (activePlaces != null) {
+            DialogComboBox(
+                label = event4d.place,
+                onValueChange = { placeId = it.id },
                 icon = R.drawable.place,
-                list = selectedPlaces
+                activeLabels = activePlaces,
+                noLabel = R.string.no_place
             )
+        } else {
+            event4d.place?.let { pl ->
+                DialogTextField(
+                    value = pl.name,
+                    onValueChange = {},
+                    placeholder = R.string.places,
+                    icon = R.drawable.place,
+                    enabled = false
+                )
+            }
         }
         Spacer(modifier = Modifier.height(7.dp))
         ColorPicker(
