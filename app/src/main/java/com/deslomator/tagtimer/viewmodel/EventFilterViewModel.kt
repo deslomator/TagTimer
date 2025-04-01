@@ -199,7 +199,7 @@ class EventFilterViewModel(
                 _state.update { it.copy(
                     dataToExport = action.filteredEvents.toCsv(
                         session = state.value.currentSession,
-                        filtered = true
+                        filtered = state.value.query.isNotEmpty()
                     ),
                     exportEvents = true
                 ) }

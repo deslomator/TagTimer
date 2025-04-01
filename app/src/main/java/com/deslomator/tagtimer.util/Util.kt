@@ -37,7 +37,7 @@ fun List<EventForDisplay>.toCsv(session: Session, filtered: Boolean = false): St
         "\"${it.person?.name}\",\"${it.place?.name}\",\"${it.tag?.name}\",\"${it.event.note}\",\"${it.event.elapsedTimeMillis}\""
     }.toMutableList()
     val headers = "\"person\",\"place\",\"tag\",\"note\",\"time\""
-    val filterString = if (filtered) "filtered" else ""
+    val filterString = if (filtered) "filtered" else "unfiltered"
     val dateString = SimpleDateFormat(
         "yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(session.sessionDateMillis)
     val metadata = "\"session: ${session.name}\",\"$filterString\",\"\",\"${session.notes}\",\"$dateString\""
